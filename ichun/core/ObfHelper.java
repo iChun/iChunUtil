@@ -26,6 +26,9 @@ public class ObfHelper
     public static final String[] explosionRadius				= new String[] { "bs", "field_82226_g", "explosionRadius"				}; //EntityCreeper
 
     public static final String[] cameraZoom						= new String[] { "Y", "field_78503_V", "cameraZoom"						}; //EntityRenderer
+    public static final String[] fogColorRed					= new String[] { "k", "field_78518_n", "fogColorRed"					}; //EntityRenderer
+    public static final String[] fogColorGreen					= new String[] { "l", "field_78519_o", "fogColorGreen"					}; //EntityRenderer
+    public static final String[] fogColorBlue					= new String[] { "m", "field_78533_p", "fogColorBlue"					}; //EntityRenderer
 
     public static final String[] itemHealth						= new String[] { "d", "field_70291_e", "health"							}; //EntityItem
 

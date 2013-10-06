@@ -94,4 +94,37 @@ public class RendererHelper
 		GL11.glColor4f(r, g, b, 1.0F);
 	}
 	
+	public static void drawTextureOnScreen(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
+	{
+		Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(posX		, posY + height	, zLevel, 0.0D, 1.0D);
+        tessellator.addVertexWithUV(posX + width, posY + height	, zLevel, 1.0D, 1.0D);
+        tessellator.addVertexWithUV(posX + width, posY			, zLevel, 1.0D, 0.0D);
+        tessellator.addVertexWithUV(posX		, posY			, zLevel, 0.0D, 0.0D);
+        tessellator.draw();
+	}
+	
+	public static void drawColourOnScreen(int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
+	{
+        int r = (colour >> 16 & 0xff);
+        int g = (colour >> 8 & 0xff);
+        int b = (colour & 0xff);
+        drawColourOnScreen(r, g, b, alpha, posX, posY, width, height, zLevel);
+	}
+	
+	public static void drawColourOnScreen(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
+	{
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(r, g, b, alpha);
+        tessellator.addVertex(posX		  , posY + height	, zLevel);
+        tessellator.addVertex(posX + width, posY + height	, zLevel);
+        tessellator.addVertex(posX + width, posY			, zLevel);
+        tessellator.addVertex(posX		  , posY			, zLevel);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
 }
