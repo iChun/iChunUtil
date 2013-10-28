@@ -29,7 +29,9 @@ import cpw.mods.fml.relauncher.SideOnly;
     )
 public class iChunUtil
 {
-    public static final String version = "2.3.0";
+	//MC version, bumped up every MC update.
+	public static final int versionMC = 2;
+    public static final String version = versionMC + ".3.0";
     
     private static boolean hasPostLoad = false;
 
