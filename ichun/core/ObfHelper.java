@@ -44,6 +44,12 @@ public class ObfHelper
 //    public static final String[] bipedRightArm 					= new String[] { "f", "field_78112_f", "bipedRightArm" 					}; //ModelBiped
 //    public static final String[] bipedLeftArm 					= new String[] { "g", "field_78113_g", "bipedLeftArm" 					}; //ModelBiped
     
+	public static final String[] textureOffsetX 				= new String[] { "r", "field_78803_o", "textureOffsetX" 				}; //ModelRenderer
+	public static final String[] textureOffsetY 				= new String[] { "s", "field_78813_p", "textureOffsetY" 				}; //ModelRenderer
+	public static final String[] compiled 						= new String[] { "t", "field_78812_q", "compiled"	 					}; //ModelRenderer
+
+	public static final String[] quadList 						= new String[] { "i", "field_78254_i", "quadList"	 					}; //ModelBox
+    
     public static final String[] mainModel 						= new String[] { "i", "field_77045_g", "mainModel" 						}; //RendererLivingEntity
     public static final String[] field_82423_g 					= new String[] { "g", "field_82423_g" 									}; //RenderBiped
     public static final String[] field_82425_h 					= new String[] { "h", "field_82425_h" 									}; //RenderBiped
@@ -60,6 +66,10 @@ public class ObfHelper
     public static final String getDeathSoundObf = "func_70673_aS";
     public static final String getDeathSoundDeobf = "getDeathSound";
     
+    //RenderLivingEntity
+	public static final String preRenderCallbackObf = "func_77041_b";
+	public static final String preRenderCallbackDeobf = "preRenderCallback";
+    
     //EntityRenderer
     public static final String renderHandObf = "func_78476_b";
     public static final String renderHandDeobf = "renderHand";
@@ -70,6 +80,7 @@ public class ObfHelper
 
 	//EntityLivingbase
 	public static final String getEntityTextureObf = "func_110775_a";
+	public static final String getEntityTextureDeobf = "getEntityTexture";
 
     public static void obfWarning()
     {
@@ -118,11 +129,36 @@ public class ObfHelper
 		}
 	}
 	
+	public static void invokePreRenderCallback(Render rend, Class clz, Entity ent, float rendTick)
+	{
+		if(!(rend instanceof RendererLivingEntity) || !(ent instanceof EntityLivingBase))
+		{
+			return;
+		}
+		try
+		{
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.preRenderCallbackObf : ObfHelper.preRenderCallbackDeobf, EntityLivingBase.class, float.class);
+			m.setAccessible(true);
+			m.invoke(rend, ent, rendTick);
+		}
+		catch(NoSuchMethodException e)
+		{
+			if(clz != RendererLivingEntity.class)
+			{
+				invokePreRenderCallback(rend, clz.getSuperclass(), ent, rendTick);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
 	{
 		try
 		{
-			Method m = clz.getDeclaredMethod(ObfHelper.getEntityTextureObf, Entity.class);
+			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getEntityTextureObf : ObfHelper.getEntityTextureDeobf, Entity.class);
 			m.setAccessible(true);
 			return (ResourceLocation)m.invoke(rend, ent);
 		}
