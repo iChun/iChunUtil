@@ -42,11 +42,10 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
-			RenderManager.instance.getEntityRenderObject(ent).doRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			
 			ArrayList<ModelRenderer> modelListCopy = new ArrayList<ModelRenderer>(modelList);
 			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
-			
+
 			for(int i = modelListCopy.size() - 1; i >= 0; i--)
 			{
 				ModelRenderer cube = modelListCopy.get(i);
@@ -236,6 +235,16 @@ public class ModelHelper
 		
 		return list;
 	}
+	
+	public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
+	{
+		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+		for(ModelBase base : parent)
+		{
+			list.addAll(getModelCubes(base));
+		}
+		return list;
+	}
 
 	public static ArrayList<ModelRenderer> getChildren(ModelRenderer parent, boolean recursive, int depth)
 	{
@@ -282,7 +291,7 @@ public class ModelHelper
 					for(Field f : fields)
 					{
 						f.setAccessible(true);
-						if(f.getType() == ModelBase.class)
+						if(ModelBase.class.isAssignableFrom(f.getType()))
 						{
 							ModelBase base = (ModelBase)f.get(rend);
 							if(base != null)
@@ -290,7 +299,7 @@ public class ModelHelper
 								priorityLevel.add(base); // Add normal parent fields
 							}
 						}
-						else if(f.getType() == ModelBase[].class)
+						else if(ModelBase[].class.isAssignableFrom(f.getType()))
 						{
 							ModelBase[] modelBases = (ModelBase[])f.get(rend);
 							if(modelBases != null)
@@ -311,7 +320,7 @@ public class ModelHelper
 						for(Field f : fields)
 						{
 							f.setAccessible(true);
-							if(f.getType() == ModelBase.class && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
+							if(ModelBase.class.isAssignableFrom(f.getType()) && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
 							{
 								ModelBase base = (ModelBase)f.get(rend);
 								if(base != null)
@@ -354,7 +363,7 @@ public class ModelHelper
 
 		return base1;
 	}
-
+	
 	public static ArrayList<ModelRenderer> getModelCubes(EntityLivingBase living) 
 	{
 		ArrayList<ModelRenderer> map = classToModelRendererMap.get(living.getClass());
