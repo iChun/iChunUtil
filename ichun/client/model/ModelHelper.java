@@ -42,10 +42,11 @@ public class ModelHelper
 					e.printStackTrace();
 				}
 			}
+			RenderManager.instance.getEntityRenderObject(ent).doRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			
 			ArrayList<ModelRenderer> modelListCopy = new ArrayList<ModelRenderer>(modelList);
 			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
-
+			
 			for(int i = modelListCopy.size() - 1; i >= 0; i--)
 			{
 				ModelRenderer cube = modelListCopy.get(i);
