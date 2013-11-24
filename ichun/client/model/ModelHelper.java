@@ -13,6 +13,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
@@ -26,7 +27,7 @@ public class ModelHelper
 	
 	public static ArrayList<ModelRenderer> getModelCubesCopy(ArrayList<ModelRenderer> modelList, ModelBase base, EntityLivingBase ent)
 	{
-		if(ent != null)
+		if(RenderManager.instance.renderEngine != null && RenderManager.instance.livingPlayer != null && ent != null)
 		{
 			for(int i = 0; i < modelList.size(); i++)
 			{
@@ -43,16 +44,17 @@ public class ModelHelper
 			}
 			RenderManager.instance.getEntityRenderObject(ent).doRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			
+			ArrayList<ModelRenderer> modelListCopy = new ArrayList<ModelRenderer>(modelList);
 			ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
 			
-			for(int i = 0; i < modelList.size(); i++)
+			for(int i = modelListCopy.size() - 1; i >= 0; i--)
 			{
-				ModelRenderer cube = modelList.get(i);
+				ModelRenderer cube = modelListCopy.get(i);
 				try
 				{
-					if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+					if(!(Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
 					{
-						list.add(buildCopy(cube, base, 0, true, true));
+						modelListCopy.remove(i);
 					}
 				}
 				catch(Exception e)
@@ -60,6 +62,10 @@ public class ModelHelper
 					ObfHelper.obfWarning();
 					e.printStackTrace();
 				}
+			}
+			for(ModelRenderer cube : modelListCopy)
+			{
+				list.add(buildCopy(cube, base, 0, true, true));
 			}
 			return list;
 		}
@@ -261,7 +267,7 @@ public class ModelHelper
 	
 	public static ModelBase getPossibleModel(Render rend)
 	{
-		ArrayList<ModelBase> models = new ArrayList<ModelBase>();
+		ArrayList<ArrayList<ModelBase>> models = new ArrayList<ArrayList<ModelBase>>();
 
 		if(rend != null)
 		{
@@ -270,6 +276,8 @@ public class ModelHelper
 				Class clz = rend.getClass();
 				while(clz != Render.class)
 				{
+					ArrayList<ModelBase> priorityLevel = new ArrayList<ModelBase>();
+					
 					Field[] fields = clz.getDeclaredFields();
 					for(Field f : fields)
 					{
@@ -279,7 +287,7 @@ public class ModelHelper
 							ModelBase base = (ModelBase)f.get(rend);
 							if(base != null)
 							{
-								models.add(base); // Add normal parent fields
+								priorityLevel.add(base); // Add normal parent fields
 							}
 						}
 						else if(f.getType() == ModelBase[].class)
@@ -289,10 +297,30 @@ public class ModelHelper
 							{
 								for(ModelBase base : modelBases)
 								{
-									models.add(base);
+									priorityLevel.add(base);
 								}
 							}
 						}
+					}
+					
+					models.add(priorityLevel);
+					
+					if(clz == RendererLivingEntity.class)
+					{
+						ArrayList<ModelBase> topPriority = new ArrayList<ModelBase>();
+						for(Field f : fields)
+						{
+							f.setAccessible(true);
+							if(f.getType() == ModelBase.class && (f.getName().equalsIgnoreCase("mainModel") || f.getName().equalsIgnoreCase("field_77045_g")))
+							{
+								ModelBase base = (ModelBase)f.get(rend);
+								if(base != null)
+								{
+									topPriority.add(base);
+								}
+							}
+						}
+						models.add(topPriority);
 					}
 					clz = clz.getSuperclass();
 				}
@@ -304,16 +332,24 @@ public class ModelHelper
 		}
 
 		ModelBase base1 = null;
+		int priorityLevel = -1;
 		int size = -1;
 
-		for(ModelBase base : models)
+		int currentPriority = 0;
+		
+		for(ArrayList<ModelBase> modelList : models)
 		{
-			ArrayList<ModelRenderer> mrs = getModelCubes(base);
-			if(mrs.size() > size)
+			for(ModelBase base : modelList)
 			{
-				size = mrs.size();
-				base1 = base;
+				ArrayList<ModelRenderer> mrs = getModelCubes(base);
+				if(mrs.size() > size || mrs.size() == size && currentPriority > priorityLevel)
+				{
+					size = mrs.size();
+					base1 = base;
+					priorityLevel = currentPriority;
+				}
 			}
+			currentPriority++;
 		}
 
 		return base1;
