@@ -1,6 +1,6 @@
 package ichun.core.config;
 
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.Property;
 
 public interface IConfigUser 
 {

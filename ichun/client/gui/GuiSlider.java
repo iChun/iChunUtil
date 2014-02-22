@@ -86,7 +86,7 @@ public class GuiSlider extends GuiButton
      */
     protected void mouseDragged(Minecraft par1Minecraft, int par2, int par3)
     {
-        if (this.drawButton)
+        if (this.visible)
         {
             if (this.dragging)
             {

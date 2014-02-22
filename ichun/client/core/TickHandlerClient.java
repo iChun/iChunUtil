@@ -1,43 +1,48 @@
 package ichun.client.core;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.gui.config.GuiConfigBase;
 import ichun.client.gui.config.GuiConfigSetter;
-
-import java.util.EnumSet;
-
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.Icon;
-import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 
-public class TickHandlerClient implements ITickHandler
+public class TickHandlerClient
 {
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void renderTick(TickEvent.RenderTickEvent event)
     {
-        if (type.equals(EnumSet.of(TickType.RENDER)))
+        if(event.phase == TickEvent.Phase.END)
         {
-            if (Minecraft.getMinecraft().theWorld != null)
+            if(Minecraft.getMinecraft().currentScreen instanceof GuiOptions && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigBase) && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigSetter))
             {
-                preRenderTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld, (Float)tickData[0]); //only ingame
+                GuiOptions gui = (GuiOptions)Minecraft.getMinecraft().currentScreen;
+                String s = "Hit O to view more options";
+                gui.drawString(Minecraft.getMinecraft().fontRenderer, s, gui.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
+
+                //TODO see if this keybind can be replaced.
+                if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
+                {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, Minecraft.getMinecraft().gameSettings, null));
+                }
+
+                optionsKeyDown = Keyboard.isKeyDown(Keyboard.KEY_O);
             }
         }
     }
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData)
+    @SubscribeEvent
+    public void clientTick(TickEvent.ClientTickEvent event)
     {
-        if (type.equals(EnumSet.of(TickType.CLIENT)))
+        if(event.phase == TickEvent.Phase.END)
         {
             if (Minecraft.getMinecraft().theWorld != null)
             {
@@ -45,46 +50,9 @@ public class TickHandlerClient implements ITickHandler
             }
             else if(worldInstance != null)
             {
-            	resetWorld();
+                resetWorld();
             }
         }
-        else if (type.equals(EnumSet.of(TickType.PLAYER)))
-        {
-            playerTick((World)((EntityPlayer)tickData[0]).worldObj, (EntityPlayer)tickData[0]);
-        }
-        else if (type.equals(EnumSet.of(TickType.RENDER)))
-        {
-            if (Minecraft.getMinecraft().theWorld != null)
-            {
-                renderTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld, (Float)tickData[0]); //only ingame
-            }
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiOptions && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigBase) && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigSetter))
-            {
-            	GuiOptions gui = (GuiOptions)Minecraft.getMinecraft().currentScreen;
-            	String s = "Hit O to view more options";
-            	gui.drawString(Minecraft.getMinecraft().fontRenderer, s, gui.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
-            	
-            	if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
-            	{
-            		Minecraft.getMinecraft().sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-            		FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, Minecraft.getMinecraft().gameSettings, null));
-            	}
-            	
-                optionsKeyDown = Keyboard.isKeyDown(Keyboard.KEY_O);
-            }
-        }
-    }
-
-    @Override
-    public EnumSet<TickType> ticks()
-    {
-        return EnumSet.of(TickType.CLIENT, TickType.PLAYER, TickType.RENDER);
-    }
-
-    @Override
-    public String getLabel()
-    {
-        return "TickHandlerClient_iChunUtil";
     }
 
     public void worldTick(Minecraft mc, WorldClient world)
@@ -108,18 +76,7 @@ public class TickHandlerClient implements ITickHandler
     	}
     }
     
-    public void playerTick(World world, EntityPlayer player)
-    {
-    }
 
-    public void preRenderTick(Minecraft mc, World world, float renderTick)
-    {
-    }
-    
-    public void renderTick(Minecraft mc, World world, float renderTick)
-    {
-    }
-    
     public void resetWorld()
     {
         worldInstance = null;
@@ -146,7 +103,7 @@ public class TickHandlerClient implements ITickHandler
     public WorldClient worldInstance;
     public RenderGlobalProxy renderGlobalProxy;
 
-    public IconRegister iconRegister;
+    public IIconRegister iconRegister;
     
     public boolean optionsKeyDown;
 }

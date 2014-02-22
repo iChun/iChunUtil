@@ -11,7 +11,7 @@ import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraftforge.common.Property;
+import net.minecraftforge.common.config.Property;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -27,20 +27,21 @@ public class GuiConfigSetter extends GuiControls
 	private Config config;
 	
 	public ArrayList<Property> properties;
-	
-	public GuiConfigSetter(GuiScreen parentScreen, GameSettings gameSettings, Config cfg, String title, ArrayList<Property> cat) 
+    private GuiButton selectedBtn;
+
+    public GuiConfigSetter(GuiScreen parentScreen, GameSettings gameSettings, Config cfg, String title, ArrayList<Property> cat)
 	{
 		super(parentScreen, gameSettings);
 		gameSets = gameSettings;
 		config = cfg;
-		screenTitle = cfg.modName + " - " + title;
+        field_146495_a = cfg.modName + " - " + title;
 		properties = cat;
 	}
 	
 	@Override
     public void initGui()
     {
-    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.getString("gui.done")));
+    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done", new Object[0])));
         
         scrollPane = new GuiConfigSetterScroll(this, config, properties, mc);
         scrollPane.registerScrollButtons(7, 8);
@@ -68,7 +69,7 @@ public class GuiConfigSetter extends GuiControls
     {
         this.drawDefaultBackground();
         scrollPane.drawScreen(par1, par2, par3);
-        drawCenteredString(fontRenderer, screenTitle, width / 2, 4, 0xffffff);
+        drawCenteredString(fontRendererObj, field_146495_a, width / 2, 4, 0xffffff);
 
         for (int k = 0; k < this.buttonList.size(); ++k)
         {
@@ -90,7 +91,36 @@ public class GuiConfigSetter extends GuiControls
 
         }
     }
-	
+
+    @Override
+    protected void mouseClicked(int par1, int par2, int par3)
+    {
+        if (par3 == 0)
+        {
+            for (int l = 0; l < this.buttonList.size(); ++l)
+            {
+                GuiButton guibutton = (GuiButton)this.buttonList.get(l);
+
+                if (guibutton.mousePressed(this.mc, par1, par2))
+                {
+                    this.selectedBtn = guibutton;
+                    guibutton.func_146113_a(this.mc.getSoundHandler());
+                    this.actionPerformed(guibutton);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
+    {
+        if (this.selectedBtn != null && p_146286_3_ == 0)
+        {
+            this.selectedBtn.mouseReleased(p_146286_1_, p_146286_2_);
+            this.selectedBtn = null;
+        }
+    }
+
     public void drawTooltip(List par1List, int par2, int par3)
     {
         if (!par1List.isEmpty())
@@ -134,7 +164,7 @@ public class GuiConfigSetter extends GuiControls
             while (iterator.hasNext())
             {
                 String s = (String)iterator.next();
-                int l = this.fontRenderer.getStringWidth(s);
+                int l = this.fontRendererObj.getStringWidth(s);
 
                 if (l > k)
                 {
@@ -178,7 +208,7 @@ public class GuiConfigSetter extends GuiControls
             for (int k2 = 0; k2 < par1List.size(); ++k2)
             {
                 String s1 = (String)par1List.get(k2);
-                this.fontRenderer.drawStringWithShadow(s1, i1, j1, -1);
+                this.fontRendererObj.drawStringWithShadow(s1, i1, j1, -1);
 
                 if (k2 == 0)
                 {

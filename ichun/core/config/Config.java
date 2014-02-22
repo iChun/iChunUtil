@@ -1,5 +1,10 @@
 package ichun.core.config;
 
+
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.config.Property.Type;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,10 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.common.Property.Type;
 
 public class Config 
 	implements Comparable
@@ -316,77 +317,7 @@ public class Config
 		return new HashMap<Integer, ArrayList<Integer>>();
 	}
 
-	//TODO rename to just createItemIDProperty in 1.7. 
-	public void createOrUpdateItemIDProperty(String cat, String catName, String propName1, String fullPropName, String comment, int i)
-	{
-		int min = 256;
-		int max = 32000;
-		boolean changable = false;
-		
-        Property prop;
-        if(props.containsKey(propName1))
-        {
-        	prop = props.get(propName1);
-        	prop.set(i);
-        }
-        else
-        {
-        	if(!setup)
-        	{
-        		prop = config.getItem(cat, propName1, i);
-        	}
-        	else
-        	{
-        		prop = config.get(cat, propName1, i);
-        	}
-        	if(prop.getInt() > max)
-        	{
-        		prop.set(max);
-        	}
-        	if(prop.getInt() < min)
-        	{
-        		prop.set(min);
-        	}
-        }
-
-        if (!comment.equalsIgnoreCase(""))
-        {
-            prop.comment = comment + "\n" + (min != Integer.MIN_VALUE ? ("\nMin: " + min) : "") + (max != Integer.MAX_VALUE ? ("\nMax: " + max) : "");
-        }
-        
-        props.put(propName1, prop);
-        propName.put(prop, fullPropName);
-        propNameToProp.put(fullPropName, propName1);
-        minmax.put(prop, new int[] { min, max });
-        
-        if(!changable && !propNeedsRestart.contains(prop))
-        {
-        	propNeedsRestart.add(prop);
-        }
-        
-        ArrayList<Property> categoryList;
-        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
-        {
-        	categoryList = categories.get(catName);
-        }
-        else
-        {
-        	categoryList = new ArrayList<Property>();
-        	categories.put(catName != null ? catName : "uncat", categoryList);
-        }
-        if(!categoryList.contains(prop))
-        {
-        	categoryList.add(prop);
-        }
-        
-        if(!setup)
-        {
-        	config.save();
-        }
-	}
-	
-	//TODO rename to just createIntProperty in 1.7.
-	public void createOrUpdateIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max)
+	public void createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max)
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -443,8 +374,7 @@ public class Config
         }
 	}
 	
-	//TODO rename to just createStringProperty in 1.7
-	public void createOrUpdateStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value)
+	public void createStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value)
 	{
         Property prop;
         if(props.containsKey(propName1))

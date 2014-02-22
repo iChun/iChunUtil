@@ -1,24 +1,14 @@
 package ichun.core;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.List;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHalfSlab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
-import net.minecraft.entity.item.EntityPainting;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -28,10 +18,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class EntityHelperBase
 {
@@ -156,7 +148,7 @@ public class EntityHelperBase
 		Vec3 var4 = getPosition(ent, par3, midPoint);
 		Vec3 var5 = ent.getLook(par3);
 		Vec3 var6 = var4.addVector(var5.xCoord * distance, var5.yCoord * distance, var5.zCoord * distance);
-		return ent.worldObj.clip(var4, var6);
+		return ent.worldObj.func_147447_a(var4, var6, false, false, true);
 	}
 
 	public static MovingObjectPosition rayTrace(World world, Vec3 vec3d, Vec3 vec3d1, boolean flag, boolean flag1, boolean goThroughTransparentBlocks)
@@ -182,11 +174,10 @@ public class EntityHelperBase
 		int l = MathHelper.floor_double(vec3d.xCoord);
 		int i1 = MathHelper.floor_double(vec3d.yCoord);
 		int j1 = MathHelper.floor_double(vec3d.zCoord);
-		int k1 = world.getBlockId(l, i1, j1);
 		int i2 = world.getBlockMetadata(l, i1, j1);
-		Block block = Block.blocksList[k1];
+		Block block = world.getBlock(l, i1, j1);
 
-		if ((!flag1 || block == null || block.getCollisionBoundingBoxFromPool(world, l, i1, j1) != null) && k1 > 0 && block.canCollideCheck(i2, flag))
+		if ((!flag1 || block.getCollisionBoundingBoxFromPool(world, l, i1, j1) != null) && block.canCollideCheck(i2, flag))
 		{
 			MovingObjectPosition movingobjectposition = block.collisionRayTrace(world, l, i1, j1, vec3d, vec3d1);
 
@@ -349,17 +340,16 @@ public class EntityHelperBase
 				vec3d2.zCoord++;
 			}
 
-			int j2 = world.getBlockId(l, i1, j1);
+            Block block1 = world.getBlock(l, i1, j1);
 
-			if (goThroughTransparentBlocks && isTransparent(j2))
+            if (goThroughTransparentBlocks && isTransparent(block1))
 			{
 				continue;
 			}
 
 			int k2 = world.getBlockMetadata(l, i1, j1);
-			Block block1 = Block.blocksList[j2];
 
-			if ((!flag1 || block1 == null || block1.getCollisionBoundingBoxFromPool(world, l, i1, j1) != null) && j2 > 0 && block1.canCollideCheck(k2, flag))
+			if ((!flag1 || block1.getCollisionBoundingBoxFromPool(world, l, i1, j1) != null) && block1.canCollideCheck(k2, flag))
 			{
 				MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(world, l, i1, j1, vec3d, vec3d1);
 
@@ -373,7 +363,7 @@ public class EntityHelperBase
 		return null;
 	}
 
-	public static boolean hasFuel(InventoryPlayer inventory, int itemID, int damage, int amount)
+	public static boolean hasFuel(InventoryPlayer inventory, Item item, int damage, int amount)
 	{
 		if (amount <= 0)
 		{
@@ -384,7 +374,7 @@ public class EntityHelperBase
 
 		for (int var3 = 0; var3 < inventory.mainInventory.length; ++var3)
 		{
-			if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].itemID == itemID && inventory.mainInventory[var3].getItemDamage() == damage)
+			if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].getItem() == item && inventory.mainInventory[var3].getItemDamage() == damage)
 			{
 				amountFound += inventory.mainInventory[var3].stackSize;
 
@@ -398,9 +388,9 @@ public class EntityHelperBase
 		return false;
 	}
 
-	public static boolean isTransparent(int i)
+	public static boolean isTransparent(Block block)
 	{
-		return Block.lightOpacity[i] != 0xff;
+		return block.getLightOpacity() != 0xff;
 	}
 
 	public static boolean isLookingAtMoon(World world, EntityLivingBase ent, float renderTick, boolean goThroughTransparentBlocks)
@@ -474,7 +464,7 @@ public class EntityHelperBase
 								return (yawCheck && pitchCheck && mopCheck);
 	}
 
-	public static boolean consumeInventoryItem(InventoryPlayer inventory, int itemID, int damage, int amount)
+	public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item, int damage, int amount)
 	{
 		if (amount <= 0)
 		{
@@ -485,7 +475,7 @@ public class EntityHelperBase
 
 		for (int var3 = 0; var3 < inventory.mainInventory.length; ++var3)
 		{
-			if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].itemID == itemID && inventory.mainInventory[var3].getItemDamage() == damage)
+			if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].getItem() == item && inventory.mainInventory[var3].getItemDamage() == damage)
 			{
 				amountFound += inventory.mainInventory[var3].stackSize;
 
@@ -500,7 +490,7 @@ public class EntityHelperBase
 		{
 			for (int var3 = 0; var3 < inventory.mainInventory.length; ++var3)
 			{
-				if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].itemID == itemID && inventory.mainInventory[var3].getItemDamage() == damage)
+				if (inventory.mainInventory[var3] != null && inventory.mainInventory[var3].getItem() == item && inventory.mainInventory[var3].getItemDamage() == damage)
 				{
 					while (amount > 0 && inventory.mainInventory[var3] != null && inventory.mainInventory[var3].stackSize > 0)
 					{
@@ -714,8 +704,7 @@ public class EntityHelperBase
 			{
 				for (int i2 = k; i2 <= j1; ++i2)
 				{
-					int j2 = ent.worldObj.getBlockId(k1, l1, i2);
-					Block block = Block.blocksList[j2];
+					Block block = ent.worldObj.getBlock(k1, l1, i2);
 
 					if (block != null)
 					{

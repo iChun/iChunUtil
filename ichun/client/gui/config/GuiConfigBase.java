@@ -1,14 +1,13 @@
 package ichun.client.gui.config;
 
 import ichun.core.config.Config;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraftforge.client.GuiControlsScrollPanel;
 
+//TODO make sure this GUI still works properly.
 public class GuiConfigBase extends GuiControls 
 {
 	
@@ -17,8 +16,9 @@ public class GuiConfigBase extends GuiControls
 	public GameSettings gameSets;
 	
 	private Config config;
-	
-	public GuiConfigBase(GuiScreen parentScreen, GameSettings gameSettings, Config cfg) 
+    private GuiButton selectedBtn;
+
+    public GuiConfigBase(GuiScreen parentScreen, GameSettings gameSettings, Config cfg)
 	{
 		super(parentScreen, gameSettings);
 		gameSets = gameSettings;
@@ -28,9 +28,9 @@ public class GuiConfigBase extends GuiControls
 	@Override
     public void initGui()
     {
-    	screenTitle = config != null ? config.modName : "Other Options";
+    	field_146495_a = config != null ? config.modName : "Other Options";
 
-    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.getString("gui.done")));
+    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done", new Object[0])));
         
         scrollPane = new GuiConfigBaseScroll(this, config, mc);
         scrollPane.registerScrollButtons(7, 8);
@@ -42,7 +42,7 @@ public class GuiConfigBase extends GuiControls
     {
         this.drawDefaultBackground();
         scrollPane.drawScreen(par1, par2, par3);
-        drawCenteredString(fontRenderer, screenTitle, width / 2, 4, 0xffffff);
+        drawCenteredString(fontRendererObj, field_146495_a, width / 2, 4, 0xffffff);
 
         for (int k = 0; k < this.buttonList.size(); ++k)
         {
@@ -64,4 +64,34 @@ public class GuiConfigBase extends GuiControls
 
         }
     }
+
+    @Override
+    protected void mouseClicked(int par1, int par2, int par3)
+    {
+        if (par3 == 0)
+        {
+            for (int l = 0; l < this.buttonList.size(); ++l)
+            {
+                GuiButton guibutton = (GuiButton)this.buttonList.get(l);
+
+                if (guibutton.mousePressed(this.mc, par1, par2))
+                {
+                    this.selectedBtn = guibutton;
+                    guibutton.func_146113_a(this.mc.getSoundHandler());
+                    this.actionPerformed(guibutton);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void mouseMovedOrUp(int p_146286_1_, int p_146286_2_, int p_146286_3_)
+    {
+        if (this.selectedBtn != null && p_146286_3_ == 0)
+        {
+            this.selectedBtn.mouseReleased(p_146286_1_, p_146286_2_);
+            this.selectedBtn = null;
+        }
+    }
+
 }

@@ -1,17 +1,6 @@
 package ichun.client.gui.config;
 
 import ichun.core.config.Config;
-import ichun.core.config.ConfigHandler;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiSlot;
@@ -19,13 +8,12 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.common.Property.Type;
-
+import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.config.Property.Type;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import java.util.*;
 
 public class GuiConfigSetterScroll extends GuiSlot
 {
@@ -79,7 +67,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     }
 
     @Override
-    protected void elementClicked(int i, boolean flag)
+    protected void elementClicked(int i, boolean flag, int mouseX, int mouseY)
     {
         if (!flag)
         {
@@ -400,7 +388,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     }
 
     @Override
-    protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator)
+    protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator, int mouseX, int mouseY)
     {
     	if(index >= getSize())
     	{

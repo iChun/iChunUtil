@@ -1,21 +1,15 @@
 package ichun.client.gui.config;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import ichun.core.config.Config;
 import ichun.core.config.ConfigHandler;
-
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class GuiConfigBaseScroll extends GuiSlot
 {
@@ -43,7 +37,7 @@ public class GuiConfigBaseScroll extends GuiSlot
     }
 
     @Override
-    protected void elementClicked(int i, boolean flag)
+    protected void elementClicked(int i, boolean flag, int mouseX, int mouseY)
     {
         if (!flag)
         {
@@ -53,7 +47,7 @@ public class GuiConfigBaseScroll extends GuiSlot
         		Config cfg = ConfigHandler.configs.get(i);
         		if(!cfg.categories.isEmpty())
         		{
-        			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
         			FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(controls, controls.gameSets, cfg));
         			return;
         		}
@@ -66,7 +60,7 @@ public class GuiConfigBaseScroll extends GuiSlot
         	{
         		if(config.categoriesList.size() > 0)
         		{
-            		mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
         			FMLClientHandler.instance().showGuiScreen(new GuiConfigSetter(controls, controls.gameSets, config, config.categoriesList.get(i), config.categories.get(config.categoriesList.get(i))));
         		}
         		else
@@ -97,7 +91,7 @@ public class GuiConfigBaseScroll extends GuiSlot
     }
 
     @Override
-    protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator)
+    protected void drawSlot(int index, int xPosition, int yPosition, int l, Tessellator tessellator, int mouseX, int mouseY)
     {
         int width = 150;
         int height = 20;
