@@ -1,11 +1,11 @@
 package ichun.core.config;
 
 import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Logger;
 
 public class ConfigHandler
 {

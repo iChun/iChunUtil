@@ -5,6 +5,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.gui.config.GuiConfigBase;
 import ichun.client.gui.config.GuiConfigSetter;
+import ichun.core.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiOptions;
@@ -21,7 +22,7 @@ public class TickHandlerClient
     {
         if(event.phase == TickEvent.Phase.END)
         {
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiOptions && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigBase) && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigSetter))
+            if(!ConfigHandler.configs.isEmpty() && Minecraft.getMinecraft().currentScreen instanceof GuiOptions && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigBase) && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigSetter))
             {
                 GuiOptions gui = (GuiOptions)Minecraft.getMinecraft().currentScreen;
                 String s = "Hit O to view more options";

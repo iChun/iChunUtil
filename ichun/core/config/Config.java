@@ -4,14 +4,14 @@ package ichun.core.config;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Config 
 	implements Comparable
@@ -73,7 +73,7 @@ public class Config
 			unfound.add(s);
 			if(logger != null)
 			{
-				logger.log(Level.WARNING, "Tried to reference unknown property: " + s);
+				logger.log(Level.WARN, "Tried to reference unknown property: " + s);
 			}
 		}
 		return props.get(s);
@@ -91,7 +91,7 @@ public class Config
 			else if(logger != null && !unfound.contains(s))
 			{
 				unfound.add(s);
-				logger.log(Level.WARNING, "Tried to reference non-int property as int: " + s);
+				logger.log(Level.WARN, "Tried to reference non-int property as int: " + s);
 			}
 		}
 		return -2;
@@ -109,7 +109,7 @@ public class Config
 			else if(logger != null && !unfound.contains(s))
 			{
 				unfound.add(s);
-				logger.log(Level.WARNING, "Tried to reference non-string property as string: " + s);
+				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
 			}
 		}
 		return "";
@@ -161,7 +161,7 @@ public class Config
 			else if(logger != null && !unfound.contains(s))
 			{
 				unfound.add(s);
-				logger.log(Level.WARNING, "Tried to reference non-string property as string: " + s);
+				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
 			}
 		}
 		return new ArrayList<Integer>();
@@ -179,7 +179,7 @@ public class Config
 			else if(logger != null && !unfound.contains(s))
 			{
 				unfound.add(s);
-				logger.log(Level.WARNING, "Tried to reference non-string property as string: " + s);
+				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
 			}
 		}
 		return new LinkedHashMap<Integer, ArrayList<Integer>>();
@@ -204,7 +204,7 @@ public class Config
 				{
 					if(logger != null)
 					{
-						logger.log(Level.WARNING, "Could not parse following as int: " + splits);
+						logger.log(Level.WARN, "Could not parse following as int: " + splits);
 					}
 					e.printStackTrace();
 				}
@@ -245,7 +245,7 @@ public class Config
 								{
 									if(logger != null)
 									{
-										logger.log(Level.WARNING, "Could not parse following as (nested) int: " + split1[i]);
+										logger.log(Level.WARN, "Could not parse following as (nested) int: " + split1[i]);
 									}
 									e.printStackTrace();
 								}
@@ -257,7 +257,7 @@ public class Config
 					{
 						if(logger != null)
 						{
-							logger.log(Level.WARNING, "Could not parse following as int: " + split1[0]);
+							logger.log(Level.WARN, "Could not parse following as int: " + split1[0]);
 						}
 						e.printStackTrace();
 					};
