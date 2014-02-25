@@ -16,9 +16,13 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
 {
     public final String channel;
 
-    public ChannelHandler(String s)
+    public ChannelHandler(String s, Class<? extends AbstractPacket>...packetTypes)
     {
         channel = s;
+        for(int i = 0; i < packetTypes.length; i++)
+        {
+            addDiscriminator(i, packetTypes[i]);
+        }
     }
 
     @Override
