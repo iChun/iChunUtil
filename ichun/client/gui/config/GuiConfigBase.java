@@ -30,7 +30,7 @@ public class GuiConfigBase extends GuiControls
     {
     	field_146495_a = config != null ? config.modName : "Other Options";
 
-    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done", new Object[0])));
+    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done")));
         
         scrollPane = new GuiConfigBaseScroll(this, config, mc);
         scrollPane.registerScrollButtons(7, 8);

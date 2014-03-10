@@ -4,7 +4,7 @@ import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.EnumMap;
 
@@ -16,7 +16,7 @@ public class PacketHandler
         channels.get(Side.SERVER).writeAndFlush(packet);
     }
 
-    public static void sendToPlayer(EnumMap<Side, FMLEmbeddedChannel> channels, AbstractPacket packet, EntityPlayerMP player)
+    public static void sendToPlayer(EnumMap<Side, FMLEmbeddedChannel> channels, AbstractPacket packet, EntityPlayer player)
     {
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
         channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);

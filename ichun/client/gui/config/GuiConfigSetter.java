@@ -41,7 +41,7 @@ public class GuiConfigSetter extends GuiControls
 	@Override
     public void initGui()
     {
-    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done", new Object[0])));
+    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done")));
         
         scrollPane = new GuiConfigSetterScroll(this, config, properties, mc);
         scrollPane.registerScrollButtons(7, 8);

@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
+//TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client. Done: BackTools
 public class TickHandlerClient
 {
 

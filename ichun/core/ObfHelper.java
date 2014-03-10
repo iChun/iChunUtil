@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
+//TODO change the obf fields to be the last checked
 public class ObfHelper
 {
     public static boolean obfuscation;
