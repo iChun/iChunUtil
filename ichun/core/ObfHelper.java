@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 //TODO change the obf fields to be the last checked
+//TODO check usages of these fields. Some probably aren't used anymore.
 public class ObfHelper
 {
     public static boolean obfuscation;
