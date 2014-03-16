@@ -57,20 +57,14 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     {
         Side side = FMLCommonHandler.instance().getEffectiveSide();
         EntityPlayer player = null;
-        switch(side)
+        if(side.isServer())
         {
-            case CLIENT:
-            {
-                player = this.getClientPlayer();
-                break;
-            }
-            case SERVER:
-            {
-                INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-                player = ((NetHandlerPlayServer) netHandler).playerEntity;
-                break;
-            }
-            default:
+            INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+            player = ((NetHandlerPlayServer) netHandler).playerEntity;
+        }
+        else
+        {
+            player = this.getClientPlayer();
         }
         try
         {
