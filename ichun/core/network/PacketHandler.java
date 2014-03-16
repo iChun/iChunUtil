@@ -1,5 +1,6 @@
 package ichun.core.network;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -41,5 +42,20 @@ public class PacketHandler
     {
         channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
         channels.get(Side.CLIENT).writeAndFlush(packet);
+    }
+
+    public static void sendToAllExcept(EnumMap<Side, FMLEmbeddedChannel> channels, AbstractPacket packet, EntityPlayer player)
+    {
+        for(int i = 0; i < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); i++)
+        {
+            EntityPlayer player1 = (EntityPlayer)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(i);
+
+            if(player.getCommandSenderName().equalsIgnoreCase(player1.getCommandSenderName()))
+            {
+                continue;
+            }
+
+            PacketHandler.sendToPlayer(channels, packet, player1);
+        }
     }
 }

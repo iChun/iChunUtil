@@ -5,12 +5,16 @@ import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.core.iChunUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPacket>
 {
@@ -19,8 +23,17 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     public ChannelHandler(String s, Class<? extends AbstractPacket>...packetTypes)
     {
         channel = s;
+        ArrayList<Class<? extends AbstractPacket>> list = new ArrayList<Class<? extends AbstractPacket>>();
         for(int i = 0; i < packetTypes.length; i++)
         {
+            if(!list.contains(packetTypes[i]))
+            {
+                list.add(packetTypes[i]);
+            }
+            else
+            {
+                iChunUtil.console("Channel " + channel + " is reregistering packet types!", true);
+            }
             addDiscriminator(i, packetTypes[i]);
         }
     }
@@ -28,7 +41,15 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     @Override
     public void encodeInto(ChannelHandlerContext ctx, AbstractPacket msg, ByteBuf target) throws Exception
     {
-        msg.writeTo(target, FMLCommonHandler.instance().getEffectiveSide());
+        try
+        {
+            msg.writeTo(target, FMLCommonHandler.instance().getEffectiveSide());
+        }
+        catch(Exception e)
+        {
+            iChunUtil.console("Error writing to packet for channel: " + channel);
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,7 +72,15 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             }
             default:
         }
-        msg.readFrom(source, side, player);
+        try
+        {
+            msg.readFrom(source, side, player);
+        }
+        catch(Exception e)
+        {
+            iChunUtil.console("Error reading to packet for channel: " + channel);
+            e.printStackTrace();
+        }
     }
 
     @SideOnly(Side.CLIENT)
