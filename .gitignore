@@ -1,7 +1,12 @@
 *.class
+*.iml
+
+#gradle stuff
+/.gradle
+/build/
+/run/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 

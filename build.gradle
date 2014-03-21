@@ -1,0 +1,108 @@
+/*
+ * Morph
+ * Master build file
+ * Based on Mantle's master build file
+ * Authors: Sunstrike, ProgWML6
+ * Help from AbrarSyed
+ */
+
+buildscript {
+    repositories {
+        mavenCentral()
+		mavenLocal()
+        maven {
+            name = 'ForgeFS'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+		maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+
+	}
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
+    }
+}
+
+repositories {
+	mavenLocal()
+	maven {
+          name 'ForgeFS'
+          url 'http://files.minecraftforge.net/maven'
+     }
+}
+
+
+apply plugin: 'forge'
+group = 'ichun'
+
+// define the properties file which contains version #'s of dependencies, MC, etc.
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    // read config.  it shall from now on be referenced as simply config or as project.config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+ext.artifact_version_override = 'NotUsed'
+
+version = "${config.minecraft_version}-${config.mod_version}"
+
+minecraft {
+    version = config.minecraft_version + "-" + config.forge_version
+    assetDir = 'run/assets'
+    replace '${version}', project.version
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDir 'resources'
+		}
+		java {
+            srcDir 'src'
+        }
+	}
+}
+processResources
+{
+        // replace stuff in text files, not binary ones.
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.info'
+                // replace version and MCVersion
+        expand 'version':project.version,'MCversion':config.minecraft_version
+    }
+        
+        // copy everything else, thats not text
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.info'
+    }
+}
+
+// because the normal output has been made to be obfuscated
+task deobfJar(type: Jar) {
+        from sourceSets.main.output
+        classifier = 'deobf'
+}
+artifacts {
+        archives deobfJar
+}
+
+//used by progwml6's jenkins to deploy jar's to the maven repo for other mods to build against
+task("uploadJars", dependsOn:"build") {
+    
+    description = "uploads JARs"
+
+    if (project.hasProperty("local_maven")) {
+	    apply plugin: 'maven'
+            uploadArchives {
+                repositories {
+                    mavenDeployer {
+                        repository(url: "file://${local_maven}")
+                }
+            }
+        }
+    }
+}
