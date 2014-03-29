@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.core.TickHandlerClient;
 import ichun.core.config.Config;
 import ichun.core.config.ConfigHandler;
+import ichun.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;

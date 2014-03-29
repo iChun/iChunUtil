@@ -1,4 +1,4 @@
-package ichun.core;
+package ichun.core.util;
 
 import java.io.File;
 

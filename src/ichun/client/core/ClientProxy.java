@@ -1,7 +1,7 @@
 package ichun.client.core;
 
 import ichun.core.CommonProxy;
-import ichun.core.ResourceHelper;
+import ichun.core.util.ResourceHelper;
 
 public class ClientProxy extends CommonProxy 
 {

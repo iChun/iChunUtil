@@ -1,8 +1,9 @@
-package ichun.core;
+package ichun.core.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import ichun.core.iChunUtil;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;

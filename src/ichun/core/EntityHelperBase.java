@@ -2,9 +2,12 @@ package ichun.core;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.core.util.ObfHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -514,7 +517,7 @@ public class EntityHelperBase
 		return false;
 	}
 
-	public static void forceJump(EntityLivingBase ent)
+    public static void forceJump(EntityLivingBase ent)
 	{
 		try
 		{
@@ -732,42 +735,6 @@ public class EntityHelperBase
 		return flag;
 	}
 
-	/**
-     * Reads a compressed NBTTagCompound from the InputStream
-     */
-    public static NBTTagCompound readNBTTagCompound(DataInput par0DataInput) throws IOException
-    {
-        short short1 = par0DataInput.readShort();
-
-        if (short1 < 0)
-        {
-            return null;
-        }
-        else
-        {
-            byte[] abyte = new byte[short1];
-            par0DataInput.readFully(abyte);
-            return CompressedStreamTools.decompress(abyte);
-        }
-    }
-
-    /**
-     * Writes a compressed NBTTagCompound to the OutputStream
-     */
-    public static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException
-    {
-        if (par0NBTTagCompound == null)
-        {
-            par1DataOutput.writeShort(-1);
-        }
-        else
-        {
-            byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
-            par1DataOutput.writeShort((short)abyte.length);
-            par1DataOutput.write(abyte);
-        }
-    }
-
 	public static void addPosition(Entity living, double offset, boolean subtract, int axis)
 	{
 	    if (axis == 0) //X axis
@@ -817,4 +784,14 @@ public class EntityHelperBase
 	    }
 	}
 
+    @SideOnly(Side.CLIENT)
+    public static Render getEntityClassRenderObject(Class par1Class)
+    {
+        Render render = (Render)RenderManager.instance.entityRenderMap.get(par1Class);
+        if (render == null && par1Class != Entity.class)
+        {
+            render = getEntityClassRenderObject(par1Class.getSuperclass());
+        }
+        return render;
+    }
 }
