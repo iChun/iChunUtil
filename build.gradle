@@ -46,3 +46,18 @@ processResources
 jar.doFirst {
     version = project.minecraft.version + version;
 }
+
+// add source jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+// deobf jars
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+// make sure all of these happen when we run build
+build.dependsOn sourceJar, deobfJar
