@@ -21,6 +21,8 @@ version = "3.5.0"
 group= "ichun" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "iChunUtil"
 
+jar.archiveName = archivesBaseName + version + ".jar"
+
 minecraft {
     version = "1.7.2-10.12.0.1041"
     assetDir = "eclipse/assets"
@@ -30,7 +32,6 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-		include 'pack.mcmeta'
                 
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
@@ -39,10 +40,6 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-		exclude 'pack.mcmeta'
     }
 }
 
-jar.doFirst {
-    version = project.minecraft.version + version;
-}

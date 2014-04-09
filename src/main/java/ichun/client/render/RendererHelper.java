@@ -3,6 +3,7 @@ package ichun.client.render;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -125,4 +126,23 @@ public class RendererHelper
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
+
+    public static void startGlScissor(int x, int y, int width, int height)//From top left corner, like how Minecraft guis are. Don't forget to call endGlScissor after rendering
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+
+        double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
+        double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
+
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
+        GL11.glScissor((int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH)), (int)Math.floor((double)(x + width) * scaleW) - (int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)y * scaleH)) - (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH))); //starts from lower left corner (minecraft starts from upper left)
+    }
+
+    public static void endGlScissor()
+    {
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
 }

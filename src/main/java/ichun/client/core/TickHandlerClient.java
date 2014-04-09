@@ -5,14 +5,17 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.gui.config.GuiConfigBase;
 import ichun.client.gui.config.GuiConfigSetter;
+import ichun.client.render.RendererHelper;
 import ichun.core.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiOptions;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 //TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client. Done: BackTools
 public class TickHandlerClient
@@ -23,20 +26,75 @@ public class TickHandlerClient
     {
         if(event.phase == TickEvent.Phase.END)
         {
-            if(!ConfigHandler.configs.isEmpty() && Minecraft.getMinecraft().currentScreen instanceof GuiOptions && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigBase) && !(Minecraft.getMinecraft().currentScreen instanceof GuiConfigSetter))
+            Minecraft mc = Minecraft.getMinecraft();
+            if(!ConfigHandler.configs.isEmpty() && mc.currentScreen instanceof GuiOptions && !(mc.currentScreen instanceof GuiConfigBase) && !(mc.currentScreen instanceof GuiConfigSetter))
             {
-                GuiOptions gui = (GuiOptions)Minecraft.getMinecraft().currentScreen;
+                GuiOptions gui = (GuiOptions)mc.currentScreen;
                 String s = "Hit O to view more options";
-                gui.drawString(Minecraft.getMinecraft().fontRenderer, s, gui.width - Minecraft.getMinecraft().fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
+                gui.drawString(mc.fontRenderer, s, gui.width - mc.fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
 
                 //TODO see if this keybind can be replaced.
                 if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
                 {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, Minecraft.getMinecraft().gameSettings, null));
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, mc.gameSettings, null));
                 }
 
                 optionsKeyDown = Keyboard.isKeyDown(Keyboard.KEY_O);
+            }
+            if(mc.theWorld != null)
+            {
+                /******************/
+
+                                //Basic stencil test
+//                                ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+//
+//                                GL11.glEnable(GL11.GL_STENCIL_TEST);
+//
+//                                GL11.glColorMask(false, false, false, false);
+//                                GL11.glDepthMask(false);
+//
+//                                GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
+//                                GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+//
+//                                GL11.glStencilMask(0xFF);
+//                                GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+//
+//                                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, 60, 60, 0);
+//
+//                                GL11.glColorMask(true, true, true, true);
+//                                GL11.glDepthMask(true);
+//
+//                                GL11.glStencilMask(0x00);
+//
+//                                GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
+//
+//                                GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+//
+//                                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
+//
+//                                GL11.glDisable(GL11.GL_STENCIL_TEST);
+
+
+                /******************/
+
+                // Basic scissor test
+
+//                ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+//
+//                RendererHelper.startGlScissor(reso1.getScaledWidth() / 2 - 50, reso1.getScaledHeight() / 2 - 50, 100, 100);
+//
+//                GL11.glPushMatrix();
+//
+//                GL11.glTranslatef(-15F, 15F, 0F);
+//
+//                RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
+//
+//                GL11.glPopMatrix();;
+//
+//                RendererHelper.endGlScissor();
+
+                /*****************/
             }
         }
     }
