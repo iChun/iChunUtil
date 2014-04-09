@@ -1,6 +1,6 @@
 package ichun.client.gui.config;
 
-import ichun.core.config.Config;
+import ichun.common.core.config.Config;
 
 import java.util.ArrayList;
 import java.util.Iterator;

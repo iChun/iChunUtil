@@ -1,6 +1,6 @@
 package ichun.client.gui.config;
 
-import ichun.core.config.Config;
+import ichun.common.core.config.Config;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiScreen;

@@ -1,4 +1,4 @@
-package ichun.core;
+package ichun.common;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -11,9 +11,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.core.TickHandlerClient;
-import ichun.core.config.Config;
-import ichun.core.config.ConfigHandler;
-import ichun.core.util.ObfHelper;
+import ichun.common.core.CommonProxy;
+import ichun.common.core.config.Config;
+import ichun.common.core.config.ConfigHandler;
+import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
@@ -37,7 +38,7 @@ public class iChunUtil
     @Instance("iChunUtil")
     public static iChunUtil instance;
     
-	@SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.core.CommonProxy")
+	@SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.common.core.CommonProxy")
 	public static CommonProxy proxy;
     
     public static TickHandlerClient tickHandlerClient;

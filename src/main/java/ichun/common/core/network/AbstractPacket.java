@@ -1,4 +1,4 @@
-package ichun.core.network;
+package ichun.common.core.network;
 
 import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;

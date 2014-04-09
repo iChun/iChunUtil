@@ -1,6 +1,6 @@
 package ichun.client.model;
 
-import ichun.core.util.ObfHelper;
+import ichun.common.core.util.ObfHelper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

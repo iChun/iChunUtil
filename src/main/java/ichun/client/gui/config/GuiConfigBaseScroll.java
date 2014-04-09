@@ -1,8 +1,8 @@
 package ichun.client.gui.config;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import ichun.core.config.Config;
-import ichun.core.config.ConfigHandler;
+import ichun.common.core.config.Config;
+import ichun.common.core.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;

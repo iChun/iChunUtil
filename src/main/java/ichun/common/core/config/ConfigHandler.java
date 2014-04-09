@@ -1,4 +1,4 @@
-package ichun.core.config;
+package ichun.common.core.config;
 
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.Logger;

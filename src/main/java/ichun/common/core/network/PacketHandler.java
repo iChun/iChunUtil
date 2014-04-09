@@ -1,4 +1,4 @@
-package ichun.core.network;
+package ichun.common.core.network;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;

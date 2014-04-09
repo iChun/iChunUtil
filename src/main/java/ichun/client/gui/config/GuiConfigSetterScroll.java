@@ -1,6 +1,6 @@
 package ichun.client.gui.config;
 
-import ichun.core.config.Config;
+import ichun.common.core.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiSlot;
@@ -48,7 +48,7 @@ public class GuiConfigSetterScroll extends GuiSlot
         textDummy = new GuiTextField(Minecraft.getMinecraft().fontRenderer, controls.width, controls.height, 150, 20);
         textDummy.setVisible(false);
         textDummy.setMaxStringLength(7);
-        
+
         propNames = new ArrayList<String>();
         
         for(Property p : properties)
@@ -102,7 +102,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     		else
     		{
     	        textDummy.setMaxStringLength(7);
-    			
+
     			intArrayList.clear();
     			nestedIntArrayList.clear();
     			

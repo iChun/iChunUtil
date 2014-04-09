@@ -1,4 +1,4 @@
-package ichun.core.util;
+package ichun.common.core.util;
 
 /*
  * Taken from http://www.rgagnon.com/javadetails/java-0416.html
@@ -6,7 +6,7 @@ package ichun.core.util;
  * Modified for use. Thanks!
  */
 
-import ichun.core.iChunUtil;
+import ichun.common.iChunUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
