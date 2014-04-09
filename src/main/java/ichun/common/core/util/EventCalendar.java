@@ -1,14 +1,14 @@
-package ichun.common.core;
+package ichun.common.core.util;
 
 import java.util.Calendar;
 
 public class EventCalendar
 {
-    public static boolean isNewYear; //1/1
-    public static boolean isPgBirthday; //9/3
-    public static boolean isAFDay; //1/4
-    public static boolean isHalloween; //31/10
-    public static boolean isChristmas; //25/12
+    private static boolean isNewYear; //1/1
+    private static boolean isPgBirthday; //9/3
+    private static boolean isAFDay; //1/4
+    private static boolean isHalloween; //31/10
+    private static boolean isChristmas; //25/12
 
     public static void checkDate()
     {
@@ -58,5 +58,30 @@ public class EventCalendar
                 break;
             }
         }
+    }
+
+    public static boolean isNewYear()
+    {
+        return isNewYear;
+    }
+
+    public static boolean isPgBirthday()
+    {
+        return isPgBirthday;
+    }
+
+    public static boolean isAFDay()
+    {
+        return isAFDay;
+    }
+
+    public static boolean isHalloween()
+    {
+        return isHalloween;
+    }
+
+    public static boolean isChristmas()
+    {
+        return isChristmas;
     }
 }

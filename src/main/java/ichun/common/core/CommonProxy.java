@@ -1,6 +1,8 @@
 package ichun.common.core;
 
-public class CommonProxy 
+import ichun.common.core.util.EventCalendar;
+
+public class CommonProxy
 {
 	public void init()
     {
