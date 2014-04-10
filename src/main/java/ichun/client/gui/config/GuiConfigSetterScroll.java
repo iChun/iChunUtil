@@ -31,7 +31,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     private int intArraySlots = 0;
     private String selectedText;
 	public byte blinker;
-	private GuiTextField textDummy;
+	public GuiTextField textDummy;
 	private boolean needRestart;
 	private ArrayList<Integer> intArrayList = new ArrayList<Integer>();
 	private LinkedHashMap<Integer, ArrayList<Integer>> nestedIntArrayList = new LinkedHashMap<Integer, ArrayList<Integer>>();
@@ -45,9 +45,9 @@ public class GuiConfigSetterScroll extends GuiSlot
         this.properties = props;
         blinker = 0;
         selectedText = "";
-        textDummy = new GuiTextField(Minecraft.getMinecraft().fontRenderer, controls.width, controls.height, 150, 20);
-        textDummy.setVisible(false);
-        textDummy.setMaxStringLength(7);
+        textDummy = new GuiTextField(Minecraft.getMinecraft().fontRenderer, 3, 6, 45, 20);
+        textDummy.setEnableBackgroundDrawing(false);
+        textDummy.setMaxStringLength(80);
 
         propNames = new ArrayList<String>();
         
@@ -97,12 +97,9 @@ public class GuiConfigSetterScroll extends GuiSlot
     		if(isIntArraySlot)
     		{
     			selectedText = "";
-    			textDummy.setMaxStringLength(6);
     		}
     		else
     		{
-    	        textDummy.setMaxStringLength(7);
-
     			intArrayList.clear();
     			nestedIntArrayList.clear();
     			
@@ -394,6 +391,10 @@ public class GuiConfigSetterScroll extends GuiSlot
     	{
     		return;
     	}
+        //If you're reading this, I know this GUI is bad and I should feel bad.. I'm sorry :( -iChun
+        String textDummyString = textDummy.getText();
+        int textDummyCursorPosition = textDummy.getCursorPosition();
+
         int width = 200;
         int height = 20;
         xPosition += 8;
@@ -453,9 +454,36 @@ public class GuiConfigSetterScroll extends GuiSlot
 	        
 	        if(selected == index)
 	        {
-	        	String value = (selectedText.equals("") || isValidValue(prop, selectedText) ? EnumChatFormatting.YELLOW : EnumChatFormatting.RED) + selectedText + (blinker > 8 ? "_" : "");
-	        	
-	        	controls.drawString(mc.fontRenderer, value, xPosition + width - 42, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+	        	String value = selectedText + (blinker > 8 ? "_" : "");
+
+                textDummy.setEnabled(true);
+                textDummy.setText(value);
+                if(selected == index)
+                {
+                    if(selectedText.equals("") || isValidValue(prop, selectedText))
+                    {
+                        textDummy.setTextColor(16777045);
+                    }
+                    else
+                    {
+                        textDummy.setTextColor(16733525);
+                    }
+                }
+                else
+                {
+                    textDummy.setTextColor(16777215);
+                    textDummy.setCursorPosition(0);
+                }
+
+                GL11.glPushMatrix();
+                GL11.glTranslatef(xPosition + width - 45, yPosition, 0F);
+                textDummy.drawTextBox();
+
+                textDummy.setEnabled(false);
+
+                GL11.glPopMatrix();
+
+//                controls.drawString(mc.fontRenderer, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
 	        }
         }
         else
@@ -468,9 +496,36 @@ public class GuiConfigSetterScroll extends GuiSlot
     	        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
     	        Gui.drawRect(xPosition + width - 50 + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, -16777216);
     	        
-    	        String value = (selected == index ? isValidValue(prop, selectedText) ? EnumChatFormatting.YELLOW : EnumChatFormatting.RED : "") + (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : "");
-    	        
-    	        controls.drawString(mc.fontRenderer, value, xPosition + width - 47, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+    	        String value = (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : " ");
+//                String value = (selected == index ? isValidValue(prop, selectedText) ? EnumChatFormatting.YELLOW : EnumChatFormatting.RED : EnumChatFormatting.WHITE) + (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : "");
+
+                textDummy.setEnabled(true);
+                textDummy.setText(value);
+                if(selected == index)
+                {
+                    if(isValidValue(prop, selectedText))
+                    {
+                        textDummy.setTextColor(16777045);
+                    }
+                    else
+                    {
+                        textDummy.setTextColor(16733525);
+                    }
+                }
+                else
+                {
+                    textDummy.setTextColor(16777215);
+                    textDummy.setCursorPosition(0);
+                }
+
+                GL11.glPushMatrix();
+                GL11.glTranslatef(xPosition + width - 50, yPosition, 0F);
+                textDummy.drawTextBox();
+
+                textDummy.setEnabled(false);
+
+                GL11.glPopMatrix();
+//    	        controls.drawString(mc.fontRenderer, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
             }
             else
             {
@@ -509,6 +564,9 @@ public class GuiConfigSetterScroll extends GuiSlot
     	        controls.drawTooltip(tooltip, xPosition + width, 35);
             }
         }
+
+        textDummy.setText(textDummyString);
+        textDummy.setCursorPosition(textDummyCursorPosition);
         
         if(needRestart)
         {

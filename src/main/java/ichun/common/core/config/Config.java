@@ -317,6 +317,9 @@ public class Config
 		return new HashMap<Integer, ArrayList<Integer>>();
 	}
 
+
+    //TODO createKeybindHook with SHIFT/ALT/CTRL support andd repeated presses (pulses) support
+    //TODO createBooleanIntProperty
 	public void createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max)
 	{
         Property prop;
