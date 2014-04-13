@@ -41,8 +41,6 @@ public class iChunUtil
 	@SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.common.core.CommonProxy")
 	public static CommonProxy proxy;
     
-    public static TickHandlerClient tickHandlerClient;
-    
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
@@ -51,12 +49,6 @@ public class iChunUtil
         proxy.init();
         
         MinecraftForge.EVENT_BUS.register(this);
-        
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-        	tickHandlerClient = new TickHandlerClient();
-        	FMLCommonHandler.instance().bus().register(tickHandlerClient);
-        }
     }
 
     @EventHandler
@@ -80,7 +72,7 @@ public class iChunUtil
 	{
 		if(event.map.getTextureType() == 0)
 		{
-			tickHandlerClient.iconRegister = event.map;
+			proxy.tickHandlerClient.iconRegister = event.map;
 		}
 	}
 

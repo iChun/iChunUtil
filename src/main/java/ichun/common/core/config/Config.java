@@ -1,6 +1,9 @@
 package ichun.common.core.config;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import ichun.client.keybind.KeyBind;
+import ichun.common.iChunUtil;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
@@ -424,8 +427,107 @@ public class Config
         	config.save();
         }
 	}
-	
-	public void createIntArrayProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
+
+    public void createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, boolean pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
+    {
+        Property prop;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(keyValue);
+
+        if(holdShift)
+        {
+            sb.append(":SHIFT");
+        }
+        if(holdCtrl)
+        {
+            sb.append(":CTRL");
+        }
+        if(holdAlt)
+        {
+            sb.append(":ALT");
+        }
+
+        if(props.containsKey(propName1))
+        {
+            prop = props.get(propName1);
+            prop.set(sb.toString());
+        }
+        else
+        {
+            config.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.");
+            prop = config.get("keybinds", propName1, sb.toString());
+
+            if(prop.getString() != sb.toString())
+            {
+                String[] strings = prop.getString().split(":");
+                if(strings.length == 0)
+                {
+                    iChunUtil.console("Invalid keybind for mod " + modName + ": " + fullPropName, true);
+                    prop.set(sb.toString());
+                }
+                else
+                {
+                    try
+                    {
+                        Integer.parseInt(strings[0]);
+                    }
+                    catch(NumberFormatException e)
+                    {
+                        iChunUtil.console("Invalid key for mod " + modName + ": " + fullPropName, true);
+                        prop.set(sb.toString());
+                    }
+                }
+            }
+        }
+
+        if (!comment.equalsIgnoreCase(""))
+        {
+            prop.comment = comment;
+        }
+
+        props.put(propName1, prop);
+        propName.put(prop, fullPropName);
+        propNameToProp.put(fullPropName, propName1);
+
+        ArrayList<Property> categoryList;
+        if(categories.containsKey("Key Binds"))
+        {
+            categoryList = categories.get("Key Binds");
+        }
+        else
+        {
+            categoryList = new ArrayList<Property>();
+            categories.put("Key Binds", categoryList);
+        }
+        if(!categoryList.contains(prop))
+        {
+            categoryList.add(prop);
+        }
+
+        String keyString = prop.getString();
+        String[] strings = keyString.split(":");
+        KeyBind bind;
+        try
+        {
+            bind = new KeyBind(Integer.parseInt(strings[0]), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
+        }
+        catch(Exception e)
+        {
+            iChunUtil.console("Error parsing key for mod " + modName + ": " + fullPropName, true);
+            bind = new KeyBind(keyValue, holdShift, holdCtrl, holdAlt);
+        }
+
+        iChunUtil.proxy.registerKeyBind(bind);
+
+        if(!setup)
+        {
+            config.save();
+        }
+    }
+
+    public void createIntArrayProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
 	{
         Property prop;
         if(props.containsKey(propName1))

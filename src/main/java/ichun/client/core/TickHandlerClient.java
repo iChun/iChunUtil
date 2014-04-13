@@ -5,6 +5,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import ichun.client.gui.config.GuiConfigBase;
 import ichun.client.gui.config.GuiConfigSetter;
+import ichun.client.keybind.KeyBind;
 import ichun.common.core.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -13,6 +14,8 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
 
 //TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client. Done: BackTools
 public class TickHandlerClient
@@ -114,6 +117,11 @@ public class TickHandlerClient
 
     public void worldTick(Minecraft mc, WorldClient world)
     {
+        for(KeyBind bind : keyBindList)
+        {
+            bind.tick();
+        }
+
     	if(worldInstance != world)
     	{
     		worldInstance = world;
@@ -163,4 +171,6 @@ public class TickHandlerClient
     public IIconRegister iconRegister;
     
     public boolean optionsKeyDown;
+
+    public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
 }
