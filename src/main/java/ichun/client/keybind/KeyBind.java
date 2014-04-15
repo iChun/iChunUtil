@@ -1,5 +1,7 @@
 package ichun.client.keybind;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -91,6 +93,7 @@ public class KeyBind
         return false;
     }
 
+    @SideOnly(Side.CLIENT)
     public static boolean isPressed(int key)
     {
         if(key < 0)

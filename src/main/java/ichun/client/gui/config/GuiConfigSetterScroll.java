@@ -1,18 +1,24 @@
 package ichun.client.gui.config;
 
+import ichun.client.keybind.KeyBind;
 import ichun.common.core.config.Config;
+import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.security.Key;
 import java.util.*;
 
 public class GuiConfigSetterScroll extends GuiSlot
@@ -33,6 +39,12 @@ public class GuiConfigSetterScroll extends GuiSlot
 	public byte blinker;
 	public GuiTextField textDummy;
 	private boolean needRestart;
+
+    private boolean settingKeybind;
+    private boolean releasedMouse;
+    private int lastKeyHeld;
+    private int keyHeldTime;
+
 	private ArrayList<Integer> intArrayList = new ArrayList<Integer>();
 	private LinkedHashMap<Integer, ArrayList<Integer>> nestedIntArrayList = new LinkedHashMap<Integer, ArrayList<Integer>>();
 
@@ -58,6 +70,11 @@ public class GuiConfigSetterScroll extends GuiSlot
         Collections.sort(propNames);
         
         needRestart = false;
+        settingKeybind = false;
+        releasedMouse = false;
+
+        lastKeyHeld = 0;
+        keyHeldTime = 0;
     }
 
     @Override
@@ -69,9 +86,13 @@ public class GuiConfigSetterScroll extends GuiSlot
     @Override
     protected void elementClicked(int i, boolean flag, int mouseX, int mouseY)
     {
+        if(settingKeybind)
+        {
+            return;
+        }
         if (!flag)
         {
-        	if(selected != -1)
+        	if(selected != -1) //update property
         	{
                 boolean selectedIntArraySlot = selectedIntArrayProp != -1 && selected > selectedIntArrayProp && selected <= selectedIntArrayProp + intArraySlots;
                 Property prop;
@@ -131,6 +152,13 @@ public class GuiConfigSetterScroll extends GuiSlot
             	}
             	else
             	{
+                    if(config.keyBindList.contains(prop))
+                    {
+                        settingKeybind = true;
+                        releasedMouse = false;
+                        keyHeldTime = 0;
+                    }
+
             		selected = selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i;
             		intArraySlots = 0;
             		selectedIntArrayProp = -1;
@@ -336,6 +364,28 @@ public class GuiConfigSetterScroll extends GuiSlot
 	        	}
 	        	prop.set(sb.toString());
     		}
+            else if(config.keyBindList.contains(prop))
+            {
+                KeyBind oriKeyBind = config.keyBindMap.get(prop);
+
+                String keyString = s;
+                String[] strings = keyString.split(":");
+                KeyBind bind;
+                try
+                {
+                    bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
+                }
+                catch(Exception e)
+                {
+                    iChunUtil.console("Error parsing key, this shouldn't happen: " + keyString, true);
+                    e.printStackTrace();
+                    bind = oriKeyBind;
+                }
+
+                config.keyBindMap.put(prop, iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
+
+                prop.set(s);
+            }
     		else
     		{
     			prop.set(s);
@@ -376,6 +426,55 @@ public class GuiConfigSetterScroll extends GuiSlot
         _mouseY = mY;
 
         super.drawScreen(mX, mY, f);
+
+        if(settingKeybind)
+        {
+            if(!releasedMouse)
+            {
+                releasedMouse = !Mouse.isButtonDown(0);
+            }
+            else
+            {
+                for(int i = 0; i < 16; i++)
+                {
+                    if(Mouse.isButtonDown(i))
+                    {
+                        if(Minecraft.isRunningOnMac && i == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)))
+                        {
+                            i = 1;
+                        }
+
+                        Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
+                        if(config.keyBindList.contains(prop))
+                        {
+                            StringBuilder sb = new StringBuilder();
+
+                            sb.append(i - 100);
+
+                            if(GuiScreen.isShiftKeyDown())
+                            {
+                                sb.append(":SHIFT");
+                            }
+                            if(GuiScreen.isCtrlKeyDown())
+                            {
+                                sb.append(":CTRL");
+                            }
+                            if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
+                            {
+                                sb.append(":ALT");
+                            }
+
+                            updateProperty(prop, sb.toString());
+
+                            settingKeybind = false;
+                            selected = -1;
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     @Override
@@ -490,7 +589,7 @@ public class GuiConfigSetterScroll extends GuiSlot
         {
         	Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index)));
         
-            if(!config.intArrayList.contains(prop) && !config.nestedIntArrayList.contains(prop))
+            if(!config.intArrayList.contains(prop) && !config.nestedIntArrayList.contains(prop) && !config.keyBindList.contains(prop))
             {
                 //draw fake text box
     	        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
@@ -526,6 +625,61 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                 GL11.glPopMatrix();
 //    	        controls.drawString(mc.fontRenderer, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+            }
+            else if(config.keyBindList.contains(prop))
+            {
+                int clr = 14737632;
+
+                if (k == 2)
+                {
+                    clr = 16777120;
+
+                    ArrayList<String> tooltip = new ArrayList<String>();
+                    tooltip.add("These key binds allow a combination of Shift/Ctrl/Alt");
+                    tooltip.add("");
+                    tooltip.add("Try holding those down when setting a key bind");
+                    tooltip.add("");
+                    tooltip.add("If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.");
+                    controls.drawTooltip(tooltip, 0, 35);
+
+                    mc.renderEngine.bindTexture(WIDGITS);
+                }
+
+                controls.drawTexturedModalRect(xPosition + width - 70, yPosition, 0, 46 + k * 20, 35, height);
+                controls.drawTexturedModalRect(xPosition + width - 35, yPosition, 200 - 35, 46 + k * 20, 35, height);
+
+                String keyString = prop.getString();
+                String[] strings = keyString.split(":");
+
+                int key = 0;
+                if(strings.length > 0)
+                {
+                    key = Integer.parseInt(strings[0].trim());
+                }
+
+                controls.drawCenteredString(mc.fontRenderer, settingKeybind && selected == index ? ">???<" : GameSettings.getKeyDisplayString(key), xPosition + width - 35, yPosition + (height - 8) / 2, selected == index ? 16777045 : clr);
+
+                GL11.glPushMatrix();
+
+                GL11.glScalef(0.5F, 0.5F, 0.5F);
+                if(keyString.contains("SHIFT") || settingKeybind && selected == index)
+                {
+                    controls.drawString(mc.fontRenderer, "Shift", (xPosition + width - 70) * 2 - 6 - 18, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isShiftKeyDown() ? 16777045 : -6250336 : clr);
+                    GL11.glTranslatef(0.0F, 14F, 0.0F);
+                }
+
+                if(keyString.contains("CTRL") || settingKeybind && selected == index)
+                {
+                    controls.drawString(mc.fontRenderer, "Ctrl", (xPosition + width - 70) * 2 - 6 - 14, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isCtrlKeyDown() ? 16777045 : -6250336 : clr);
+                    GL11.glTranslatef(0.0F, 14F, 0.0F);
+                }
+
+                if(keyString.contains("ALT") || settingKeybind && selected == index)
+                {
+                    controls.drawString(mc.fontRenderer, "Alt", (xPosition + width - 70) * 2 - 6 - 8, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) ? 16777045 : -6250336 : clr);
+                }
+
+                GL11.glPopMatrix();
             }
             else
             {
@@ -582,6 +736,43 @@ public class GuiConfigSetterScroll extends GuiSlot
 
     public boolean keyTyped(char c, int i)
     {
+        if(settingKeybind)
+        {
+            Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
+            if(config.keyBindList.contains(prop))
+            {
+                if(i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU)
+                {
+                    lastKeyHeld = i;
+                    keyHeldTime = 0;
+                }
+                else
+                {
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.append(i);
+
+                    if(GuiScreen.isShiftKeyDown())
+                    {
+                        sb.append(":SHIFT");
+                    }
+                    if(GuiScreen.isCtrlKeyDown())
+                    {
+                        sb.append(":CTRL");
+                    }
+                    if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
+                    {
+                        sb.append(":ALT");
+                    }
+
+                    updateProperty(prop, sb.toString());
+
+                    settingKeybind = false;
+                    selected = -1;
+                }
+            }
+            return true;
+        }
     	if(selected != -1)
     	{
     		if(i == Keyboard.KEY_RETURN)
@@ -698,5 +889,51 @@ public class GuiConfigSetterScroll extends GuiSlot
     		}
     	}
         return true;
+    }
+
+    public void tick()
+    {
+        blinker++;
+        if(blinker >= 16)
+        {
+            blinker = 0;
+        }
+
+        if(settingKeybind)
+        {
+            if(GuiScreen.isShiftKeyDown() || GuiScreen.isCtrlKeyDown() || (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
+            {
+                keyHeldTime++;
+                if(keyHeldTime >= 60)
+                {
+                    keyHeldTime = 0;
+                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
+                    if(config.keyBindList.contains(prop))
+                    {
+                        StringBuilder sb = new StringBuilder();
+
+                        sb.append(lastKeyHeld);
+
+                        if(GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT))
+                        {
+                            sb.append(":SHIFT");
+                        }
+                        if(GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)))
+                        {
+                            sb.append(":CTRL");
+                        }
+                        if((Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) && !(lastKeyHeld == 56 || lastKeyHeld == 184))
+                        {
+                            sb.append(":ALT");
+                        }
+
+                        updateProperty(prop, sb.toString());
+
+                        settingKeybind = false;
+                        selected = -1;
+                    }
+                }
+            }
+        }
     }
 }

@@ -37,6 +37,9 @@ public class Config
 	
 	public ArrayList<Property> intArrayList = new ArrayList<Property>();
 	public ArrayList<Property> nestedIntArrayList = new ArrayList<Property>();
+
+    public ArrayList<Property> keyBindList = new ArrayList<Property>();
+    public HashMap<Property, KeyBind> keyBindMap = new HashMap<Property, KeyBind>();
 	
 	public ArrayList<Property> propNeedsRestart = new ArrayList<Property>();
 	public ArrayList<String> unfound = new ArrayList<String>();
@@ -320,8 +323,6 @@ public class Config
 		return new HashMap<Integer, ArrayList<Integer>>();
 	}
 
-
-    //TODO createKeybindHook with SHIFT/ALT/CTRL support andd repeated presses (pulses) support
     //TODO createBooleanIntProperty
 	public void createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max)
 	{
@@ -428,7 +429,7 @@ public class Config
         }
 	}
 
-    public void createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, boolean pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
+    public void createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
     {
         Property prop;
 
@@ -456,7 +457,7 @@ public class Config
         }
         else
         {
-            config.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.");
+            config.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either \":SHIFT\", \":CTRL\", or \":ALT\" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes\nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.");
             prop = config.get("keybinds", propName1, sb.toString());
 
             if(prop.getString() != sb.toString())
@@ -471,7 +472,7 @@ public class Config
                 {
                     try
                     {
-                        Integer.parseInt(strings[0]);
+                        Integer.parseInt(strings[0].trim());
                     }
                     catch(NumberFormatException e)
                     {
@@ -490,6 +491,10 @@ public class Config
         props.put(propName1, prop);
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
+        if(!keyBindList.contains(prop))
+        {
+            keyBindList.add(prop);
+        }
 
         ArrayList<Property> categoryList;
         if(categories.containsKey("Key Binds"))
@@ -511,7 +516,7 @@ public class Config
         KeyBind bind;
         try
         {
-            bind = new KeyBind(Integer.parseInt(strings[0]), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
+            bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
         }
         catch(Exception e)
         {
@@ -519,7 +524,9 @@ public class Config
             bind = new KeyBind(keyValue, holdShift, holdCtrl, holdAlt);
         }
 
-        iChunUtil.proxy.registerKeyBind(bind);
+        bind.setPulse(canPulse, pulseTime);
+
+        keyBindMap.put(prop, iChunUtil.proxy.registerKeyBind(bind, null));
 
         if(!setup)
         {

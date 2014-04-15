@@ -23,22 +23,38 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void registerKeyBind(KeyBind bind)
+    public KeyBind registerKeyBind(KeyBind bind, KeyBind replacing)
     {
-        boolean used = false;
+        if(replacing != null)
+        {
+            if(bind.equals(replacing))
+            {
+                return replacing;
+            }
+            for(int i = tickHandlerClient.keyBindList.size() - 1; i >= 0; i--)
+            {
+                KeyBind keybind = tickHandlerClient.keyBindList.get(i);
+                if(keybind.equals(replacing))
+                {
+                    keybind.usages--;
+                    if(keybind.usages <= 0)
+                    {
+                        tickHandlerClient.keyBindList.remove(i);
+                    }
+                }
+            }
+        }
+
         for(KeyBind keybind : tickHandlerClient.keyBindList)//Check to see if the keybind is already registered. If it is, increase usages count. If not, add it.
         {
             if(keybind.equals(bind))
             {
                 keybind.usages++;
-                used = true;
-                break;
+                return keybind;
             }
         }
-        if(!used)
-        {
-            bind.usages++;
-            tickHandlerClient.keyBindList.add(bind);
-        }
+        bind.usages++;
+        tickHandlerClient.keyBindList.add(bind);
+        return bind;
     }
 }

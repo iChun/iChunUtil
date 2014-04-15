@@ -16,5 +16,5 @@ public class CommonProxy
     }
 
     @SideOnly(Side.CLIENT)
-    public void registerKeyBind(KeyBind bind) {}
+    public KeyBind registerKeyBind(KeyBind bind, KeyBind replacing) { return bind; }
 }

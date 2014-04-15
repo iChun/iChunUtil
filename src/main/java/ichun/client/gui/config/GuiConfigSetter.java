@@ -51,11 +51,7 @@ public class GuiConfigSetter extends GuiControls
 	@Override
     public void updateScreen()
     {
-		scrollPane.blinker++;
-		if(scrollPane.blinker >= 16)
-		{
-			scrollPane.blinker = 0;
-		}
+        scrollPane.tick();
     }
 	
 	@Override
