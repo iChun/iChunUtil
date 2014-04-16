@@ -35,10 +35,8 @@ public class Config
 	public HashMap<String, ArrayList<Property>> categories = new HashMap<String, ArrayList<Property>>();
 	public ArrayList<String> categoriesList = new ArrayList<String>();
 	
-	public ArrayList<Property> intArrayList = new ArrayList<Property>();
-	public ArrayList<Property> nestedIntArrayList = new ArrayList<Property>();
+    public HashMap<Property, EnumPropType> propType = new HashMap<Property, EnumPropType>();
 
-    public ArrayList<Property> keyBindList = new ArrayList<Property>();
     public HashMap<Property, KeyBind> keyBindMap = new HashMap<Property, KeyBind>();
 	
 	public ArrayList<Property> propNeedsRestart = new ArrayList<Property>();
@@ -354,6 +352,8 @@ public class Config
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
         minmax.put(prop, new int[] { min, max });
+
+        propType.put(prop, EnumPropType.INT);
         
         if(!changable && !propNeedsRestart.contains(prop))
         {
@@ -402,7 +402,9 @@ public class Config
         props.put(propName1, prop);
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
-        
+
+        propType.put(prop, EnumPropType.STRING);
+
         if(!changable && !propNeedsRestart.contains(prop))
         {
         	propNeedsRestart.add(prop);
@@ -491,10 +493,8 @@ public class Config
         props.put(propName1, prop);
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
-        if(!keyBindList.contains(prop))
-        {
-            keyBindList.add(prop);
-        }
+
+        propType.put(prop, EnumPropType.KEYBIND);
 
         ArrayList<Property> categoryList;
         if(categories.containsKey("Key Binds"))
@@ -555,20 +555,16 @@ public class Config
         props.put(propName1, prop);
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
+
+
         
         if(nestedIntArray)
         {
-	        if(!nestedIntArrayList.contains(prop))
-	        {
-	        	nestedIntArrayList.add(prop);
-	        }
+            propType.put(prop, EnumPropType.NESTED_INT_ARRAY);
         }
         else
         {
-	        if(!intArrayList.contains(prop))
-	        {
-	        	intArrayList.add(prop);
-	        }
+            propType.put(prop, EnumPropType.INT_ARRAY);
         }
         
         if(minMax == null || minMax.length != 2)
@@ -629,6 +625,17 @@ public class Config
 		Collections.sort(categoriesList);
 	}
 
+    public EnumPropType getPropType(Property prop)
+    {
+        EnumPropType type = propType.get(prop);
+        if(propType == null)
+        {
+            iChunUtil.console("Property has no type: " + prop.getName(), true);
+            return EnumPropType.UNDEFINED;
+        }
+        return type;
+    }
+
 	@Override
 	public int compareTo(Object arg0) 
 	{
@@ -639,4 +646,15 @@ public class Config
 		}
 		return 0;
 	}
+
+    public static enum EnumPropType
+    {
+        UNDEFINED,
+        STRING,
+        INT,
+        INT_BOOL,
+        INT_ARRAY,
+        NESTED_INT_ARRAY,
+        KEYBIND
+    }
 }

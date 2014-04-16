@@ -125,8 +125,8 @@ public class GuiConfigSetterScroll extends GuiSlot
     			nestedIntArrayList.clear();
     			
             	Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i)));
-            	
-            	if(config.nestedIntArrayList.contains(prop) || config.intArrayList.contains(prop))
+                Config.EnumPropType type = config.getPropType(prop);
+            	if(type == Config.EnumPropType.INT_ARRAY || type == Config.EnumPropType.NESTED_INT_ARRAY)
             	{
             		if((selectedIntArrayProp != -1 && i > selectedIntArrayProp ? i - intArraySlots : i) > selectedIntArrayProp)
             		{
@@ -136,10 +136,10 @@ public class GuiConfigSetterScroll extends GuiSlot
             		{
             			selected = selectedIntArrayProp = i;
             		}
-            		
+
             		String value = prop.getString();
-            		
-            		if(config.nestedIntArrayList.contains(prop))
+
+            		if(type == Config.EnumPropType.NESTED_INT_ARRAY)
             		{
             			nestedIntArrayList = config.parseNestedIntArray(value);
             			intArraySlots = nestedIntArrayList.size() + 1;
@@ -152,7 +152,7 @@ public class GuiConfigSetterScroll extends GuiSlot
             	}
             	else
             	{
-                    if(config.keyBindList.contains(prop))
+                    if(type == Config.EnumPropType.KEYBIND)
                     {
                         settingKeybind = true;
                         releasedMouse = false;
@@ -162,7 +162,7 @@ public class GuiConfigSetterScroll extends GuiSlot
             		selected = selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i;
             		intArraySlots = 0;
             		selectedIntArrayProp = -1;
-            		selectedText = (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString());    			
+            		selectedText = (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString());
             	}
     		}
     		textDummy.setText(selectedText);
@@ -172,199 +172,205 @@ public class GuiConfigSetterScroll extends GuiSlot
     
     public boolean isValidValue(Property prop, String s)
     {
-    	if(prop.getType() == Type.INTEGER)
-    	{
-    		try
-    		{
-    			int i = Integer.parseInt(s);
-    			int[] minmax = config.minmax.get(prop);
-    			if(!(i >= minmax[0] && i <= minmax[1]))
-    			{
-    				return false;
-    			}
-    			return true;
-    		}
-    		catch(NumberFormatException e)
-    		{
-    			return false;
-    		}
-    	}
-    	else if(prop.getType() == Type.STRING)
-    	{
-    		if(!config.nestedIntArrayList.contains(prop) && !config.intArrayList.contains(prop))
-    		{
-    			return true;    			
-    		}
-    		else
-    		{
-    			if(config.intArrayList.contains(prop))
-    			{
-    	    		try
-    	    		{
-    	    			int i = Integer.parseInt(s);
-    	    			int[] minmax = config.minmax.get(prop);
-    	    			if(!(i >= minmax[0] && i <= minmax[1]))
-    	    			{
-    	    				return false;
-    	    			}
-    	    			if(intArrayList.contains(Integer.parseInt(s)))
-    	    			{
-    	    				return false;
-    	    			}
-    	    			return true;
-    	    		}
-    	    		catch(NumberFormatException e)
-    	    		{
-    	    			return false;
-    	    		}
-    			}
-    			else
-    			{
-    				if(selected == selectedIntArrayProp + intArraySlots)
-    				{
-        	    		try
-        	    		{
-        	    			int i = Integer.parseInt(s);
-        	    			int[] minmax = config.minmax.get(prop);
-        	    			if(!(i >= minmax[0] && i <= minmax[1]))
-        	    			{
-        	    				return false;
-        	    			}
-        	    			if(nestedIntArrayList.containsKey(Integer.parseInt(s)))
-        	    			{
-        	    				return false;
-        	    			}
-        	    			return true;
-        	    		}
-        	    		catch(NumberFormatException e)
-        	    		{
-        	    			return false;
-        	    		}
-    				}
-    				else
-    				{
-        	    		try
-        	    		{
-        	    			int i = Integer.parseInt(s);
-        	    			int[] minmax = config.nestedMinmax.get(prop);
-        	    			if(!(i >= minmax[0] && i <= minmax[1]))
-        	    			{
-        	    				return false;
-        	    			}
-        	    			
-        		        	int m = 0;
-        		        	Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
-        		        	while(ite.hasNext())
-        		        	{
-        		        		Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
-        		        		m++;
-        		        		if(selected - selectedIntArrayProp == m)
-        		        		{
-        		        			if(e.getValue().contains(Integer.parseInt(s)))
-        		        			{
-        		        				return false;
-        		        			}
-        		        			break;
-        		        		}
-        		        	}
+        switch(config.getPropType(prop))
+        {
+            case INT_BOOL:
+            case INT:
+            {
+                try
+                {
+                    int i = Integer.parseInt(s);
+                    int[] minmax = config.minmax.get(prop);
+                    if(!(i >= minmax[0] && i <= minmax[1]))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                catch(NumberFormatException e)
+                {
+                    return false;
+                }
+            }
+            case KEYBIND:
+            case STRING:
+            {
+                return true;
+            }
+            case INT_ARRAY:
+            {
+                try
+                {
+                    int i = Integer.parseInt(s);
+                    int[] minmax = config.minmax.get(prop);
+                    if(!(i >= minmax[0] && i <= minmax[1]))
+                    {
+                        return false;
+                    }
+                    if(intArrayList.contains(Integer.parseInt(s)))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                catch(NumberFormatException e)
+                {
+                    return false;
+                }
+            }
+            case NESTED_INT_ARRAY:
+            {
+                if(selected == selectedIntArrayProp + intArraySlots)
+                {
+                    try
+                    {
+                        int i = Integer.parseInt(s);
+                        int[] minmax = config.minmax.get(prop);
+                        if(!(i >= minmax[0] && i <= minmax[1]))
+                        {
+                            return false;
+                        }
+                        if(nestedIntArrayList.containsKey(Integer.parseInt(s)))
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                    catch(NumberFormatException e)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        int i = Integer.parseInt(s);
+                        int[] minmax = config.nestedMinmax.get(prop);
+                        if(!(i >= minmax[0] && i <= minmax[1]))
+                        {
+                            return false;
+                        }
 
-        	    			return true;
-        	    		}
-        	    		catch(NumberFormatException e)
-        	    		{
-        	    			return false;
-        	    		}
-    				}
-    			}
-    		}
-    	}
-    	return false;
+                        int m = 0;
+                        Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
+                        while(ite.hasNext())
+                        {
+                            Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
+                            m++;
+                            if(selected - selectedIntArrayProp == m)
+                            {
+                                if(e.getValue().contains(Integer.parseInt(s)))
+                                {
+                                    return false;
+                                }
+                                break;
+                            }
+                        }
+
+                        return true;
+                    }
+                    catch(NumberFormatException e)
+                    {
+                        return false;
+                    }
+                }
+            }
+            default:
+            {
+                return false;
+            }
+        }
     }
     
     public boolean updateProperty(Property prop, String s)
     {
-    	if(prop.getType() == Type.INTEGER)
-    	{
-    		try
-    		{
-    			int i = Integer.parseInt(s);
-    			
-    			int _default = prop.getInt();
-    			
-    			int[] minmax = config.minmax.get(prop);
-    			if(!(i >= minmax[0] && i <= minmax[1]))
-    			{
-    				return false;
-    			}
+        String _default = prop.getString();
 
-    			prop.set(i);
-    			if(config.parent.onConfigChange(config, prop))
-    			{
-    				config.config.save();
-    				
-	    			if(config.propNeedsRestart.contains(prop))
-	    			{
-	    				needRestart = true;
-	    			}
-    			}
-    			else
-    			{
-    				prop.set(_default);
-    				return false;
-    			}
-    			return true;
-    		}
-    		catch(NumberFormatException e)
-    		{
-    			return false;
-    		}
-    	}
-    	else if(prop.getType() == Type.STRING)
-    	{
-    		String _default = prop.getString();
-    		
-    		if(config.intArrayList.contains(prop))
-    		{
-    			StringBuilder sb = new StringBuilder();
-    			
-	        	for(int i = 0; i < intArrayList.size(); i++)
-	        	{
-	        		sb.append(intArrayList.get(i));
-	        		if(i < intArrayList.size() - 1)
-	        		{
-	        			sb.append(", ");
-	        		}
-	        	}
-	        	prop.set(sb.toString());
-    		}
-    		else if(config.nestedIntArrayList.contains(prop))
-    		{
-    			StringBuilder sb = new StringBuilder();
-	        	int i = 0;
-	        	for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
-	        	{
-        			sb.append(e.getKey());
-        			for(int m = 0; m < e.getValue().size(); m++)
-        			{
-        				if(m == 0)
-        				{
-    	        			sb.append(": ");
-        				}
-    	        		sb.append(e.getValue().get(m));
-    	        		if(m < e.getValue().size() - 1)
-    	        		{
-    	        			sb.append(": ");
-    	        		}
-        			}
-        			if(i < nestedIntArrayList.size() - 1 || e.getValue().isEmpty() && i < nestedIntArrayList.size() - 1)
-        			{
-        				sb.append(", ");
-        			}
-        			i++;
-	        	}
-	        	prop.set(sb.toString());
-    		}
-            else if(config.keyBindList.contains(prop))
+        switch(config.getPropType(prop))
+        {
+            case INT_BOOL:
+            case INT:
+            {
+                try
+                {
+                    int i = Integer.parseInt(s);
+
+                    int[] minmax = config.minmax.get(prop);
+                    if(!(i >= minmax[0] && i <= minmax[1]))
+                    {
+                        return false;
+                    }
+
+                    prop.set(i);
+
+                    if(config.parent.onConfigChange(config, prop))
+                    {
+                        config.config.save();
+
+                        if(config.propNeedsRestart.contains(prop))
+                        {
+                            needRestart = true;
+                        }
+                    }
+                    else
+                    {
+                        prop.set(_default);
+                        return false;
+                    }
+                    return true;
+                }
+                catch(NumberFormatException e)
+                {
+                    return false;
+                }
+            }
+            case INT_ARRAY:
+            {
+                StringBuilder sb = new StringBuilder();
+
+                for(int i = 0; i < intArrayList.size(); i++)
+                {
+                    sb.append(intArrayList.get(i));
+                    if(i < intArrayList.size() - 1)
+                    {
+                        sb.append(", ");
+                    }
+                }
+                prop.set(sb.toString());
+
+                break;
+            }
+            case NESTED_INT_ARRAY:
+            {
+                StringBuilder sb = new StringBuilder();
+                int i = 0;
+                for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
+                {
+                    sb.append(e.getKey());
+                    for(int m = 0; m < e.getValue().size(); m++)
+                    {
+                        if(m == 0)
+                        {
+                            sb.append(": ");
+                        }
+                        sb.append(e.getValue().get(m));
+                        if(m < e.getValue().size() - 1)
+                        {
+                            sb.append(": ");
+                        }
+                    }
+                    if(i < nestedIntArrayList.size() - 1 || e.getValue().isEmpty() && i < nestedIntArrayList.size() - 1)
+                    {
+                        sb.append(", ");
+                    }
+                    i++;
+                }
+                prop.set(sb.toString());
+
+                break;
+            }
+            case KEYBIND:
             {
                 KeyBind oriKeyBind = config.keyBindMap.get(prop);
 
@@ -385,29 +391,36 @@ public class GuiConfigSetterScroll extends GuiSlot
                 config.keyBindMap.put(prop, iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
 
                 prop.set(s);
-            }
-    		else
-    		{
-    			prop.set(s);
-    		}
-    		
-    		if(config.parent.onConfigChange(config, prop))
-    		{
-    			config.config.save();
 
-    			if(config.propNeedsRestart.contains(prop))
-				{
-					needRestart = true;
-				}
-    		}
-    		else
-    		{
-    			prop.set(_default);
-    			return false;
-    		}
-    		return true;
-    	}
-    	return false;
+                break;
+            }
+            case STRING:
+            {
+                prop.set(s);
+
+                break;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+
+        if(config.parent.onConfigChange(config, prop))
+        {
+            config.config.save();
+
+            if(config.propNeedsRestart.contains(prop))
+            {
+                needRestart = true;
+            }
+        }
+        else
+        {
+            prop.set(_default);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -445,7 +458,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                         }
 
                         Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-                        if(config.keyBindList.contains(prop))
+                        if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
                         {
                             StringBuilder sb = new StringBuilder();
 
@@ -513,7 +526,7 @@ public class GuiConfigSetterScroll extends GuiSlot
 	        Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
 	        
 	        StringBuilder sb = new StringBuilder("> ");
-	        if(config.intArrayList.contains(prop))
+	        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
 	        {
 	        	for(int i = 0; i < intArrayList.size(); i++)
 	        	{
@@ -588,122 +601,132 @@ public class GuiConfigSetterScroll extends GuiSlot
         else
         {
         	Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index)));
-        
-            if(!config.intArrayList.contains(prop) && !config.nestedIntArrayList.contains(prop) && !config.keyBindList.contains(prop))
-            {
-                //draw fake text box
-    	        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
-    	        Gui.drawRect(xPosition + width - 50 + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, -16777216);
-    	        
-    	        String value = (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : " ");
-//                String value = (selected == index ? isValidValue(prop, selectedText) ? EnumChatFormatting.YELLOW : EnumChatFormatting.RED : EnumChatFormatting.WHITE) + (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : "");
 
-                textDummy.setEnabled(true);
-                textDummy.setText(value);
-                if(selected == index)
+            switch(config.getPropType(prop))
+            {
+                case KEYBIND:
                 {
-                    if(isValidValue(prop, selectedText))
+                    int clr = 14737632;
+
+                    if (k == 2)
                     {
-                        textDummy.setTextColor(16777045);
+                        clr = 16777120;
+
+                        ArrayList<String> tooltip = new ArrayList<String>();
+                        tooltip.add("These key binds allow a combination of Shift/Ctrl/Alt");
+                        tooltip.add("");
+                        tooltip.add("Try holding those down when setting a key bind");
+                        tooltip.add("");
+                        tooltip.add("If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.");
+                        controls.drawTooltip(tooltip, 0, 35);
+
+                        mc.renderEngine.bindTexture(WIDGITS);
+                    }
+
+                    controls.drawTexturedModalRect(xPosition + width - 70, yPosition, 0, 46 + k * 20, 35, height);
+                    controls.drawTexturedModalRect(xPosition + width - 35, yPosition, 200 - 35, 46 + k * 20, 35, height);
+
+                    String keyString = prop.getString();
+                    String[] strings = keyString.split(":");
+
+                    int key = 0;
+                    if(strings.length > 0)
+                    {
+                        key = Integer.parseInt(strings[0].trim());
+                    }
+
+                    controls.drawCenteredString(mc.fontRenderer, settingKeybind && selected == index ? ">???<" : GameSettings.getKeyDisplayString(key), xPosition + width - 35, yPosition + (height - 8) / 2, selected == index ? 16777045 : clr);
+
+                    GL11.glPushMatrix();
+
+                    GL11.glScalef(0.5F, 0.5F, 0.5F);
+                    if(keyString.contains("SHIFT") || settingKeybind && selected == index)
+                    {
+                        controls.drawString(mc.fontRenderer, "Shift", (xPosition + width - 70) * 2 - 6 - 18, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isShiftKeyDown() ? 16777045 : -6250336 : clr);
+                        GL11.glTranslatef(0.0F, 14F, 0.0F);
+                    }
+
+                    if(keyString.contains("CTRL") || settingKeybind && selected == index)
+                    {
+                        controls.drawString(mc.fontRenderer, "Ctrl", (xPosition + width - 70) * 2 - 6 - 14, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isCtrlKeyDown() ? 16777045 : -6250336 : clr);
+                        GL11.glTranslatef(0.0F, 14F, 0.0F);
+                    }
+
+                    if(keyString.contains("ALT") || settingKeybind && selected == index)
+                    {
+                        controls.drawString(mc.fontRenderer, "Alt", (xPosition + width - 70) * 2 - 6 - 8, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) ? 16777045 : -6250336 : clr);
+                    }
+
+                    GL11.glPopMatrix();
+
+                    break;
+                }
+                case INT_ARRAY:
+                case NESTED_INT_ARRAY:
+                {
+                    int clr = 14737632;
+
+                    int kk = k;
+
+                    if (selectedIntArrayProp == index)
+                    {
+                        clr = -6250336;
+                        kk = 0;
+                    }
+                    else if (k == 2)
+                    {
+                        clr = 16777120;
+                    }
+
+                    controls.drawTexturedModalRect(xPosition + width - 50, yPosition, 0, 46 + kk * 20, 25, height);
+                    controls.drawTexturedModalRect(xPosition + width - 25, yPosition, 200 - 25, 46 + kk * 20, 25, height);
+
+                    controls.drawCenteredString(mc.fontRenderer, selectedIntArrayProp == index ? "v" : ">>", xPosition + width - 25, yPosition + (height - 8) / 2, clr);
+
+                    break;
+                }
+                //TODO different case for INT_BOOL
+                default:
+                {
+                    //draw fake text box
+                    Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
+                    Gui.drawRect(xPosition + width - 50 + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, -16777216);
+
+                    String value = (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : " ");
+                    //                String value = (selected == index ? isValidValue(prop, selectedText) ? EnumChatFormatting.YELLOW : EnumChatFormatting.RED : EnumChatFormatting.WHITE) + (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : "");
+
+                    textDummy.setEnabled(true);
+                    textDummy.setText(value);
+                    if(selected == index)
+                    {
+                        if(isValidValue(prop, selectedText))
+                        {
+                            textDummy.setTextColor(16777045);
+                        }
+                        else
+                        {
+                            textDummy.setTextColor(16733525);
+                        }
                     }
                     else
                     {
-                        textDummy.setTextColor(16733525);
+                        textDummy.setTextColor(16777215);
+                        textDummy.setCursorPosition(0);
                     }
+
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef(xPosition + width - 50, yPosition, 0F);
+                    textDummy.drawTextBox();
+
+                    textDummy.setEnabled(false);
+
+                    GL11.glPopMatrix();
+                    //    	        controls.drawString(mc.fontRenderer, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+
+                    break;
                 }
-                else
-                {
-                    textDummy.setTextColor(16777215);
-                    textDummy.setCursorPosition(0);
-                }
-
-                GL11.glPushMatrix();
-                GL11.glTranslatef(xPosition + width - 50, yPosition, 0F);
-                textDummy.drawTextBox();
-
-                textDummy.setEnabled(false);
-
-                GL11.glPopMatrix();
-//    	        controls.drawString(mc.fontRenderer, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
             }
-            else if(config.keyBindList.contains(prop))
-            {
-                int clr = 14737632;
 
-                if (k == 2)
-                {
-                    clr = 16777120;
-
-                    ArrayList<String> tooltip = new ArrayList<String>();
-                    tooltip.add("These key binds allow a combination of Shift/Ctrl/Alt");
-                    tooltip.add("");
-                    tooltip.add("Try holding those down when setting a key bind");
-                    tooltip.add("");
-                    tooltip.add("If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.");
-                    controls.drawTooltip(tooltip, 0, 35);
-
-                    mc.renderEngine.bindTexture(WIDGITS);
-                }
-
-                controls.drawTexturedModalRect(xPosition + width - 70, yPosition, 0, 46 + k * 20, 35, height);
-                controls.drawTexturedModalRect(xPosition + width - 35, yPosition, 200 - 35, 46 + k * 20, 35, height);
-
-                String keyString = prop.getString();
-                String[] strings = keyString.split(":");
-
-                int key = 0;
-                if(strings.length > 0)
-                {
-                    key = Integer.parseInt(strings[0].trim());
-                }
-
-                controls.drawCenteredString(mc.fontRenderer, settingKeybind && selected == index ? ">???<" : GameSettings.getKeyDisplayString(key), xPosition + width - 35, yPosition + (height - 8) / 2, selected == index ? 16777045 : clr);
-
-                GL11.glPushMatrix();
-
-                GL11.glScalef(0.5F, 0.5F, 0.5F);
-                if(keyString.contains("SHIFT") || settingKeybind && selected == index)
-                {
-                    controls.drawString(mc.fontRenderer, "Shift", (xPosition + width - 70) * 2 - 6 - 18, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isShiftKeyDown() ? 16777045 : -6250336 : clr);
-                    GL11.glTranslatef(0.0F, 14F, 0.0F);
-                }
-
-                if(keyString.contains("CTRL") || settingKeybind && selected == index)
-                {
-                    controls.drawString(mc.fontRenderer, "Ctrl", (xPosition + width - 70) * 2 - 6 - 14, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isCtrlKeyDown() ? 16777045 : -6250336 : clr);
-                    GL11.glTranslatef(0.0F, 14F, 0.0F);
-                }
-
-                if(keyString.contains("ALT") || settingKeybind && selected == index)
-                {
-                    controls.drawString(mc.fontRenderer, "Alt", (xPosition + width - 70) * 2 - 6 - 8, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) ? 16777045 : -6250336 : clr);
-                }
-
-                GL11.glPopMatrix();
-            }
-            else
-            {
-            	//else, if int arrays.
-                int clr = 14737632;
-
-                int kk = k;
-                
-                if (selectedIntArrayProp == index)
-                {
-                    clr = -6250336;
-                    kk = 0;
-                }
-                else if (k == 2)
-                {
-                    clr = 16777120;
-                }
-                
-            	controls.drawTexturedModalRect(xPosition + width - 50, yPosition, 0, 46 + kk * 20, 25, height);
-            	controls.drawTexturedModalRect(xPosition + width - 25, yPosition, 200 - 25, 46 + kk * 20, 25, height);
-
-                controls.drawCenteredString(mc.fontRenderer, selectedIntArrayProp == index ? "v" : ">>", xPosition + width - 25, yPosition + (height - 8) / 2, clr);
-            }
-            
             String str = (k == 2 ? EnumChatFormatting.YELLOW : "") + (propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index));
             controls.drawString(mc.fontRenderer, str, xPosition, yPosition + (height - 8) / 2, 0xFFFFFFFF);
                         
@@ -739,7 +762,7 @@ public class GuiConfigSetterScroll extends GuiSlot
         if(settingKeybind)
         {
             Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-            if(config.keyBindList.contains(prop))
+            if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
             {
                 if(i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU)
                 {
@@ -784,7 +807,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     				Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
 	           		if(isValidValue(prop, selectedText))
 	           		{
-	    		        if(config.intArrayList.contains(prop))
+	    		        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
 	    		        {
 	    		        	intArrayList.add(Integer.parseInt(selectedText));
 	    		        }
@@ -839,7 +862,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     			if(selectedIntArrayProp != -1 && selectedText.equalsIgnoreCase("") && i == Keyboard.KEY_BACK)
     			{
     				Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
-    		        if(config.intArrayList.contains(prop))
+    		        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
     		        {
     		        	if(intArrayList.size() > 0)
     		        	{
@@ -908,7 +931,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                 {
                     keyHeldTime = 0;
                     Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-                    if(config.keyBindList.contains(prop))
+                    if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
                     {
                         StringBuilder sb = new StringBuilder();
 
