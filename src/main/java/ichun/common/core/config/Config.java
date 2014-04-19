@@ -321,7 +321,25 @@ public class Config
 		return new HashMap<Integer, ArrayList<Integer>>();
 	}
 
-	public int createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
+    private void addToCategory(String catName, Property prop)
+    {
+        ArrayList<Property> categoryList;
+        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
+        {
+            categoryList = categories.get(catName != null ? catName : "uncat");
+        }
+        else
+        {
+            categoryList = new ArrayList<Property>();
+            categories.put(catName != null ? catName : "uncat", categoryList);
+        }
+        if(!categoryList.contains(prop))
+        {
+            categoryList.add(prop);
+        }
+    }
+
+    public int createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -358,22 +376,9 @@ public class Config
         {
         	propNeedsRestart.add(prop);
         }
-        
-        ArrayList<Property> categoryList;
-        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
-        {
-        	categoryList = categories.get(catName);
-        }
-        else
-        {
-        	categoryList = new ArrayList<Property>();
-        	categories.put(catName != null ? catName : "uncat", categoryList);
-        }
-        if(!categoryList.contains(prop))
-        {
-        	categoryList.add(prop);
-        }
-        
+
+        addToCategory(catName, prop);
+
         if(!setup)
         {
         	config.save();
@@ -420,20 +425,7 @@ public class Config
             propNeedsRestart.add(prop);
         }
 
-        ArrayList<Property> categoryList;
-        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
-        {
-            categoryList = categories.get(catName);
-        }
-        else
-        {
-            categoryList = new ArrayList<Property>();
-            categories.put(catName != null ? catName : "uncat", categoryList);
-        }
-        if(!categoryList.contains(prop))
-        {
-            categoryList.add(prop);
-        }
+        addToCategory(catName, prop);
 
         if(!setup)
         {
@@ -441,6 +433,60 @@ public class Config
         }
 
         return prop.getInt();
+    }
+
+    public int createColourProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int colour) //returns the config val
+    {
+        Property prop;
+        if(props.containsKey(propName1))
+        {
+            prop = props.get(propName1);
+            prop.set("#" + Integer.toHexString(colour));
+        }
+        else
+        {
+            prop = config.get(cat, propName1, "#" + Integer.toHexString(colour));
+
+            try
+            {
+                Integer.decode(prop.getString().trim());
+            }
+            catch(NumberFormatException e)
+            {
+                if(logger != null)
+                {
+                    logger.log(Level.WARN, "Could not parse following as colour code, setting as default: " + prop.getString());
+                }
+                e.printStackTrace();
+
+                prop.set("#" + Integer.toHexString(colour));
+            }
+        }
+
+        if (!comment.equalsIgnoreCase(""))
+        {
+            prop.comment = comment;
+        }
+
+        props.put(propName1, prop);
+        propName.put(prop, fullPropName);
+        propNameToProp.put(fullPropName, propName1);
+
+        propType.put(prop, EnumPropType.COLOUR);
+
+        if(!changable && !propNeedsRestart.contains(prop))
+        {
+            propNeedsRestart.add(prop);
+        }
+
+        addToCategory(catName, prop);
+
+        if(!setup)
+        {
+            config.save();
+        }
+
+        return Integer.decode(prop.getString().trim());
     }
 
     public String createStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value) //returns the config val
@@ -471,21 +517,8 @@ public class Config
         {
         	propNeedsRestart.add(prop);
         }
-        
-        ArrayList<Property> categoryList;
-        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
-        {
-        	categoryList = categories.get(catName != null ? catName : "uncat");
-        }
-        else
-        {
-        	categoryList = new ArrayList<Property>();
-        	categories.put(catName != null ? catName : "uncat", categoryList);
-        }
-        if(!categoryList.contains(prop))
-        {
-        	categoryList.add(prop);
-        }
+
+        addToCategory(catName, prop);
 
         if(!setup)
         {
@@ -651,21 +684,8 @@ public class Config
         {
         	propNeedsRestart.add(prop);
         }
-        
-        ArrayList<Property> categoryList;
-        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
-        {
-        	categoryList = categories.get(catName != null ? catName : "uncat");
-        }
-        else
-        {
-        	categoryList = new ArrayList<Property>();
-        	categories.put(catName != null ? catName : "uncat", categoryList);
-        }
-        if(!categoryList.contains(prop))
-        {
-        	categoryList.add(prop);
-        }
+
+        addToCategory(catName, prop);
 
         if(!setup)
         {
@@ -721,6 +741,7 @@ public class Config
         INT_BOOL,
         INT_ARRAY,
         NESTED_INT_ARRAY,
-        KEYBIND
+        KEYBIND,
+        COLOUR//screw the american english system.
     }
 }

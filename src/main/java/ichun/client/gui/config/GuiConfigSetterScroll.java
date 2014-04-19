@@ -1,6 +1,7 @@
 package ichun.client.gui.config;
 
 import ichun.client.keybind.KeyBind;
+import ichun.client.render.RendererHelper;
 import ichun.common.core.config.Config;
 import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
@@ -181,6 +182,18 @@ public class GuiConfigSetterScroll extends GuiSlot
     {
         switch(config.getPropType(prop))
         {
+            case COLOUR:
+            {
+                try
+                {
+                    Integer.decode(s);
+                    return s.length() < 8;
+                }
+                catch(NumberFormatException e)
+                {
+                    return false;
+                }
+            }
             case INT_BOOL:
             case INT:
             {
@@ -401,6 +414,7 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                 break;
             }
+            case COLOUR:
             case STRING:
             {
                 prop.set(s);
@@ -709,11 +723,25 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     break;
                 }
-                //TODO different case for INT_BOOL
                 default:
                 {
                     //draw fake text box
-                    Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
+                    if(config.getPropType(prop) == Config.EnumPropType.COLOUR)
+                    {
+//                        System.out.println(config.getPropType(prop) == Config.EnumPropType.COLOUR ? selected == index && isValidValue(prop, selectedText) ? Integer.decode(selectedText) : Integer.decode(prop.getString()) : -6250336);
+//                        System.out.println(Integer.toHexString(-6250336));
+                    }
+
+//                    Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, config.getPropType(prop) == Config.EnumPropType.COLOUR ? selected == index && isValidValue(prop, selectedText) ? Integer.decode("0xff" + Integer.toHexString(Integer.decode(selectedText))) : Integer.decode(prop.getString()) : -6250336);
+                    if(config.getPropType(prop) == Config.EnumPropType.COLOUR)
+                    {
+                        RendererHelper.drawColourOnScreen(selected == index && isValidValue(prop, selectedText) ? Integer.decode(selectedText) : Integer.decode(prop.getString()), 255, xPosition + width - 50, yPosition, 50, height, 0.0D);
+//                        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
+                    }
+                    else
+                    {
+                        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
+                    }
                     Gui.drawRect(xPosition + width - 50 + 1, yPosition + 1, xPosition + width - 1, yPosition + height - 1, -16777216);
 
                     String value = (selected == index ? selectedText : (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString())) + (selected == index && blinker > 8 ? "_" : " ");
@@ -886,58 +914,73 @@ public class GuiConfigSetterScroll extends GuiSlot
     			}
     		}
     		else
-    		{
-    			if(selectedIntArrayProp != -1 && selectedText.equalsIgnoreCase("") && i == Keyboard.KEY_BACK)
-    			{
-    				Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
-    		        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
-    		        {
-    		        	if(intArrayList.size() > 0)
-    		        	{
-    		        		textDummy.setText(intArrayList.get(intArrayList.size() - 1).toString() + " ");
-    		        		intArrayList.remove(intArrayList.size() - 1);
-    		        		updateProperty(prop, selectedText);
-    		        	}
-    		        }
-    		        else
-    		        {
-    		        	if(nestedIntArrayList.size() > 0)
-    		        	{
-        		        	int m = 0;
-        		        	Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
-        		        	while(ite.hasNext())
-        		        	{
-        		        		Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
-        		        		m++;
-        		        		if(selected - selectedIntArrayProp == m)
-        		        		{
-        		        			if(e.getValue().size() > 0)
-        		        			{
-        		        				textDummy.setText(e.getValue().get(e.getValue().size() - 1).toString() + " ");
-        		        				e.getValue().remove(e.getValue().size() - 1);
-        		        			}
-        		        			else
-        		        			{
-        		        				textDummy.setText(e.getKey().toString() + " ");
-        		        				ite.remove();
-        		        				intArraySlots--;
-        		        			}
-        		        			updateProperty(prop, selectedText);
-        		        			break;
-        		        		}
-        		        	}
-    		        	}
-    		        }
-    			}
-    			textDummy.setCursorPositionEnd();
-    			textDummy.setEnabled(true);
-    			textDummy.setFocused(true);
-    			textDummy.textboxKeyTyped(c, i);
-    			textDummy.setEnabled(false);
-    			textDummy.setFocused(false);
-    			textDummy.setCursorPositionEnd();
-    			selectedText = textDummy.getText();
-    		}
+            {
+                if(selectedIntArrayProp != -1 && selectedText.equalsIgnoreCase("") && i == Keyboard.KEY_BACK)
+                {
+                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
+                    if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
+                    {
+                        if(intArrayList.size() > 0)
+                        {
+                            textDummy.setText(intArrayList.get(intArrayList.size() - 1).toString() + " ");
+                            intArrayList.remove(intArrayList.size() - 1);
+                            updateProperty(prop, selectedText);
+                        }
+                    }
+                    else
+                    {
+                        if(nestedIntArrayList.size() > 0)
+                        {
+                            int m = 0;
+                            Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
+                            while(ite.hasNext())
+                            {
+                                Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
+                                m++;
+                                if(selected - selectedIntArrayProp == m)
+                                {
+                                    if(e.getValue().size() > 0)
+                                    {
+                                        textDummy.setText(e.getValue().get(e.getValue().size() - 1).toString() + " ");
+                                        e.getValue().remove(e.getValue().size() - 1);
+                                    }
+                                    else
+                                    {
+                                        textDummy.setText(e.getKey().toString() + " ");
+                                        ite.remove();
+                                        intArraySlots--;
+                                    }
+                                    updateProperty(prop, selectedText);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                textDummy.setCursorPositionEnd();
+                textDummy.setEnabled(true);
+                textDummy.setFocused(true);
+                textDummy.textboxKeyTyped(c, i);
+                textDummy.setEnabled(false);
+                textDummy.setFocused(false);
+                textDummy.setCursorPositionEnd();
+                selectedText = textDummy.getText();
+
+                boolean isIntArraySlot = selectedIntArrayProp != -1 && selected > selectedIntArrayProp && selected <= selectedIntArrayProp + intArraySlots;
+
+                if(!isIntArraySlot)
+                {
+                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
+                    if(config.getPropType(prop) == Config.EnumPropType.COLOUR)
+                    {
+                        if(selectedText.isEmpty())
+                        {
+                            selectedText = "#";
+                            textDummy.setText("#");
+                        }
+                    }
+                }
+            }
     	}
         return true;
     }
