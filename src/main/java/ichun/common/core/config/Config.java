@@ -321,8 +321,7 @@ public class Config
 		return new HashMap<Integer, ArrayList<Integer>>();
 	}
 
-    //TODO createBooleanIntProperty
-	public void createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max)
+	public int createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -379,9 +378,72 @@ public class Config
         {
         	config.save();
         }
+
+        return prop.getInt();
 	}
-	
-	public void createStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value)
+
+    public int createIntBoolProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean flag) //returns the config property
+    {
+        Property prop;
+        if(props.containsKey(propName1))
+        {
+            prop = props.get(propName1);
+            prop.set(flag ? 1 : 0);
+        }
+        else
+        {
+            prop = config.get(cat, propName1, flag ? 1 : 0);
+            if(prop.getInt() > 1)
+            {
+                prop.set(1);
+            }
+            if(prop.getInt() < 0)
+            {
+                prop.set(0);
+            }
+        }
+
+        if (!comment.equalsIgnoreCase(""))
+        {
+            prop.comment = comment + "\n\nMin: 0\nMax: 1";
+        }
+
+        props.put(propName1, prop);
+        propName.put(prop, fullPropName);
+        propNameToProp.put(fullPropName, propName1);
+        minmax.put(prop, new int[] { 0, 1 });
+
+        propType.put(prop, EnumPropType.INT_BOOL);
+
+        if(!changable && !propNeedsRestart.contains(prop))
+        {
+            propNeedsRestart.add(prop);
+        }
+
+        ArrayList<Property> categoryList;
+        if(catName != null && categories.containsKey(catName) || catName == null && categories.containsKey("uncat"))
+        {
+            categoryList = categories.get(catName);
+        }
+        else
+        {
+            categoryList = new ArrayList<Property>();
+            categories.put(catName != null ? catName : "uncat", categoryList);
+        }
+        if(!categoryList.contains(prop))
+        {
+            categoryList.add(prop);
+        }
+
+        if(!setup)
+        {
+            config.save();
+        }
+
+        return prop.getInt();
+    }
+
+    public String createStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value) //returns the config val
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -429,9 +491,11 @@ public class Config
         {
         	config.save();
         }
+
+        return prop.getString();
 	}
 
-    public void createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
+    public KeyBind createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
     {
         Property prop;
 
@@ -532,6 +596,8 @@ public class Config
         {
             config.save();
         }
+
+        return bind;
     }
 
     public void createIntArrayProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
@@ -556,8 +622,6 @@ public class Config
         propName.put(prop, fullPropName);
         propNameToProp.put(fullPropName, propName1);
 
-
-        
         if(nestedIntArray)
         {
             propType.put(prop, EnumPropType.NESTED_INT_ARRAY);
@@ -607,6 +671,8 @@ public class Config
         {
         	config.save();
         }
+
+        //does not return value;
 	}
 	
 	public void setup()
@@ -625,17 +691,6 @@ public class Config
 		Collections.sort(categoriesList);
 	}
 
-    public EnumPropType getPropType(Property prop)
-    {
-        EnumPropType type = propType.get(prop);
-        if(propType == null)
-        {
-            iChunUtil.console("Property has no type: " + prop.getName(), true);
-            return EnumPropType.UNDEFINED;
-        }
-        return type;
-    }
-
 	@Override
 	public int compareTo(Object arg0) 
 	{
@@ -646,6 +701,17 @@ public class Config
 		}
 		return 0;
 	}
+
+    public EnumPropType getPropType(Property prop)
+    {
+        EnumPropType type = propType.get(prop);
+        if(propType == null)
+        {
+            iChunUtil.console("Property has no type: " + prop.getName(), true);
+            return EnumPropType.UNDEFINED;
+        }
+        return type;
+    }
 
     public static enum EnumPropType
     {

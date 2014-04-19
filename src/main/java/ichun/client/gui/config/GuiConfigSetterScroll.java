@@ -150,6 +150,13 @@ public class GuiConfigSetterScroll extends GuiSlot
             			intArraySlots = 1;
             		}
             	}
+                else if(type == Config.EnumPropType.INT_BOOL)
+                {
+                    prop.set(prop.getInt() == 1 ? 0 : 1);
+                    updateProperty(prop, prop.getString());
+
+                    selected = -1;
+                }
             	else
             	{
                     if(type == Config.EnumPropType.KEYBIND)
@@ -685,6 +692,23 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     break;
                 }
+                case INT_BOOL:
+                {
+                    int clr = 14737632;
+
+
+                    if (k == 2)
+                    {
+                        clr = 16777120;
+                    }
+
+                    controls.drawTexturedModalRect(xPosition + width - 50, yPosition, 0, 46 + k * 20, 25, height);
+                    controls.drawTexturedModalRect(xPosition + width - 25, yPosition, 200 - 25, 46 + k * 20, 25, height);
+
+                    controls.drawCenteredString(mc.fontRenderer, prop.getInt() == 1 ? "Yes" : "No", xPosition + width - 25, yPosition + (height - 8) / 2, clr);
+
+                    break;
+                }
                 //TODO different case for INT_BOOL
                 default:
                 {
@@ -736,6 +760,10 @@ public class GuiConfigSetterScroll extends GuiSlot
     	        String[] comments = prop.comment.split("\n");
     	        for(int i = 0; i < comments.length; i++)
     	        {
+                    if(config.getPropType(prop) == Config.EnumPropType.INT_BOOL && i > comments.length - 4)
+                    {
+                        continue;
+                    }
     	        	tooltip.add(comments[i]);
     	        }
     	        controls.drawTooltip(tooltip, xPosition + width, 35);
