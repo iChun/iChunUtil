@@ -52,6 +52,7 @@ public class GuiConfigSetterScroll extends GuiSlot
     public GuiConfigSetterScroll(GuiConfigSetter guiConfigSetter, Config cfg, ArrayList<Property> props, Minecraft mc)
     {
         super(mc, guiConfigSetter.width, guiConfigSetter.height, 16, (guiConfigSetter.height - 32) + 4, 25);
+        this.left = -10;
         this.controls = guiConfigSetter;
         this.mc = mc;
         this.config = cfg;
@@ -82,6 +83,12 @@ public class GuiConfigSetterScroll extends GuiSlot
     protected int getSize()
     {
         return selectedIntArrayProp != -1 ? properties.size() + intArraySlots : properties.size();
+    }
+
+    @Override
+    public int getListWidth()
+    {
+        return 200;
     }
 
     @Override

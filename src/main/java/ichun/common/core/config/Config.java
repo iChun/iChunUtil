@@ -25,7 +25,10 @@ public class Config
 	public final String modName;
 	public final Logger logger; //allowed to be null
 	public final IConfigUser parent;
-	
+
+    public String currentCat;
+    public String currentCatName;
+
 	public HashMap<String, Property> props = new HashMap<String, Property>();
 	public HashMap<Property, String> propName = new HashMap<Property, String>();
 	public HashMap<String, String> propNameToProp = new HashMap<String, String>();
@@ -54,6 +57,9 @@ public class Config
 		logger = lg;
 		setup = false;
 		parent = configParent;
+
+        currentCat = "general";
+        currentCatName = "General";
 	}
 	
 	public void resetSession()
@@ -339,7 +345,7 @@ public class Config
         }
     }
 
-    public int createIntProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
+    public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -349,7 +355,7 @@ public class Config
         }
         else
         {
-        	prop = config.get(cat, propName1, i);
+        	prop = config.get(currentCat, propName1, i);
         	if(prop.getInt() > max)
         	{
         		prop.set(max);
@@ -377,7 +383,7 @@ public class Config
         	propNeedsRestart.add(prop);
         }
 
-        addToCategory(catName, prop);
+        addToCategory(currentCatName, prop);
 
         if(!setup)
         {
@@ -387,7 +393,7 @@ public class Config
         return prop.getInt();
 	}
 
-    public int createIntBoolProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean flag) //returns the config property
+    public int createIntBoolProperty(String propName1, String fullPropName, String comment, boolean changable, boolean flag) //returns the config property
     {
         Property prop;
         if(props.containsKey(propName1))
@@ -397,7 +403,7 @@ public class Config
         }
         else
         {
-            prop = config.get(cat, propName1, flag ? 1 : 0);
+            prop = config.get(currentCat, propName1, flag ? 1 : 0);
             if(prop.getInt() > 1)
             {
                 prop.set(1);
@@ -425,7 +431,7 @@ public class Config
             propNeedsRestart.add(prop);
         }
 
-        addToCategory(catName, prop);
+        addToCategory(currentCatName, prop);
 
         if(!setup)
         {
@@ -435,7 +441,7 @@ public class Config
         return prop.getInt();
     }
 
-    public int createColourProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, int colour) //returns the config val
+    public int createColourProperty(String propName1, String fullPropName, String comment, boolean changable, int colour) //returns the config val
     {
         Property prop;
         if(props.containsKey(propName1))
@@ -445,7 +451,7 @@ public class Config
         }
         else
         {
-            prop = config.get(cat, propName1, "#" + Integer.toHexString(colour));
+            prop = config.get(currentCat, propName1, "#" + Integer.toHexString(colour));
 
             try
             {
@@ -479,7 +485,7 @@ public class Config
             propNeedsRestart.add(prop);
         }
 
-        addToCategory(catName, prop);
+        addToCategory(currentCatName, prop);
 
         if(!setup)
         {
@@ -489,7 +495,7 @@ public class Config
         return Integer.decode(prop.getString().trim());
     }
 
-    public String createStringProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, String value) //returns the config val
+    public String createStringProperty(String propName1, String fullPropName, String comment, boolean changable, String value) //returns the config val
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -499,7 +505,7 @@ public class Config
         }
         else
         {
-        	prop = config.get(cat, propName1, value);
+        	prop = config.get(currentCat, propName1, value);
         }
 
         if (!comment.equalsIgnoreCase(""))
@@ -518,7 +524,7 @@ public class Config
         	propNeedsRestart.add(prop);
         }
 
-        addToCategory(catName, prop);
+        addToCategory(currentCatName, prop);
 
         if(!setup)
         {
@@ -633,7 +639,7 @@ public class Config
         return bind;
     }
 
-    public void createIntArrayProperty(String cat, String catName, String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
+    public void createIntArrayProperty(String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -643,7 +649,7 @@ public class Config
         }
         else
         {
-        	prop = config.get(cat, propName1, value);
+        	prop = config.get(currentCat, propName1, value);
         }
 
         if (!comment.equalsIgnoreCase(""))
@@ -685,7 +691,7 @@ public class Config
         	propNeedsRestart.add(prop);
         }
 
-        addToCategory(catName, prop);
+        addToCategory(currentCatName, prop);
 
         if(!setup)
         {
@@ -694,6 +700,13 @@ public class Config
 
         //does not return value;
 	}
+
+    public void setCurrentCategory(String cat, String catName, String comment)
+    {
+        currentCat = cat;
+        currentCatName = catName;
+        config.addCustomCategoryComment(currentCat, comment);
+    }
 	
 	public void setup()
 	{
