@@ -12,10 +12,13 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 //TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client. Done: BackTools
 public class TickHandlerClient
@@ -121,6 +124,14 @@ public class TickHandlerClient
         {
             bind.tick();
         }
+        for(Map.Entry<KeyBinding, KeyBind> e : mcKeyBindList.entrySet())
+        {
+            if(e.getValue().keyIndex != e.getKey().getKeyCode())
+            {
+                e.setValue(new KeyBind(e.getKey().getKeyCode(), false, false, false, false));
+            }
+            e.getValue().tick();
+        }
 
     	if(worldInstance != world)
     	{
@@ -173,4 +184,5 @@ public class TickHandlerClient
     public boolean optionsKeyDown;
 
     public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
+    public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
 }

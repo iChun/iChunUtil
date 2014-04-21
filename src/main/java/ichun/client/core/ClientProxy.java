@@ -2,9 +2,11 @@ package ichun.client.core;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.keybind.KeyBind;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.util.ResourceHelper;
+import net.minecraft.client.settings.KeyBinding;
 
 public class ClientProxy extends CommonProxy 
 {
@@ -23,6 +25,7 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public KeyBind registerKeyBind(KeyBind bind, KeyBind replacing)
     {
         if(replacing != null)
@@ -41,6 +44,8 @@ public class ClientProxy extends CommonProxy
                     {
                         tickHandlerClient.keyBindList.remove(i);
                     }
+                    bind.setPulse(keybind.canPulse, keybind.pulseTime);
+                    bind.ignoreHold = keybind.ignoreHold;
                 }
             }
         }
@@ -57,4 +62,12 @@ public class ClientProxy extends CommonProxy
         tickHandlerClient.keyBindList.add(bind);
         return bind;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerMinecraftKeyBind(KeyBinding bind)
+    {
+        tickHandlerClient.mcKeyBindList.put(bind, new KeyBind(bind.getKeyCode(), false, false, false, true));
+    }
+
 }

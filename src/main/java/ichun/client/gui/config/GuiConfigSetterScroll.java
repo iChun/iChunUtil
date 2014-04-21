@@ -406,7 +406,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                 KeyBind bind;
                 try
                 {
-                    bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
+                    bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"), false);
                 }
                 catch(Exception e)
                 {
@@ -415,7 +415,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                     bind = oriKeyBind;
                 }
 
-                config.keyBindMap.put(prop, iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
+                config.keyBindMap.put(prop.getName(), iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
 
                 prop.set(s);
 
@@ -735,15 +735,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                     //draw fake text box
                     if(config.getPropType(prop) == Config.EnumPropType.COLOUR)
                     {
-//                        System.out.println(config.getPropType(prop) == Config.EnumPropType.COLOUR ? selected == index && isValidValue(prop, selectedText) ? Integer.decode(selectedText) : Integer.decode(prop.getString()) : -6250336);
-//                        System.out.println(Integer.toHexString(-6250336));
-                    }
-
-//                    Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, config.getPropType(prop) == Config.EnumPropType.COLOUR ? selected == index && isValidValue(prop, selectedText) ? Integer.decode("0xff" + Integer.toHexString(Integer.decode(selectedText))) : Integer.decode(prop.getString()) : -6250336);
-                    if(config.getPropType(prop) == Config.EnumPropType.COLOUR)
-                    {
                         RendererHelper.drawColourOnScreen(selected == index && isValidValue(prop, selectedText) ? Integer.decode(selectedText) : Integer.decode(prop.getString()), 255, xPosition + width - 50, yPosition, 50, height, 0.0D);
-//                        Gui.drawRect(xPosition + width - 50, yPosition, xPosition + width, yPosition + height, -6250336);
                     }
                     else
                     {

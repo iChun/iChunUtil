@@ -34,13 +34,14 @@ public class Config
 	public HashMap<String, String> propNameToProp = new HashMap<String, String>();
 	public HashMap<Property, int[]> minmax = new HashMap<Property, int[]>();
 	public HashMap<Property, int[]> nestedMinmax = new HashMap<Property, int[]>();
-	
+    public ArrayList<Property> sessionProps = new ArrayList<Property>();
+
 	public HashMap<String, ArrayList<Property>> categories = new HashMap<String, ArrayList<Property>>();
 	public ArrayList<String> categoriesList = new ArrayList<String>();
 	
     public HashMap<Property, EnumPropType> propType = new HashMap<Property, EnumPropType>();
 
-    public HashMap<Property, KeyBind> keyBindMap = new HashMap<Property, KeyBind>();
+    public HashMap<String, KeyBind> keyBindMap = new HashMap<String, KeyBind>();
 	
 	public ArrayList<Property> propNeedsRestart = new ArrayList<Property>();
 	public ArrayList<String> unfound = new ArrayList<String>();
@@ -65,10 +66,10 @@ public class Config
 	public void resetSession()
 	{
 		sessionState.clear();
-		for(Entry<String, Property> e : props.entrySet())
-		{
-			sessionState.put(e.getKey(), e.getValue().getType() == Type.INTEGER ? e.getValue().getInt() : e.getValue().getString());
-		}
+        for(Property prop : sessionProps)
+        {
+            sessionState.put(prop.getName(), prop.getType() == Type.INTEGER ? prop.getInt() : prop.getString());
+        }
 	}
 	
 	public void updateSession(String s, Object obj)
@@ -92,36 +93,30 @@ public class Config
 	public int getInt(String s)
 	{
 		Property prop = get(s);
-		if(prop != null)
-		{
-			if(prop.getType() == Type.INTEGER)
-			{
-				return prop.getInt();
-			}
-			else if(logger != null && !unfound.contains(s))
-			{
-				unfound.add(s);
-				logger.log(Level.WARN, "Tried to reference non-int property as int: " + s);
-			}
-		}
+        if(prop != null && prop.getType() == Type.INTEGER)
+        {
+            return prop.getInt();
+        }
+        else if(logger != null && !unfound.contains(s))
+        {
+            unfound.add(s);
+            logger.log(Level.WARN, "Tried to reference non-int property as int: " + s);
+        }
 		return -2;
 	}
 	
 	public String getString(String s)
 	{
 		Property prop = get(s);
-		if(prop != null)
-		{
-			if(prop.getType() == Type.STRING)
-			{
-				return prop.getString();
-			}
-			else if(logger != null && !unfound.contains(s))
-			{
-				unfound.add(s);
-				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
-			}
-		}
+        if(prop != null && prop.getType() == Type.STRING)
+        {
+            return prop.getString();
+        }
+        else if(logger != null && !unfound.contains(s))
+        {
+            unfound.add(s);
+            logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
+        }
 		return "";
 	}
 	
@@ -158,40 +153,53 @@ public class Config
 		}
 		return map;
 	}
+
+    public KeyBind getKeyBind(String s)
+    {
+        KeyBind bind = keyBindMap.get(s);
+        if(bind != null)
+        {
+            return bind;
+        }
+        bind = new KeyBind(0, false, false, false, false);
+        keyBindMap.put(s, bind);
+
+        if(logger != null && !unfound.contains(s))
+        {
+            unfound.add(s);
+            logger.log(Level.WARN, "Tried to reference non-existent keybind: " + s);
+        }
+
+        return bind;
+    }
 	
 	public ArrayList<Integer> getIntArray(String s)
 	{
 		Property prop = get(s);
-		if(prop != null)
-		{
-			if(prop.getType() == Type.STRING)
-			{
-				return parseIntArray(getString(s));
-			}
-			else if(logger != null && !unfound.contains(s))
-			{
-				unfound.add(s);
-				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
-			}
-		}
+        if(prop != null && prop.getType() == Type.STRING)
+        {
+            return parseIntArray(getString(s));
+        }
+        else if(logger != null && !unfound.contains(s))
+        {
+            unfound.add(s);
+            logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
+        }
 		return new ArrayList<Integer>();
 	}
 	
 	public LinkedHashMap<Integer, ArrayList<Integer>> getNestedIntArray(String s)
 	{
 		Property prop = get(s);
-		if(prop != null)
-		{
-			if(prop.getType() == Type.STRING)
-			{
-				return parseNestedIntArray(getString(s));
-			}
-			else if(logger != null && !unfound.contains(s))
-			{
-				unfound.add(s);
-				logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
-			}
-		}
+        if(prop != null && prop.getType() == Type.STRING)
+        {
+            return parseNestedIntArray(getString(s));
+        }
+        else if(logger != null && !unfound.contains(s))
+        {
+            unfound.add(s);
+            logger.log(Level.WARN, "Tried to reference non-string property as string: " + s);
+        }
 		return new LinkedHashMap<Integer, ArrayList<Integer>>();
 	}
 	
@@ -345,7 +353,7 @@ public class Config
         }
     }
 
-    public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, int i, int min, int max) //returns the config property
+    public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int i, int min, int max) //returns the config property
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -382,6 +390,10 @@ public class Config
         {
         	propNeedsRestart.add(prop);
         }
+        if(isSessionProp && !sessionProps.contains(prop))
+        {
+            sessionProps.add(prop);
+        }
 
         addToCategory(currentCatName, prop);
 
@@ -393,7 +405,7 @@ public class Config
         return prop.getInt();
 	}
 
-    public int createIntBoolProperty(String propName1, String fullPropName, String comment, boolean changable, boolean flag) //returns the config property
+    public int createIntBoolProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, boolean flag) //returns the config property
     {
         Property prop;
         if(props.containsKey(propName1))
@@ -430,6 +442,10 @@ public class Config
         {
             propNeedsRestart.add(prop);
         }
+        if(isSessionProp && !sessionProps.contains(prop))
+        {
+            sessionProps.add(prop);
+        }
 
         addToCategory(currentCatName, prop);
 
@@ -441,7 +457,7 @@ public class Config
         return prop.getInt();
     }
 
-    public int createColourProperty(String propName1, String fullPropName, String comment, boolean changable, int colour) //returns the config val
+    public int createColourProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int colour) //returns the config val
     {
         Property prop;
         if(props.containsKey(propName1))
@@ -484,6 +500,10 @@ public class Config
         {
             propNeedsRestart.add(prop);
         }
+        if(isSessionProp && !sessionProps.contains(prop))
+        {
+            sessionProps.add(prop);
+        }
 
         addToCategory(currentCatName, prop);
 
@@ -495,7 +515,7 @@ public class Config
         return Integer.decode(prop.getString().trim());
     }
 
-    public String createStringProperty(String propName1, String fullPropName, String comment, boolean changable, String value) //returns the config val
+    public String createStringProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, String value) //returns the config val
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -523,6 +543,10 @@ public class Config
         {
         	propNeedsRestart.add(prop);
         }
+        if(isSessionProp && !sessionProps.contains(prop))
+        {
+            sessionProps.add(prop);
+        }
 
         addToCategory(currentCatName, prop);
 
@@ -534,7 +558,7 @@ public class Config
         return prop.getString();
 	}
 
-    public KeyBind createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
+    public Property createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime, boolean ignoreHold) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
     {
         Property prop;
 
@@ -619,27 +643,27 @@ public class Config
         KeyBind bind;
         try
         {
-            bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"));
+            bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"), ignoreHold);
         }
         catch(Exception e)
         {
             iChunUtil.console("Error parsing key for mod " + modName + ": " + fullPropName, true);
-            bind = new KeyBind(keyValue, holdShift, holdCtrl, holdAlt);
+            bind = new KeyBind(keyValue, holdShift, holdCtrl, holdAlt, ignoreHold);
         }
 
         bind.setPulse(canPulse, pulseTime);
 
-        keyBindMap.put(prop, iChunUtil.proxy.registerKeyBind(bind, null));
+        keyBindMap.put(propName1, iChunUtil.proxy.registerKeyBind(bind, null));
 
         if(!setup)
         {
             config.save();
         }
 
-        return bind;
+        return prop;
     }
 
-    public void createIntArrayProperty(String propName1, String fullPropName, String comment, boolean changable, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
+    public void createIntArrayProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
 	{
         Property prop;
         if(props.containsKey(propName1))
@@ -689,6 +713,10 @@ public class Config
         if(!changable && !propNeedsRestart.contains(prop))
         {
         	propNeedsRestart.add(prop);
+        }
+        if(isSessionProp && !sessionProps.contains(prop))
+        {
+            sessionProps.add(prop);
         }
 
         addToCategory(currentCatName, prop);

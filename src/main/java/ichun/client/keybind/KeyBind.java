@@ -2,6 +2,8 @@ package ichun.client.keybind;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -18,16 +20,18 @@ public class KeyBind
     public int pulseTime;
     public int pulseTimer;
 
-    public boolean pressed;
+    public boolean ignoreHold;
+    private boolean pressed;
 
     public int usages; //if usages == 0, deregister;
 
-    public KeyBind(int index, boolean shift, boolean ctrl, boolean alt)
+    public KeyBind(int index, boolean shift, boolean ctrl, boolean alt, boolean ignoreHolding)//ignoreHold will allow the keybind to trigger as long as the keybind is hit regardless of SHIFT/CTRL/ALT state
     {
         keyIndex = index;
         holdShift = shift;
         holdCtrl = ctrl;
         holdAlt = alt;
+        ignoreHold = ignoreHolding;
     }
 
     public void tick()
@@ -51,14 +55,27 @@ public class KeyBind
 
         boolean flag = pressed;
 
-        pressed = isPressed(keyIndex);
+        pressed = checkPressed();
         if(pressed != flag)
         {
             triggerEvent(false);
         }
     }
 
-    public void setPulse(boolean flag, int time)
+    @SideOnly(Side.CLIENT)
+    private boolean checkPressed()
+    {
+        boolean stateShift = holdShift && GuiScreen.isShiftKeyDown() || !holdShift && (ignoreHold || !GuiScreen.isShiftKeyDown() || keyIndex == 42 || keyIndex == 54);
+        boolean stateCtrl = holdCtrl && GuiScreen.isCtrlKeyDown() || !holdCtrl && (ignoreHold || !GuiScreen.isCtrlKeyDown() || keyIndex == (Minecraft.isRunningOnMac ? 219 : 29) || keyIndex == (Minecraft.isRunningOnMac ? 220 : 157));
+        boolean stateAlt = holdAlt && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || !holdAlt && (!ignoreHold || !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || keyIndex == 56 || keyIndex == 184);
+        if(!stateShift || !stateCtrl || !stateAlt)
+        {
+            return false;
+        }
+        return isPressed(keyIndex);
+    }
+
+    public KeyBind setPulse(boolean flag, int time)
     {
         if(flag)
         {
@@ -70,6 +87,7 @@ public class KeyBind
         {
             canPulse = false;
         }
+        return this;
     }
 
     public void triggerEvent(boolean pulse)
@@ -101,5 +119,10 @@ public class KeyBind
             return Mouse.isButtonDown(key + 100);
         }
         return Keyboard.isKeyDown(key);
+    }
+
+    public boolean isPressed()
+    {
+        return pressed;
     }
 }
