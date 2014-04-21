@@ -1,14 +1,12 @@
 package ichun.common.core.config;
 
-
-import cpw.mods.fml.common.FMLCommonHandler;
 import ichun.client.keybind.KeyBind;
 import ichun.common.iChunUtil;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +47,12 @@ public class Config
 	public HashMap<String, Object> sessionState = new HashMap<String, Object>();
 	
 	private boolean setup;
-	
+
+    //If you're reading this and you're confused, I don't blame you.. I did not put much javadoc in my source.
+    //The best way for you to understand how to use this kind of config is by looking at how my other mods implement it.
+    //I would recommend you to check out Morph on my GitHub. It uses the int, intbool, string and keybind configs with proper implementation, as well as the "Session" feature provided in configs.
+    //If there is any issue feel free to leave one on the GitHub issues page. I will attend to when I can.
+    //-iChun
 	public Config(Configuration cfg, String ModId, String ModName, Logger lg, IConfigUser configParent)
 	{
 		config = cfg;
