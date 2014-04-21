@@ -3,6 +3,7 @@ package ichun.common.core;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.util.ObfHelper;
+import ichun.common.iChunUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -545,71 +546,68 @@ public class EntityHelperBase
 		}
 	}
 
-	public static String getDeathSound(EntityLivingBase ent)
-	{
-		String s = "";
+    public static String getDeathSound(Class clz, EntityLivingBase ent)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getDeathSoundObf : ObfHelper.getDeathSoundDeobf);
+            m.setAccessible(true);
+            return (String)m.invoke(ent);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != EntityLivingBase.class)
+            {
+                return getDeathSound(clz.getSuperclass(), ent);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return "game.neutral.die";
+    }
 
-		try
-		{
-			Class entClass = ent.getClass();
-			Method m = entClass.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getDeathSoundObf : ObfHelper.getDeathSoundDeobf, new Class[] {});
-			m.setAccessible(true);
-			s = (String)m.invoke(ent, (Object[])null);
-		}
-		catch (Exception e)
-		{}
+    public static String getHurtSound(Class clz, EntityLivingBase ent)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf);
+            m.setAccessible(true);
+            return (String)m.invoke(ent);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != EntityLivingBase.class)
+            {
+                return getHurtSound(clz.getSuperclass(), ent);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return "game.neutral.hurt";
+    }
 
-		return s;
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void renderHand(float f)
-	{
-		boolean hideGUI = Minecraft.getMinecraft().gameSettings.hideGUI;
-		Minecraft.getMinecraft().gameSettings.hideGUI = false;
-		try
-		{
-			Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.renderHandObf, float.class, int.class);
-			m.setAccessible(true);
-			m.invoke(Minecraft.getMinecraft().entityRenderer, f, 0);
-			m.invoke(Minecraft.getMinecraft().entityRenderer, f, 1);
-		}
-		catch (NoSuchMethodException e)
-		{
-			try
-			{
-				Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.renderHandDeobf, float.class, int.class);
-				m.setAccessible(true);
-				m.invoke(Minecraft.getMinecraft().entityRenderer, f, 0);
-				m.invoke(Minecraft.getMinecraft().entityRenderer, f, 1);
-			}
-			catch (Exception e1)
-			{
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		Minecraft.getMinecraft().gameSettings.hideGUI = hideGUI;
-	}
-
-	//    public static void setPlayerLocation(EntityPlayerMP player, double d, double d1, double d2, float f, float f1)
-	//    {
-	//    	try
-	//    	{
-	////    		ObfuscationReflectionHelper.setPrivateValue(NetServerHandler.class, player.playerNetServerHandler, false, "r", "hasMoved");
-	////    		ObfuscationReflectionHelper.setPrivateValue(NetServerHandler.class, player.playerNetServerHandler, d, "o", "lastPosX");
-	////    		ObfuscationReflectionHelper.setPrivateValue(NetServerHandler.class, player.playerNetServerHandler, d1, "p", "lastPosY");
-	////    		ObfuscationReflectionHelper.setPrivateValue(NetServerHandler.class, player.playerNetServerHandler, d2, "q", "lastPosZ");
-	////    		player.setPositionAndRotation(d, d1, d2, f, f1);
-	//    	}
-	//    	catch(Exception e)
-	//    	{
-	//    		e.printStackTrace();
-	//    		PortalGun.console("Forgot to update obfuscation!");
-	//    	}
-	//    }
+    @SideOnly(Side.CLIENT)
+    public static void invokeRenderHand(EntityRenderer renderer, float renderTick)
+    {
+        try
+        {
+            Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.renderHandObf : ObfHelper.renderHandDeobf, float.class, int.class);
+            m.setAccessible(true);
+            m.invoke(renderer, renderTick, 0);
+        }
+        catch(NoSuchMethodException e)
+        {
+            iChunUtil.console("Cannot find render hand method!", true);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 	public static float updateRotation(float oriRot, float intendedRot, float maxChange)
 	{

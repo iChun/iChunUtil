@@ -42,11 +42,6 @@ public class ObfHelper
     public static final String[] defaultResourcePacks 			= new String[] { "aq", "field_110449_ao", "defaultResourcePacks"		}; //Minecraft
     public static final String[] refreshTexturePacksScheduled 	= new String[] { "ag", "field_71468_ad", "refreshTexturePacksScheduled"	}; //Minecraft
     
-//    public static final String[] bipedHead 						= new String[] { "c", "field_78116_c", "bipedHead" 						}; //ModelBiped
-//    public static final String[] bipedHeadwear 					= new String[] { "d", "field_78114_d", "bipedHeadwear" 					}; //ModelBiped
-//    public static final String[] bipedRightArm 					= new String[] { "f", "field_78112_f", "bipedRightArm" 					}; //ModelBiped
-//    public static final String[] bipedLeftArm 					= new String[] { "g", "field_78113_g", "bipedLeftArm" 					}; //ModelBiped
-    
 	public static final String[] textureOffsetX 				= new String[] { "r", "field_78803_o", "textureOffsetX" 				}; //ModelRenderer
 	public static final String[] textureOffsetY 				= new String[] { "s", "field_78813_p", "textureOffsetY" 				}; //ModelRenderer
 	public static final String[] compiled 						= new String[] { "t", "field_78812_q", "compiled"	 					}; //ModelRenderer
@@ -54,21 +49,39 @@ public class ObfHelper
 	public static final String[] quadList 						= new String[] { "i", "field_78254_i", "quadList"	 					}; //ModelBox
     
     public static final String[] mainModel 						= new String[] { "i", "field_77045_g", "mainModel" 						}; //RendererLivingEntity
+
     public static final String[] field_82423_g 					= new String[] { "g", "field_82423_g" 									}; //RenderBiped
     public static final String[] field_82425_h 					= new String[] { "h", "field_82425_h" 									}; //RenderBiped
+
+    public static final String[] modelBipedMain			        = new String[] { "f", "field_77109_a", "modelBipedMain"			        }; //RenderPlayer
     public static final String[] modelArmorChestplate 			= new String[] { "g", "field_77108_b", "modelArmorChestplate" 			}; //RenderPlayer
-    
+
+    public static final String[] resourceDomain			        = new String[] { "a", "field_110626_a", "resourceDomain"		        }; //ResourceLocation
+    public static final String[] resourcePath 			        = new String[] { "b", "field_110625_b", "resourcePath" 			        }; //ResourceLocation
+
     public static final String[] timeSinceIgnited				= new String[] { "bq", "field_70833_d", "timeSinceIgnited"				}; //EntityCreeper
     public static final String[] fuseTime						= new String[] { "br", "field_82225_f", "fuseTime"						}; //EntityCreeper
+
+    public static final String[] isImmuneToFire			        = new String[] { "ag","field_70178_ae", "isImmuneToFire"	        	}; //Entity
+
+    public static final String[] isJumping 		        		= new String[] { "bd","field_70703_bu", "isJumping" 		        	}; //EntityLivingBase
+
+    public static final String[] shadowSize		        		= new String[] { "d", "field_76989_e", "shadowSize"			        	}; //Render
+
+    public static final String[] tagMap			        		= new String[] { "a", "field_74784_a", "tagMap"				        	}; //NBTTagCompound
 
     //EntityLivingBase
     public static final String jumpObf		= "func_70664_aZ";
     public static final String jumpDeobf	= "jump";
 
     //EntityLivingBase
+    public static final String getHurtSoundObf = "func_70621_aR";
+    public static final String getHurtSoundDeobf = "getHurtSound";
+
+    //EntityLivingBase
     public static final String getDeathSoundObf = "func_70673_aS";
     public static final String getDeathSoundDeobf = "getDeathSound";
-    
+
     //RenderLivingEntity
 	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
@@ -81,7 +94,7 @@ public class ObfHelper
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
-	//EntityLivingbase
+	//Render
 	public static final String getEntityTextureObf = "func_110775_a";
 	public static final String getEntityTextureDeobf = "getEntityTexture";
 
@@ -156,26 +169,36 @@ public class ObfHelper
 			e.printStackTrace();
 		}
 	}
-	
-	public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
-	{
-		try
-		{
-			Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getEntityTextureObf : ObfHelper.getEntityTextureDeobf, Entity.class);
-			m.setAccessible(true);
-			return (ResourceLocation)m.invoke(rend, ent);
-		}
-		catch(NoSuchMethodException e)
-		{
-			if(clz != RendererLivingEntity.class)
-			{
-				return invokeGetEntityTexture(rend, clz.getSuperclass(), ent);
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return AbstractClientPlayer.locationStevePng;
-	}
+
+    public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
+    {
+        ResourceLocation loc = getEntTexture(rend, clz, ent);
+        if(loc != null)
+        {
+            return loc;
+        }
+        return AbstractClientPlayer.locationStevePng;
+    }
+
+    private static ResourceLocation getEntTexture(Render rend, Class clz, EntityLivingBase ent)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.getEntityTextureObf : ObfHelper.getEntityTextureDeobf, Entity.class);
+            m.setAccessible(true);
+            return (ResourceLocation)m.invoke(rend, ent);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != RendererLivingEntity.class)
+            {
+                return invokeGetEntityTexture(rend, clz.getSuperclass(), ent);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return AbstractClientPlayer.locationStevePng;
+    }
 }

@@ -106,7 +106,8 @@ public class KeyBind
                     bind.holdCtrl == holdCtrl &&
                     bind.holdAlt == holdAlt &&
                     bind.canPulse == canPulse &&
-                    bind.pulseTime == pulseTime;
+                    bind.pulseTime == pulseTime &&
+                    bind.ignoreHold == ignoreHold;
         }
         return false;
     }
