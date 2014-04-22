@@ -19,56 +19,56 @@ public class ObfHelper
 
     private static final String obfVersion = "1.6.0";
 
-    public static final String[] equippedProgress 				= new String[] { "g", "field_78454_c", "equippedProgress" 				}; //ItemRenderer
-    public static final String[] prevEquippedProgress 			= new String[] { "h", "field_78451_d", "prevEquippedProgress" 			}; //ItemRenderer
-    public static final String[] itemToRender 					= new String[] { "f", "field_78453_b", "itemToRender" 					}; //ItemRenderer
-    public static final String[] equippedItemSlot 				= new String[] { "j", "field_78450_g", "equippedItemSlot" 				}; //ItemRenderer
+    public static final String[] equippedProgress 				= new String[] { "field_78454_c", "equippedProgress" 				, "g"}; //ItemRenderer
+    public static final String[] prevEquippedProgress 			= new String[] { "field_78451_d", "prevEquippedProgress" 			, "h"}; //ItemRenderer
+    public static final String[] itemToRender 					= new String[] { "field_78453_b", "itemToRender" 					, "f"}; //ItemRenderer
+    public static final String[] equippedItemSlot 				= new String[] { "field_78450_g", "equippedItemSlot" 			    , "j"}; //ItemRenderer
 
-    public static final String[] lightningState					= new String[] { "b", "field_70262_b", "lightningState"					}; //EntityLightningBolt
+    public static final String[] lightningState					= new String[] { "field_70262_b", "lightningState"					, "b"}; //EntityLightningBolt
 
-    public static final String[] explosionRadius				= new String[] { "bs", "field_82226_g", "explosionRadius"				}; //EntityCreeper
+    public static final String[] explosionRadius				= new String[] { "field_82226_g", "explosionRadius"				    ,"bs"}; //EntityCreeper
 
-    public static final String[] cameraZoom						= new String[] { "Y", "field_78503_V", "cameraZoom"						}; //EntityRenderer
-    public static final String[] fogColorRed					= new String[] { "k", "field_78518_n", "fogColorRed"					}; //EntityRenderer
-    public static final String[] fogColorGreen					= new String[] { "l", "field_78519_o", "fogColorGreen"					}; //EntityRenderer
-    public static final String[] fogColorBlue					= new String[] { "m", "field_78533_p", "fogColorBlue"					}; //EntityRenderer
+    public static final String[] cameraZoom						= new String[] { "field_78503_V", "cameraZoom"						, "Y"}; //EntityRenderer
+    public static final String[] fogColorRed					= new String[] { "field_78518_n", "fogColorRed"					    , "k"}; //EntityRenderer
+    public static final String[] fogColorGreen					= new String[] { "field_78519_o", "fogColorGreen"					, "l"}; //EntityRenderer
+    public static final String[] fogColorBlue					= new String[] { "field_78533_p", "fogColorBlue"					, "m"}; //EntityRenderer
 
-    public static final String[] itemHealth						= new String[] { "d", "field_70291_e", "health"							}; //EntityItem
+    public static final String[] itemHealth						= new String[] { "field_70291_e", "health"							, "d"}; //EntityItem
 
-    public static final String[] arrowInGround					= new String[] { "i", "field_70254_i", "inGround"						}; //EntityArrow
+    public static final String[] arrowInGround					= new String[] { "field_70254_i", "inGround"						, "i"}; //EntityArrow
 
-    public static final String[] showNameTime					= new String[] { "q", "field_92017_k", "remainingHighlightTicks"		}; //GuiIngame
+    public static final String[] showNameTime					= new String[] { "field_92017_k", "remainingHighlightTicks"		    , "q"}; //GuiIngame
     
-    public static final String[] defaultResourcePacks 			= new String[] { "aq", "field_110449_ao", "defaultResourcePacks"		}; //Minecraft
-    public static final String[] refreshTexturePacksScheduled 	= new String[] { "ag", "field_71468_ad", "refreshTexturePacksScheduled"	}; //Minecraft
+    public static final String[] defaultResourcePacks 			= new String[] { "field_110449_ao", "defaultResourcePacks"		    ,"aq"}; //Minecraft
+    public static final String[] refreshTexturePacksScheduled 	= new String[] { "field_71468_ad", "refreshTexturePacksScheduled"	,"ag"}; //Minecraft
     
-	public static final String[] textureOffsetX 				= new String[] { "r", "field_78803_o", "textureOffsetX" 				}; //ModelRenderer
-	public static final String[] textureOffsetY 				= new String[] { "s", "field_78813_p", "textureOffsetY" 				}; //ModelRenderer
-	public static final String[] compiled 						= new String[] { "t", "field_78812_q", "compiled"	 					}; //ModelRenderer
+	public static final String[] textureOffsetX 				= new String[] { "field_78803_o", "textureOffsetX" 				    , "r"}; //ModelRenderer
+	public static final String[] textureOffsetY 				= new String[] { "field_78813_p", "textureOffsetY" 				    , "s"}; //ModelRenderer
+	public static final String[] compiled 						= new String[] { "field_78812_q", "compiled"	 					, "t"}; //ModelRenderer
 
-	public static final String[] quadList 						= new String[] { "i", "field_78254_i", "quadList"	 					}; //ModelBox
+	public static final String[] quadList 						= new String[] { "field_78254_i", "quadList"	 					, "i"}; //ModelBox
     
-    public static final String[] mainModel 						= new String[] { "i", "field_77045_g", "mainModel" 						}; //RendererLivingEntity
+    public static final String[] mainModel 						= new String[] { "field_77045_g", "mainModel" 						, "i"}; //RendererLivingEntity
 
-    public static final String[] field_82423_g 					= new String[] { "g", "field_82423_g" 									}; //RenderBiped
-    public static final String[] field_82425_h 					= new String[] { "h", "field_82425_h" 									}; //RenderBiped
+    public static final String[] field_82423_g 					= new String[] { "field_82423_g" 									, "g"}; //RenderBiped
+    public static final String[] field_82425_h 					= new String[] { "field_82425_h" 									, "h"}; //RenderBiped
 
-    public static final String[] modelBipedMain			        = new String[] { "f", "field_77109_a", "modelBipedMain"			        }; //RenderPlayer
-    public static final String[] modelArmorChestplate 			= new String[] { "g", "field_77108_b", "modelArmorChestplate" 			}; //RenderPlayer
+    public static final String[] modelBipedMain			        = new String[] { "field_77109_a", "modelBipedMain"			        , "f"}; //RenderPlayer
+    public static final String[] modelArmorChestplate 			= new String[] { "field_77108_b", "modelArmorChestplate" 			, "g"}; //RenderPlayer
 
-    public static final String[] resourceDomain			        = new String[] { "a", "field_110626_a", "resourceDomain"		        }; //ResourceLocation
-    public static final String[] resourcePath 			        = new String[] { "b", "field_110625_b", "resourcePath" 			        }; //ResourceLocation
+    public static final String[] resourceDomain			        = new String[] { "field_110626_a", "resourceDomain"		            , "a"}; //ResourceLocation
+    public static final String[] resourcePath 			        = new String[] { "field_110625_b", "resourcePath" 			        , "b"}; //ResourceLocation
 
-    public static final String[] timeSinceIgnited				= new String[] { "bq", "field_70833_d", "timeSinceIgnited"				}; //EntityCreeper
-    public static final String[] fuseTime						= new String[] { "br", "field_82225_f", "fuseTime"						}; //EntityCreeper
+    public static final String[] timeSinceIgnited				= new String[] { "field_70833_d", "timeSinceIgnited"				,"bq"}; //EntityCreeper
+    public static final String[] fuseTime						= new String[] { "field_82225_f", "fuseTime"						,"br"}; //EntityCreeper
 
-    public static final String[] isImmuneToFire			        = new String[] { "ag","field_70178_ae", "isImmuneToFire"	        	}; //Entity
+    public static final String[] isImmuneToFire			        = new String[] { "field_70178_ae", "isImmuneToFire"	        	    ,"ag"}; //Entity
 
-    public static final String[] isJumping 		        		= new String[] { "bd","field_70703_bu", "isJumping" 		        	}; //EntityLivingBase
+    public static final String[] isJumping 		        		= new String[] { "field_70703_bu", "isJumping" 		        	    ,"bd"}; //EntityLivingBase
 
-    public static final String[] shadowSize		        		= new String[] { "d", "field_76989_e", "shadowSize"			        	}; //Render
+    public static final String[] shadowSize		        		= new String[] { "field_76989_e", "shadowSize"			        	, "d"}; //Render
 
-    public static final String[] tagMap			        		= new String[] { "a", "field_74784_a", "tagMap"				        	}; //NBTTagCompound
+    public static final String[] tagMap			        		= new String[] { "field_74784_a", "tagMap"				        	, "a"}; //NBTTagCompound
 
     //EntityLivingBase
     public static final String jumpObf		= "func_70664_aZ";

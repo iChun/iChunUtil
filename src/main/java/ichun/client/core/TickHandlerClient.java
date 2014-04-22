@@ -36,7 +36,6 @@ public class TickHandlerClient
                 String s = "Hit O to view more options";
                 gui.drawString(mc.fontRenderer, s, gui.width - mc.fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
 
-                //TODO see if this keybind can be replaced.
                 if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
                 {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
