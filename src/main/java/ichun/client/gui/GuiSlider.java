@@ -26,7 +26,9 @@ public class GuiSlider extends GuiButton
 
     public String suffix = "";
 
-    public GuiSlider(int id, int xPos, int yPos, int length, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, ISlider par)
+    public boolean drawString = true;
+
+    public GuiSlider(int id, int xPos, int yPos, int length, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, ISlider par)
     {
         super(id, xPos, yPos, length, 20, prefix);
         minValue = minVal;
@@ -65,11 +67,17 @@ public class GuiSlider extends GuiButton
         }
 
         displayString = dispString + val + suffix;
+
+        drawString = drawStr;
+        if(!drawString)
+        {
+            displayString = "";
+        }
     }
 
     public GuiSlider(int id, int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, ISlider par)
     {
-        this(id, xPos, yPos, 150, displayStr, "", minVal, maxVal, currentVal, true, par);
+        this(id, xPos, yPos, 150, displayStr, "", minVal, maxVal, currentVal, true, true, par);
     }
 
     /**
@@ -159,7 +167,11 @@ public class GuiSlider extends GuiButton
             val = Integer.toString((int)Math.round(sliderValue * (maxValue - minValue) + minValue));
         }
 
-        displayString = dispString + val + suffix;
+        if(drawString)
+        {
+            displayString = dispString + val + suffix;
+        }
+
         parent.onChangeSliderValue(this);
     }
 
