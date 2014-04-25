@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.12.0.1041,)"
+        dependencies = "required-after:Forge@[10.12.0.1061,)"
     )
 public class iChunUtil
 {
