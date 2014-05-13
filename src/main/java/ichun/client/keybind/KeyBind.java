@@ -67,7 +67,7 @@ public class KeyBind
     {
         boolean stateShift = holdShift && GuiScreen.isShiftKeyDown() || !holdShift && (ignoreHold || !GuiScreen.isShiftKeyDown() || keyIndex == 42 || keyIndex == 54);
         boolean stateCtrl = holdCtrl && GuiScreen.isCtrlKeyDown() || !holdCtrl && (ignoreHold || !GuiScreen.isCtrlKeyDown() || keyIndex == (Minecraft.isRunningOnMac ? 219 : 29) || keyIndex == (Minecraft.isRunningOnMac ? 220 : 157));
-        boolean stateAlt = holdAlt && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || !holdAlt && (!ignoreHold || !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || keyIndex == 56 || keyIndex == 184);
+        boolean stateAlt = holdAlt && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || !holdAlt && (ignoreHold || !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || keyIndex == 56 || keyIndex == 184);
         if(!stateShift || !stateCtrl || !stateAlt)
         {
             return false;
