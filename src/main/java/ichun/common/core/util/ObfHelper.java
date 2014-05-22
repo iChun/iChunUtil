@@ -17,7 +17,7 @@ public class ObfHelper
 {
     public static boolean obfuscation;
 
-    private static final String obfVersion = "1.6.0";
+    private static final String obfVersion = "1.7.0";
 
     public static final String[] equippedProgress 				= new String[] { "field_78454_c", "equippedProgress" 				, "g"}; //ItemRenderer
     public static final String[] prevEquippedProgress 			= new String[] { "field_78451_d", "prevEquippedProgress" 			, "h"}; //ItemRenderer

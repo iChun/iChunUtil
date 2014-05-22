@@ -46,7 +46,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         catch(Exception e)
         {
-            iChunUtil.console("Error writing to packet for channel: " + channel);
+            iChunUtil.console("Error writing to packet for channel: " + channel, true);
             e.printStackTrace();
         }
     }
@@ -71,7 +71,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         catch(Exception e)
         {
-            iChunUtil.console("Error reading to packet for channel: " + channel);
+            iChunUtil.console("Error reading from packet for channel: " + channel, true);
             e.printStackTrace();
         }
     }

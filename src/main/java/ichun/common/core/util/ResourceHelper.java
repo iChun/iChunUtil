@@ -23,7 +23,11 @@ public class ResourceHelper
 		fileMods = new File(Minecraft.getMinecraft().mcDataDir, "mods");
 		fileConfig = new File(Minecraft.getMinecraft().mcDataDir, "config");
 	}
-	
+
+    /**
+     * To be honest, this is actually mostly unnecessary because most "assets" for mods are in the mod's zips.
+     * @return /assets/ folder.
+     */
 	public static File getAssetsFolder()
 	{
 		return fileAssets;
