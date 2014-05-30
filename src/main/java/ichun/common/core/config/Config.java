@@ -1,5 +1,7 @@
 package ichun.common.core.config;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import ichun.client.keybind.KeyBind;
 import ichun.common.iChunUtil;
 import net.minecraftforge.common.config.Configuration;
@@ -8,10 +10,7 @@ import net.minecraftforge.common.config.Property.Type;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class Config 
@@ -44,7 +43,7 @@ public class Config
 	public ArrayList<Property> propNeedsRestart = new ArrayList<Property>();
 	public ArrayList<String> unfound = new ArrayList<String>();
 	
-	public HashMap<String, Object> sessionState = new HashMap<String, Object>();
+	public EnumMap<Side, HashMap<String, Object>> sessionState = new EnumMap<Side, HashMap<String, Object>>(Side.class) {{ put(Side.CLIENT, new HashMap<String, Object>()); put(Side.SERVER, new HashMap<String, Object>()); }};
 	
 	private boolean setup;
 
@@ -68,16 +67,16 @@ public class Config
 	
 	public void resetSession()
 	{
-		sessionState.clear();
+		sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).clear();
         for(Property prop : sessionProps)
         {
-            sessionState.put(prop.getName(), prop.getType() == Type.INTEGER ? prop.getInt() : prop.getString());
+            sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).put(prop.getName(), prop.getType() == Type.INTEGER ? prop.getInt() : prop.getString());
         }
 	}
 	
 	public void updateSession(String s, Object obj)
 	{
-		sessionState.put(s, obj);
+		sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).put(s, obj);
 	}
 	
 	public Property get(String s)
@@ -290,7 +289,7 @@ public class Config
 	
 	public int getSessionInt(String s)
 	{
-		Object obj = sessionState.get(s);
+		Object obj = sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).get(s);
 		if(obj instanceof Integer)
 		{
 			return (Integer)obj;
@@ -300,7 +299,7 @@ public class Config
 	
 	public String getSessionString(String s)
 	{
-		Object obj = sessionState.get(s);
+		Object obj = sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).get(s);
 		if(obj instanceof String)
 		{
 			return (String)obj;
@@ -310,7 +309,7 @@ public class Config
 	
 	public HashMap<String, ArrayList<String>> getSessionStringArray(String s)
 	{
-		Object obj = sessionState.get(s);
+		Object obj = sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).get(s);
 		if(obj instanceof HashMap)
 		{
 			return (HashMap)obj;
@@ -320,7 +319,7 @@ public class Config
 	
 	public ArrayList<Integer> getSessionIntArray(String s)
 	{
-		Object obj = sessionState.get(s);
+		Object obj = sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).get(s);
 		if(obj instanceof ArrayList<?>)
 		{
 			return (ArrayList<Integer>)obj;
@@ -330,7 +329,7 @@ public class Config
 	
 	public HashMap<Integer, ArrayList<Integer>> getSessionNestedIntArray(String s)
 	{
-		Object obj = sessionState.get(s);
+		Object obj = sessionState.get(FMLCommonHandler.instance().getEffectiveSide()).get(s);
 		if(obj instanceof HashMap<?, ?>)
 		{
 			return (HashMap<Integer, ArrayList<Integer>>)obj;
