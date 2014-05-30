@@ -24,9 +24,6 @@ archivesBaseName = "iChunUtil"
 minecraft {
     version = "1.7.2-10.12.1.1061"
     assetDir = "eclipse/assets"
-	
-	replaceIn "/src/main/java/" + group + "/common/" + archivesBaseName + ".java"
-    replace "@version@", project.version
 }
 processResources
 {
