@@ -23,7 +23,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
 {
     public final String channel;
 
-    public ChannelHandler(String s, Class<? extends AbstractPacket>...packetTypes)
+    private ChannelHandler(String s, Class<? extends AbstractPacket>...packetTypes)
     {
         channel = s;
         ArrayList<Class<? extends AbstractPacket>> list = new ArrayList<Class<? extends AbstractPacket>>();
