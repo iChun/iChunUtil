@@ -4,6 +4,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import ichun.client.keybind.KeyBind;
 import ichun.common.iChunUtil;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
@@ -16,6 +17,11 @@ import java.util.Map.Entry;
 public class Config
         implements Comparable
 {
+
+    public static int printKey = 4;
+    public static String curMod = "hats";
+
+    public static Configuration configKeybind;
 
     public final Configuration config;
     public final String modId;
@@ -357,6 +363,13 @@ public class Config
 
     public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int i, int min, int max) //returns the config property
     {
+        if(modId.equalsIgnoreCase(curMod) && printKey == 2)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".name=" + fullPropName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 3)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.createIntProperty(\"" + propName1 + "\", \"" + modId.toLowerCase() + ".config.prop." + propName1 + ".name\", " + "\"" + modId.toLowerCase() + ".config.prop." + propName1 + ".comment\", " + Boolean.toString(changable) + ", " + Boolean.toString(isSessionProp) + ", " + Integer.toString(i) + ", " + (min == Integer.MIN_VALUE ? "Integer.MIN_VALUE" : Integer.toString(min)) + ", " + (max == Integer.MAX_VALUE ? "Integer.MAX_VALUE" : Integer.toString(max)) + ");");
+
         Property prop;
         if(props.containsKey(propName1))
         {
@@ -378,7 +391,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment + "\n" + (min != Integer.MIN_VALUE ? ("\nMin: " + min) : "") + (max != Integer.MAX_VALUE ? ("\nMax: " + max) : "");
+            prop.comment = StatCollector.translateToLocal(comment) + "\n" + (min != Integer.MIN_VALUE ? ("\nMin: " + min) : "") + (max != Integer.MAX_VALUE ? ("\nMax: " + max) : "");
         }
 
         props.put(propName1, prop);
@@ -409,6 +422,13 @@ public class Config
 
     public int createIntBoolProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, boolean flag) //returns the config property
     {
+        if(modId.equalsIgnoreCase(curMod) && printKey == 2)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".name=" + fullPropName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 3)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.createIntBoolProperty(\"" + propName1 + "\", \"" + modId.toLowerCase() + ".config.prop." + propName1 + ".name\", " + "\"" + modId.toLowerCase() + ".config.prop." + propName1 + ".comment\", " + Boolean.toString(changable) + ", " + Boolean.toString(isSessionProp) + ", " + Boolean.toString(flag) + ");");
+
         Property prop;
         if(props.containsKey(propName1))
         {
@@ -430,7 +450,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment + "\n\nMin: 0\nMax: 1";
+            prop.comment = StatCollector.translateToLocal(comment) + "\n\nMin: 0\nMax: 1";
         }
 
         props.put(propName1, prop);
@@ -461,6 +481,13 @@ public class Config
 
     public int createColourProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int colour) //returns the config val
     {
+        if(modId.equalsIgnoreCase(curMod) && printKey == 2)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".name=" + fullPropName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 3)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.createColourProperty(\"" + propName1 + "\", \"" + modId.toLowerCase() + ".config.prop." + propName1 + ".name\", " + "\"" + modId.toLowerCase() + ".config.prop." + propName1 + ".comment\", " + Boolean.toString(changable) + ", " + Boolean.toString(isSessionProp) + ", " + Integer.toHexString(colour) + ");");
+
         Property prop;
         if(props.containsKey(propName1))
         {
@@ -489,7 +516,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment;
+            prop.comment = StatCollector.translateToLocal(comment);
         }
 
         props.put(propName1, prop);
@@ -519,6 +546,13 @@ public class Config
 
     public String createStringProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, String value) //returns the config val
     {
+        if(modId.equalsIgnoreCase(curMod) && printKey == 2)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".name=" + fullPropName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 3)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.createStringProperty(\"" + propName1 + "\", \"" + modId.toLowerCase() + ".config.prop." + propName1 + ".name\", " + "\"" + modId.toLowerCase() + ".config.prop." + propName1 + ".comment\", " + Boolean.toString(changable) + ", " + Boolean.toString(isSessionProp) + ", \"" + value + "\");");
+
         Property prop;
         if(props.containsKey(propName1))
         {
@@ -532,7 +566,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment;
+            prop.comment = StatCollector.translateToLocal(comment);
         }
 
         props.put(propName1, prop);
@@ -562,6 +596,13 @@ public class Config
 
     public Property createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime, boolean ignoreHold) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
     {
+        if(modId.equalsIgnoreCase(curMod) && printKey == 2)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".name=" + fullPropName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 3)
+            System.out.println(modId.toLowerCase() + ".config.prop." + propName1 + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.createKeybindProperty(\"" + propName1 + "\", \"" + modId.toLowerCase() + ".config.prop." + propName1 + ".name\", " + "\"" + modId.toLowerCase() + ".config.prop." + propName1 + ".comment\", " + Integer.toString(keyValue) + ", " + Boolean.toString(holdShift) + ", " + Boolean.toString(holdCtrl) + ", " + Boolean.toString(holdAlt) + ", " + Boolean.toString(canPulse) + ", " + Integer.toString(pulseTime) + ", " + Boolean.toString(ignoreHold) + ");");
+
         Property prop;
 
         StringBuilder sb = new StringBuilder();
@@ -588,8 +629,8 @@ public class Config
         }
         else
         {
-            config.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either \":SHIFT\", \":CTRL\", or \":ALT\" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes\nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.");
-            prop = config.get("keybinds", propName1, sb.toString());
+            configKeybind.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either \":SHIFT\", \":CTRL\", or \":ALT\" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes\nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.");
+            prop = configKeybind.get("keybinds." + modName, propName1, sb.toString());
 
             if(prop.getString() != sb.toString())
             {
@@ -616,7 +657,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment;
+            prop.comment = StatCollector.translateToLocal(comment);
         }
 
         props.put(propName1, prop);
@@ -680,7 +721,7 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = comment;
+            prop.comment = StatCollector.translateToLocal(comment);
         }
 
         props.put(propName1, prop);
@@ -734,8 +775,15 @@ public class Config
     public void setCurrentCategory(String cat, String catName, String comment)
     {
         currentCat = cat;
-        currentCatName = catName;
-        config.addCustomCategoryComment(currentCat, comment);
+        currentCatName = StatCollector.translateToLocal(catName);
+        config.addCustomCategoryComment(currentCat, StatCollector.translateToLocal(comment));
+
+        if(modId.equalsIgnoreCase(curMod) && printKey == 0)
+            System.out.println(modId.toLowerCase() + ".config.cat." + cat + ".name=" + catName);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 1)
+            System.out.println(modId.toLowerCase() + ".config.cat." + cat + ".comment=" + comment);
+        if(modId.equalsIgnoreCase(curMod) && printKey == 4)
+            System.out.println("config.setCurrentCategory(" + cat + ", " + modId.toLowerCase() + ".config.cat." + cat + ".name, " + modId.toLowerCase() + ".config.cat." + cat + ".comment);");
     }
 
     public void setup()

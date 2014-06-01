@@ -59,6 +59,7 @@ public class iChunUtil
     	{
     		cfg.setup();
     	}
+        Config.configKeybind.save();
     }
     
     public static boolean getPostLoad()

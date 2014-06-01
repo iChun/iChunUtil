@@ -5,8 +5,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.keybind.KeyBind;
 import ichun.common.core.CommonProxy;
+import ichun.common.core.config.Config;
 import ichun.common.core.util.ResourceHelper;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.common.config.Configuration;
+
+import java.io.File;
 
 public class ClientProxy extends CommonProxy 
 {
@@ -17,11 +21,12 @@ public class ClientProxy extends CommonProxy
         super.init();
 		ResourceHelper.init();
 
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            tickHandlerClient = new TickHandlerClient();
-            FMLCommonHandler.instance().bus().register(tickHandlerClient);
-        }
+        File file = new File(ResourceHelper.getConfigFolder(), "iChunUtil_KeyBinds.cfg");
+        Config.configKeybind = new Configuration(file);
+        Config.configKeybind.load();
+
+        tickHandlerClient = new TickHandlerClient();
+        FMLCommonHandler.instance().bus().register(tickHandlerClient);
     }
 
     @Override

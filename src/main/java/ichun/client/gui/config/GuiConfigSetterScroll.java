@@ -436,7 +436,14 @@ public class GuiConfigSetterScroll extends GuiSlot
 
         if(config.parent.onConfigChange(config, prop))
         {
-            config.config.save();
+            if(config.getPropType(prop).equals(Config.EnumPropType.KEYBIND))
+            {
+                Config.configKeybind.save();
+            }
+            else
+            {
+                config.config.save();
+            }
 
             if(config.propNeedsRestart.contains(prop))
             {

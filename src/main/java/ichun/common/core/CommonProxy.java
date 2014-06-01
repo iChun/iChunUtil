@@ -19,6 +19,10 @@ public class CommonProxy
     @SideOnly(Side.CLIENT)
     public KeyBind registerKeyBind(KeyBind bind, KeyBind replacing) { return bind; }
 
+    /**
+     * Please note that this keybind will trigger without checking for SHIFT/CTRL/ALT being held down. That checking has to be done on your end.
+     * @param keyBind
+     */
     @SideOnly(Side.CLIENT)
     public void registerMinecraftKeyBind(KeyBinding bind) {}
 }
