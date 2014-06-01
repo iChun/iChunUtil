@@ -670,7 +670,17 @@ public class Config
         }
         else
         {
-            configKeybind.addCustomCategoryComment("keybinds", "If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either \":SHIFT\", \":CTRL\", or \":ALT\" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes\nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.");
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal("ichun.config.keybind.comment"));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            configKeybind.addCustomCategoryComment("keybinds", cm);
             prop = configKeybind.get("keybinds." + modName, propName1, sb.toString());
 
             if(prop.getString() != sb.toString())
