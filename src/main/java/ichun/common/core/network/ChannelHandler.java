@@ -62,7 +62,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, AbstractPacket msg) throws Exception
         {
-            Side side = FMLCommonHandler.instance().getEffectiveSide();
+            Side side = ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get();
             EntityPlayer player = null;
             if(side.isServer())
             {
@@ -89,7 +89,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     {
         try
         {
-            msg.writeTo(target, FMLCommonHandler.instance().getEffectiveSide());
+            msg.writeTo(target, ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get());
         }
         catch(Exception e)
         {
@@ -103,7 +103,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     {
         try
         {
-            msg.readFrom(source, FMLCommonHandler.instance().getEffectiveSide());
+            msg.readFrom(source, ctx.channel().attr(NetworkRegistry.CHANNEL_SOURCE).get());
         }
         catch(Exception e)
         {
