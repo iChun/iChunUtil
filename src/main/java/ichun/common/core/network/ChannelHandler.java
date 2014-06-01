@@ -57,6 +57,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         return handlers;
     }
 
+    @Sharable
     private static class PacketExecuter extends SimpleChannelInboundHandler<AbstractPacket>
     {
         @Override
