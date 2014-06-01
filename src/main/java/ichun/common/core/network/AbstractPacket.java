@@ -6,6 +6,18 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public abstract class AbstractPacket
 {
+    /**
+     * Write packet info in this function
+     */
     public abstract void writeTo(ByteBuf buffer, Side side);
-    public abstract void readFrom(ByteBuf buffer, Side side, EntityPlayer player);
+
+    /**
+     * Read packet info in this function. Execution is done elsewhere.
+     */
+    public abstract void readFrom(ByteBuf buffer, Side side);
+
+    /**
+     * Execute your packet here... I think.
+     */
+    public abstract void execute(Side side, EntityPlayer player);
 }

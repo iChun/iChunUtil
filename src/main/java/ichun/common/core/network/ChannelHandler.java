@@ -1,6 +1,7 @@
 package ichun.common.core.network;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -8,12 +9,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.iChunUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPacket>
 {
@@ -37,6 +41,49 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
     }
 
+    public static EnumMap<Side, FMLEmbeddedChannel> getChannelHandlers(String modId, Class<? extends AbstractPacket>...packetTypes)
+    {
+        EnumMap<Side, FMLEmbeddedChannel> handlers = NetworkRegistry.INSTANCE.newChannel(modId, new ChannelHandler(modId, packetTypes));
+
+        PacketExecuter executer = new PacketExecuter();
+
+        for(Map.Entry<Side, FMLEmbeddedChannel> e : handlers.entrySet())
+        {
+            FMLEmbeddedChannel channel = e.getValue();
+            String codec = channel.findChannelHandlerNameForType(ChannelHandler.class);
+            channel.pipeline().addAfter(codec, "PacketExecuter", executer);
+        }
+
+        return handlers;
+    }
+
+    private static class PacketExecuter extends SimpleChannelInboundHandler<AbstractPacket>
+    {
+        @Override
+        protected void channelRead0(ChannelHandlerContext ctx, AbstractPacket msg) throws Exception
+        {
+            Side side = FMLCommonHandler.instance().getEffectiveSide();
+            EntityPlayer player = null;
+            if(side.isServer())
+            {
+                INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+                player = ((NetHandlerPlayServer) netHandler).playerEntity;
+            }
+            else
+            {
+                player = this.getClientPlayer();
+            }
+
+            msg.execute(side, player);
+        }
+
+        @SideOnly(Side.CLIENT)
+        public EntityPlayer getClientPlayer()
+        {
+            return Minecraft.getMinecraft().thePlayer;
+        }
+    }
+
     @Override
     public void encodeInto(ChannelHandlerContext ctx, AbstractPacket msg, ByteBuf target) throws Exception
     {
@@ -54,32 +101,15 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
     @Override
     public void decodeInto(ChannelHandlerContext ctx, ByteBuf source, AbstractPacket msg)
     {
-        Side side = FMLCommonHandler.instance().getEffectiveSide();
-        EntityPlayer player = null;
-        if(side.isServer())
-        {
-            INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-            player = ((NetHandlerPlayServer) netHandler).playerEntity;
-        }
-        else
-        {
-            player = this.getClientPlayer();
-        }
         try
         {
-            msg.readFrom(source, side, player);
+            msg.readFrom(source, FMLCommonHandler.instance().getEffectiveSide());
         }
         catch(Exception e)
         {
             iChunUtil.console("Error reading from packet for channel: " + channel, true);
             e.printStackTrace();
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public EntityPlayer getClientPlayer()
-    {
-        return Minecraft.getMinecraft().thePlayer;
     }
 
 }
