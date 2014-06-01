@@ -1,5 +1,6 @@
 package ichun.common.core.config;
 
+import com.google.common.base.Splitter;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import ichun.client.keybind.KeyBind;
@@ -18,8 +19,8 @@ public class Config
         implements Comparable
 {
 
-    public static int printKey = 4;
-    public static String curMod = "hats";
+    public static int printKey = -1;
+    public static String curMod = "morph";
 
     public static Configuration configKeybind;
 
@@ -391,7 +392,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment) + "\n" + (min != Integer.MIN_VALUE ? ("\nMin: " + min) : "") + (max != Integer.MAX_VALUE ? ("\nMax: " + max) : "");
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm + "\n" + (min != Integer.MIN_VALUE ? ("\nMin: " + min) : "") + (max != Integer.MAX_VALUE ? ("\nMax: " + max) : "");
         }
 
         props.put(propName1, prop);
@@ -450,7 +461,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment) + "\n\nMin: 0\nMax: 1";
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm + "\n\nMin: 0\nMax: 1";
         }
 
         props.put(propName1, prop);
@@ -516,7 +537,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment);
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm;
         }
 
         props.put(propName1, prop);
@@ -566,7 +597,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment);
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm;
         }
 
         props.put(propName1, prop);
@@ -657,7 +698,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment);
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm;
         }
 
         props.put(propName1, prop);
@@ -721,7 +772,17 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            prop.comment = StatCollector.translateToLocal(comment);
+            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String cm = "";
+            for(int ll = 0; ll < cms.size(); ll++)
+            {
+                cm = cm + cms.get(ll);
+                if(ll != cms.size() - 1)
+                {
+                    cm = cm + "\n";
+                }
+            }
+            prop.comment = cm;
         }
 
         props.put(propName1, prop);
@@ -776,7 +837,17 @@ public class Config
     {
         currentCat = cat;
         currentCatName = StatCollector.translateToLocal(catName);
-        config.addCustomCategoryComment(currentCat, StatCollector.translateToLocal(comment));
+        List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+        String cm = "";
+        for(int ll = 0; ll < cms.size(); ll++)
+        {
+            cm = cm + cms.get(ll);
+            if(ll != cms.size() - 1)
+            {
+                cm = cm + "\n";
+            }
+        }
+        config.addCustomCategoryComment(currentCat, cm);
 
         if(modId.equalsIgnoreCase(curMod) && printKey == 0)
             System.out.println(modId.toLowerCase() + ".config.cat." + cat + ".name=" + catName);
