@@ -23,6 +23,10 @@ public class ModVersionJsonGen
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
+        map.put("HatStand", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
         map.put("iChunUtil", versions);
         versions.put("1.7", "3.0.0");
 
