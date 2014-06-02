@@ -1,2 +1,15 @@
 ichun.config.keybind.comment=If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
+
+ichun.config.versionCheck.name=Update Checker
+ichun.config.versionSave.name=Update Checker Save
+
+ichun.config.versionCheck.comment=These configs are for the mod version update checker added by iChunUtil.
+ichun.config.versionSave.comment=These are save info for the update checker. Don't change these unless you want to break stuff.
+
+ichun.config.versionNotificationTypes.name=Update Notification Types
+ichun.config.versionNotificationFrequency.name=Update Notification Frequency
+
+ichun.config.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status (op or not).\n1 = Notify only server ops of updates (Clientside only mod updates will still show)\n2 = Allow client to notify themselves of updates.
+ichun.config.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once per launch of game/connect to server\n1 = Once a day\n2 = Only once until newer updates.
+
 ichun.gui.newUpdate=New Mod Update Available!

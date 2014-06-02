@@ -2,6 +2,7 @@ package ichun.client.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -27,6 +28,7 @@ public class GuiModUpdateNotification extends Gui
     private long achiTime;
     private ArrayList<String> modUpdatesPending = new ArrayList<String>();
     private ArrayList<String> modUpdates = new ArrayList<String>();
+    private ArrayList<String> modUpdatesDone = new ArrayList<String>();
 
     public boolean shouldRender;
     public boolean pending;
@@ -94,10 +96,16 @@ public class GuiModUpdateNotification extends Gui
             {
                 double d0 = (double)(Minecraft.getSystemTime() - this.achiTime) / (3000.0D + 500D * (modUpdates.size() - 1));
 
-                if(d0 < -5.0D || d0 > 1.0D)
+                if((d0 < -5.0D || d0 > 1.0D) && k == modUpdates.size() - 1)
                 {
                     shouldRender = false;
                     this.achiTime = 0L;
+                    for(int l = 0; l < modUpdates.size(); l++)
+                    {
+                        String s = modUpdates.get(l);
+                        iChunUtil.console("[NEW UPDATE AVAILABLE] " + s);
+                    }
+                    modUpdatesDone.addAll(modUpdates);
                     modUpdates.clear();
 
                     while(modUpdates.size() * 32D < height && !modUpdatesPending.isEmpty())

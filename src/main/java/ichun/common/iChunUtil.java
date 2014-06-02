@@ -9,27 +9,33 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.core.TickHandlerClient;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
+import ichun.common.core.config.IConfigUser;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
         dependencies = "required-after:Forge@[10.12.0.1061,)"
     )
 public class iChunUtil
+        implements IConfigUser
 {
 	//MC version, bumped up every MC update.
 	public static final int versionMC = 3;
@@ -39,12 +45,22 @@ public class iChunUtil
 
     private static Logger logger = LogManager.getLogger("iChunUtil");
 
+    public static EnumMap<Side, FMLEmbeddedChannel> channels;
+
+    public static Config config;
+
     @Instance("iChunUtil")
     public static iChunUtil instance;
     
 	@SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.common.core.CommonProxy")
 	public static CommonProxy proxy;
-    
+
+    @Override
+    public boolean onConfigChange(Config cfg, Property prop)
+    {
+        return true;
+    }
+
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
@@ -53,6 +69,29 @@ public class iChunUtil
         proxy.init();
         
         MinecraftForge.EVENT_BUS.register(this);
+
+        config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "hats", "Hats", logger, instance);
+
+        config.setCurrentCategory("versionCheck", "ichun.config.versionCheck.name", "ichun.config.versionCheck.comment");
+        config.createIntProperty("versionNotificationTypes", "ichun.config.versionNotificationTypes.name", "ichun.config.versionNotificationTypes.comment", true, false, 1, 0, 2);
+        config.createIntProperty("versionNotificationFrequency", "ichun.config.versionNotificationFrequency.name", "ichun.config.versionNotificationFrequency.comment", true, false, 1, 0, 2);
+
+        config.setCurrentCategory("versionSave", "ichun.config.versionSave.name", "ichun.config.versionSave.comment");
+        String lastCheck = config.createStringProperty("lastCheck", "Last Check", "", false, false, "");
+        config.createIntProperty("dayCheck", "Day Check", "", false, false, 0, 0, 35);
+
+        String[] split = lastCheck.split(", ");
+
+        for(String s : split)
+        {
+            String[] str = s.split(": ");
+            if(str.length >= 2)
+            {
+                System.out.println(str[0]);
+                System.out.println(str[1]);
+                proxy.prevVerChecker.put(str[0], str[1]);
+            }
+        }
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version, false));
     }

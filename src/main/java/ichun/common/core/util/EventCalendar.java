@@ -10,6 +10,8 @@ public class EventCalendar
     private static boolean isHalloween; //31/10
     private static boolean isChristmas; //25/12
 
+    public static int day;
+
     public static void checkDate()
     {
         Calendar calendar = Calendar.getInstance();
@@ -58,6 +60,7 @@ public class EventCalendar
                 break;
             }
         }
+        day = calendar.get(5);
     }
 
     public static boolean isNewYear()

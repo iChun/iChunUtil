@@ -35,7 +35,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void notifyNewUpdate(String modName, String version)
     {
-        super.notifyNewUpdate(modName, version);
+        versionChecker.put(modName, version);
         if(tickHandlerClient.modUpdateNotification == null)
         {
             tickHandlerClient.modUpdateNotification = new GuiModUpdateNotification(Minecraft.getMinecraft());

@@ -8,9 +8,13 @@ import ichun.common.core.util.EventCalendar;
 import ichun.common.iChunUtil;
 import net.minecraft.client.settings.KeyBinding;
 
+import java.util.HashMap;
+
 public class CommonProxy
 {
     public static TickHandlerClient tickHandlerClient;
+    public static HashMap<String, String> versionChecker = new HashMap<String, String>();
+    public static HashMap<String, String> prevVerChecker = new HashMap<String, String>();
 
     public void init()
     {
@@ -27,6 +31,7 @@ public class CommonProxy
      */
     public void notifyNewUpdate(String modName, String version)
     {
+        versionChecker.put(modName, version);
         iChunUtil.console("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
     }
 

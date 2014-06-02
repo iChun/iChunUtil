@@ -1,12 +1,14 @@
 package ichun.common.core.updateChecker;
 
 import com.google.gson.Gson;
+import ichun.common.core.util.EventCalendar;
 import ichun.common.iChunUtil;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,9 @@ public class ModVersionChecker
     private static String iChunJsonURL = "https://raw.githubusercontent.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/versions.json";
     private static HashMap<String, ArrayList<ModVersionInfo>> urlsToCheck = new HashMap<String, ArrayList<ModVersionInfo>>();
     private static boolean init = false;
+
+    public static boolean differentDay;
+    public static String lastCheckConfigs;
 
     /**
      * Executed in the init/load stage
@@ -64,6 +69,31 @@ public class ModVersionChecker
                     }
                 }
             }.start();
+
+            differentDay = iChunUtil.config.props.get("dayCheck").getInt() != EventCalendar.day;
+            iChunUtil.config.props.get("dayCheck").set(EventCalendar.day);
+
+            StringBuilder sb = new StringBuilder();
+            ArrayList<String> names = new ArrayList<String>();
+            for(Map.Entry<String, String> e : iChunUtil.proxy.versionChecker.entrySet())
+            {
+                names.add(e.getKey());
+            }
+            Collections.sort(names);
+
+            for(int i = 0; i < names.size(); i++)
+            {
+                sb.append(names.get(i));
+                sb.append(": ");
+                sb.append(iChunUtil.proxy.versionChecker.get(names.get(i)));
+                if(names.size() - 1 != i)
+                {
+                    sb.append(", ");
+                }
+            }
+            iChunUtil.config.props.get("lastCheck").set(sb.toString());
+
+            iChunUtil.config.config.save();
         }
         init = true;
     }
