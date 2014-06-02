@@ -36,7 +36,7 @@ import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.12.0.1061,)"
+        dependencies = "required-after:Forge@[10.12.1.1103,)"
     )
 public class iChunUtil
         implements IConfigUser
