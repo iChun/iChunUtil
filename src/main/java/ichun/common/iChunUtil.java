@@ -9,6 +9,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,9 +18,12 @@ import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
+import ichun.common.core.network.ChannelHandler;
+import ichun.common.core.network.PacketHandler;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
+import ichun.common.core.updateChecker.PacketModsList;
 import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,14 +71,15 @@ public class iChunUtil
         ObfHelper.detectObfuscation();
         
         proxy.init();
-        
+
+        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 
         config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "hats", "Hats", logger, instance);
 
         config.setCurrentCategory("versionCheck", "ichun.config.versionCheck.name", "ichun.config.versionCheck.comment");
         config.createIntProperty("versionNotificationTypes", "ichun.config.versionNotificationTypes.name", "ichun.config.versionNotificationTypes.comment", true, false, 1, 0, 2);
-        config.createIntProperty("versionNotificationFrequency", "ichun.config.versionNotificationFrequency.name", "ichun.config.versionNotificationFrequency.comment", true, false, 1, 0, 2);
+        config.createIntProperty("versionNotificationFrequency", "ichun.config.versionNotificationFrequency.name", "ichun.config.versionNotificationFrequency.comment", true, false, 0, 0, 2);
 
         config.setCurrentCategory("versionSave", "ichun.config.versionSave.name", "ichun.config.versionSave.comment");
         String lastCheck = config.createStringProperty("lastCheck", "Last Check", "", false, false, "");
@@ -87,13 +92,13 @@ public class iChunUtil
             String[] str = s.split(": ");
             if(str.length >= 2)
             {
-                System.out.println(str[0]);
-                System.out.println(str[1]);
                 proxy.prevVerChecker.put(str[0], str[1]);
             }
         }
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version, false));
+
+        channels = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class);
     }
 
     @EventHandler
@@ -132,6 +137,12 @@ public class iChunUtil
 			proxy.tickHandlerClient.iconRegister = event.map;
 		}
 	}
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isPlayerOpped(event.player.getCommandSenderName())), event.player);
+    }
 
     public static void console(String s, boolean warning)
     {

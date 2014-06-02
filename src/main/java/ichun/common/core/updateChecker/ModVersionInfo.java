@@ -5,16 +5,12 @@ import cpw.mods.fml.common.versioning.DefaultArtifactVersion;
 
 import java.util.Map;
 
-import static net.minecraftforge.common.ForgeVersion.Status.AHEAD;
-import static net.minecraftforge.common.ForgeVersion.Status.OUTDATED;
-import static net.minecraftforge.common.ForgeVersion.Status.UP_TO_DATE;
-
 public class ModVersionInfo
 {
     public final String modName;
     public final String mcVersion;
     public final String modVersion;
-    public final boolean sided; //sided = true means the mod can be installed on only ONE side.
+    public final boolean sided; //sided = true means the mod can be installed on only ONE side. Normally only the client.
 
     public String newModVersion;
 
@@ -24,6 +20,7 @@ public class ModVersionInfo
         this.mcVersion = mcVersion;
         this.modVersion = modVersion;
         this.sided = sided;
+        newModVersion = modVersion;
     }
 
     /**
@@ -45,5 +42,16 @@ public class ModVersionInfo
             return true;
         }
         return false;
+    }
+
+    public boolean isVersionOutdated(String version)
+    {
+        ArtifactVersion test = new DefaultArtifactVersion(version);
+
+        ArtifactVersion latest = new DefaultArtifactVersion(newModVersion);
+
+        int diff = latest.compareTo(test);
+
+        return diff > 0 || !modVersion.equals(newModVersion);
     }
 }

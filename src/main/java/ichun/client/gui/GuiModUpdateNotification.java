@@ -2,6 +2,7 @@ package ichun.client.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -16,6 +17,7 @@ import org.lwjgl.opengl.GL12;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class GuiModUpdateNotification extends Gui
@@ -26,9 +28,9 @@ public class GuiModUpdateNotification extends Gui
     private int height;
     private String topText;
     private long achiTime;
-    private ArrayList<String> modUpdatesPending = new ArrayList<String>();
-    private ArrayList<String> modUpdates = new ArrayList<String>();
-    private ArrayList<String> modUpdatesDone = new ArrayList<String>();
+    public ArrayList<String> modUpdatesPending = new ArrayList<String>();
+    public ArrayList<String> modUpdates = new ArrayList<String>();
+    public ArrayList<String> modUpdatesDone = new ArrayList<String>();
 
     public boolean shouldRender;
     public boolean pending;
@@ -42,14 +44,33 @@ public class GuiModUpdateNotification extends Gui
 
     public void addModUpdate(String modName, String version)
     {
+        boolean render = shouldRender;
+
+        if(iChunUtil.config.getInt("versionNotificationFrequency") == 2)
+        {
+            for(Map.Entry<String, String> e : iChunUtil.proxy.versionChecker.entrySet())
+            {
+                String oldVer = iChunUtil.proxy.prevVerChecker.get(e.getKey());
+                if(oldVer != null && oldVer.equals(e.getValue()))
+                {
+                    return;
+                }
+            }
+        }
+        else
+        {
+            shouldRender = iChunUtil.config.getInt("versionNotificationFrequency") == 0 || iChunUtil.config.getInt("versionNotificationFrequency") == 1 && ModVersionChecker.differentDay;
+        }
+
         pending = true;
-        modUpdatesPending.add(modName + " | " + version);
+
+        modUpdatesPending.add(modName + " - " + version);
         while((height == 0 || modUpdates.size() * 32D < height) && !modUpdatesPending.isEmpty())
         {
             modUpdates.add(modUpdatesPending.get(0));
             modUpdatesPending.remove(0);
 
-            if(shouldRender)
+            if(render)
             {
                 achiTime = Minecraft.getSystemTime() - 250L;
             }
@@ -59,7 +80,6 @@ public class GuiModUpdateNotification extends Gui
             }
             Collections.sort(modUpdates);
         }
-        shouldRender = true;
     }
 
     private void updateWindowScale()
@@ -107,6 +127,11 @@ public class GuiModUpdateNotification extends Gui
                     }
                     modUpdatesDone.addAll(modUpdates);
                     modUpdates.clear();
+
+                    if(modUpdatesPending.isEmpty())
+                    {
+                        ModVersionChecker.differentDay = false;
+                    }
 
                     while(modUpdates.size() * 32D < height && !modUpdatesPending.isEmpty())
                     {
@@ -159,5 +184,13 @@ public class GuiModUpdateNotification extends Gui
                 GL11.glEnable(GL11.GL_DEPTH_TEST);
             }
         }
+    }
+
+    public void clearModUpdates()
+    {
+        shouldRender = false;
+        ModVersionChecker.clearListOfNonSidedMods(modUpdates);
+        ModVersionChecker.clearListOfNonSidedMods(modUpdatesPending);
+        modUpdatesDone.clear();
     }
 }

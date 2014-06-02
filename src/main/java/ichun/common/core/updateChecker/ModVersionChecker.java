@@ -1,8 +1,10 @@
 package ichun.common.core.updateChecker;
 
 import com.google.gson.Gson;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import ichun.common.core.util.EventCalendar;
 import ichun.common.iChunUtil;
+import io.netty.buffer.ByteBuf;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -20,7 +22,6 @@ public class ModVersionChecker
     private static boolean init = false;
 
     public static boolean differentDay;
-    public static String lastCheckConfigs;
 
     /**
      * Executed in the init/load stage
@@ -67,33 +68,33 @@ public class ModVersionChecker
                     catch(Exception e)
                     {
                     }
+
+                    differentDay = iChunUtil.config.props.get("dayCheck").getInt() != EventCalendar.day;
+                    iChunUtil.config.props.get("dayCheck").set(EventCalendar.day);
+
+                    StringBuilder sb = new StringBuilder();
+                    ArrayList<String> names = new ArrayList<String>();
+                    for(Map.Entry<String, String> e : iChunUtil.proxy.versionChecker.entrySet())
+                    {
+                        names.add(e.getKey());
+                    }
+                    Collections.sort(names);
+
+                    for(int i = 0; i < names.size(); i++)
+                    {
+                        sb.append(names.get(i));
+                        sb.append(": ");
+                        sb.append(iChunUtil.proxy.versionChecker.get(names.get(i)));
+                        if(names.size() - 1 != i)
+                        {
+                            sb.append(", ");
+                        }
+                    }
+                    iChunUtil.config.props.get("lastCheck").set(sb.toString());
+
+                    iChunUtil.config.config.save();
                 }
             }.start();
-
-            differentDay = iChunUtil.config.props.get("dayCheck").getInt() != EventCalendar.day;
-            iChunUtil.config.props.get("dayCheck").set(EventCalendar.day);
-
-            StringBuilder sb = new StringBuilder();
-            ArrayList<String> names = new ArrayList<String>();
-            for(Map.Entry<String, String> e : iChunUtil.proxy.versionChecker.entrySet())
-            {
-                names.add(e.getKey());
-            }
-            Collections.sort(names);
-
-            for(int i = 0; i < names.size(); i++)
-            {
-                sb.append(names.get(i));
-                sb.append(": ");
-                sb.append(iChunUtil.proxy.versionChecker.get(names.get(i)));
-                if(names.size() - 1 != i)
-                {
-                    sb.append(", ");
-                }
-            }
-            iChunUtil.config.props.get("lastCheck").set(sb.toString());
-
-            iChunUtil.config.config.save();
         }
         init = true;
     }
@@ -128,5 +129,69 @@ public class ModVersionChecker
             urlsToCheck.put(url, list);
         }
         return list;
+    }
+
+    public static void writeToBuffer(ByteBuf buffer)
+    {
+        for(Map.Entry<String, ArrayList<ModVersionInfo>> e : urlsToCheck.entrySet())
+        {
+            for(ModVersionInfo info : e.getValue())
+            {
+                ByteBufUtils.writeUTF8String(buffer, info.modName);
+                ByteBufUtils.writeUTF8String(buffer, info.modVersion);
+            }
+        }
+        ByteBufUtils.writeUTF8String(buffer, "##endPacket");
+    }
+
+    public static void compareServerVersions(HashMap<String, String> versions)
+    {
+        if(iChunUtil.proxy.tickHandlerClient.modUpdateNotification != null)
+        {
+            iChunUtil.proxy.tickHandlerClient.modUpdateNotification.clearModUpdates();
+        }
+
+        ArrayList<ModVersionInfo> infos = new ArrayList<ModVersionInfo>();
+        for(Map.Entry<String, ArrayList<ModVersionInfo>> e : urlsToCheck.entrySet())
+        {
+            for(ModVersionInfo info : e.getValue())
+            {
+                String version = versions.get(info.modName);
+                if(version != null && info.isVersionOutdated(version))
+                {
+                    iChunUtil.proxy.notifyNewUpdate(info.modName, info.newModVersion);
+                }
+            }
+        }
+    }
+
+    public static void clearListOfNonSidedMods(ArrayList<String> list)
+    {
+        for(int i = list.size() - 1; i >= 0; i--)
+        {
+            String modName = list.get(i);
+
+            boolean br = false;
+            for(Map.Entry<String, ArrayList<ModVersionInfo>> e : urlsToCheck.entrySet())
+            {
+                for(ModVersionInfo info : e.getValue())
+                {
+                    if(modName.startsWith(info.modName) && !info.sided)
+                    {
+                        list.remove(i);
+                        br = true;
+                    }
+                    if(br)
+                    {
+                        break;
+                    }
+                }
+                if(br)
+                {
+                    break;
+                }
+            }
+
+        }
     }
 }
