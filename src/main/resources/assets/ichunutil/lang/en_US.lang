@@ -10,6 +10,6 @@ ichun.config.versionNotificationTypes.name=Update Notification Types
 ichun.config.versionNotificationFrequency.name=Update Notification Frequency
 
 ichun.config.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status (op or not).\n1 = Notify only server ops of updates (Clientside only mod updates will still show)\n2 = Allow client to notify themselves of updates.
-ichun.config.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once you connect to server\n1 = Once a day\n2 = Only once until newer updates.
+ichun.config.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once you connect to server\n1 = Once a day\n2 = Only once until newer updates.\n3 = Never (This just hides notifications. The mod will still check for updates and print out to the console).
 
 ichun.gui.newUpdate=New Mod Update Available!

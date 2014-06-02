@@ -46,7 +46,12 @@ public class GuiModUpdateNotification extends Gui
     {
         boolean render = shouldRender;
 
-        if(iChunUtil.config.getInt("versionNotificationFrequency") == 2)
+        if(iChunUtil.config.getInt("versionNotificationFrequency") == 3)
+        {
+            iChunUtil.console("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
+            return;
+        }
+        else if(iChunUtil.config.getInt("versionNotificationFrequency") == 2)
         {
             for(Map.Entry<String, String> e : iChunUtil.proxy.versionChecker.entrySet())
             {
