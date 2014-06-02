@@ -5,6 +5,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -14,6 +15,8 @@ import ichun.client.core.TickHandlerClient;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
+import ichun.common.core.updateChecker.ModVersionChecker;
+import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -49,6 +52,13 @@ public class iChunUtil
         proxy.init();
         
         MinecraftForge.EVENT_BUS.register(this);
+        //TODO remember to register iChunUtil itself.
+    }
+
+    @EventHandler
+    public void load(FMLInitializationEvent event)
+    {
+        ModVersionChecker.init();
     }
 
     @EventHandler
@@ -59,7 +69,12 @@ public class iChunUtil
     	{
     		cfg.setup();
     	}
-        Config.configKeybind.save();
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+        {
+            Config.configKeybind.save();
+        }
+
+//        ModVersionJsonGen.generate();
     }
     
     public static boolean getPostLoad()

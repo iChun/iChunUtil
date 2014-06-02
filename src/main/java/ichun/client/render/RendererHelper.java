@@ -145,4 +145,56 @@ public class RendererHelper
     {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
+
+    public static void renderTestStencil()
+    {
+        //Basic stencil test
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+
+        GL11.glColorMask(false, false, false, false);
+        GL11.glDepthMask(false);
+
+        GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+
+        RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, 60, 60, 0);
+
+        GL11.glColorMask(true, true, true, true);
+        GL11.glDepthMask(true);
+
+        GL11.glStencilMask(0x00);
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+
+        RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
+
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+    }
+
+    public static void renderTestSciccor()
+    {
+        //Basic scissor test
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+
+        RendererHelper.startGlScissor(reso1.getScaledWidth() / 2 - 50, reso1.getScaledHeight() / 2 - 50, 100, 100);
+
+        GL11.glPushMatrix();
+
+        GL11.glTranslatef(-15F, 15F, 0F);
+
+        RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
+
+        GL11.glPopMatrix();
+
+        RendererHelper.endGlScissor();
+    }
 }

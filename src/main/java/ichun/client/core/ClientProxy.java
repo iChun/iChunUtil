@@ -3,10 +3,13 @@ package ichun.client.core;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.client.gui.GuiModUpdateNotification;
 import ichun.client.keybind.KeyBind;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.util.ResourceHelper;
+import ichun.common.iChunUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.config.Configuration;
 
@@ -27,6 +30,17 @@ public class ClientProxy extends CommonProxy
 
         tickHandlerClient = new TickHandlerClient();
         FMLCommonHandler.instance().bus().register(tickHandlerClient);
+    }
+
+    @Override
+    public void notifyNewUpdate(String modName, String version)
+    {
+        super.notifyNewUpdate(modName, version);
+        if(tickHandlerClient.modUpdateNotification == null)
+        {
+            tickHandlerClient.modUpdateNotification = new GuiModUpdateNotification(Minecraft.getMinecraft());
+        }
+        tickHandlerClient.modUpdateNotification.addModUpdate(modName, version);
     }
 
     @Override
