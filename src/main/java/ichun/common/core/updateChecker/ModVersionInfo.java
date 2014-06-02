@@ -14,14 +14,16 @@ public class ModVersionInfo
     public final String modName;
     public final String mcVersion;
     public final String modVersion;
+    public final boolean sided; //sided = true means the mod can be installed on only ONE side.
 
     public String newModVersion;
 
-    public ModVersionInfo(String modName, String mcVersion, String modVersion)
+    public ModVersionInfo(String modName, String mcVersion, String modVersion, boolean sided)
     {
         this.modName = modName;
         this.mcVersion = mcVersion;
         this.modVersion = modVersion;
+        this.sided = sided;
     }
 
     /**

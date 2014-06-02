@@ -54,7 +54,7 @@ public class iChunUtil
         
         MinecraftForge.EVENT_BUS.register(this);
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version));
+        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version, false));
     }
 
     @EventHandler
