@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
-//TODO change the obf fields to be the last checked
 //TODO check usages of these fields. Some probably aren't used anymore.
 public class ObfHelper
 {
@@ -19,28 +18,28 @@ public class ObfHelper
 
     private static final String obfVersion = "1.7.0";
 
-    public static final String[] equippedProgress 				= new String[] { "field_78454_c", "equippedProgress" 				, "g"}; //ItemRenderer
-    public static final String[] prevEquippedProgress 			= new String[] { "field_78451_d", "prevEquippedProgress" 			, "h"}; //ItemRenderer
-    public static final String[] itemToRender 					= new String[] { "field_78453_b", "itemToRender" 					, "f"}; //ItemRenderer
-    public static final String[] equippedItemSlot 				= new String[] { "field_78450_g", "equippedItemSlot" 			    , "j"}; //ItemRenderer
+    public static final String[] equippedProgress 				= new String[] { "field_78454_c", "equippedProgress" 				, "f"}; //ItemRenderer
+    public static final String[] prevEquippedProgress 			= new String[] { "field_78451_d", "prevEquippedProgress" 			, "g"}; //ItemRenderer
+    public static final String[] itemToRender 					= new String[] { "field_78453_b", "itemToRender" 					, "e"}; //ItemRenderer
+    public static final String[] equippedItemSlot 				= new String[] { "field_78450_g", "equippedItemSlot" 			    , "i"}; //ItemRenderer
 
     public static final String[] lightningState					= new String[] { "field_70262_b", "lightningState"					, "b"}; //EntityLightningBolt
 
     public static final String[] explosionRadius				= new String[] { "field_82226_g", "explosionRadius"				    ,"bs"}; //EntityCreeper
 
-    public static final String[] cameraZoom						= new String[] { "field_78503_V", "cameraZoom"						, "Y"}; //EntityRenderer
-    public static final String[] fogColorRed					= new String[] { "field_78518_n", "fogColorRed"					    , "k"}; //EntityRenderer
-    public static final String[] fogColorGreen					= new String[] { "field_78519_o", "fogColorGreen"					, "l"}; //EntityRenderer
-    public static final String[] fogColorBlue					= new String[] { "field_78533_p", "fogColorBlue"					, "m"}; //EntityRenderer
+    public static final String[] cameraZoom						= new String[] { "field_78503_V", "cameraZoom"						,"af"}; //EntityRenderer
+    public static final String[] fogColorRed					= new String[] { "field_78518_n", "fogColorRed"					    , "m"}; //EntityRenderer
+    public static final String[] fogColorGreen					= new String[] { "field_78519_o", "fogColorGreen"					, "n"}; //EntityRenderer
+    public static final String[] fogColorBlue					= new String[] { "field_78533_p", "fogColorBlue"					, "o"}; //EntityRenderer
 
-    public static final String[] itemHealth						= new String[] { "field_70291_e", "health"							, "d"}; //EntityItem
+    public static final String[] itemHealth						= new String[] { "field_70291_e", "health"							, "e"}; //EntityItem
 
     public static final String[] arrowInGround					= new String[] { "field_70254_i", "inGround"						, "i"}; //EntityArrow
 
     public static final String[] showNameTime					= new String[] { "field_92017_k", "remainingHighlightTicks"		    , "q"}; //GuiIngame
     
-    public static final String[] defaultResourcePacks 			= new String[] { "field_110449_ao", "defaultResourcePacks"		    ,"aq"}; //Minecraft
-    public static final String[] refreshTexturePacksScheduled 	= new String[] { "field_71468_ad", "refreshTexturePacksScheduled"	,"ag"}; //Minecraft
+    public static final String[] defaultResourcePacks 			= new String[] { "field_110449_ao", "defaultResourcePacks"		    ,"ap"}; //Minecraft
+    public static final String[] refreshTexturePacksScheduled 	= new String[] { "field_71468_ad", "refreshTexturePacksScheduled"	,"ae"}; //Minecraft
     
 	public static final String[] textureOffsetX 				= new String[] { "field_78803_o", "textureOffsetX" 				    , "r"}; //ModelRenderer
 	public static final String[] textureOffsetY 				= new String[] { "field_78813_p", "textureOffsetY" 				    , "s"}; //ModelRenderer
@@ -62,13 +61,13 @@ public class ObfHelper
     public static final String[] timeSinceIgnited				= new String[] { "field_70833_d", "timeSinceIgnited"				,"bq"}; //EntityCreeper
     public static final String[] fuseTime						= new String[] { "field_82225_f", "fuseTime"						,"br"}; //EntityCreeper
 
-    public static final String[] isImmuneToFire			        = new String[] { "field_70178_ae", "isImmuneToFire"	        	    ,"ag"}; //Entity
+    public static final String[] isImmuneToFire			        = new String[] { "field_70178_ae", "isImmuneToFire"	        	    ,"af"}; //Entity
 
     public static final String[] isJumping 		        		= new String[] { "field_70703_bu", "isJumping" 		        	    ,"bd"}; //EntityLivingBase
 
     public static final String[] shadowSize		        		= new String[] { "field_76989_e", "shadowSize"			        	, "d"}; //Render
 
-    public static final String[] tagMap			        		= new String[] { "field_74784_a", "tagMap"				        	, "a"}; //NBTTagCompound
+    public static final String[] tagMap			        		= new String[] { "field_74784_a", "tagMap"				        	, "c"}; //NBTTagCompound
 
     //EntityLivingBase
     public static final String jumpObf		= "func_70664_aZ";

@@ -16,6 +16,7 @@ import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.updateChecker.ModVersionChecker;
+import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -52,7 +53,8 @@ public class iChunUtil
         proxy.init();
         
         MinecraftForge.EVENT_BUS.register(this);
-        //TODO remember to register iChunUtil itself.
+
+        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version));
     }
 
     @EventHandler

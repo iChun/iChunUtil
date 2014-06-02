@@ -13,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 @SideOnly(Side.CLIENT)
 public class GuiModUpdateNotification extends Gui
@@ -53,6 +55,7 @@ public class GuiModUpdateNotification extends Gui
             {
                 achiTime = Minecraft.getSystemTime();
             }
+            Collections.sort(modUpdates);
         }
         shouldRender = true;
     }
@@ -102,6 +105,7 @@ public class GuiModUpdateNotification extends Gui
                         modUpdates.add(modUpdatesPending.get(0));
                         modUpdatesPending.remove(0);
                         achiTime = Minecraft.getSystemTime();
+                        Collections.sort(modUpdates);
                     }
                     shouldRender = true;
 

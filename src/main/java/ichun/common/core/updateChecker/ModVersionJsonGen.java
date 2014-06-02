@@ -15,12 +15,20 @@ public class ModVersionJsonGen
         Map<String, String> versions;
 
         versions = new HashMap<String, String>();
+        map.put("BackTools", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
         map.put("Hats", versions);
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
-        map.put("Morph", versions);
+        map.put("iChunUtil", versions);
         versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("Morph", versions);
+        versions.put("1.7", "0.8.0");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(map);
