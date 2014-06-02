@@ -75,7 +75,7 @@ public class iChunUtil
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
 
-        config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "hats", "Hats", logger, instance);
+        config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "ichunutil", "iChunUtil", logger, instance);
 
         config.setCurrentCategory("versionCheck", "ichun.config.versionCheck.name", "ichun.config.versionCheck.comment");
         config.createIntProperty("versionNotificationTypes", "ichun.config.versionNotificationTypes.name", "ichun.config.versionNotificationTypes.comment", true, false, 1, 0, 2);

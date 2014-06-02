@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
 import org.lwjgl.input.Keyboard;
@@ -467,6 +468,22 @@ public class GuiConfigSetterScroll extends GuiSlot
     @Override
     protected void drawBackground() {}
 
+    private void overlayBackground(int p_148136_1_, int p_148136_2_, int p_148136_3_, int p_148136_4_)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        this.mc.getTextureManager().bindTexture(Gui.optionsBackground);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        float f = 32.0F;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA_I(4210752, p_148136_4_);
+        tessellator.addVertexWithUV((double)this.left, (double)p_148136_2_, 0.0D, 0.0D, (double)((float)p_148136_2_ / f));
+        tessellator.addVertexWithUV((double)(this.left + this.width), (double)p_148136_2_, 0.0D, (double)((float)this.width / f), (double)((float)p_148136_2_ / f));
+        tessellator.setColorRGBA_I(4210752, p_148136_3_);
+        tessellator.addVertexWithUV((double)(this.left + this.width), (double)p_148136_1_, 0.0D, (double)((float)this.width / f), (double)((float)p_148136_1_ / f));
+        tessellator.addVertexWithUV((double)this.left, (double)p_148136_1_, 0.0D, 0.0D, (double)((float)p_148136_1_ / f));
+        tessellator.draw();
+    }
+
     @Override
     public void drawScreen(int mX, int mY, float f)
     {
@@ -474,6 +491,11 @@ public class GuiConfigSetterScroll extends GuiSlot
         _mouseY = mY;
 
         super.drawScreen(mX, mY, f);
+
+        GL11.glTranslatef(10F, 0F, 0F);
+        this.overlayBackground(0, this.top, 255, 255);
+        this.overlayBackground(this.bottom, controls.height, 255, 255);
+        GL11.glTranslatef(-10F, 0F, 0F);
 
         if(settingKeybind)
         {
@@ -648,11 +670,11 @@ public class GuiConfigSetterScroll extends GuiSlot
                         clr = 16777120;
 
                         ArrayList<String> tooltip = new ArrayList<String>();
-                        tooltip.add("These key binds allow a combination of Shift/Ctrl/Alt");
+                        tooltip.add(StatCollector.translateToLocal("ichun.config.keybind.tip1"));
                         tooltip.add("");
-                        tooltip.add("Try holding those down when setting a key bind");
+                        tooltip.add(StatCollector.translateToLocal("ichun.config.keybind.tip2"));
                         tooltip.add("");
-                        tooltip.add("If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.");
+                        tooltip.add(StatCollector.translateToLocal("ichun.config.keybind.tip3"));
                         controls.drawTooltip(tooltip, 0, 35);
 
                         mc.renderEngine.bindTexture(WIDGITS);
@@ -785,7 +807,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                 }
             }
 
-            String str = (k == 2 ? EnumChatFormatting.YELLOW : "") + (propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index));
+            String str = (k == 2 ? EnumChatFormatting.YELLOW : "") + StatCollector.translateToLocal(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index));
             controls.drawString(mc.fontRenderer, str, xPosition, yPosition + (height - 8) / 2, 0xFFFFFFFF);
                         
             if(k == 2 && prop.comment != null)
