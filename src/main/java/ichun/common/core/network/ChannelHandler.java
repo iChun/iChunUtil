@@ -11,9 +11,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.util.ReportedException;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -43,6 +45,10 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
 
     public static EnumMap<Side, FMLEmbeddedChannel> getChannelHandlers(String modId, Class<? extends AbstractPacket>...packetTypes)
     {
+        if(packetTypes.length == 0)
+        {
+            throw new ReportedException(new CrashReport("Mod " + modId + " is not registering any packets with its channel handlers.", new Throwable()));
+        }
         EnumMap<Side, FMLEmbeddedChannel> handlers = NetworkRegistry.INSTANCE.newChannel(modId, new ChannelHandler(modId, packetTypes));
 
         PacketExecuter executer = new PacketExecuter();

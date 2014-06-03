@@ -2,19 +2,29 @@ package ichun.client.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
+import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.util.ArrayList;
+
+import static org.lwjgl.opengl.EXTFramebufferObject.*;
+import static org.lwjgl.opengl.EXTFramebufferObject.GL_FRAMEBUFFER_EXT;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_INT;
 
 @SideOnly(Side.CLIENT)
 public class RendererHelper 
@@ -196,5 +206,20 @@ public class RendererHelper
         GL11.glPopMatrix();
 
         RendererHelper.endGlScissor();
+    }
+
+    public static ArrayList<Framebuffer> frameBuffers = new ArrayList<Framebuffer>();
+
+    public static Framebuffer createFrameBuffer(String modId, boolean useDepth)
+    {
+        Framebuffer render = new Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, useDepth);
+        frameBuffers.add(render);
+        return render;
+    }
+
+    public static void deleteFrameBuffer(Framebuffer buffer)
+    {
+        buffer.deleteFramebuffer();
+        frameBuffers.remove(buffer);
     }
 }

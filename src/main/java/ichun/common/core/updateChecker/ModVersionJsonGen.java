@@ -34,6 +34,18 @@ public class ModVersionJsonGen
         map.put("Morph", versions);
         versions.put("1.7", "0.8.0");
 
+        versions = new HashMap<String, String>();
+        map.put("Photoreal", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("Shatter", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("Streak", versions);
+        versions.put("1.7", "3.0.0");
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(map);
 

@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 
@@ -29,9 +30,22 @@ public class TickHandlerClient
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END)
+        Minecraft mc = Minecraft.getMinecraft();
+        if(event.phase == TickEvent.Phase.START)
         {
-            Minecraft mc = Minecraft.getMinecraft();
+            if(screenWidth != mc.displayWidth || screenHeight != mc.displayHeight)
+            {
+                screenWidth = mc.displayWidth;
+                screenHeight = mc.displayHeight;
+
+                for(Framebuffer buffer : RendererHelper.frameBuffers)
+                {
+                    buffer.createBindFramebuffer(screenWidth, screenHeight);
+                }
+            }
+        }
+        else
+        {
             if(!ConfigHandler.configs.isEmpty() && mc.currentScreen != null && mc.currentScreen.getClass().equals(GuiOptions.class))
             {
                 GuiOptions gui = (GuiOptions)mc.currentScreen;
@@ -93,6 +107,9 @@ public class TickHandlerClient
     public IIconRegister iconRegister;
     
     public boolean optionsKeyDown;
+
+    public int screenWidth = Minecraft.getMinecraft().displayWidth;
+    public int screenHeight = Minecraft.getMinecraft().displayHeight;
 
     public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
