@@ -20,7 +20,7 @@ public class Config
 {
 
     public static int printKey = -1;
-    public static String curMod = "morph";
+    public static String curMod = "grinder";
 
     public static Configuration configKeybind;
 
@@ -69,7 +69,7 @@ public class Config
         parent = configParent;
 
         currentCat = "general";
-        currentCatName = "General";
+        currentCatName = StatCollector.translateToLocal("ichun.config.cat.general.name");
     }
 
     public void resetSession()

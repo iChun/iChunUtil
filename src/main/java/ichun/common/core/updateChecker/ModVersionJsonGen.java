@@ -15,6 +15,10 @@ public class ModVersionJsonGen
         Map<String, String> versions;
 
         versions = new HashMap<String, String>();
+        map.put("Grinder", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
         map.put("BackTools", versions);
         versions.put("1.7", "3.0.0");
 
@@ -28,7 +32,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("iChunUtil", versions);
-        versions.put("1.7", "3.0.0");
+        versions.put("1.7", "3.1.0");
 
         versions = new HashMap<String, String>();
         map.put("Morph", versions);
@@ -44,6 +48,14 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Streak", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("Torched", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("TrailMix", versions);
         versions.put("1.7", "3.0.0");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
