@@ -20,7 +20,7 @@ public class Config
 {
 
     public static int printKey = -1;
-    public static String curMod = "grinder";
+    public static String curMod = "mobDis";
 
     public static Configuration configKeybind;
 
@@ -864,7 +864,7 @@ public class Config
         if(modId.equalsIgnoreCase(curMod) && printKey == 1)
             System.out.println(modId.toLowerCase() + ".config.cat." + cat + ".comment=" + comment);
         if(modId.equalsIgnoreCase(curMod) && printKey == 4)
-            System.out.println("config.setCurrentCategory(" + cat + ", " + modId.toLowerCase() + ".config.cat." + cat + ".name, " + modId.toLowerCase() + ".config.cat." + cat + ".comment);");
+            System.out.println("config.setCurrentCategory(\"" + cat + "\", \"" + modId.toLowerCase() + ".config.cat." + cat + ".name\", \"" + modId.toLowerCase() + ".config.cat." + cat + ".comment\");");
     }
 
     public void setup()
