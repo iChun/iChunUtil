@@ -228,7 +228,7 @@ public class TC2Info
         Document doc = builder.parse(xml);
 
         info.Techne.Version     = doc.getElementsByTagName("Techne").item(0).getAttributes().item(0).getNodeValue();
-        info.Techne.Author      = doc.getElementsByTagName("Techne").item(0).getChildNodes().item(0).getNodeValue().equals("ZeuX") ? "NotZeux" : doc.getElementsByTagName("Techne").item(0).getChildNodes().item(0).getNodeValue();
+        info.Techne.Author      = doc.getElementsByTagName("Author").item(0).getChildNodes().item(0).getNodeValue().equals("ZeuX") ? "NotZeux" : doc.getElementsByTagName("Techne").item(0).getChildNodes().item(0).getNodeValue();
         info.Techne.Name        = doc.getElementsByTagName("Name").item(0).getChildNodes().item(0).getNodeValue();
         info.Techne.PreviewImage= doc.getElementsByTagName("PreviewImage").item(0).getChildNodes().item(0).getNodeValue();
         info.Techne.ProjectName = doc.getElementsByTagName("ProjectName").item(0).getChildNodes().item(0).getNodeValue();
