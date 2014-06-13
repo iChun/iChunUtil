@@ -218,7 +218,7 @@ public class TC2Info
         }
     }
 
-    public static TC2Info convertTechneFile(InputStream xml, InputStream png) throws IOException, ParserConfigurationException, SAXException
+    private static TC2Info convertTechneFile(InputStream xml, InputStream png) throws IOException, ParserConfigurationException, SAXException
     {
         if(xml == null || png == null)
         {
