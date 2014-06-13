@@ -67,23 +67,26 @@ public class GuiModUpdateNotification extends Gui
             shouldRender = iChunUtil.config.getInt("versionNotificationFrequency") == 0 || iChunUtil.config.getInt("versionNotificationFrequency") == 1 && ModVersionChecker.differentDay;
         }
 
-        pending = true;
-
-        modUpdatesPending.add(modName + " - " + version);
-        while((height == 0 || modUpdates.size() * 32D < height) && !modUpdatesPending.isEmpty())
+        if(!modUpdatesPending.contains(modName + " - " + version))
         {
-            modUpdates.add(modUpdatesPending.get(0));
-            modUpdatesPending.remove(0);
+            pending = true;
 
-            if(render)
+            modUpdatesPending.add(modName + " - " + version);
+            while((height == 0 || modUpdates.size() * 32D < height) && !modUpdatesPending.isEmpty())
             {
-                achiTime = Minecraft.getSystemTime() - 250L;
+                modUpdates.add(modUpdatesPending.get(0));
+                modUpdatesPending.remove(0);
+
+                if(render)
+                {
+                    achiTime = Minecraft.getSystemTime() - 250L;
+                }
+                else
+                {
+                    achiTime = Minecraft.getSystemTime();
+                }
+                Collections.sort(modUpdates);
             }
-            else
-            {
-                achiTime = Minecraft.getSystemTime();
-            }
-            Collections.sort(modUpdates);
         }
     }
 
