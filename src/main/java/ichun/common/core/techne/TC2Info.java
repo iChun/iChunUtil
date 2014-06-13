@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -24,7 +26,6 @@ import java.util.zip.ZipInputStream;
  */
 public class TC2Info
 {
-    private transient BufferedImage image;
     public Techne Techne = new Techne();
 
     private class Techne
@@ -65,6 +66,8 @@ public class TC2Info
         String texture = "texture.png";
         String BaseClass = "ModelBase";
         Group Geometry = new Group();
+
+        transient BufferedImage image;
     }
 
     public class Group
@@ -145,7 +148,7 @@ public class TC2Info
             Enumeration entries = zipFile.entries();
 
             ZipEntry xml = null;
-            ZipEntry png = null;
+            HashMap<String, InputStream> images = new HashMap<String, InputStream>();
 
             while(entries.hasMoreElements())
             {
@@ -154,7 +157,7 @@ public class TC2Info
                 {
                     if(entry.getName().endsWith(".png"))
                     {
-                        png = entry;
+                        images.put(entry.getName(), zipFile.getInputStream(entry));
                     }
                     if(entry.getName().endsWith(".xml"))
                     {
@@ -163,7 +166,7 @@ public class TC2Info
                 }
             }
 
-            TC2Info info = convertTechneFile(zipFile.getInputStream(xml), zipFile.getInputStream(png));
+            TC2Info info = convertTechneFile(zipFile.getInputStream(xml), images);
 
             zipFile.close();
 
@@ -181,8 +184,6 @@ public class TC2Info
         try
         {
             ZipInputStream cloneXML = new ZipInputStream(stream);
-            ZipInputStream clonePNG = new ZipInputStream(stream);
-            stream.close();
 
             ZipEntry entry = null;
 
@@ -197,18 +198,24 @@ public class TC2Info
 
             entry = null;
 
-            boolean hasPNG = false;
+            ZipInputStream clonePNG = new ZipInputStream(stream);
+
+            HashMap<String, InputStream> images = new HashMap<String, InputStream>();
+
             while((entry = clonePNG.getNextEntry()) != null)
             {
-                if(!entry.isDirectory() && entry.getName().endsWith(".png"))
+                if(!entry.isDirectory() && entry.getName().endsWith(".png") && !images.containsKey(entry.getName()))
                 {
-                    hasPNG = true;
+                    images.put(entry.getName(), clonePNG);
+                    clonePNG = new ZipInputStream(stream);
                 }
             }
 
-            if(hasXML && hasPNG)
+            stream.close();
+
+            if(hasXML && !images.isEmpty())
             {
-                return convertTechneFile(cloneXML, clonePNG);
+                return convertTechneFile(cloneXML, images);
             }
             return null;
         }
@@ -218,9 +225,9 @@ public class TC2Info
         }
     }
 
-    private static TC2Info convertTechneFile(InputStream xml, InputStream png) throws IOException, ParserConfigurationException, SAXException
+    private static TC2Info convertTechneFile(InputStream xml, HashMap<String, InputStream> images) throws IOException, ParserConfigurationException, SAXException
     {
-        if(xml == null || png == null)
+        if(xml == null || images == null || images.isEmpty())
         {
             return null;
         }
@@ -259,6 +266,12 @@ public class TC2Info
                 if(attribute.getNodeName().equals("texture"))
                 {
                     model.Model.texture = attribute.getNodeValue();
+
+                    InputStream stream = images.get(model.Model.texture);
+                    if(stream != null)
+                    {
+                        model.Model.image = ImageIO.read(stream);
+                    }
                 }
             }
 
@@ -372,10 +385,12 @@ public class TC2Info
             }
         }
 
-        info.image = ImageIO.read(png);
-
         xml.close();
-        png.close();
+
+        for(Map.Entry<String, InputStream> img : images.entrySet())
+        {
+            img.getValue().close();
+        }
 
         return info;
     }
