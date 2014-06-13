@@ -15,7 +15,6 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ichun.client.core.TickHandlerClient;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
@@ -25,7 +24,6 @@ import ichun.common.core.network.PacketHandler;
 import ichun.common.core.techne.TC2Info;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
-import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.updateChecker.PacketModsList;
 import ichun.common.core.util.ObfHelper;
 import net.minecraft.client.Minecraft;
@@ -48,7 +46,7 @@ public class iChunUtil
 {
 	//MC version, bumped up every MC update.
 	public static final int versionMC = 3;
-    public static final String version = versionMC + ".1.0";
+    public static final String version = versionMC + ".2.0";
     
     private static boolean hasPostLoad = false;
 
@@ -75,7 +73,7 @@ public class iChunUtil
     {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println("JSON!");
-        System.out.println(gson.toJson(TC2Info.convertTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/Straw Hat.tcn"))));
+        System.out.println(gson.toJson(TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/Straw Hat.tcn"))));
 
         ObfHelper.detectObfuscation();
         

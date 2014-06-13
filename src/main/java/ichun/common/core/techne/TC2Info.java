@@ -1,5 +1,6 @@
 package ichun.common.core.techne;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -140,14 +142,19 @@ public class TC2Info
         Group Children = new Group();
     }
 
-    public static TC2Info convertTechneFile(File file)
+    /**
+     * Returns a TC2Info file from a Techne save file. Works for Techne 1 and 2. TC2Info is a Techne 2 file format, Techne 1 saves will be converted to this format.
+     * @param file Techne file location..
+     * @return Techne 2 save file, deserialized. Null if file is not a valid Techne file with model info and textures.
+     */
+    public static TC2Info readTechneFile(File file)
     {
         try
         {
             ZipFile zipFile = new ZipFile(file);
             Enumeration entries = zipFile.entries();
 
-            ZipEntry xml = null;
+            ZipEntry modelInfo = null;
             HashMap<String, InputStream> images = new HashMap<String, InputStream>();
 
             while(entries.hasMoreElements())
@@ -159,14 +166,25 @@ public class TC2Info
                     {
                         images.put(entry.getName(), zipFile.getInputStream(entry));
                     }
-                    if(entry.getName().endsWith(".xml"))
+                    if(entry.getName().endsWith(".xml") || entry.getName().endsWith(".json"))
                     {
-                        xml = entry;
+                        modelInfo = entry;
                     }
                 }
             }
 
-            TC2Info info = convertTechneFile(zipFile.getInputStream(xml), images);
+            TC2Info info = null;
+            if(modelInfo != null)
+            {
+                if(modelInfo.getName().endsWith(".xml"))
+                {
+                    info = convertTechneFile(zipFile.getInputStream(modelInfo), images);
+                }
+                else
+                {
+                    info = readTechne2File(zipFile.getInputStream(modelInfo), images);
+                }
+            }
 
             zipFile.close();
 
@@ -179,7 +197,12 @@ public class TC2Info
         }
     }
 
-    public static TC2Info convertTechneFile(ZipInputStream stream)
+    /**
+     * Returns a TC2Info file from a Techne save file. Works for Techne 1 and 2. TC2Info is a Techne 2 file format, Techne 1 saves will be converted to this format.
+     * @param stream ZipInputStream, basically reading a techne file in a zip file.
+     * @return Techne 2 save file, deserialized. Null if file is not a valid Techne file with model info and textures.
+     */
+    public static TC2Info readTechneFile(ZipInputStream stream)
     {
         try
         {
@@ -188,11 +211,21 @@ public class TC2Info
             ZipEntry entry = null;
 
             boolean hasXML = false;
+            boolean hasJSON = false;
             while((entry = cloneXML.getNextEntry()) != null)
             {
-                if(!entry.isDirectory() && entry.getName().endsWith(".xml"))
+                if(!entry.isDirectory())
                 {
-                    hasXML = true;
+                    if(entry.getName().endsWith(".xml"))
+                    {
+                        hasXML = true;
+                        break;
+                    }
+                    if(entry.getName().endsWith(".json"))
+                    {
+                        hasJSON = true;
+                        break;
+                    }
                 }
             }
 
@@ -213,9 +246,16 @@ public class TC2Info
 
             stream.close();
 
-            if(hasXML && !images.isEmpty())
+            if(!images.isEmpty())
             {
-                return convertTechneFile(cloneXML, images);
+                if(hasXML)
+                {
+                    return convertTechneFile(cloneXML, images);
+                }
+                if(hasJSON)
+                {
+                    return readTechne2File(cloneXML, images);
+                }
             }
             return null;
         }
@@ -392,6 +432,36 @@ public class TC2Info
             img.getValue().close();
         }
 
+        return info;
+    }
+
+    private static TC2Info readTechne2File(InputStream json, HashMap<String, InputStream> images) throws IOException
+    {
+        if(json == null || images == null || images.isEmpty())
+        {
+            return null;
+        }
+
+        TC2Info info = (new Gson()).fromJson(new InputStreamReader(json), TC2Info.class);
+
+        if(info != null)
+        {
+            for(Model model : info.Techne.Models)
+            {
+                InputStream stream = images.get(model.Model.texture);
+                if(stream != null)
+                {
+                    model.Model.image = ImageIO.read(stream);
+                }
+            }
+        }
+
+        json.close();
+
+        for(Map.Entry<String, InputStream> img : images.entrySet())
+        {
+            img.getValue().close();
+        }
         return info;
     }
 }
