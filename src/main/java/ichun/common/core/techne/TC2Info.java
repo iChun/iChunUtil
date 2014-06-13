@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
  */
 public class TC2Info
 {
-    private BufferedImage image;
+    private transient BufferedImage image;
     public Techne Techne = new Techne();
 
     private class Techne
@@ -39,6 +39,15 @@ public class TC2Info
         String Description = "";
         String DateCreated = "";
         Model[] Models = new Model[] { };
+
+        public void createNewModelArray(int size)
+        {
+            Models = new Model[size];
+            for(int i = 0; i < Models.length; i++)
+            {
+                Models[i] = new Model();
+            }
+        }
     }
 
     public class Model
@@ -63,6 +72,11 @@ public class TC2Info
         Shape[] Shape = new Shape[] {};
         Linear[] Linear = new Linear[] {};
         Null[] Null = new Null[] {};
+
+        public void createNewShapeArray(int size)
+        {
+            Shape = new Shape[size];
+        }
     }
 
     public class Circular
@@ -220,25 +234,125 @@ public class TC2Info
 
         NodeList list = doc.getElementsByTagName("Model");
 
-        info.Techne.Models = new Model[list.getLength()];
+        info.Techne.createNewModelArray(list.getLength());
+
+        int id = 1;
 
         for(int i = 0; i < list.getLength(); i++)
         {
-            info.Techne.Models[i] = new Model();
+            Model model = info.Techne.Models[i];
+
             Node node = list.item(i);
 
             for(int j = 0; j < node.getAttributes().getLength(); j++)
             {
                 Node attribute = node.getAttributes().item(j);
 
-                if(attribute.getNodeName().equalsIgnoreCase("texture") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
+                if(attribute.getNodeName().equals("texture"))
                 {
+                    model.Model.texture = attribute.getNodeValue();
+                }
+            }
+
+            int shapeCount = 0;
+            for(int k = 0; k < node.getChildNodes().getLength(); k++)
+            {
+                Node child = node.getChildNodes().item(k);
+                if(child.getNodeName().equals("GlScale"))
+                {
+                    model.Model.GlScale = child.getTextContent();
+                }
+                else if(child.getNodeName().equals("Name"))
+                {
+                    model.Model.Name = child.getTextContent();
+                }
+                else if(child.getNodeName().equals("TextureSize"))
+                {
+                    model.Model.TextureSize = child.getTextContent();
+                }
+                else if(child.getNodeName().equals("BaseClass"))
+                {
+                    model.Model.BaseClass = child.getTextContent();
+                }
+                else if(child.getNodeName().equals("Shape"))
+                {
+                    for(int j = 0; j < child.getAttributes().getLength(); j++)
+                    {
+                        Node attribute = node.getAttributes().item(j);
+                        if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
+                        {
+                            shapeCount++;
+                        }
+                    }
+                }
+            }
+
+            model.Model.Geometry.createNewShapeArray(shapeCount);
+
+            int shapeNum = 0;
+            for(int k = 0; k < node.getChildNodes().getLength(); k++)
+            {
+                Node child = node.getChildNodes().item(k);
+                if(child.getNodeName().equals("Shape"))
+                {
+                    for(int j = 0; j < child.getAttributes().getLength(); j++)
+                    {
+                        Node attribute = node.getAttributes().item(j);
+                        if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")) && shapeNum < shapeCount)
+                        {
+                            Shape shape = model.Model.Geometry.Shape[shapeNum];
+                            shape.Id = id++;
+
+                            for(int jj = 0; jj < child.getAttributes().getLength(); jj++)
+                            {
+                                Node attribute1 = node.getAttributes().item(jj);
+                                if(attribute1.getNodeName().equalsIgnoreCase("name"))
+                                {
+                                    shape.Name = attribute1.getNodeValue();
+                                    break;
+                                }
+                            }
+
+                            for(int kk = 0; kk < node.getChildNodes().getLength(); kk++)
+                            {
+                                Node child1 = node.getChildNodes().item(kk);
+                                if(child1.getNodeName().equals("IsDecorative"))
+                                {
+                                    shape.IsDecorative = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("IsFixed"))
+                                {
+                                    shape.IsFixed = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("IsMirrored"))
+                                {
+                                    shape.IsMirrored = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("Position"))
+                                {
+                                    shape.Position = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("Rotation"))
+                                {
+                                    shape.Rotation = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("Size"))
+                                {
+                                    shape.Size = child1.getTextContent();
+                                }
+                                else if(child1.getNodeName().equals("TextureOffset"))
+                                {
+                                    shape.TextureOffset = child1.getTextContent();
+                                }
+                            }
+                            shapeNum++;
+                        }
+                    }
                 }
             }
         }
 
-
-                    info.image = ImageIO.read(png);
+        info.image = ImageIO.read(png);
 
         xml.close();
         png.close();
