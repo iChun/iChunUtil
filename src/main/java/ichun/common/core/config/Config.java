@@ -54,6 +54,7 @@ public class Config
 
     private boolean setup;
 
+    //TODO read if config changed then save?
     //If you're reading this and you're confused, I don't blame you.. I did not put much javadoc in my source.
     //The best way for you to understand how to use this kind of config is by looking at how my other mods implement it.
     //I would recommend you to check out Morph on my GitHub. It uses the int, intbool, string and keybind configs with proper implementation, as well as the "Session" feature provided in configs.
