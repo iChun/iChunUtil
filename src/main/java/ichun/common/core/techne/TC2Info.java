@@ -76,6 +76,10 @@ public class TC2Info
         public void createNewShapeArray(int size)
         {
             Shape = new Shape[size];
+            for(int i = 0; i < Shape.length; i++)
+            {
+                Shape[i] = new Shape();
+            }
         }
     }
 
