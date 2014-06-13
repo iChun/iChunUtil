@@ -19,14 +19,14 @@ public class ModelPart
 
     public GroupModels models = new GroupModels();
 
-    public void render(boolean bindTexture, float f5)
+    public boolean render(boolean bindTexture, float f5)
     {
         if(bindTexture)
         {
             if(image == null)
             {
-                iChunUtil.console("A Techne 2 model part is trying to render without a texture!");
-                return;
+                iChunUtil.console("A Techne 2 model part is trying to render without a texture! Removing from overall Model Parts.");
+                return false;
             }
             if(imageId == -1)
             {
@@ -41,5 +41,7 @@ public class ModelPart
         models.render(f5);
 
         GL11.glPopMatrix();
+
+        return true;
     }
 }

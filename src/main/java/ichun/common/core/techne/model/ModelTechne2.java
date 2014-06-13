@@ -24,9 +24,13 @@ public class ModelTechne2 extends ModelBase
 
     public void render(boolean bindTexture, float f5)
     {
-        for(ModelPart modelPart : modelParts)
+        for(int i = modelParts.size() - 1; i >= 0 ; i--)
         {
-            modelPart.render(bindTexture, f5);
+            ModelPart modelPart = modelParts.get(i);
+            if(!modelPart.render(bindTexture, f5))
+            {
+                modelParts.remove(i);
+            }
         }
     }
 }

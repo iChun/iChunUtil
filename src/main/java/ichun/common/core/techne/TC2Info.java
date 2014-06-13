@@ -145,7 +145,7 @@ public class TC2Info
     /**
      * Returns a TC2Info file from a Techne save file. Works for Techne 1 and 2. TC2Info is a Techne 2 file format, Techne 1 saves will be converted to this format.
      * @param file Techne file location..
-     * @return Techne 2 save file, deserialized. Null if file is not a valid Techne file with model info and textures.
+     * @return Techne 2 save info, deserialized. Null if file is not a valid Techne file with model info and textures.
      */
     public static TC2Info readTechneFile(File file)
     {
@@ -200,7 +200,7 @@ public class TC2Info
     /**
      * Returns a TC2Info file from a Techne save file. Works for Techne 1 and 2. TC2Info is a Techne 2 file format, Techne 1 saves will be converted to this format.
      * @param stream ZipInputStream, basically reading a techne file in a zip file.
-     * @return Techne 2 save file, deserialized. Null if file is not a valid Techne file with model info and textures.
+     * @return Techne 2 save info, deserialized. Null if file is not a valid Techne file with model info and textures.
      */
     public static TC2Info readTechneFile(ZipInputStream stream)
     {
