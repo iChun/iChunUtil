@@ -28,6 +28,7 @@ import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.updateChecker.PacketModsList;
 import ichun.common.core.util.ObfHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
@@ -35,6 +36,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
@@ -71,6 +73,10 @@ public class iChunUtil
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        System.out.println("JSON!");
+        System.out.println(gson.toJson(TC2Info.convertTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/Straw Hat.tcn"))));
+
         ObfHelper.detectObfuscation();
         
         proxy.init();
@@ -124,9 +130,6 @@ public class iChunUtil
         }
 
 //        ModVersionJsonGen.generate();
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(new TC2Info()));
     }
     
     public static boolean getPostLoad()

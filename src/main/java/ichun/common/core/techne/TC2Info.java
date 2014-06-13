@@ -38,6 +38,7 @@ public class TC2Info
         String ProjectType = "";
         String Description = "";
         String DateCreated = "";
+        String _comment = "Generated using iChunUtil";
         Model[] Models = new Model[] { };
 
         public void createNewModelArray(int size)
@@ -162,12 +163,15 @@ public class TC2Info
                 }
             }
 
+            TC2Info info = convertTechneFile(zipFile.getInputStream(xml), zipFile.getInputStream(png));
+
             zipFile.close();
 
-            return convertTechneFile(zipFile.getInputStream(xml), zipFile.getInputStream(png));
+            return info;
         }
         catch (Exception e1)
         {
+            e1.printStackTrace();
             return null;
         }
     }
@@ -228,13 +232,13 @@ public class TC2Info
         Document doc = builder.parse(xml);
 
         info.Techne.Version     = doc.getElementsByTagName("Techne").item(0).getAttributes().item(0).getNodeValue();
-        info.Techne.Author      = doc.getElementsByTagName("Author").item(0).getChildNodes().item(0).getNodeValue().equals("ZeuX") ? "NotZeux" : doc.getElementsByTagName("Techne").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.Name        = doc.getElementsByTagName("Name").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.PreviewImage= doc.getElementsByTagName("PreviewImage").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.ProjectName = doc.getElementsByTagName("ProjectName").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.ProjectType = doc.getElementsByTagName("ProjectType").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.Description = doc.getElementsByTagName("Description").item(0).getChildNodes().item(0).getNodeValue();
-        info.Techne.DateCreated = doc.getElementsByTagName("DateCreated").item(0).getChildNodes().item(0).getNodeValue();
+        info.Techne.Author      = doc.getElementsByTagName("Author").item(0).getTextContent().equals("ZeuX") ? "NotZeux" : doc.getElementsByTagName("Techne").item(0).getTextContent();
+        info.Techne.Name        = doc.getElementsByTagName("Name").item(0).getTextContent();
+        info.Techne.PreviewImage= doc.getElementsByTagName("PreviewImage").item(0).getTextContent();
+        info.Techne.ProjectName = doc.getElementsByTagName("ProjectName").item(0).getTextContent();
+        info.Techne.ProjectType = doc.getElementsByTagName("ProjectType").item(0).getTextContent();
+        info.Techne.Description = doc.getElementsByTagName("Description").item(0).getTextContent();
+        info.Techne.DateCreated = doc.getElementsByTagName("DateCreated").item(0).getTextContent();
 
         NodeList list = doc.getElementsByTagName("Model");
 
@@ -258,6 +262,7 @@ public class TC2Info
                 }
             }
 
+            Node Geometry = null;
             int shapeCount = 0;
             for(int k = 0; k < node.getChildNodes().getLength(); k++)
             {
@@ -278,78 +283,89 @@ public class TC2Info
                 {
                     model.Model.BaseClass = child.getTextContent();
                 }
-                else if(child.getNodeName().equals("Shape"))
+                else if(child.getNodeName().equals("Geometry"))
                 {
-                    for(int j = 0; j < child.getAttributes().getLength(); j++)
+                    Geometry = child;
+                    for(int l = 0; l < child.getChildNodes().getLength(); l++)
                     {
-                        Node attribute = node.getAttributes().item(j);
-                        if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
+                        Node shape = child.getChildNodes().item(l);
+                        if(shape.getNodeName().equals("Shape"))
                         {
-                            shapeCount++;
+                            for(int j = 0; j < shape.getAttributes().getLength(); j++)
+                            {
+                                Node attribute = shape.getAttributes().item(j);
+                                if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
+                                {
+                                    shapeCount++;
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            model.Model.Geometry.createNewShapeArray(shapeCount);
-
-            int shapeNum = 0;
-            for(int k = 0; k < node.getChildNodes().getLength(); k++)
+            if(Geometry != null)
             {
-                Node child = node.getChildNodes().item(k);
-                if(child.getNodeName().equals("Shape"))
+                model.Model.Geometry.createNewShapeArray(shapeCount);
+
+                int shapeNum = 0;
+                for(int k = 0; k < Geometry.getChildNodes().getLength(); k++)
                 {
-                    for(int j = 0; j < child.getAttributes().getLength(); j++)
+                    Node child = Geometry.getChildNodes().item(k);
+                    if(child.getNodeName().equals("Shape"))
                     {
-                        Node attribute = node.getAttributes().item(j);
-                        if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")) && shapeNum < shapeCount)
+                        for(int j = 0; j < child.getAttributes().getLength(); j++)
                         {
-                            Shape shape = model.Model.Geometry.Shape[shapeNum];
-                            shape.Id = id++;
-
-                            for(int jj = 0; jj < child.getAttributes().getLength(); jj++)
+                            Node attribute = child.getAttributes().item(j);
+                            if(attribute.getNodeName().equals("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")) && shapeNum < shapeCount)
                             {
-                                Node attribute1 = node.getAttributes().item(jj);
-                                if(attribute1.getNodeName().equalsIgnoreCase("name"))
-                                {
-                                    shape.Name = attribute1.getNodeValue();
-                                    break;
-                                }
-                            }
+                                Shape shape = model.Model.Geometry.Shape[shapeNum];
+                                shape.Id = id++;
 
-                            for(int kk = 0; kk < node.getChildNodes().getLength(); kk++)
-                            {
-                                Node child1 = node.getChildNodes().item(kk);
-                                if(child1.getNodeName().equals("IsDecorative"))
+                                for(int jj = 0; jj < child.getAttributes().getLength(); jj++)
                                 {
-                                    shape.IsDecorative = child1.getTextContent();
+                                    Node attribute1 = child.getAttributes().item(jj);
+                                    if(attribute1.getNodeName().equals("name"))
+                                    {
+                                        shape.Name = attribute1.getNodeValue();
+                                        break;
+                                    }
                                 }
-                                else if(child1.getNodeName().equals("IsFixed"))
+
+                                for(int kk = 0; kk < child.getChildNodes().getLength(); kk++)
                                 {
-                                    shape.IsFixed = child1.getTextContent();
+                                    Node child1 = child.getChildNodes().item(kk);
+                                    if(child1.getNodeName().equals("IsDecorative"))
+                                    {
+                                        shape.IsDecorative = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("IsFixed"))
+                                    {
+                                        shape.IsFixed = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("IsMirrored"))
+                                    {
+                                        shape.IsMirrored = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("Position"))
+                                    {
+                                        shape.Position = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("Rotation"))
+                                    {
+                                        shape.Rotation = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("Size"))
+                                    {
+                                        shape.Size = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("TextureOffset"))
+                                    {
+                                        shape.TextureOffset = child1.getTextContent();
+                                    }
                                 }
-                                else if(child1.getNodeName().equals("IsMirrored"))
-                                {
-                                    shape.IsMirrored = child1.getTextContent();
-                                }
-                                else if(child1.getNodeName().equals("Position"))
-                                {
-                                    shape.Position = child1.getTextContent();
-                                }
-                                else if(child1.getNodeName().equals("Rotation"))
-                                {
-                                    shape.Rotation = child1.getTextContent();
-                                }
-                                else if(child1.getNodeName().equals("Size"))
-                                {
-                                    shape.Size = child1.getTextContent();
-                                }
-                                else if(child1.getNodeName().equals("TextureOffset"))
-                                {
-                                    shape.TextureOffset = child1.getTextContent();
-                                }
+                                shapeNum++;
                             }
-                            shapeNum++;
                         }
                     }
                 }
