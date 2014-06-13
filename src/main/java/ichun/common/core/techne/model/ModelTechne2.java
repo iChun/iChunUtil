@@ -21,4 +21,12 @@ public class ModelTechne2 extends ModelBase
     {
 
     }
+
+    public void render(boolean bindTexture, float f5)
+    {
+        for(ModelPart modelPart : modelParts)
+        {
+            modelPart.render(bindTexture, f5);
+        }
+    }
 }

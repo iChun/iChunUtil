@@ -1,5 +1,6 @@
 package ichun.common.core.techne.model.components;
 
+import ichun.common.iChunUtil;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +23,11 @@ public class ModelPart
     {
         if(bindTexture)
         {
+            if(image == null)
+            {
+                iChunUtil.console("A Techne 2 model part is trying to render without a texture!");
+                return;
+            }
             if(imageId == -1)
             {
                 imageId = TextureUtil.uploadTextureImage(TextureUtil.glGenTextures(), image);

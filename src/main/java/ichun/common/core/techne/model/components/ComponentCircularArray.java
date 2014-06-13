@@ -5,6 +5,7 @@ public class ComponentCircularArray extends ComponentGroup
     public float radius;
     public int count;
 
+    //TODO this
     @Override
     protected void renderGroup(float f5)
     {
