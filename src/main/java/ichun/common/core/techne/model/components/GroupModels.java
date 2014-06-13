@@ -7,30 +7,33 @@ import java.util.ArrayList;
 public class GroupModels
 {
     //Components are null unless it actually has something.
-    public ComponentCircularArray componentCircularArray;
-    public ComponentLinearArray componentLinearArray;
-    public ComponentGroup componentGroup;
+    public ArrayList<ComponentCircularArray> componentCircularArray = new ArrayList<ComponentCircularArray>();
+    public ArrayList<ComponentLinearArray> componentLinearArray = new ArrayList<ComponentLinearArray>();
+    public ArrayList<ComponentGroup> componentGroup = new ArrayList<ComponentGroup>();
 
     public ArrayList<ModelRenderer> models = new ArrayList<ModelRenderer>();
 
+    /**
+     * In order of Techne's save file.
+     * @param f5
+     */
     public void render(float f5)
     {
-        if(componentCircularArray != null)
+        for(ComponentCircularArray component : componentCircularArray)
         {
-            componentCircularArray.render(f5);
+            component.render(f5);
         }
-        if(componentLinearArray != null)
-        {
-            componentLinearArray.render(f5);
-        }
-        if(componentGroup != null)
-        {
-            componentGroup.render(f5);
-        }
-
         for(ModelRenderer model : models)
         {
             model.renderWithRotation(f5);
+        }
+        for(ComponentLinearArray component : componentLinearArray)
+        {
+            component.render(f5);
+        }
+        for(ComponentGroup component : componentGroup)
+        {
+            component.render(f5);
         }
     }
 }

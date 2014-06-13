@@ -41,6 +41,10 @@ public class ComponentGroup
         GL11.glPopMatrix();
     }
 
+    /**
+     * Overriden in other classes to do other things before rendering.
+     * @param f5
+     */
     protected void renderGroup(float f5)
     {
         groupModels.render(f5);
