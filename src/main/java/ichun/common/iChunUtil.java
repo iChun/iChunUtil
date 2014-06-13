@@ -73,7 +73,7 @@ public class iChunUtil
     {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println("JSON!");
-        System.out.println(gson.toJson(TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/Straw Hat.tcn"))));
+        System.out.println(gson.toJson(TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/TechneModel.tc2"))));
 
         ObfHelper.detectObfuscation();
         

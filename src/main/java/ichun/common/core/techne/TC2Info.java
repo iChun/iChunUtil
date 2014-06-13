@@ -162,7 +162,7 @@ public class TC2Info
                 ZipEntry entry = (ZipEntry)entries.nextElement();
                 if(!entry.isDirectory())
                 {
-                    if(entry.getName().endsWith(".png"))
+                    if(entry.getName().endsWith(".png") && entry.getCrc() != Long.decode("0xf970c898"))
                     {
                         images.put(entry.getName(), zipFile.getInputStream(entry));
                     }
@@ -237,7 +237,7 @@ public class TC2Info
 
             while((entry = clonePNG.getNextEntry()) != null)
             {
-                if(!entry.isDirectory() && entry.getName().endsWith(".png") && !images.containsKey(entry.getName()))
+                if(!entry.isDirectory() && entry.getName().endsWith(".png") && !images.containsKey(entry.getName()) && entry.getCrc() != Long.decode("0xf970c898"))
                 {
                     images.put(entry.getName(), clonePNG);
                     clonePNG = new ZipInputStream(stream);
