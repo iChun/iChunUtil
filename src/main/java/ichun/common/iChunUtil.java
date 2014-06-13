@@ -1,5 +1,7 @@
 package ichun.common;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -20,6 +22,7 @@ import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.core.network.ChannelHandler;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.techne.TC2Info;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
@@ -121,6 +124,9 @@ public class iChunUtil
         }
 
 //        ModVersionJsonGen.generate();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        System.out.println(gson.toJson(new TC2Info()));
     }
     
     public static boolean getPostLoad()
