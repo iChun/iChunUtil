@@ -30,19 +30,20 @@ public class TC2Info
 {
     public Techne Techne = new Techne();
 
-    private class Techne
+    public class Techne
     {
         @SerializedName("@Version")
-        String Version = "2.2";
-        String Author = "NotZeuX";
-        String Name = "";
-        String PreviewImage = "";
-        String ProjectName = "";
-        String ProjectType = "";
-        String Description = "";
-        String DateCreated = "";
-        String _comment = "Generated using iChunUtil";
-        Model[] Models = new Model[] { };
+        public String Version = "2.2";
+        public String Author = "NotZeuX";
+        public String Name = "";
+        public String PreviewImage = "";
+        public String ProjectName = "";
+        public String ProjectType = "";
+        public String Description = "";
+        public String DateCreated = "";
+        public Model[] Models = new Model[] { };
+
+        private String _comment = "Generated using iChunUtil";
 
         public void createNewModelArray(int size)
         {
@@ -56,28 +57,28 @@ public class TC2Info
 
     public class Model
     {
-        ModelInfo Model = new ModelInfo();
+        public ModelInfo Model = new ModelInfo();
     }
 
     public class ModelInfo
     {
-        String GlScale = "1,1,1";
-        String Name = "";
-        String TextureSize = "64,32";
+        public String GlScale = "1,1,1";
+        public String Name = "";
+        public String TextureSize = "64,32";
         @SerializedName("@texture")
-        String texture = "texture.png";
-        String BaseClass = "ModelBase";
-        Group Geometry = new Group();
+        public String texture = "texture.png";
+        public String BaseClass = "ModelBase";
+        public Group Geometry = new Group();
 
-        transient BufferedImage image;
+        public transient BufferedImage image;
     }
 
     public class Group
     {
-        Circular[] Circular = new Circular[] {};
-        Shape[] Shape = new Shape[] {};
-        Linear[] Linear = new Linear[] {};
-        Null[] Null = new Null[] {};
+        public Circular[] Circular = new Circular[] {};
+        public Shape[] Shape = new Shape[] {};
+        public Linear[] Linear = new Linear[] {};
+        public Null[] Null = new Null[] {};
 
         public void createNewShapeArray(int size)
         {
@@ -89,57 +90,52 @@ public class TC2Info
         }
     }
 
-    public class Circular
+    public class Circular extends Null
     {
-        @SerializedName("@Type")
-        String Type = "16932820-ef7c-4b4b-bf05-b72063b3d23c";
-        @SerializedName("@Name")
-        String Name = "Circular Array";
-        String Position = "0,0,0";
-        String Rotation = "0,0,0";
-        Group Children = new Group();
-        int Count = 5;
-        int Radius = 16;
+        {
+            Type = "16932820-ef7c-4b4b-bf05-b72063b3d23c";
+            Name = "Circular Array";
+        }
+        public int Count = 5;
+        public int Radius = 16;
     }
 
     public class Shape
     {
-        int Id = 1; //is a variable
+        public int Id = 1; //is a variable
         @SerializedName("@Type")
-        String Type = "d9e621f7-957f-4b77-b1ae-20dcd0da7751";
+        public String Type = "d9e621f7-957f-4b77-b1ae-20dcd0da7751";
         @SerializedName("@Name")
-        String Name = "new cube";
-        String IsDecorative = "False";
-        String IsFixed = "False";
-        String IsMirrored = "False";
-        String Position = "0,0,0";
-        String Rotation = "0,0,0"; //TODO is in radians. Be sure to convert accordingly
-        String Size = "1,1,1";
-        String TextureOffset = "0,0";
+        public String Name = "new cube";
+        public String IsDecorative = "False";
+        public String IsFixed = "False";
+        public String IsMirrored = "False";
+        public String Position = "0,0,0";
+        public String Offset = "0,0,0";
+        public String Rotation = "0,0,0";
+        public String Size = "1,1,1";
+        public String TextureOffset = "0,0";
     }
 
-    public class Linear
+    public class Linear extends Null
     {
-        @SerializedName("@Type")
-        String Type = "fc4f63c9-8296-4c97-abd8-414f20e49bd5";
-        @SerializedName("@Name")
-        String Name = "Linear Array";
-        String Position = "0,0,0";
-        String Rotation = "0,0,0";
-        Group Children = new Group();
-        String Count = "0,0,0";
-        String Spacing = "0,0,0";
+        {
+            Type = "fc4f63c9-8296-4c97-abd8-414f20e49bd5";
+            Name = "Linear Array";
+        }
+        public String Count = "0,0,0";
+        public String Spacing = "0,0,0";
     }
 
     public class Null
     {
         @SerializedName("@Type")
-        String Type = "3b3bb6e5-2f8b-4bbd-8dbb-478b67762fd0";
+        public String Type = "3b3bb6e5-2f8b-4bbd-8dbb-478b67762fd0";
         @SerializedName("@Name")
-        String Name = "null element";
-        String Position = "0,0,0";
-        String Rotation = "0,0,0";
-        Group Children = new Group();
+        public String Name = "null element";
+        public String Position = "0,0,0";
+        public String Rotation = "0,0,0";
+        public Group Children = new Group();
     }
 
     /**
@@ -399,6 +395,10 @@ public class TC2Info
                                     else if(child1.getNodeName().equals("IsMirrored"))
                                     {
                                         shape.IsMirrored = child1.getTextContent();
+                                    }
+                                    else if(child1.getNodeName().equals("Offset"))
+                                    {
+                                        shape.Offset = child1.getTextContent();
                                     }
                                     else if(child1.getNodeName().equals("Position"))
                                     {
