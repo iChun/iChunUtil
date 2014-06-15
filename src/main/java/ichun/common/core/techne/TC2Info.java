@@ -2,7 +2,6 @@ package ichun.common.core.techne;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import ichun.common.core.techne.model.ModelTechne2;
 import ichun.common.iChunUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -29,6 +28,8 @@ import java.util.zip.ZipOutputStream;
 public class TC2Info
 {
     public Techne Techne = new Techne();
+
+    public transient boolean tampered;
 
     public class Techne
     {
@@ -164,6 +165,8 @@ public class TC2Info
             ZipEntry modelInfo = null;
             HashMap<String, InputStream> images = new HashMap<String, InputStream>();
 
+            boolean tampered = false;
+
             while(entries.hasMoreElements())
             {
                 ZipEntry entry = (ZipEntry)entries.nextElement();
@@ -176,6 +179,10 @@ public class TC2Info
                     if(entry.getName().endsWith(".xml") || entry.getName().endsWith(".json"))
                     {
                         modelInfo = entry;
+                    }
+                    if(!entry.getName().endsWith(".png") && !entry.getName().endsWith(".xml") && !entry.getName().endsWith(".json"))
+                    {
+                        tampered = true;
                     }
                 }
             }
@@ -194,6 +201,8 @@ public class TC2Info
             }
 
             zipFile.close();
+
+            info.tampered = tampered;
 
             return info;
         }
@@ -242,12 +251,21 @@ public class TC2Info
 
             HashMap<String, InputStream> images = new HashMap<String, InputStream>();
 
+            boolean tampered = false;
+
             while((entry = clonePNG.getNextEntry()) != null)
             {
-                if(!entry.isDirectory() && entry.getName().endsWith(".png") && !images.containsKey(entry.getName()) && entry.getCrc() != Long.decode("0xf970c898"))
+                if(!entry.isDirectory())
                 {
-                    images.put(entry.getName(), clonePNG);
-                    clonePNG = new ZipInputStream(stream);
+                    if(entry.getName().endsWith(".png") && !images.containsKey(entry.getName()) && entry.getCrc() != Long.decode("0xf970c898"))
+                    {
+                        images.put(entry.getName(), clonePNG);
+                        clonePNG = new ZipInputStream(stream);
+                    }
+                    else if(!entry.getName().endsWith(".png") && !entry.getName().endsWith(".xml") && !entry.getName().endsWith(".json"))
+                    {
+                        tampered = true;
+                    }
                 }
             }
 
@@ -257,11 +275,15 @@ public class TC2Info
             {
                 if(hasXML)
                 {
-                    return convertTechneFile(cloneXML, images);
+                    TC2Info info = convertTechneFile(cloneXML, images);
+                    info.tampered = tampered;
+                    return info;
                 }
                 if(hasJSON)
                 {
-                    return readTechne2File(cloneXML, images);
+                    TC2Info info = readTechne2File(cloneXML, images);
+                    info.tampered = tampered;
+                    return info;
                 }
             }
             return null;
