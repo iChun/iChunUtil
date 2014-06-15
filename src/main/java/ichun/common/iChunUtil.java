@@ -71,13 +71,6 @@ public class iChunUtil
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        System.out.println("JSON!");
-//        System.out.println(gson.toJson(TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/The MoonWalker.tc2"))));
-
-        TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/Pig Hat.tcn")).saveAsFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/tc2/Pig Hat.tc2"), true);
-        TC2Info.readTechneFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/The MoonWalker.tc2")).saveAsFile(new File(Minecraft.getMinecraft().mcDataDir, "hats/tc2/The MoonWalker-genned.tc2"), true);
-
         ObfHelper.detectObfuscation();
         
         proxy.init();

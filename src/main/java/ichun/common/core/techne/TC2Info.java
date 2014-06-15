@@ -88,6 +88,17 @@ public class TC2Info
                 Shape[i] = new Shape();
             }
         }
+
+        public void extendNullArray()
+        {
+            Null[] nulls = new Null[Null.length + 1];
+            for(int i = 0; i < Null.length; i++)
+            {
+                nulls[i] = Null[i];
+            }
+            nulls[Null.length] = new Null();
+            Null = nulls;
+        }
     }
 
     public class Circular extends Null
@@ -261,6 +272,9 @@ public class TC2Info
         }
     }
 
+    /**
+     * Converts a Techne 1 file into a TC2Info (Techne 2 compatible format), with the exception of Techne 1's "pieces" function.
+     */
     private static TC2Info convertTechneFile(InputStream xml, HashMap<String, InputStream> images) throws IOException, ParserConfigurationException, SAXException
     {
         if(xml == null || images == null || images.isEmpty())
@@ -334,93 +348,7 @@ public class TC2Info
                 }
                 else if(child.getNodeName().equals("Geometry"))
                 {
-                    Geometry = child;
-                    for(int l = 0; l < child.getChildNodes().getLength(); l++)
-                    {
-                        Node shape = child.getChildNodes().item(l);
-                        if(shape.getNodeName().equals("Shape"))
-                        {
-                            for(int j = 0; j < shape.getAttributes().getLength(); j++)
-                            {
-                                Node attribute = shape.getAttributes().item(j);
-                                if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
-                                {
-                                    shapeCount++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(Geometry != null)
-            {
-                model.Model.Geometry.createNewShapeArray(shapeCount);
-
-                int shapeNum = 0;
-                for(int k = 0; k < Geometry.getChildNodes().getLength(); k++)
-                {
-                    Node child = Geometry.getChildNodes().item(k);
-                    if(child.getNodeName().equals("Shape"))
-                    {
-                        for(int j = 0; j < child.getAttributes().getLength(); j++)
-                        {
-                            Node attribute = child.getAttributes().item(j);
-                            if(attribute.getNodeName().equals("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")) && shapeNum < shapeCount)
-                            {
-                                Shape shape = model.Model.Geometry.Shape[shapeNum];
-                                shape.Id = id++;
-
-                                for(int jj = 0; jj < child.getAttributes().getLength(); jj++)
-                                {
-                                    Node attribute1 = child.getAttributes().item(jj);
-                                    if(attribute1.getNodeName().equals("name"))
-                                    {
-                                        shape.Name = attribute1.getNodeValue();
-                                        break;
-                                    }
-                                }
-
-                                for(int kk = 0; kk < child.getChildNodes().getLength(); kk++)
-                                {
-                                    Node child1 = child.getChildNodes().item(kk);
-                                    if(child1.getNodeName().equals("IsDecorative"))
-                                    {
-                                        shape.IsDecorative = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("IsFixed"))
-                                    {
-                                        shape.IsFixed = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("IsMirrored"))
-                                    {
-                                        shape.IsMirrored = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("Offset"))
-                                    {
-                                        shape.Offset = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("Position"))
-                                    {
-                                        shape.Position = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("Rotation"))
-                                    {
-                                        shape.Rotation = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("Size"))
-                                    {
-                                        shape.Size = child1.getTextContent();
-                                    }
-                                    else if(child1.getNodeName().equals("TextureOffset"))
-                                    {
-                                        shape.TextureOffset = child1.getTextContent();
-                                    }
-                                }
-                                shapeNum++;
-                            }
-                        }
-                    }
+                    id = createShapesFromNode(id, child, model.Model.Geometry);
                 }
             }
         }
@@ -433,6 +361,119 @@ public class TC2Info
         }
 
         return info;
+    }
+
+    private static int createShapesFromNode(int id, Node node, Group group)
+    {
+        int shapeCount = 0;
+        for(int l = 0; l < node.getChildNodes().getLength(); l++)
+        {
+            Node child = node.getChildNodes().item(l);
+            if(child.getNodeName().equals("Shape"))
+            {
+                for(int j = 0; j < child.getAttributes().getLength(); j++)
+                {
+                    Node attribute = child.getAttributes().item(j);
+                    if(attribute.getNodeName().equalsIgnoreCase("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")))
+                    {
+                        shapeCount++;
+                    }
+                }
+            }
+            else if(child.getNodeName().equals("Folder") || child.getNodeName().equals("Piece"))
+            {
+                group.extendNullArray();
+                for(int j = 0; j < child.getAttributes().getLength(); j++)
+                {
+                    Node attribute = child.getAttributes().item(j);
+                    if(attribute.getNodeName().equals("Name"))
+                    {
+                        group.Null[group.Null.length - 1].Name = attribute.getNodeValue();
+                    }
+                }
+                if(child.getNodeName().equals("Piece"))
+                {
+                    for(int k = 0; k < child.getChildNodes().getLength(); k++)
+                    {
+                        if(child.getChildNodes().item(k).equals("Position"))
+                        {
+                            group.Null[group.Null.length - 1].Position = child.getChildNodes().item(k).getTextContent();
+                        }
+                    }
+                }
+                createShapesFromNode(id, child, group.Null[group.Null.length - 1].Children);
+            }
+        }
+
+        group.createNewShapeArray(shapeCount);
+
+        int shapeNum = 0;
+        for(int k = 0; k < node.getChildNodes().getLength(); k++)
+        {
+            Node child = node.getChildNodes().item(k);
+            if(child.getNodeName().equals("Shape"))
+            {
+                for(int j = 0; j < child.getAttributes().getLength(); j++)
+                {
+                    Node attribute = child.getAttributes().item(j);
+                    if(attribute.getNodeName().equals("type") && (attribute.getNodeValue().equalsIgnoreCase("d9e621f7-957f-4b77-b1ae-20dcd0da7751") || attribute.getNodeValue().equalsIgnoreCase("de81aa14-bd60-4228-8d8d-5238bcd3caaa")) && shapeNum < shapeCount)
+                    {
+                        Shape shape = group.Shape[shapeNum];
+                        shape.Id = id++;
+
+                        for(int jj = 0; jj < child.getAttributes().getLength(); jj++)
+                        {
+                            Node attribute1 = child.getAttributes().item(jj);
+                            if(attribute1.getNodeName().equals("name"))
+                            {
+                                shape.Name = attribute1.getNodeValue();
+                                break;
+                            }
+                        }
+
+                        for(int kk = 0; kk < child.getChildNodes().getLength(); kk++)
+                        {
+                            Node child1 = child.getChildNodes().item(kk);
+                            if(child1.getNodeName().equals("IsDecorative"))
+                            {
+                                shape.IsDecorative = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("IsFixed"))
+                            {
+                                shape.IsFixed = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("IsMirrored"))
+                            {
+                                shape.IsMirrored = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("Offset"))
+                            {
+                                shape.Offset = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("Position"))
+                            {
+                                shape.Position = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("Rotation"))
+                            {
+                                String[] rotation = child1.getTextContent().split(",");
+                                shape.Rotation = (rotation[0].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[0])))) + "," + (rotation[1].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[1])))) + "," + (rotation[2].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[2]))));
+                            }
+                            else if(child1.getNodeName().equals("Size"))
+                            {
+                                shape.Size = child1.getTextContent();
+                            }
+                            else if(child1.getNodeName().equals("TextureOffset"))
+                            {
+                                shape.TextureOffset = child1.getTextContent();
+                            }
+                        }
+                        shapeNum++;
+                    }
+                }
+            }
+        }
+        return id;
     }
 
     private static TC2Info readTechne2File(InputStream json, HashMap<String, InputStream> images) throws IOException
@@ -465,6 +506,15 @@ public class TC2Info
         return info;
     }
 
+    /**
+     * Saves the TC2Info as a Techne 2 compatible file.
+     * At the time of writing, the Techne 2 editor does not support "Offsets" which Techne 1 supported and I've urged ZeuX to implement support for it as it is a key feature.
+     * Again, at the time of writing, the Techne 2 editor does not work with textures properly. I've written most of this importer and converter on the basis of what I seemed should be logical.
+     * It should export as a proper Techne 2 file that hopefully works in the future. However, the importer should work 100% with files exported by this function and files made with Techne 1 and 2. (With exceptions to Pieces from Techne 1)
+     * @param file Save file location. Ideally name the file a *.tc2 file
+     * @param overwrite Can overwrite existing file?
+     * @return Save successful.
+     */
     public boolean saveAsFile(File file, boolean overwrite)
     {
         try
