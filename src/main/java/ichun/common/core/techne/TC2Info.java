@@ -473,7 +473,11 @@ public class TC2Info
             {
                 return false;
             }
+
+            file.getParentFile().mkdirs();
+
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+            out.setLevel(0);
             ZipEntry entry = new ZipEntry("model.json");
 
             out.putNextEntry(entry);
@@ -500,6 +504,8 @@ public class TC2Info
         }
         catch(Exception e)
         {
+            iChunUtil.console("Failed to save Techne 2 Model.", true);
+            e.printStackTrace();
             return false;
         }
     }
