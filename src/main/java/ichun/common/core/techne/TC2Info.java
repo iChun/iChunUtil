@@ -14,16 +14,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Deserialized version of Techne 2's JSON save files.
@@ -465,5 +463,44 @@ public class TC2Info
             img.getValue().close();
         }
         return info;
+    }
+
+    public boolean saveAsFile(File file, boolean overwrite)
+    {
+        try
+        {
+            if(!overwrite && file.exists())
+            {
+                return false;
+            }
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+            ZipEntry entry = new ZipEntry("model.json");
+
+            out.putNextEntry(entry);
+
+            byte[] data = (new Gson()).toJson(this).getBytes();
+            out.write(data, 0, data.length);
+            out.closeEntry();
+
+            for(Model model : Techne.Models)
+            {
+                if(model.Model.image != null)
+                {
+                    entry = new ZipEntry(model.Model.texture);
+                    out.putNextEntry(entry);
+
+                    ImageIO.write(model.Model.image, "png", out);
+
+                    out.closeEntry();
+                }
+            }
+
+            out.close();
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
     }
 }
