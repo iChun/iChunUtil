@@ -2,6 +2,8 @@ package ichun.common.core.techne;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import ichun.common.core.techne.model.ModelTechne2;
+import ichun.common.iChunUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -463,5 +465,53 @@ public class TC2Info
             img.getValue().close();
         }
         return info;
+    }
+
+    /**
+     * Creates a model from this TC2Info
+     * @return model
+     */
+    public ModelTechne2 createModel()
+    {
+        return new ModelTechne2(this);
+    }
+
+    /**
+     * Creates a custom Model which extends ModelTechne2, defined by the first param.
+     * The parameters are for the constructor of the class.
+     * @param classInstanceOfModelTechne2 class instance to create
+     * @param params constructor parameters (excluding this TC2Info, TC2Info is always the first param)
+     * @param <T> Object which extends ModelTechne2
+     * @return model (instanceof T). Null if class is not an instance of ModelTechne2
+     */
+    public <T> T createModel(Class<T> classInstanceOfModelTechne2, Object...params)
+    {
+        if(ModelTechne2.class.isAssignableFrom(classInstanceOfModelTechne2))
+        {
+            try
+            {
+                Class[] classes = new Class[params.length + 1];
+                classes[0] = ModelTechne2.class;
+                for(int i = 0; i < params.length; i++)
+                {
+                    classes[i + 1] = params[i].getClass();
+                }
+
+                Object[] objects = new Object[params.length + 1];
+                objects[0] = this;
+                for(int i = 0; i < params.length; i++)
+                {
+                    objects[i + 1] = params[i];
+                }
+
+                return classInstanceOfModelTechne2.getConstructor(classes).newInstance(objects);
+            }
+            catch(Exception e)
+            {
+                iChunUtil.console("A mod is passing errornous parameters for Techne 2 Model construction.", true);
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }
