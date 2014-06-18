@@ -23,17 +23,18 @@ public class ComponentGroup
         GL11.glPushMatrix();
         GL11.glTranslatef(posX / 16F, posY / 16F, posZ / 16F);
 
+        //Techne 2 idiotically rotates models in a way that is not supported natively in minecraft, YZX rotation.
         if(rotationY != 0.0F)
         {
             GL11.glRotatef((float)Math.toDegrees(rotationY), 0.0F, 1.0F, 0.0F);
         }
-        if(rotationX != 0.0F)
-        {
-            GL11.glRotatef((float)Math.toDegrees(rotationX), 1.0F, 0.0F, 0.0F);
-        }
         if(rotationZ != 0.0F)
         {
             GL11.glRotatef((float)Math.toDegrees(rotationZ), 0.0F, 0.0F, 1.0F);
+        }
+        if(rotationX != 0.0F)
+        {
+            GL11.glRotatef((float)Math.toDegrees(rotationX), 1.0F, 0.0F, 0.0F);
         }
 
         renderGroup(f5);

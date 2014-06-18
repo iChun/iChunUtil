@@ -40,7 +40,7 @@ public class ModelTechne2 extends ModelBase
                 this.textureWidth = part.textureWidth;
                 this.textureHeight = part.textureHeight;
 
-                populateGroup(this, model.Model.Geometry, part.models);
+                populateGroup(this, EnumGroupType.NONE, model.Model.Geometry, part.models);
 
                 modelParts.add(part);
             }
@@ -56,13 +56,13 @@ public class ModelTechne2 extends ModelBase
         }
     }
 
-    public static void populateGroup(ModelBase model, TC2Info.Group geometry, GroupModels models)
+    public static void populateGroup(ModelBase model, EnumGroupType type, TC2Info.Group geometry, GroupModels models)
     {
         for(TC2Info.Circular circular : geometry.Circular)
         {
             ComponentCircularArray array = new ComponentCircularArray();
 
-            setupComponent(model, circular, array);
+            setupComponent(model, type == EnumGroupType.NONE ? EnumGroupType.CIRCULAR : type, circular, array);
 
             array.count = circular.Count;
             array.radius = circular.Radius;
@@ -73,12 +73,27 @@ public class ModelTechne2 extends ModelBase
         {
             ComponentLinearArray array = new ComponentLinearArray();
 
-            setupComponent(model, linear, array);
+            setupComponent(model, type == EnumGroupType.NONE ? EnumGroupType.LINEAR : type, linear, array);
 
             String[] count = linear.Count.split(",");
             array.countX = Integer.parseInt(count[0]);
             array.countY = Integer.parseInt(count[1]);
             array.countZ = Integer.parseInt(count[2]);
+            if(!(array.countX == 0 && array.countY == 0 && array.countZ == 0))
+            {
+                if(array.countX == 0)
+                {
+                    array.countX = 1;
+                }
+                if(array.countY == 0)
+                {
+                    array.countY = 1;
+                }
+                if(array.countZ == 0)
+                {
+                    array.countZ = 1;
+                }
+            }
 
             String[] space = linear.Spacing.split(",");
             array.spaceX = Float.parseFloat(space[0]);
@@ -91,14 +106,15 @@ public class ModelTechne2 extends ModelBase
         {
             ComponentGroup array = new ComponentGroup();
 
-            setupComponent(model, nul, array);
+            setupComponent(model, type, nul, array);
 
             models.componentGroup.add(array);
         }
         for(TC2Info.Shape shape : geometry.Shape)
         {
             String[] textureOffset = shape.TextureOffset.split(",");
-            ModelRenderer cube = new ModelRenderer(model, Integer.parseInt(textureOffset[0]), Integer.parseInt(textureOffset[1]));
+            ModelRenderer cube = new ModelRenderer(model, shape.Name);
+            cube.setTextureOffset(Integer.parseInt(textureOffset[0]), Integer.parseInt(textureOffset[1]));
             cube.mirror = !shape.IsMirrored.equals("False");
 
             String[] pos = shape.Position.split(",");
@@ -110,9 +126,14 @@ public class ModelTechne2 extends ModelBase
             {
                 offset = shape.Offset.split(",");
             }
+            else if(type == EnumGroupType.CIRCULAR)
+            {
+                offset = new String[] { Float.toString(Float.parseFloat(size[0]) / -2F), Float.toString(Float.parseFloat(size[1]) / -2F), Float.toString(Float.parseFloat(size[2]) / -2F) };
+                pos = rot = new String[] { "0", "0", "0" };
+            }
 
             cube.addBox(Float.parseFloat(offset[0]), Float.parseFloat(offset[1]), Float.parseFloat(offset[2]), Integer.parseInt(size[0]), Integer.parseInt(size[1]), Integer.parseInt(size[2]));
-            cube.setRotationPoint(Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2])); //TODO hats reduces rotation point by 16F;
+            cube.setRotationPoint(Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]));
 
             cube.rotateAngleX = Float.parseFloat(rot[0]);
             cube.rotateAngleY = Float.parseFloat(rot[1]);
@@ -122,7 +143,7 @@ public class ModelTechne2 extends ModelBase
         }
     }
 
-    public static void setupComponent(ModelBase model, TC2Info.Null info, ComponentGroup component)
+    public static void setupComponent(ModelBase model, EnumGroupType type, TC2Info.Null info, ComponentGroup component)
     {
         String[] pos = info.Position.split(",");
         component.posX = Float.parseFloat(pos[0]);
@@ -134,7 +155,14 @@ public class ModelTechne2 extends ModelBase
         component.rotationY = Float.parseFloat(rot[1]);
         component.rotationZ = Float.parseFloat(rot[2]);
 
-        populateGroup(model, info.Children, component.groupModels);
+        populateGroup(model, type, info.Children, component.groupModels);
+    }
+
+    public static enum EnumGroupType
+    {
+        NONE,
+        CIRCULAR,
+        LINEAR
     }
 
     public void render(boolean bindTexture, float f5)
