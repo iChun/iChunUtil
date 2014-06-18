@@ -47,6 +47,7 @@ public class ModelTechne2 extends ModelBase
             catch(NumberFormatException e)
             {
                 iChunUtil.console("Error parsing Techne 2 model: Invalid number", true);
+                e.printStackTrace();
             }
             catch(ArrayIndexOutOfBoundsException e)
             {
@@ -104,7 +105,7 @@ public class ModelTechne2 extends ModelBase
             String[] rot = shape.Rotation.split(",");
             String[] size = shape.Size.split(",");
 
-            String[] offset = new String[] { "0,0,0" }; //Techne 2 files by default lack the Offset field.
+            String[] offset = new String[] { "0", "0", "0" }; //Techne 2 files by default lack the Offset field.
             if(shape.Offset != null)
             {
                 offset = shape.Offset.split(",");
