@@ -202,7 +202,10 @@ public class TC2Info
 
             zipFile.close();
 
-            info.tampered = tampered;
+            if(info != null)
+            {
+                info.tampered = tampered;
+            }
 
             return info;
         }
@@ -276,13 +279,19 @@ public class TC2Info
                 if(hasXML)
                 {
                     TC2Info info = convertTechneFile(cloneXML, images);
-                    info.tampered = tampered;
+                    if(info != null)
+                    {
+                        info.tampered = tampered;
+                    }
                     return info;
                 }
                 if(hasJSON)
                 {
                     TC2Info info = readTechne2File(cloneXML, images);
-                    info.tampered = tampered;
+                    if(info != null)
+                    {
+                        info.tampered = tampered;
+                    }
                     return info;
                 }
             }
