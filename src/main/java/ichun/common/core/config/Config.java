@@ -361,6 +361,11 @@ public class Config
         {
             categoryList.add(prop);
         }
+        if(setup && !categoriesList.contains(catName))
+        {
+            categoriesList.add(catName);
+            Collections.sort(categoriesList);
+        }
     }
 
     public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int i, int min, int max) //returns the config property
@@ -424,10 +429,7 @@ public class Config
 
         addToCategory(currentCatName, prop);
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         return prop.getInt();
     }
@@ -493,10 +495,7 @@ public class Config
 
         addToCategory(currentCatName, prop);
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         return prop.getInt();
     }
@@ -568,10 +567,7 @@ public class Config
 
         addToCategory(currentCatName, prop);
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         return Integer.decode(prop.getString().trim());
     }
@@ -628,10 +624,7 @@ public class Config
 
         addToCategory(currentCatName, prop);
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         return prop.getString();
     }
@@ -760,10 +753,7 @@ public class Config
 
         keyBindMap.put(propName1, iChunUtil.proxy.registerKeyBind(bind, null));
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         return prop;
     }
@@ -836,10 +826,7 @@ public class Config
 
         addToCategory(currentCatName, prop);
 
-        if(!setup)
-        {
-            config.save();
-        }
+        save();
 
         //does not return value;
     }
@@ -872,7 +859,7 @@ public class Config
     {
         categoriesList.clear();
         setup = true;
-        config.save();
+        save();
 
         for(Entry<String, ArrayList<Property>> e : categories.entrySet())
         {
@@ -882,6 +869,14 @@ public class Config
             }
         }
         Collections.sort(categoriesList);
+    }
+
+    public void save()
+    {
+        if(setup && config.hasChanged())
+        {
+            config.save();
+        }
     }
 
     @Override

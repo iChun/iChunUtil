@@ -118,7 +118,7 @@ public class iChunUtil
     	{
     		cfg.setup();
     	}
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Config.configKeybind != null)
         {
             Config.configKeybind.save();
         }

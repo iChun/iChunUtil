@@ -12,7 +12,6 @@ public class ComponentLinearArray extends ComponentGroup
     public float spaceY;
     public float spaceZ;
 
-    //TODO this
     @Override
     protected void renderGroup(float f5)
     {

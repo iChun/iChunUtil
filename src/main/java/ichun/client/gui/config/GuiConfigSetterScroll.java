@@ -334,7 +334,7 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     if(config.parent.onConfigChange(config, prop))
                     {
-                        config.config.save();
+                        config.save();
 
                         if(config.propNeedsRestart.contains(prop))
                         {
@@ -443,7 +443,7 @@ public class GuiConfigSetterScroll extends GuiSlot
             }
             else
             {
-                config.config.save();
+                config.save();
             }
 
             if(config.propNeedsRestart.contains(prop))

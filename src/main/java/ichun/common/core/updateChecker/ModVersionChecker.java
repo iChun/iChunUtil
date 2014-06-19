@@ -92,7 +92,7 @@ public class ModVersionChecker
                     }
                     iChunUtil.config.props.get("lastCheck").set(sb.toString());
 
-                    iChunUtil.config.config.save();
+                    iChunUtil.config.save();
                 }
             }.start();
         }
