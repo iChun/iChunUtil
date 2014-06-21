@@ -21,6 +21,7 @@ import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.core.network.ChannelHandler;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.techne.TC1Json;
 import ichun.common.core.techne.TC2Info;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
@@ -71,6 +72,10 @@ public class iChunUtil
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        System.out.println("JSON!");
+//        System.out.println(gson.toJson(new TC1Json()));
+
         ObfHelper.detectObfuscation();
         
         proxy.init();

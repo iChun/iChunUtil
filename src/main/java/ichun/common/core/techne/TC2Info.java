@@ -1,8 +1,10 @@
 package ichun.common.core.techne;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import ichun.common.iChunUtil;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -514,7 +516,20 @@ public class TC2Info
             return null;
         }
 
-        TC2Info info = (new Gson()).fromJson(new InputStreamReader(json), TC2Info.class);
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(json, writer);
+        String jsonString = writer.toString();
+
+        TC2Info info;
+
+        try
+        {
+            info = (new Gson()).fromJson(jsonString, TC2Info.class);
+        }
+        catch(JsonSyntaxException e)
+        {
+            info = (new Gson()).fromJson(jsonString.replaceAll("\u0000", ""), TC1Json.class).toTC2Info();
+        }
 
         if(info != null)
         {
@@ -524,6 +539,7 @@ public class TC2Info
                 if(stream != null)
                 {
                     model.Model.image = ImageIO.read(stream);
+                    stream.close();
                 }
             }
         }
