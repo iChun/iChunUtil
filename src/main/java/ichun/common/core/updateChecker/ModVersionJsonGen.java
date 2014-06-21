@@ -35,6 +35,10 @@ public class ModVersionJsonGen
         versions.put("1.7", "3.2.1");
 
         versions = new HashMap<String, String>();
+        map.put("ItFellFromTheSky", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
         map.put("MobAmputation", versions);
         versions.put("1.7", "3.0.1");
 
