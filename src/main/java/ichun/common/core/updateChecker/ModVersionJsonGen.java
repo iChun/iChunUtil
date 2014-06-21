@@ -32,7 +32,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("iChunUtil", versions);
-        versions.put("1.7", "3.2.0");
+        versions.put("1.7", "3.2.1");
 
         versions = new HashMap<String, String>();
         map.put("MobAmputation", versions);
