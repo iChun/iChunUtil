@@ -220,14 +220,19 @@ public class TC2Info
 
     /**
      * Returns a TC2Info file from a Techne save file. Works for Techne 1 and 2. TC2Info is a Techne 2 file format, Techne 1 saves will be converted to this format.
-     * @param stream ZipInputStream, basically reading a techne file in a zip file.
+     * @param stream InputStream, basically getting the Techne file as a Resource. DO NOT pass a ZipInputStream.
      * @return Techne 2 save info, deserialized. Null if file is not a valid Techne file with model info and textures.
      */
-    public static TC2Info readTechneFile(ZipInputStream stream)
+    public static TC2Info readTechneFile(InputStream stream)
     {
         try
         {
-            ZipInputStream cloneXML = new ZipInputStream(stream);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            IOUtils.copy(stream, baos);
+            baos.flush();
+
+            ZipInputStream cloneXML = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
             ZipEntry entry = null;
 
@@ -252,7 +257,7 @@ public class TC2Info
 
             entry = null;
 
-            ZipInputStream clonePNG = new ZipInputStream(stream);
+            ZipInputStream clonePNG = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
             HashMap<String, InputStream> images = new HashMap<String, InputStream>();
 
@@ -265,7 +270,7 @@ public class TC2Info
                     if(entry.getName().endsWith(".png") && !images.containsKey(entry.getName()) && entry.getCrc() != Long.decode("0xf970c898"))
                     {
                         images.put(entry.getName(), clonePNG);
-                        clonePNG = new ZipInputStream(stream);
+                        clonePNG = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
                     }
                     else if(!entry.getName().endsWith(".png") && !entry.getName().endsWith(".xml") && !entry.getName().endsWith(".json"))
                     {
