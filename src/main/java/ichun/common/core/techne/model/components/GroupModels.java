@@ -1,5 +1,6 @@
 package ichun.common.core.techne.model.components;
 
+import ichun.common.core.techne.model.ModelRendererTechne;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
@@ -13,7 +14,7 @@ public class GroupModels
     public ArrayList<ComponentLinearArray> componentLinearArray = new ArrayList<ComponentLinearArray>();
     public ArrayList<ComponentGroup> componentGroup = new ArrayList<ComponentGroup>();
 
-    public ArrayList<ModelRenderer> models = new ArrayList<ModelRenderer>();
+    public ArrayList<ModelRendererTechne> models = new ArrayList<ModelRendererTechne>();
 
     /**
      * In order of Techne's save file.
@@ -25,9 +26,9 @@ public class GroupModels
         {
             component.render(f5);
         }
-        for(ModelRenderer model : models)
+        for(ModelRendererTechne model : models)
         {
-            model.renderWithRotation(f5);
+            model.renderWithTechneRotation(f5);
         }
         for(ComponentLinearArray component : componentLinearArray)
         {

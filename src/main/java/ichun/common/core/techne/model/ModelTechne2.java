@@ -113,7 +113,8 @@ public class ModelTechne2 extends ModelBase
         for(TC2Info.Shape shape : geometry.Shape)
         {
             String[] textureOffset = shape.TextureOffset.split(",");
-            ModelRenderer cube = new ModelRenderer(model, shape.Name);
+            //These model types are used to ensure correct rotational rendering of the models. Models are expected to not be interacted with mods which play around with models (such as Morph). If expected to be interacted with by such mods, please use the default ModelRenderer that Minecraft provides.
+            ModelRendererTechne cube = new ModelRendererTechne(model, shape.Name);
             cube.setTextureOffset(Integer.parseInt(textureOffset[0]), Integer.parseInt(textureOffset[1]));
             cube.mirror = !shape.IsMirrored.equals("False");
 

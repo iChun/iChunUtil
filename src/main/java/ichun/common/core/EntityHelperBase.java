@@ -11,8 +11,10 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -786,5 +788,12 @@ public class EntityHelperBase
             render = getEntityClassRenderObject(par1Class.getSuperclass());
         }
         return render;
+    }
+
+    public static NBTTagCompound getPlayerPersistentData(EntityPlayer player)
+    {
+        NBTTagCompound persistentTag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, persistentTag);
+        return persistentTag;
     }
 }

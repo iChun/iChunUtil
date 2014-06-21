@@ -120,7 +120,10 @@ public class TC1Json
                 info.Techne.Models[i].Model.Geometry.Shape[j].IsMirrored = Techne.Models[i].Model.Geometry.Shape[j].IsMirrored;
                 info.Techne.Models[i].Model.Geometry.Shape[j].Position = Techne.Models[i].Model.Geometry.Shape[j].Position;
                 info.Techne.Models[i].Model.Geometry.Shape[j].Offset = Techne.Models[i].Model.Geometry.Shape[j].Offset;
-                info.Techne.Models[i].Model.Geometry.Shape[j].Rotation = Techne.Models[i].Model.Geometry.Shape[j].Rotation;
+
+                String[] rotation = Techne.Models[i].Model.Geometry.Shape[j].Rotation.split(",");
+                info.Techne.Models[i].Model.Geometry.Shape[j].Rotation = (rotation[0].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[0])))) + "," + (rotation[1].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[1])))) + "," + (rotation[2].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[2]))));
+
                 info.Techne.Models[i].Model.Geometry.Shape[j].Size = Techne.Models[i].Model.Geometry.Shape[j].Size;
                 info.Techne.Models[i].Model.Geometry.Shape[j].TextureOffset = Techne.Models[i].Model.Geometry.Shape[j].TextureOffset;
             }
@@ -161,7 +164,10 @@ public class TC1Json
             tc2Null.Children.Shape[j].IsMirrored = tc1Null.Shape[j].IsMirrored;
             tc2Null.Children.Shape[j].Position = tc1Null.Shape[j].Position;
             tc2Null.Children.Shape[j].Offset = tc1Null.Shape[j].Offset;
-            tc2Null.Children.Shape[j].Rotation = tc1Null.Shape[j].Rotation;
+
+            String[] rotation = tc1Null.Shape[j].Rotation.split(",");
+            tc2Null.Children.Shape[j].Rotation = (rotation[0].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[0])))) + "," + (rotation[1].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[1])))) + "," + (rotation[2].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[2]))));
+
             tc2Null.Children.Shape[j].Size = tc1Null.Shape[j].Size;
             tc2Null.Children.Shape[j].TextureOffset = tc1Null.Shape[j].TextureOffset;
         }

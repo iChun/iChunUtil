@@ -40,14 +40,14 @@ import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.12.1.1103,)"
+        dependencies = "required-after:Forge@[10.12.2.1128,)"
     )
 public class iChunUtil
         implements IConfigUser
 {
 	//MC version, bumped up every MC update.
 	public static final int versionMC = 3;
-    public static final String version = versionMC + ".2.0";
+    public static final String version = versionMC + ".2.1";
     
     private static boolean hasPostLoad = false;
 
