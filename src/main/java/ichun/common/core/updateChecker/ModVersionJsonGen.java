@@ -51,6 +51,10 @@ public class ModVersionJsonGen
         versions.put("1.7", "0.8.0");
 
         versions = new HashMap<String, String>();
+        map.put("PiP", versions);
+        versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
         map.put("Photoreal", versions);
         versions.put("1.7", "3.0.0");
 

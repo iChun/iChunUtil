@@ -1,7 +1,5 @@
 package ichun.common;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -21,13 +19,10 @@ import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.core.network.ChannelHandler;
 import ichun.common.core.network.PacketHandler;
-import ichun.common.core.techne.TC1Json;
-import ichun.common.core.techne.TC2Info;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.PacketModsList;
 import ichun.common.core.util.ObfHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
@@ -35,20 +30,19 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
         dependencies = "required-after:Forge@[10.12.2.1128,)"
-    )
+)
 public class iChunUtil
         implements IConfigUser
 {
-	//MC version, bumped up every MC update.
-	public static final int versionMC = 3;
+    //MC version, bumped up every MC update.
+    public static final int versionMC = 3;
     public static final String version = versionMC + ".2.1";
-    
+
     private static boolean hasPostLoad = false;
 
     private static Logger logger = LogManager.getLogger("iChunUtil");
@@ -59,9 +53,9 @@ public class iChunUtil
 
     @Instance("iChunUtil")
     public static iChunUtil instance;
-    
-	@SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.common.core.CommonProxy")
-	public static CommonProxy proxy;
+
+    @SidedProxy(clientSide = "ichun.client.core.ClientProxy", serverSide = "ichun.common.core.CommonProxy")
+    public static CommonProxy proxy;
 
     @Override
     public boolean onConfigChange(Config cfg, Property prop)
@@ -72,12 +66,12 @@ public class iChunUtil
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        System.out.println("JSON!");
-//        System.out.println(gson.toJson(new TC1Json()));
+        //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //        System.out.println("JSON!");
+        //        System.out.println(gson.toJson(new TC1Json()));
 
         ObfHelper.detectObfuscation();
-        
+
         proxy.init();
 
         FMLCommonHandler.instance().bus().register(this);
@@ -118,33 +112,33 @@ public class iChunUtil
     @EventHandler
     public void postLoad(FMLPostInitializationEvent event)
     {
-    	hasPostLoad = true;
-    	for(Config cfg : ConfigHandler.configs)
-    	{
-    		cfg.setup();
-    	}
+        hasPostLoad = true;
+        for(Config cfg : ConfigHandler.configs)
+        {
+            cfg.setup();
+        }
         if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Config.configKeybind != null)
         {
             Config.configKeybind.save();
         }
 
-//        ModVersionJsonGen.generate();
+        //        ModVersionJsonGen.generate();
     }
-    
+
     public static boolean getPostLoad()
     {
-    	return hasPostLoad;
+        return hasPostLoad;
     }
-    
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onTextureStitched(TextureStitchEvent.Pre event)
-	{
-		if(event.map.getTextureType() == 0)
-		{
-			proxy.tickHandlerClient.iconRegister = event.map;
-		}
-	}
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onTextureStitched(TextureStitchEvent.Pre event)
+    {
+        if(event.map.getTextureType() == 0)
+        {
+            proxy.tickHandlerClient.iconRegister = event.map;
+        }
+    }
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
