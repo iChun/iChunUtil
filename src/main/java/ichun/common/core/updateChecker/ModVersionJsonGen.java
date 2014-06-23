@@ -68,11 +68,11 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Torched", versions);
-        versions.put("1.7", "3.0.0");
+        versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("TrailMix", versions);
-        versions.put("1.7", "3.0.1");
+        versions.put("1.7", "3.0.2");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(map);
