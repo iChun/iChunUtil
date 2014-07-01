@@ -41,7 +41,7 @@ public class iChunUtil
 {
     //MC version, bumped up every MC update.
     public static final int versionMC = 3;
-    public static final String version = versionMC + ".2.1";
+    public static final String version = versionMC + ".3.0";
 
     private static boolean hasPostLoad = false;
 
