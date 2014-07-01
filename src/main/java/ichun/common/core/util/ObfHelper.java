@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import ichun.common.iChunUtil;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -93,9 +94,12 @@ public class ObfHelper
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
-	//Render
-	public static final String getEntityTextureObf = "func_110775_a";
-	public static final String getEntityTextureDeobf = "getEntityTexture";
+	//RenderPlayer
+	public static final String renderLivingLabelObf = "func_96449_a";
+
+    //Render
+    public static final String getEntityTextureObf = "func_110775_a";
+    public static final String getEntityTextureDeobf = "getEntityTexture";
 
     public static void obfWarning()
     {
@@ -168,6 +172,23 @@ public class ObfHelper
 			e.printStackTrace();
 		}
 	}
+
+    public static void invokeRenderLivingLabel(RenderPlayer rend, EntityLivingBase par1EntityLivingBase, double par2, double par4, double par6, String par8Str, float par9, double par10)
+    {
+        try
+        {
+            Method m = RenderPlayer.class.getDeclaredMethod(ObfHelper.renderLivingLabelObf, EntityLivingBase.class, double.class, double.class, double.class, String.class, float.class, double.class);
+            m.setAccessible(true);
+            m.invoke(rend, par1EntityLivingBase, par2, par4, par6, par8Str, par9, par10);
+        }
+        catch(NoSuchMethodException e)
+        {
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static ResourceLocation invokeGetEntityTexture(Render rend, Class clz, EntityLivingBase ent)
     {

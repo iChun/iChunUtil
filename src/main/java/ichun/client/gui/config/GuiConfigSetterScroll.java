@@ -1,5 +1,6 @@
 package ichun.client.gui.config;
 
+import cpw.mods.fml.relauncher.Side;
 import ichun.client.keybind.KeyBind;
 import ichun.client.render.RendererHelper;
 import ichun.common.core.config.Config;
@@ -332,6 +333,15 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     prop.set(i);
 
+                    Object def = null;
+
+                    if(config.sessionProps.contains(prop))
+                    {
+                        def = config.sessionState.get(Side.SERVER).get(prop.getName());
+                        config.sessionState.get(Side.SERVER).put(prop.getName(), i);
+                        System.out.println(prop.getName());
+                    }
+
                     if(config.parent.onConfigChange(config, prop))
                     {
                         config.save();
@@ -344,6 +354,11 @@ public class GuiConfigSetterScroll extends GuiSlot
                     else
                     {
                         prop.set(_default);
+
+                        if(def != null)
+                        {
+                            config.sessionState.get(Side.SERVER).put(prop.getName(), def);
+                        }
                         return false;
                     }
                     return true;
@@ -435,6 +450,14 @@ public class GuiConfigSetterScroll extends GuiSlot
             }
         }
 
+        Object def = null;
+
+        if(config.sessionProps.contains(prop))
+        {
+            def = config.sessionState.get(Side.SERVER).get(prop.getName());
+            config.sessionState.get(Side.SERVER).put(prop.getName(), prop.getString());
+        }
+
         if(config.parent.onConfigChange(config, prop))
         {
             if(config.getPropType(prop).equals(Config.EnumPropType.KEYBIND))
@@ -454,6 +477,11 @@ public class GuiConfigSetterScroll extends GuiSlot
         else
         {
             prop.set(_default);
+
+            if(def != null)
+            {
+                config.sessionState.get(Side.SERVER).put(prop.getName(), def);
+            }
             return false;
         }
         return true;
