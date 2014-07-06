@@ -32,6 +32,8 @@ public class ObfHelper
     public static final String[] fogColorRed					= new String[] { "field_78518_n", "fogColorRed"					    , "m"}; //EntityRenderer
     public static final String[] fogColorGreen					= new String[] { "field_78519_o", "fogColorGreen"					, "n"}; //EntityRenderer
     public static final String[] fogColorBlue					= new String[] { "field_78533_p", "fogColorBlue"					, "o"}; //EntityRenderer
+    public static final String[] fovModifierHand                = new String[] { "field_78507_R", "fovModifierHand"                 , "W"}; //EntityRenderer
+    public static final String[] fovModifierHandPrev            = new String[] { "field_78506_S", "fovModifierHandPrev"             , "X"}; //EntityRenderer
 
     public static final String[] itemHealth						= new String[] { "field_70291_e", "health"							, "e"}; //EntityItem
 
@@ -45,6 +47,7 @@ public class ObfHelper
 	public static final String[] textureOffsetX 				= new String[] { "field_78803_o", "textureOffsetX" 				    , "r"}; //ModelRenderer
 	public static final String[] textureOffsetY 				= new String[] { "field_78813_p", "textureOffsetY" 				    , "s"}; //ModelRenderer
 	public static final String[] compiled 						= new String[] { "field_78812_q", "compiled"	 					, "t"}; //ModelRenderer
+    public static final String[] displayList 					= new String[] { "field_78811_r", "displayList"	 					, "u"}; //ModelRenderer
 
 	public static final String[] quadList 						= new String[] { "field_78254_i", "quadList"	 					, "i"}; //ModelBox
     
@@ -69,6 +72,10 @@ public class ObfHelper
     public static final String[] shadowSize		        		= new String[] { "field_76989_e", "shadowSize"			        	, "d"}; //Render
 
     public static final String[] tagMap			        		= new String[] { "field_74784_a", "tagMap"				        	, "c"}; //NBTTagCompound
+
+    public static final String[] displayListEntities            = new String[] { "field_147594_S", "displayListEntities"            , "S"}; //RenderGlobal
+    public static final String[] starGLCallList                 = new String[] { "field_72772_v", "starGLCallList"                  , "F"}; //RenderGlobal
+    public static final String[] glOcclusionQueryBase           = new String[] { "field_72775_s", "glOcclusionQueryBase"            , "C"}; //RenderGlobal
 
     //EntityLivingBase
     public static final String jumpObf		= "func_70664_aZ";

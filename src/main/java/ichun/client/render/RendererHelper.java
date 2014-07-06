@@ -219,7 +219,11 @@ public class RendererHelper
 
     public static void deleteFrameBuffer(Framebuffer buffer)
     {
-        buffer.deleteFramebuffer();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        if(buffer.framebufferObject >= 0)
+        {
+            buffer.deleteFramebuffer();
+        }
         frameBuffers.remove(buffer);
     }
 }
