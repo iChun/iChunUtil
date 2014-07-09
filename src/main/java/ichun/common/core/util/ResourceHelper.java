@@ -37,7 +37,8 @@ public class ResourceHelper
 	{
 		return fileMods;
 	}
-	
+
+    //TODO event.getModConfigurationDirectory();
 	public static File getConfigFolder()
 	{
 		return fileConfig;

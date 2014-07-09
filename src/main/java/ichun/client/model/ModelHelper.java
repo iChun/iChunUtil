@@ -11,6 +11,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
@@ -34,8 +35,12 @@ public class ModelHelper
 				ModelRenderer cube = modelList.get(i);
 				try
 				{
-					ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
-				}
+                    if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
+                    {
+                        GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
+                        ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
+                    }
+                }
 				catch(Exception e)
 				{
 					ObfHelper.obfWarning();
