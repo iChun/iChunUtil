@@ -128,14 +128,14 @@ public class EntityHelperBase
 	{
 		if (par1 == 1.0F)
 		{
-			return ent.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX, midPoint ? ((ent.boundingBox.minY + ent.boundingBox.maxY) / 2D) : (ent.posY + (ent.worldObj.isRemote ? 0.0D : (ent.getEyeHeight() - 0.09D))), ent.posZ);
+			return Vec3.createVectorHelper(ent.posX, midPoint ? ((ent.boundingBox.minY + ent.boundingBox.maxY) / 2D) : (ent.posY + (ent.worldObj.isRemote ? 0.0D : (ent.getEyeHeight() - 0.09D))), ent.posZ);
 		}
 		else
 		{
 			double var2 = ent.prevPosX + (ent.posX - ent.prevPosX) * (double)par1;
 			double var4 = midPoint ? ((ent.boundingBox.minY + ent.boundingBox.maxY) / 2D) : (ent.prevPosY + (ent.worldObj.isRemote ? 0.0D : (ent.getEyeHeight() - 0.09D)) + (ent.posY - ent.prevPosY) * (double)par1);
 			double var6 = ent.prevPosZ + (ent.posZ - ent.prevPosZ) * (double)par1;
-			return ent.worldObj.getWorldVec3Pool().getVecFromPool(var2, var4, var6);
+			return Vec3.createVectorHelper(var2, var4, var6);
 		}
 	}
 
@@ -316,7 +316,7 @@ public class EntityHelperBase
 				vec3d.zCoord = d2;
 			}
 
-			Vec3 vec3d2 = world.getWorldVec3Pool().getVecFromPool(vec3d.xCoord, vec3d.yCoord, vec3d.zCoord);
+			Vec3 vec3d2 = Vec3.createVectorHelper(vec3d.xCoord, vec3d.yCoord, vec3d.zCoord);
 			l = (int)(vec3d2.xCoord = MathHelper.floor_double(vec3d.xCoord));
 
 			if (byte0 == 5)

@@ -141,7 +141,7 @@ public class RendererHelper
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        ScaledResolution reso = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
         double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
         double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
@@ -160,7 +160,7 @@ public class RendererHelper
     {
         //Basic stencil test
         Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        ScaledResolution reso1 = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
         GL11.glEnable(GL11.GL_STENCIL_TEST);
 
@@ -193,7 +193,7 @@ public class RendererHelper
     {
         //Basic scissor test
         Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution reso1 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        ScaledResolution reso1 = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
         RendererHelper.startGlScissor(reso1.getScaledWidth() / 2 - 50, reso1.getScaledHeight() / 2 - 50, 100, 100);
 

@@ -1,5 +1,27 @@
 package ichun.common;
 
+import ichun.common.core.CommonProxy;
+import ichun.common.core.config.Config;
+import ichun.common.core.config.ConfigHandler;
+import ichun.common.core.config.IConfigUser;
+import ichun.common.core.network.ChannelHandler;
+import ichun.common.core.network.PacketHandler;
+import ichun.common.core.updateChecker.ModVersionChecker;
+import ichun.common.core.updateChecker.ModVersionInfo;
+import ichun.common.core.updateChecker.PacketModsList;
+import ichun.common.core.util.ObfHelper;
+import ichun.common.core.util.PlayerHelper;
+
+import java.util.EnumMap;
+
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Property;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -13,35 +35,17 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ichun.common.core.CommonProxy;
-import ichun.common.core.config.Config;
-import ichun.common.core.config.ConfigHandler;
-import ichun.common.core.config.IConfigUser;
-import ichun.common.core.network.ChannelHandler;
-import ichun.common.core.network.PacketHandler;
-import ichun.common.core.updateChecker.ModVersionChecker;
-import ichun.common.core.updateChecker.ModVersionInfo;
-import ichun.common.core.updateChecker.PacketModsList;
-import ichun.common.core.util.ObfHelper;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Property;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.12.2.1128,)"
+        dependencies = "required-after:Forge@[10.13.0.1179,)"
 )
 public class iChunUtil
         implements IConfigUser
 {
     //MC version, bumped up every MC update.
-    public static final int versionMC = 3;
-    public static final String version = versionMC + ".3.0";
+    public static final int versionMC = 4;
+    public static final String version = versionMC + ".0.0";
 
     private static boolean hasPostLoad = false;
 
@@ -143,7 +147,8 @@ public class iChunUtil
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isPlayerOpped(event.player.getCommandSenderName())), event.player);
+        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), PlayerHelper.checkOp(event.player.getGameProfile().getId())), event.player);
+        console(PlayerHelper.checkOp(event.player.getGameProfile().getId()));
     }
 
     public static void console(String s, boolean warning)
