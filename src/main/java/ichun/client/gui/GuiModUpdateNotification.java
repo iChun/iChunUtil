@@ -99,7 +99,7 @@ public class GuiModUpdateNotification extends Gui
         GL11.glLoadIdentity();
         this.width = this.mc.displayWidth;
         this.height = this.mc.displayHeight;
-        ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+        ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         this.width = scaledresolution.getScaledWidth();
         this.height = scaledresolution.getScaledHeight();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);

@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "3.3.0"
+version = "4.0.0"
 group = "ichun" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "iChunUtil"
 
 minecraft {
-    version = "1.7.2-10.12.2.1128"
+    version = "1.7.10-10.13.0.1179"
     assetDir = "eclipse/assets"
 }
 processResources
