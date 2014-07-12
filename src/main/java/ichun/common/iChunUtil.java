@@ -21,6 +21,7 @@ import ichun.common.core.network.ChannelHandler;
 import ichun.common.core.network.PacketHandler;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
+import ichun.common.core.updateChecker.ModVersionJsonGen;
 import ichun.common.core.updateChecker.PacketModsList;
 import ichun.common.core.util.ObfHelper;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -122,7 +123,7 @@ public class iChunUtil
             Config.configKeybind.save();
         }
 
-        //        ModVersionJsonGen.generate();
+//                ModVersionJsonGen.generate();
     }
 
     public static boolean getPostLoad()

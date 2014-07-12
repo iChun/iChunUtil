@@ -20,7 +20,7 @@ public class Config
 {
 
     public static int printKey = -1;
-    public static String curMod = "mobDis";
+    public static String curMod = "sync";
 
     public static Configuration configKeybind;
 

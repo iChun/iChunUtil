@@ -24,7 +24,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Hats", versions);
-        versions.put("1.7", "3.0.0");
+        versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("HatStand", versions);
@@ -48,7 +48,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Morph", versions);
-        versions.put("1.7", "0.8.0");
+        versions.put("1.7", "0.8.1");
 
         versions = new HashMap<String, String>();
         map.put("PiP", versions);
@@ -65,6 +65,10 @@ public class ModVersionJsonGen
         versions = new HashMap<String, String>();
         map.put("Streak", versions);
         versions.put("1.7", "3.0.0");
+
+        versions = new HashMap<String, String>();
+        map.put("Sync", versions);
+        versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("Torched", versions);
