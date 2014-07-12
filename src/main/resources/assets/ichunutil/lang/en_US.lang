@@ -1,4 +1,14 @@
-ichun.config.cat.general.name=General
+ichun.config.cat.general.name=General Options
+ichun.config.cat.gameplay.name=Gameplay
+ichun.config.cat.globalOptions.name=Global Options
+ichun.config.cat.serverOptions.name=Server Options
+ichun.config.cat.clientOnly.name=Client Only
+
+ichun.config.cat.general.comment=These options are general options that don't fit any other category.
+ichun.config.cat.gameplay.comment=These options affect the gameplay while using the mod.
+ichun.config.cat.globalOptions.comment=These options affect both servers and clients that loads the mod.
+ichun.config.cat.serverOptions.comment=These options affect only the server that loads the mod.
+ichun.config.cat.clientOnly.comment=These options affect only the client that loads the mod.
 
 ichun.config.keybind.comment=If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
 ichun.config.keybind.tip1=These key binds allow a combination of Shift/Ctrl/Alt
