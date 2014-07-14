@@ -144,7 +144,7 @@ public class iChunUtil
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().isPlayerOpped(event.player.getCommandSenderName())), event.player);
+        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152596_g(event.player.getGameProfile())), event.player);
     }
 
     public static void console(String s, boolean warning)

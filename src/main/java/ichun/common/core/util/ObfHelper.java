@@ -19,6 +19,8 @@ public class ObfHelper
 
     private static final String obfVersion = "1.7.0";
 
+    public static final String[] blockHardness                  = new String[] { "field_149782_v", "blockHardness" }; //Block
+
     public static final String[] equippedProgress 				= new String[] { "field_78454_c", "equippedProgress" 				, "f"}; //ItemRenderer
     public static final String[] prevEquippedProgress 			= new String[] { "field_78451_d", "prevEquippedProgress" 			, "g"}; //ItemRenderer
     public static final String[] itemToRender 					= new String[] { "field_78453_b", "itemToRender" 					, "e"}; //ItemRenderer
