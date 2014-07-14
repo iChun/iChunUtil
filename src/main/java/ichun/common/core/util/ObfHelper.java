@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 //TODO check usages of these fields. Some probably aren't used anymore.
 public class ObfHelper
 {
+    //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) })));
     public static boolean obfuscation;
 
     private static final String obfVersion = "1.7.0";

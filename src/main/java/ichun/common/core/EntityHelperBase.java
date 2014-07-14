@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class EntityHelperBase
 {
-    public static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADD00DBEEF");
+    public static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
 
 	public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d)
 	{

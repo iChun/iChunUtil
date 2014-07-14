@@ -24,18 +24,22 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Hats", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("HatStand", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
         map.put("iChunUtil", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.3.0");
 
         versions = new HashMap<String, String>();
         map.put("ItFellFromTheSky", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
@@ -48,14 +52,17 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Morph", versions);
+        versions.put("1.7.10", "0.9.0");
         versions.put("1.7", "0.8.1");
 
         versions = new HashMap<String, String>();
         map.put("PiP", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.4");
 
         versions = new HashMap<String, String>();
         map.put("Photoreal", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
@@ -68,14 +75,17 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Sync", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("Torched", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("TrailMix", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.2");
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

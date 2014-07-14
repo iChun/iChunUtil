@@ -35,14 +35,17 @@ import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.12.2.1128,)"
+        dependencies = "required-after:Forge@[10.13.0.1180,)"
 )
+//TODO check that UUID change doesn't break stuff like morphs and shells in obf env.
 public class iChunUtil
         implements IConfigUser
 {
     //MC version, bumped up every MC update.
-    public static final int versionMC = 3;
-    public static final String version = versionMC + ".3.0";
+    public static final int versionMC = 4;
+    public static final String versionOfMC = "1.7.10";
+
+    public static final String version = versionMC + ".0.0";
 
     private static boolean hasPostLoad = false;
 
@@ -99,7 +102,7 @@ public class iChunUtil
             }
         }
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", "1.7", version, false));
+        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
 
         channels = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class);
     }
