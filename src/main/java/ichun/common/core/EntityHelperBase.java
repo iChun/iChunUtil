@@ -518,39 +518,6 @@ public class EntityHelperBase
 		return false;
 	}
 
-    public static void forceJump(EntityLivingBase ent)
-	{
-		try
-		{
-			Method m = EntityLivingBase.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.jumpObf : ObfHelper.jumpDeobf);
-			m.setAccessible(true);
-			m.invoke(ent);
-		}
-		catch (NoSuchMethodException e)
-		{
-			ent.motionY = 0.41999998688697815D;
-
-			if (ent.isPotionActive(Potion.jump))
-			{
-				ent.motionY += (double)((float)(ent.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
-			}
-
-			if (ent.isSprinting())
-			{
-				float var1 = ent.rotationYaw * 0.017453292F;
-				ent.motionX -= (double)(MathHelper.sin(var1) * 0.2F);
-				ent.motionZ += (double)(MathHelper.cos(var1) * 0.2F);
-			}
-
-			ent.isAirBorne = true;
-			ForgeHooks.onLivingJump(ent);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
     public static String getDeathSound(Class clz, EntityLivingBase ent)
     {
         try
@@ -593,25 +560,6 @@ public class EntityHelperBase
             e.printStackTrace();
         }
         return "game.neutral.hurt";
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void invokeRenderHand(EntityRenderer renderer, float renderTick)
-    {
-        try
-        {
-            Method m = EntityRenderer.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.renderHandObf : ObfHelper.renderHandDeobf, float.class, int.class);
-            m.setAccessible(true);
-            m.invoke(renderer, renderTick, 0);
-        }
-        catch(NoSuchMethodException e)
-        {
-            iChunUtil.console("Cannot find render hand method!", true);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
 	public static float updateRotation(float oriRot, float intendedRot, float maxChange)
@@ -678,11 +626,6 @@ public class EntityHelperBase
 
 	public static void setVelocity(Entity entity, double d, double d1, double d2)
 	{
-		if (entity == null)
-		{
-			return;
-		}
-
 		entity.motionX = d;
 		entity.motionY = d1;
 		entity.motionZ = d2;

@@ -18,7 +18,7 @@ public class ObfHelper
     //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) })));
     public static boolean obfuscation;
 
-    private static final String obfVersion = "1.7.0";
+    private static final String obfVersion = "1.7.10";
 
     public static final String[] blockHardness                  = new String[] { "field_149782_v", "blockHardness" }; //Block
 
@@ -104,7 +104,7 @@ public class ObfHelper
 	public static final String setSizeObf = "func_70105_a";
 	public static final String setSizeDeobf = "setSize";
 
-	//RenderPlayer
+	//RenderLivingPlayer
 	public static final String renderLivingLabelObf = "func_96449_a";
 
     //Render
