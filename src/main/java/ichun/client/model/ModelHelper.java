@@ -33,19 +33,11 @@ public class ModelHelper
 			for(int i = 0; i < modelList.size(); i++)
 			{
 				ModelRenderer cube = modelList.get(i);
-				try
-				{
-                    if((Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
-                    {
-                        GLAllocation.deleteDisplayLists((Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.displayList));
-                        ObfuscationReflectionHelper.setPrivateValue(ModelRenderer.class, cube, false, ObfHelper.compiled);
-                    }
+                if(cube.compiled)
+                {
+                    GLAllocation.deleteDisplayLists(cube.displayList);
+                    cube.compiled = false;
                 }
-				catch(Exception e)
-				{
-					ObfHelper.obfWarning();
-					e.printStackTrace();
-				}
 			}
 			RenderManager.instance.getEntityRenderObject(ent).doRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 			
@@ -57,10 +49,10 @@ public class ModelHelper
 				ModelRenderer cube = modelListCopy.get(i);
 				try
 				{
-					if(!(Boolean)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, cube, ObfHelper.compiled))
-					{
-						modelListCopy.remove(i);
-					}
+                    if(!cube.compiled)
+                    {
+                        modelListCopy.remove(i);
+                    }
 				}
 				catch(Exception e)
 				{
@@ -91,18 +83,8 @@ public class ModelHelper
 	
 	public static ModelRenderer buildCopy(ModelRenderer original, ModelBase copyBase, int depth, boolean hasFullModelBox, boolean exactDupe) //exactDupes cannot be modified or it may cause issues!
 	{
-		int txOffsetX = 0;
-		int txOffsetY = 0;
-		try
-		{
-			txOffsetX = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, original, ObfHelper.textureOffsetX);
-			txOffsetY = (Integer)ObfuscationReflectionHelper.getPrivateValue(ModelRenderer.class, original, ObfHelper.textureOffsetY);
-		}
-		catch(Exception e)
-		{
-			ObfHelper.obfWarning();
-			e.printStackTrace();
-		}
+        int txOffsetX = original.textureOffsetX;
+        int txOffsetY = original.textureOffsetY;
 
 		ModelRenderer cubeCopy = new ModelRenderer(copyBase, txOffsetX, txOffsetY);
 		cubeCopy.mirror = original.mirror;
@@ -117,15 +99,7 @@ public class ModelHelper
 			if(exactDupe)
 			{
 				ModelBox boxCopy = new ModelBox(cubeCopy, txOffsetX, txOffsetY, box.posX1, box.posY1, box.posZ1, (int)Math.abs(box.posX2 - box.posX1), (int)Math.abs(box.posY2 - box.posY1), (int)Math.abs(box.posZ2 - box.posZ1), 0.0F);
-				try
-				{
-					ObfuscationReflectionHelper.setPrivateValue(ModelBox.class, boxCopy, ObfuscationReflectionHelper.getPrivateValue(ModelBox.class, box, ObfHelper.quadList), ObfHelper.quadList);
-				}
-				catch(Exception e)
-				{
-					ObfHelper.obfWarning();
-					e.printStackTrace();
-				}
+                boxCopy.quadList = box.quadList;
 				cubeCopy.cubeList.add(boxCopy);
 			}
 			else
