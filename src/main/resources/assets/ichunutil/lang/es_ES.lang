@@ -23,7 +23,7 @@ ichun.config.versionSave.comment=Esta es la información guardada del comprobado
 ichun.config.versionNotificationTypes.name=Tipos de notificación de las actualizaciones
 ichun.config.versionNotificationFrequency.name=Frecuencia de notificación de las actualizaciones.
 
-ichun.config.versionNotificationTypes.comment=Cómo se notificarán las actualizaciones al CLIENTE? (Los servidores siempre muestran la actualización en la consola. Un jugador es tu cliente uniendose a un servidor que hospeda el mismo)\n0 = Notificar las actualizaciones sin importar el estado del jugador (administrador o normal).\n1 = Notificar solo a los administradores del servidor de las actualizaciones (Se seguirán mostrando las actualizaciones que solo afecten al cliente).\n2 = Permitir al cliente notificarse a asi mismo de las actualizaciones.
-ichun.config.versionNotificationFrequency.comment=Cada cuánto tiempo se te notificará de la actualización?(Configuración de cliente)\n0 = Cuando te conectas al servidor.\n1 = Una vez al día.\n2 = Solo una vez.\n3 = Nunca (Oculta las notificaciones. El mod seguirá buscando actualizaciones y lo mostrará en la consola).
+ichun.config.versionNotificationTypes.comment=¿Cómo se notificarán las actualizaciones al CLIENTE? (Los servidores siempre muestran la actualización en la consola. Un jugador es tu cliente uniendose a un servidor que hospeda el mismo)\n0 = Notificar las actualizaciones sin importar el estado del jugador (administrador o normal).\n1 = Notificar solo a los administradores del servidor de las actualizaciones (Se seguirán mostrando las actualizaciones que solo afecten al cliente).\n2 = Permitir al cliente notificarse a asi mismo de las actualizaciones.
+ichun.config.versionNotificationFrequency.comment=¿Cada cuánto tiempo se te notificará de la actualización?(Configuración de cliente)\n0 = Cuando te conectas al servidor.\n1 = Una vez al día.\n2 = Solo una vez.\n3 = Nunca (Oculta las notificaciones. El mod seguirá buscando actualizaciones y lo mostrará en la consola).
 
-ichun.gui.newUpdate=Nueva actualización disponible!
+ichun.gui.newUpdate=¡Nueva actualización disponible!
