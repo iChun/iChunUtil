@@ -35,7 +35,7 @@ import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.13.0.1180,)"
+        dependencies = "required-after:Forge@[10.13.0.1186,)"
 )
 //TODO check that UUID change doesn't break stuff like morphs and shells in obf env.
 public class iChunUtil
