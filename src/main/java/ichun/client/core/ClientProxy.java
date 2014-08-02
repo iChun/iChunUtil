@@ -1,5 +1,8 @@
 package ichun.client.core;
 
+import com.mojang.authlib.GameProfileRepository;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -8,21 +11,21 @@ import ichun.client.keybind.KeyBind;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.config.Config;
 import ichun.common.core.util.ResourceHelper;
-import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
+import java.util.UUID;
 
-public class ClientProxy extends CommonProxy 
+public class ClientProxy extends CommonProxy
 {
 
-	@Override
-	public void init()
-	{
+    @Override
+    public void init()
+    {
         super.init();
-		ResourceHelper.init();
+        ResourceHelper.init();
 
         File file = new File(ResourceHelper.getConfigFolder(), "iChunUtil_KeyBinds.cfg");
         Config.configKeybind = new Configuration(file);
@@ -30,6 +33,18 @@ public class ClientProxy extends CommonProxy
 
         tickHandlerClient = new TickHandlerClient();
         FMLCommonHandler.instance().bus().register(tickHandlerClient);
+    }
+
+    @Override
+    public GameProfileRepository createProfileRepo()
+    {
+        return ((new YggdrasilAuthenticationService(Minecraft.getMinecraft().getProxy(), UUID.randomUUID().toString()))).createProfileRepository();
+    }
+
+    @Override
+    public MinecraftSessionService getSessionService()
+    {
+        return Minecraft.getMinecraft().func_152347_ac();
     }
 
     @Override

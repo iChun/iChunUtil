@@ -1,5 +1,8 @@
 package ichun.common.core;
 
+import com.mojang.authlib.GameProfileRepository;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.core.TickHandlerClient;
@@ -7,6 +10,7 @@ import ichun.client.keybind.KeyBind;
 import ichun.common.core.util.EventCalendar;
 import ichun.common.iChunUtil;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.HashMap;
 
@@ -19,6 +23,16 @@ public class CommonProxy
     public void init()
     {
         EventCalendar.checkDate();
+    }
+
+    public GameProfileRepository createProfileRepo()
+    {
+        return FMLCommonHandler.instance().getMinecraftServerInstance().func_152359_aw();
+    }
+
+    public MinecraftSessionService getSessionService()
+    {
+        return MinecraftServer.getServer().func_147130_as();
     }
 
     /**
