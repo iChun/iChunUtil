@@ -1,7 +1,7 @@
 ichun.config.cat.general.name=Общие параметры
 ichun.config.cat.gameplay.name=Геймплей
 ichun.config.cat.globalOptions.name=Глобальные параметры
-ichun.config.cat.serverOptions.name=Настройки сервера
+ichun.config.cat.serverOptions.name=Параметры сервера
 ichun.config.cat.clientOnly.name=Только для клиента
 
 ichun.config.cat.general.comment=Эти общие параметры, которые не вписываются любую другую категорию.
