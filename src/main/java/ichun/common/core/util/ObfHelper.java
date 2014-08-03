@@ -22,6 +22,7 @@ public class ObfHelper
 
     public static final String[] resourceDomain			        = new String[] { "field_110626_a", "resourceDomain"		            , "a"}; //ResourceLocation
     public static final String[] resourcePath 			        = new String[] { "field_110625_b", "resourcePath" 			        , "b"}; //ResourceLocation
+    public static final String[] gameProfile                    = new String[] { "field_146106_i", "gameProfile"                    , "i"}; //EntityPlayer
 
     //EntityLivingBase
     public static final String getHurtSoundObf = "func_70621_aR";

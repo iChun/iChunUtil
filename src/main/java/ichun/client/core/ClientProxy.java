@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.gui.GuiModUpdateNotification;
 import ichun.client.keybind.KeyBind;
 import ichun.common.core.CommonProxy;
+import ichun.common.core.EntityHelperBase;
 import ichun.common.core.config.Config;
 import ichun.common.core.util.ResourceHelper;
 import net.minecraft.client.Minecraft;

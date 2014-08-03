@@ -58,9 +58,8 @@ public class EntityHelperBase
 
                         nameToFullProfileMap.put(gameprofile.getName(), gameprofile);
                     }
+                    return gameprofile;
                 }
-
-                return gameprofile;
             }
         }
         return new GameProfile(uuidExample, name);
