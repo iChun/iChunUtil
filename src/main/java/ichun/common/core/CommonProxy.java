@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.core.TickHandlerClient;
 import ichun.client.keybind.KeyBind;
+import ichun.client.voxel.TrailTicker;
 import ichun.common.core.util.EventCalendar;
 import ichun.common.iChunUtil;
 import net.minecraft.client.settings.KeyBinding;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 public class CommonProxy
 {
     public static TickHandlerClient tickHandlerClient;
+    public static TrailTicker trailTicker;
     public static HashMap<String, String> versionChecker = new HashMap<String, String>();
     public static HashMap<String, String> prevVerChecker = new HashMap<String, String>();
 

@@ -3,11 +3,15 @@ package ichun.client.core;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.gui.GuiModUpdateNotification;
 import ichun.client.keybind.KeyBind;
+import ichun.client.voxel.EntityTrail;
+import ichun.client.voxel.RenderVoxels;
+import ichun.client.voxel.TrailTicker;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.config.Config;
@@ -21,7 +25,6 @@ import java.util.UUID;
 
 public class ClientProxy extends CommonProxy
 {
-
     @Override
     public void init()
     {
@@ -34,6 +37,10 @@ public class ClientProxy extends CommonProxy
 
         tickHandlerClient = new TickHandlerClient();
         FMLCommonHandler.instance().bus().register(tickHandlerClient);
+
+        trailTicker = new TrailTicker();
+        FMLCommonHandler.instance().bus().register(trailTicker);
+        RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());
     }
 
     @Override
