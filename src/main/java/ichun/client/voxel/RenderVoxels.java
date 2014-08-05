@@ -46,9 +46,9 @@ public class RenderVoxels extends Render
 
         ResourceLocation rl = sd.parent.getLocationSkin();
 
-        if(loc.get(0).txLocation != null)
+        if(loc.get(20).txLocation != null)
         {
-            rl = loc.get(0).txLocation;
+            rl = loc.get(20).txLocation;
         }
 
         BufferedImage[] skins = restitchedSkins.get(rl);
