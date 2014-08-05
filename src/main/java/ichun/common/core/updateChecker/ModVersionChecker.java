@@ -17,7 +17,7 @@ import java.util.Map;
 public class ModVersionChecker
 {
 
-    private static String iChunJsonURL = "https://raw.githubusercontent.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/versions.json";
+    private static String iChunJsonURL = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/versions.json";
     private static HashMap<String, ArrayList<ModVersionInfo>> urlsToCheck = new HashMap<String, ArrayList<ModVersionInfo>>();
     private static boolean init = false;
 
