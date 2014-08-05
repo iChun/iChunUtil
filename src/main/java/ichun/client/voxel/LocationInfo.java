@@ -1,6 +1,9 @@
 package ichun.client.voxel;
 
+import ichun.common.iChunUtil;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 
 public class LocationInfo 
 {
@@ -14,8 +17,16 @@ public class LocationInfo
 	
 	public float limbSwing;
 	public float limbSwingAmount;
+
+    public boolean sneaking;
+    public boolean canRender;
 	
 	public long lastTick;
+
+    public float pitchChange;
+    public float yawChange;
+
+    public ResourceLocation txLocation;
 
 	public LocationInfo(EntityPlayer player)
 	{
@@ -34,7 +45,29 @@ public class LocationInfo
 		
 		limbSwing = player.limbSwing;
 		limbSwingAmount = player.limbSwingAmount;
+
+        sneaking = player.isSneaking();
 		
 		lastTick = player.worldObj.getWorldTime();
-	}
+        float speed = 7.5F;
+        pitchChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
+        yawChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
+
+        canRender = true;
+        txLocation = ((AbstractClientPlayer)player).getLocationSkin();
+        if(iChunUtil.hasMorphMod)
+        {
+            if(morph.api.Api.hasMorph(player.getCommandSenderName(), true))
+            {
+                if(morph.api.Api.morphProgress(player.getCommandSenderName(), true) < 1.0F || !(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer))
+                {
+                    canRender = false;
+                }
+                if(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer)
+                {
+                    txLocation = ((AbstractClientPlayer)morph.api.Api.getMorphEntity(player.getCommandSenderName(), true)).getLocationSkin();
+                }
+            }
+        }
+    }
 }

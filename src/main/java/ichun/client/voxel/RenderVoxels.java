@@ -34,14 +34,28 @@ public class RenderVoxels extends Render
     {
         EntityTrail sd = (EntityTrail)entity;
 
+        if(sd.parent.isInvisible() || sd.parent == Minecraft.getMinecraft().renderViewEntity && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+        {
+            return;
+        }
+
         GL11.glPushMatrix();
 //        GL11.glTranslatef((float)d, (float)d1, (float)d2);
 
-        BufferedImage[] skins = restitchedSkins.get(sd.parent.getLocationSkin());
+        ArrayList<LocationInfo> loc = iChunUtil.proxy.trailTicker.getPlayerLocationInfo(sd.parent);
+
+        ResourceLocation rl = sd.parent.getLocationSkin();
+
+        if(loc.get(0).txLocation != null)
+        {
+            rl = loc.get(0).txLocation;
+        }
+
+        BufferedImage[] skins = restitchedSkins.get(rl);
 
         if(skins == null)
         {
-            ITextureObject obj = Minecraft.getMinecraft().getTextureManager().getTexture(sd.parent.getLocationSkin());
+            ITextureObject obj = Minecraft.getMinecraft().getTextureManager().getTexture(rl);
             if(obj instanceof ThreadDownloadImageData)
             {
                 try
@@ -109,8 +123,8 @@ public class RenderVoxels extends Render
                             //			                }
                         }
 
-                        restitchedSkinsId.put(sd.parent.getLocationSkin(), imgId);
-                        restitchedSkins.put(sd.parent.getLocationSkin(), skins);
+                        restitchedSkinsId.put(rl, imgId);
+                        restitchedSkins.put(rl, skins);
                     }
                 }
                 catch(Exception e)
@@ -120,9 +134,7 @@ public class RenderVoxels extends Render
             }
         }
 
-        ArrayList<LocationInfo> loc = iChunUtil.proxy.trailTicker.getPlayerLocationInfo(sd.parent);
-
-        sd.model.renderPlayer(sd, entity.worldObj.getWorldTime(), entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(sd.parent.getLocationSkin()));
+        sd.model.renderPlayer(sd, entity.worldObj.getWorldTime(), entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
 
         GL11.glPopMatrix();
     }

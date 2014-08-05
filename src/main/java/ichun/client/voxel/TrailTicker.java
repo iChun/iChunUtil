@@ -31,8 +31,15 @@ public class TrailTicker
                 if(e.getValue().parent != null)
                 {
                     EntityTrail streak = e.getValue();
-
-                    updatePos(streak);
+                    if(e.getValue().parent.isDead)
+                    {
+                        streak.setDead();
+                        iterator.remove();
+                    }
+                    else
+                    {
+                        updatePos(streak);
+                    }
                 }
             }
         }
@@ -70,6 +77,11 @@ public class TrailTicker
         if(event.side == Side.CLIENT && event.phase == TickEvent.Phase.END)
         {
             AbstractClientPlayer player = (AbstractClientPlayer)event.player;
+            if(player.worldObj.getPlayerEntityByName(player.getCommandSenderName()) != player)
+            {
+                return;
+            }
+
             WorldClient world = Minecraft.getMinecraft().theWorld;
 
             EntityTrail hat = streaks.get(player.getCommandSenderName());

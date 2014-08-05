@@ -1,6 +1,7 @@
 package ichun.common;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -54,6 +55,8 @@ public class iChunUtil
     public static EnumMap<Side, FMLEmbeddedChannel> channels;
 
     public static Config config;
+
+    public static boolean hasMorphMod;
 
     @Instance("iChunUtil")
     public static iChunUtil instance;
@@ -125,6 +128,8 @@ public class iChunUtil
         {
             Config.configKeybind.save();
         }
+
+        hasMorphMod = Loader.isModLoaded("Morph");
 
 //                ModVersionJsonGen.generate();
     }

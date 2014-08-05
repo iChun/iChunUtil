@@ -132,12 +132,21 @@ public class ModelVoxel extends ModelBase
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDepthMask(true);
 
+
         //last one = newest. first = oldest
         for(int j = loc.size() - 1; j >= 0; j--)
         {
-            GL11.glPushMatrix();
             LocationInfo info = loc.get(j);
 
+            if(info.lastTick % 2 == 0 || !info.canRender)
+            {
+                continue;
+            }
+
+            int prog = (int)(time - info.lastTick);
+            float prog2 = MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F);
+
+            GL11.glPushMatrix();
             double tX = trail.prevPosX + (trail.posX - trail.prevPosX) * renderTick;
             double tY = trail.prevPosY + (trail.posY - trail.prevPosY) * renderTick;
             double tZ = trail.prevPosZ + (trail.posZ - trail.prevPosZ) * renderTick;
@@ -145,15 +154,15 @@ public class ModelVoxel extends ModelBase
 
             GL11.glScalef(-1.0F, -1.0F, 1.0F);
 
-            GL11.glScalef(0.9375F, 0.9375F, 0.9375F);
-            GL11.glTranslatef(0.0F, 0.9375F, 0.0F);
+            float scale = 0.9375F;
+            GL11.glScalef(scale, scale, scale);
+            GL11.glTranslatef(0.0F, -0.6825F + trail.parent.yOffset, 0.0F);
 
             GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
 
             rand.setSeed(info.lastTick + seedBase);
 
             int i = rand.nextInt(6);
-            int prog = (int)(time - info.lastTick);
 
             if(skins == null)
             {
@@ -180,7 +189,7 @@ public class ModelVoxel extends ModelBase
                     GL11.glBindTexture(GL11.GL_TEXTURE_2D, skins[i - 2]);
                 }
             }
-            renderLimb(prog, i, info.renderYawOffset, info.rotationYawHead, info.rotationPitch, info.limbSwing, info.limbSwingAmount, f5, renderTick);
+            renderLimb(prog, i, info.sneaking, info.renderYawOffset, info.rotationYawHead, info.rotationPitch, info.limbSwing, info.limbSwingAmount, info.yawChange * prog * (1.0F - 0.4F * prog2), info.pitchChange * prog * (1.0F - 0.4F * prog2), f5, renderTick);
             GL11.glPopMatrix();
         }
 
@@ -196,7 +205,7 @@ public class ModelVoxel extends ModelBase
 		GL11.glPopMatrix();
 	}
 	
-	public void renderLimb(int progInt, int limb, float renderYaw, float rotationYaw, float rotationPitch, float limbSwing, float limbSwingAmount, float f5, float renderTick)
+	public void renderLimb(int progInt, int limb, boolean sneaking, float renderYaw, float rotationYaw, float rotationPitch, float limbSwing, float limbSwingAmount, float yaw, float pitch, float f5, float renderTick)
     {
         GL11.glPushMatrix();
         //0 = left leg
@@ -208,7 +217,7 @@ public class ModelVoxel extends ModelBase
 
         float prog = MathHelper.clamp_float((progInt + renderTick) / 100F, 0.0F, 1.0F);
 
-        float shatterProg = MathHelper.clamp_float((float)(Math.pow(1.0F - MathHelper.clamp_float(((prog - 0.05F) / 0.125F), 0.0F, 1.0F), 3D)), 0.0F, 1.0F);
+        float shatterProg = 1.0F + 0.7F * prog;
         float properShatterProg = 1.0F - MathHelper.clamp_float((float)(Math.pow(1.0F - MathHelper.clamp_float(((prog - 0.025F) / 0.2F), 0.0F, 1.0F), 2D)), 0.0F, 1.0F);
 
         rotationPitch *= shatterProg;
@@ -233,7 +242,7 @@ public class ModelVoxel extends ModelBase
         float offsetY = 0.0F;
         float offsetZ = 0.0F;
 
-        float spread = 0.7F;
+        float spread = 0.65F;
 
         if(limb == 4)
         {
@@ -302,7 +311,7 @@ public class ModelVoxel extends ModelBase
         }
         else if(limb == 5)
         {
-            GL11.glTranslatef(0.0F, -12F/16F * shatterProg, 0.0F);
+            GL11.glTranslatef(0.0F, sneaking ? -10F/16F : -12F/16F * shatterProg, 0.0F);
 
             GL11.glRotatef(rotationPitch, 1.0F, 0.0F, 0.0F);
             pixel.rotationPointY = -8F * shatterProg;
@@ -323,6 +332,11 @@ public class ModelVoxel extends ModelBase
         GL11.glTranslatef(0.0F, 11F/16F * (1.0F - shatterProg) + rand.nextFloat() * 0.01F, 0.0F);
 
         GL11.glTranslatef(-(offsetX + (i + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), (-(offsetY + (j + 0.5F)) / 16F) * shatterProg, -(offsetZ + (k + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg));
+        pixel.rotateAngleX = pitch / (180F / (float)Math.PI);
+        pixel.rotateAngleY = yaw / (180F / (float)Math.PI);
+
+        double vScale = Math.pow((1.0D - prog), 0.75D);
+        GL11.glScaled(vScale, vScale, vScale);
         pixel.render(f5);
 
         GL11.glPopMatrix();
