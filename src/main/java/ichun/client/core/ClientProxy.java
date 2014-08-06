@@ -112,7 +112,7 @@ public class ClientProxy extends CommonProxy
     @SideOnly(Side.CLIENT)
     public void registerMinecraftKeyBind(KeyBinding bind)
     {
-        tickHandlerClient.mcKeyBindList.put(bind, new KeyBind(bind.getKeyCode(), false, false, false, true));
+        tickHandlerClient.mcKeyBindList.put(bind, (new KeyBind(bind.getKeyCode(), false, false, false, true)).setIsMinecraftBind());
     }
 
 }

@@ -23,6 +23,8 @@ public class KeyBind
     public boolean ignoreHold;
     private boolean pressed;
 
+    private boolean isMinecraftBind;
+
     public int usages; //if usages == 0, deregister;
 
     public KeyBind(int index, boolean shift, boolean ctrl, boolean alt, boolean ignoreHolding)//ignoreHold will allow the keybind to trigger as long as the keybind is hit regardless of SHIFT/CTRL/ALT state
@@ -93,6 +95,17 @@ public class KeyBind
     public void triggerEvent(boolean pulse)
     {
         MinecraftForge.EVENT_BUS.post(new KeyEvent(this, pulse));
+    }
+
+    public KeyBind setIsMinecraftBind()
+    {
+        isMinecraftBind = true;
+        return this;
+    }
+
+    public boolean isMinecraftBind()
+    {
+        return isMinecraftBind;
     }
 
     @Override
