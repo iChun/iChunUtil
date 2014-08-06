@@ -14,6 +14,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import ichun.client.thread.ThreadGetPatrons;
 import ichun.common.core.CommonProxy;
 import ichun.common.core.EntityHelperBase;
 import ichun.common.core.config.Config;
@@ -58,6 +59,7 @@ public class iChunUtil
     public static Config config;
 
     public static boolean hasMorphMod;
+    public static String[] patronList = new String[0];
 
     @Instance("iChunUtil")
     public static iChunUtil instance;
@@ -114,6 +116,7 @@ public class iChunUtil
     @EventHandler
     public void load(FMLInitializationEvent event)
     {
+        (new ThreadGetPatrons()).start();
         ModVersionChecker.init();
     }
 
