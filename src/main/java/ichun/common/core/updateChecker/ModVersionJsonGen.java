@@ -16,11 +16,13 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Grinder", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
         map.put("BackTools", versions);
-        versions.put("1.7", "3.0.0");
+        versions.put("1.7.10", "4.0.0");
+        versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("Hats", versions);
@@ -44,10 +46,12 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("MobAmputation", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
         map.put("MobDismemberment", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new HashMap<String, String>();
@@ -67,10 +71,12 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Shatter", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();
         map.put("Streak", versions);
+        versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new HashMap<String, String>();

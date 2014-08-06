@@ -145,8 +145,8 @@ public class iChunUtil
 
         hasMorphMod = Loader.isModLoaded("Morph");
 
-//        EntityHelperBase.getUUIDFromUsernames("ohaiiChun", "notch", "kihira", "pahimar");
-
+//        EntityHelperBase.getUUIDFromUsernames("pahimar");
+//
 //                ModVersionJsonGen.generate();
     }
 
