@@ -53,9 +53,21 @@ public class LocationInfo
         pitchChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
         yawChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
 
-        canRender = true;
+        canRender = false;
+        for(String s : iChunUtil.proxy.trailTicker.patronList)
+        {
+            if(s.equals(player.getGameProfile().getId().toString()))
+            {
+                canRender = true;
+                break;
+            }
+        }
         txLocation = ((AbstractClientPlayer)player).getLocationSkin();
-        if(iChunUtil.hasMorphMod)
+        if(canRender && player.isInvisible())
+        {
+            canRender = false;
+        }
+        if(canRender && iChunUtil.hasMorphMod)
         {
             if(morph.api.Api.hasMorph(player.getCommandSenderName(), true))
             {

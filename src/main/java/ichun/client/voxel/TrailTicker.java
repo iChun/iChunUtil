@@ -3,6 +3,9 @@ package ichun.client.voxel;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+import ichun.common.core.network.PacketHandler;
+import ichun.common.core.packet.PacketShowPatronReward;
+import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -67,6 +70,12 @@ public class TrailTicker
                     e.getValue().setDead();
                     ite.remove();
                 }
+            }
+
+            if(tellServerAsPatron)
+            {
+                tellServerAsPatron = false;
+                PacketHandler.sendToServer(iChunUtil.channels, new PacketShowPatronReward(iChunUtil.config.getInt("showPatronReward") == 1));
             }
         }
     }
@@ -154,4 +163,8 @@ public class TrailTicker
     public HashMap<String, ArrayList<LocationInfo>> playerLoc = new HashMap<String, ArrayList<LocationInfo>>();
 
     public HashMap<String, EntityTrail> streaks = new HashMap<String, EntityTrail>();
+
+    public ArrayList<String> patronList = new ArrayList<String>();
+
+    public boolean tellServerAsPatron;
 }

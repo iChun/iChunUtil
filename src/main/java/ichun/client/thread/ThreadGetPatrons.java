@@ -1,20 +1,16 @@
 package ichun.client.thread;
 
-import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.iChunUtil;
-import morph.api.Ability;
-import morph.common.Morph;
-import morph.common.ability.AbilityHandler;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.Minecraft;
 
-import java.io.*;
-import java.lang.reflect.Type;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Map;
 
+@SideOnly(Side.CLIENT)
 public class ThreadGetPatrons extends Thread
 {
     public String patronList = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/patrons.json";
@@ -37,9 +33,16 @@ public class ThreadGetPatrons extends Thread
 
             if(json != null)
             {
-                System.out.println("patrons");
-                System.out.println(json.length);
-                iChunUtil.patronList = json;
+                for(String s : json)
+                {
+                    if(s.replaceAll("-", "").equalsIgnoreCase(Minecraft.getMinecraft().getSession().getPlayerID()))
+                    {
+                        iChunUtil.isPatron = true;
+                        iChunUtil.config.setCurrentCategory("patreon", "ichun.config.patreon.name", "ichun.config.patreon.comment");
+                        iChunUtil.config.createIntBoolProperty("showPatronReward", "ichun.config.showPatronReward.name", "ichun.config.showPatronReward.comment", true, false, true);
+                        iChunUtil.config.save();
+                    }
+                }
             }
         }
         catch(Exception e)

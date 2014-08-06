@@ -12,6 +12,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.thread.ThreadGetPatrons;
@@ -22,6 +23,8 @@ import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
 import ichun.common.core.network.ChannelHandler;
 import ichun.common.core.network.PacketHandler;
+import ichun.common.core.packet.PacketPatrons;
+import ichun.common.core.packet.PacketShowPatronReward;
 import ichun.common.core.updateChecker.ModVersionChecker;
 import ichun.common.core.updateChecker.ModVersionInfo;
 import ichun.common.core.updateChecker.ModVersionJsonGen;
@@ -34,6 +37,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
@@ -59,7 +63,9 @@ public class iChunUtil
     public static Config config;
 
     public static boolean hasMorphMod;
-    public static String[] patronList = new String[0];
+    public static boolean isPatron;
+    //Server's patron list. Client's is in TrailTicker
+    public static ArrayList<String> patronList = new ArrayList<String>();
 
     @Instance("iChunUtil")
     public static iChunUtil instance;
@@ -70,6 +76,10 @@ public class iChunUtil
     @Override
     public boolean onConfigChange(Config cfg, Property prop)
     {
+        if(prop.getName().equalsIgnoreCase("showPatronReward"))
+        {
+            proxy.trailTicker.tellServerAsPatron = true;
+        }
         return true;
     }
 
@@ -110,7 +120,7 @@ public class iChunUtil
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
 
-        channels = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class);
+        channels = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class);
     }
 
     @EventHandler
@@ -155,10 +165,21 @@ public class iChunUtil
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onClientConnection(FMLNetworkEvent.ClientConnectedToServerEvent event)
+    {
+        if(isPatron)
+        {
+            proxy.trailTicker.tellServerAsPatron = true;
+        }
+    }
+
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
         PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152596_g(event.player.getGameProfile())), event.player);
+        PacketHandler.sendToPlayer(channels, new PacketPatrons(), event.player);
     }
 
     public static void console(String s, boolean warning)
