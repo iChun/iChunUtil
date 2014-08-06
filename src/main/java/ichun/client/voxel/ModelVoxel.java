@@ -311,7 +311,7 @@ public class ModelVoxel extends ModelBase
         }
         else if(limb == 5)
         {
-            GL11.glTranslatef(0.0F, sneaking ? -10F/16F : -12F/16F * shatterProg, 0.0F);
+            GL11.glTranslatef(0.0F, sneaking ? -9F/16F : -12F/16F * shatterProg, 0.0F);
 
             GL11.glRotatef(rotationPitch, 1.0F, 0.0F, 0.0F);
             pixel.rotationPointY = -8F * shatterProg;

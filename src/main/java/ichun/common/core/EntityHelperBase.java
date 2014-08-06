@@ -112,6 +112,17 @@ public class EntityHelperBase
         return agameprofile[0];
     }
 
+    public static void getUUIDFromUsernames(String...names)
+    {
+        System.out.println("UUIDs from Names");
+        for(String s : names)
+        {
+            GameProfile gp = getPartialGameProfileFromName(s);
+            System.out.println(gp.getName());
+            System.out.println(gp.getId().toString());
+        }
+    }
+
     public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d)
     {
         return getEntityLook(ent, d, false);

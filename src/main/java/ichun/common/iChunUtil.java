@@ -15,6 +15,7 @@ import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.common.core.CommonProxy;
+import ichun.common.core.EntityHelperBase;
 import ichun.common.core.config.Config;
 import ichun.common.core.config.ConfigHandler;
 import ichun.common.core.config.IConfigUser;
@@ -130,6 +131,8 @@ public class iChunUtil
         }
 
         hasMorphMod = Loader.isModLoaded("Morph");
+
+//        EntityHelperBase.getUUIDFromUsernames("ohaiiChun", "notch", "kihira", "pahimar");
 
 //                ModVersionJsonGen.generate();
     }
