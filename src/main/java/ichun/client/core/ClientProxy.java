@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ichun.client.gui.GuiModUpdateNotification;
 import ichun.client.keybind.KeyBind;
+import ichun.client.thread.ThreadGetPatrons;
 import ichun.client.voxel.EntityTrail;
 import ichun.client.voxel.RenderVoxels;
 import ichun.client.voxel.TrailTicker;
@@ -44,6 +45,8 @@ public class ClientProxy extends CommonProxy
         trailTicker = new TrailTicker();
         FMLCommonHandler.instance().bus().register(trailTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());
+
+        (new ThreadGetPatrons()).start();
     }
 
     @Override

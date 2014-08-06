@@ -126,7 +126,6 @@ public class iChunUtil
     @EventHandler
     public void load(FMLInitializationEvent event)
     {
-        (new ThreadGetPatrons()).start();
         ModVersionChecker.init();
     }
 
