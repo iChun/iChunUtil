@@ -23,6 +23,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -115,11 +116,21 @@ public class EntityHelperBase
     public static void getUUIDFromUsernames(String...names)
     {
         System.out.println("UUIDs from Names");
+        ArrayList<String> namesList = new ArrayList<String>();
+        ArrayList<String> uuidList = new ArrayList<String>();
         for(String s : names)
         {
             GameProfile gp = getPartialGameProfileFromName(s);
-            System.out.println(gp.getName());
-            System.out.println(gp.getId().toString());
+            namesList.add(gp.getName());
+            uuidList.add("  \"" + gp.getId().toString() + "\"");
+        }
+        for(int i = 0; i < namesList.size(); i++)
+        {
+            System.out.println(namesList.get(i));
+        }
+        for(int i = 0; i < uuidList.size(); i++)
+        {
+            System.out.println(uuidList.get(i));
         }
     }
 
