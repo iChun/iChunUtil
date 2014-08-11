@@ -1,5 +1,6 @@
 package ichun.client.gui;
 
+import cpw.mods.fml.client.config.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
@@ -195,5 +196,45 @@ public class GuiSlider extends GuiButton
     public double getValue()
     {
         return sliderValue * (maxValue - minValue) + minValue;
+    }
+
+    /**
+     * This method was blatantly stolen from FML without permission. o/ bsprks!
+     *
+     * @author bspkrs
+     */
+    @Override
+    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    {
+        if (this.visible)
+        {
+            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int k = this.getHoverState(this.field_146123_n);
+            GuiUtils.drawContinuousTexturedBox(buttonTextures, this.xPosition, this.yPosition, 0, 46 + k * 20, this.width, this.height, 200, 20, 2, 3, 2, 2, this.zLevel);
+            this.mouseDragged(mc, mouseX, mouseY);
+            int color = 14737632;
+
+            if (packedFGColour != 0)
+            {
+                color = packedFGColour;
+            }
+            else if (!this.enabled)
+            {
+                color = 10526880;
+            }
+            else if (this.field_146123_n)
+            {
+                color = 16777120;
+            }
+
+            String buttonText = this.displayString;
+            int strWidth = mc.fontRenderer.getStringWidth(buttonText);
+            int ellipsisWidth = mc.fontRenderer.getStringWidth("...");
+
+            if (strWidth > width - 6 && strWidth > ellipsisWidth)
+                buttonText = mc.fontRenderer.trimStringToWidth(buttonText, width - 6 - ellipsisWidth).trim() + "...";
+
+            this.drawCenteredString(mc.fontRenderer, buttonText, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, color);
+        }
     }
 }
