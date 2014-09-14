@@ -34,6 +34,14 @@ public class GuiSlider extends GuiButton
         super(id, xPos, yPos, length, 20, prefix);
         minValue = minVal;
         maxValue = maxVal;
+        if(currentVal < minValue)
+        {
+            currentVal = minValue;
+        }
+        else if(currentVal > maxValue)
+        {
+            currentVal = maxValue;
+        }
         sliderValue = (currentVal - minValue) / (maxValue - minValue);
         dispString = prefix;
         parent = par;
