@@ -44,7 +44,7 @@ import java.util.EnumMap;
         version = iChunUtil.version,
         dependencies = "required-after:Forge@[10.13.0.1186,)"
 )
-//TODO check that UUID change doesn't break stuff like morphs and shells in obf env.
+//TODO check out the new KeyEvent with key releases in build 1211
 public class iChunUtil
         implements IConfigUser
 {
