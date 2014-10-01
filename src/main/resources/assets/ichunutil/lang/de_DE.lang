@@ -1,0 +1,34 @@
+ichun.config.cat.general.name=Allgemeine Optionen
+ichun.config.cat.gameplay.name=Gameplay
+ichun.config.cat.globalOptions.name=Allgemeine Optionen
+ichun.config.cat.serverOptions.name=Server Optionen
+ichun.config.cat.clientOnly.name=Nur Client
+
+ichun.config.cat.general.comment=Diese Optionen sind Allgemein und ändern nicht in einer anderen Kategorie.
+ichun.config.cat.gameplay.comment=Diese Optionen ändern das gameplay währrend des benutzen des Mods.
+ichun.config.cat.globalOptions.comment=Diese Optionen verändern etwas, egal ob die Mods auf Server oder Client geladen werden.
+ichun.config.cat.serverOptions.comment=Diese Optionen verändern etwas nur, wenn die Mods auf dem Server geladen werden.
+ichun.config.cat.clientOnly.comment=Diese Optionen verändern etwas nur, wenn die Mods auf dem Client geladen werden.
+
+ichun.config.keybind.comment=Wenn du das liest, würde ich dir empfehlen, dass du die Tastenbelegung im Spiel veränderst.\niChunUtil hat auch Tastenbelegungen. Geh auf der Optionen Seite und drück O zum zeigen der anderen Funktionen.\n\nWenn du die config Datei unbedingt verändern musst, dann benutze dieses Format <key code>, und nutze ":SHIFT", ":CTRL", oder ":ALT" für Tasten, die man gleichzeitig drücken soll.\nFür Tastencodes, geh auf: http://minecraft.gamepedia.com/Key_codes \nBeispiel: 48:SHIFT:ALT wird ausgelöst, wenn du Shift, Alt und B drückst.
+ichun.config.keybind.tip1=Diese Tastenkombinationen erlauben dir eine Kombination mit Shift/Ctrl/Alt
+ichun.config.keybind.tip2=Versuche diese Tasten gedrückt zu halten, währrend du die Tastenbelegung änderst.
+ichun.config.keybind.tip3=Wenn du die Tasten Shift/Ctrl/Alt als Tastenbelegung benutzen willst, drück die Taste für 3 sekunden. Die letzte Taste, die gedrückt wurde, wird als Tastenkombination verwendet.
+
+ichun.config.versionCheck.name=Update Checker
+ichun.config.versionSave.name=Update Checker Speichern
+ichun.config.patreon.name=Patreon
+
+ichun.config.versionCheck.comment=Diese config ist für den Mod Version Update Checker vpn iChunUtil.
+ichun.config.versionSave.comment=Dies sind Speicher Infos für den update checker. Verändere es nicht, wenn der Mod heile bleiben soll.
+ichun.config.patreon.comment=Patreon neusten configs.
+
+ichun.config.versionNotificationTypes.name=Update Nachrichten Types
+ichun.config.versionNotificationFrequency.name=Update Nachrichten Frequency
+ichun.config.showPatronReward.name=Zeige Patron Gewinn
+
+ichun.config.versionNotificationTypes.comment=Wie wird der CLIENT für Updates benachrichtigt? (Servers wird immer das update in der Console stehen haben. Einzelspieler ist wenn du deinen eigenen Server beitrettest)\n0 = Nachrichten bei Updates ist je nach Spieler Status (OP oder nicht).\n1 = Benachrichtige nur OPs auf Server für updates (Bei Client wird nur Mod Updates gezeigt)\n2 = Erlaube Client sich selbst für Updates zu benachrichtigen.
+ichun.config.versionNotificationFrequency.comment=Wie oft wirst du für ein Update benachrichtigt?(Client config)\n0 = Einmal beim betretten eines Servers\n1 = Einmal pro Tag\n2 = Nur einmal pro Update.\n3 = Nie (Die Benachrichtigungen werden nur versteckt. Es werden immernoch nach Updates gesucht).
+ichun.config.showPatronReward.comment=Willst du dein patron Gewinn anderen Spielern zeigen?
+
+ichun.gui.newUpdate=Neues Mod Update verfügbar!
