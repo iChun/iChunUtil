@@ -1,30 +1,34 @@
-ichun.config.cat.general.name=Общие параметры
-ichun.config.cat.gameplay.name=Геймплей
-ichun.config.cat.globalOptions.name=Глобальные параметры
-ichun.config.cat.serverOptions.name=Параметры сервера
+ichun.config.cat.general.name=Общие настройки
+ichun.config.cat.gameplay.name=Игровой процесс
+ichun.config.cat.globalOptions.name=Глобальные настройки
+ichun.config.cat.serverOptions.name=Серверные настройки
 ichun.config.cat.clientOnly.name=Только для клиента
 
-ichun.config.cat.general.comment=Эти общие параметры, которые не вписываются любую другую категорию.
-ichun.config.cat.gameplay.comment=Эти параметры влияют на геймплей при использовании модов.
-ichun.config.cat.globalOptions.comment=Эти параметры влияют как на серверы, так и на клиенты, которые используют моды.
-ichun.config.cat.serverOptions.comment=Эти параметры влияют только на сервер, который использует моды.
-ichun.config.cat.clientOnly.comment=Эти параметры влияют только на клиент, который использует моды.
+ichun.config.cat.general.comment=Эти настройки - общие, которые не вписываются в другие категории.
+ichun.config.cat.gameplay.comment=Эти настройки влияют на игровой процесс, при использовании модификаций.
+ichun.config.cat.globalOptions.comment=Эти настройки влияют как на серверы, так и на клиенты, которые используют модификации.
+ichun.config.cat.serverOptions.comment=Эти настройки влияют только на сервер, который использует модификации.
+ichun.config.cat.clientOnly.comment=Эти настройки влияют только на клиент, который использует модификации.
 
-ichun.config.keybind.comment=Если вы читаете это, я бы настоятельно рекомендовал изменить настройки клавиш в игре.\niChunUtil использует стандартные настройки. Нажмите в настройках английскую букву O, чтобы увидеть дополнительные настройки.\n\nЕсли вам действительно нужно отредактировать файл конфигурации, сотрите <key code>, и напишите ": SHIFT", ": CTRL", или ": ALT", для назначения сразу нескольких кнопок для одной опции.\nДля уточнения кодов клавиш перейдите на : http://minecraft.gamepedia.com/Key_codes \nПример: 48:SHIFT:ALT для бинда английской бувы B при нажатии Shift и Alt.
-ichun.config.keybind.tip1=Эти настройки поддерживают использование комбинации клавиш Shift/Ctrl/Alt
-ichun.config.keybind.tip2=Нажмите нужную клавишу для назначения
-ichun.config.keybind.tip3=Если вам нужно назначить Shift/Ctrl/Alt, держите их 3 секунды. Последняя клавиша будет связана.
+ichun.config.keybind.comment=Если Вы читаете это, я бы настоятельно рекомендовал изменить настройки клавиш в игре.\niChunUtil использует нестандартные настройки. Нажмите в настройках клавишу O, чтобы увидеть другие настройки.\n\nЕсли вам действительно нужно отредактировать файл конфигурации, формат <key code>, и добавьте ":SHIFT", ":CTRL", или ":ALT", для назначения кнопок, которые Вы хотите удерживать.\nДля уточнения кодов клавиш перейдите на : http://minecraft.gamepedia.com/Key_codes \nПример: 48:SHIFT:ALT привяжется к клавише B при нажатии Shift и Alt.
+ichun.config.keybind.tip1=Эти привязки клавиш поддерживают комбинации Shift/Ctrl/Alt
+ichun.config.keybind.tip2=Попробуйте удерживать их, когда привязываете клавишу
+ichun.config.keybind.tip3=Если Вы хотите привязать Shift/Ctrl/Alt, удерживайте их 3 секунды. Последняя клавиша будет привязана.
 
 ichun.config.versionCheck.name=Проверка обновлений
 ichun.config.versionSave.name=Проверка обновлений завершена
+ichun.config.patreon.name=Patreon
 
-ichun.config.versionCheck.comment=Эта настройка для проверки обновлений от iChunUtil.
-ichun.config.versionSave.comment=Она сохраняет данные для проверки обновлений. Не изменяйте это, если вы не хотите сломать разные вещи.
+ichun.config.versionCheck.comment=Эти настройки для проверки обновлений модификаций от iChunUtil.
+ichun.config.versionSave.comment=Они сохраняют данные для проверки обновлений. Не изменяйте их, если Вы не хотите сломать что-нибудь.
+ichun.config.patreon.comment=Конфигурация, связанная с Patreon.
 
-ichun.config.versionNotificationTypes.name=Тип уведомлений об обновлении
-ichun.config.versionNotificationFrequency.name=Частота обновления уведомлений
+ichun.config.versionNotificationTypes.name=Типы уведомлений об обновлених
+ichun.config.versionNotificationFrequency.name=Частота уведомлений о обновлениях
+ichun.config.showPatronReward.name=Показывать награду Patron
 
-ichun.config.versionNotificationTypes.comment=Как КЛИЕНТ будет получать уведомления об обновлениях? (В сервере обновление всегда будет выводится на консоль. В одиночной игре вы будете признаваться сервером)\n0 = Уведомлять об изменениях независимо от статуса игрока (оператор или нет).\n1 = Уведомлять только операторов сервера об изменениях (В одиночной всё будет по прежнему отоброжаться)\n2 = Разрешить клиенту показывать уведомления об изменениях.
-ichun.config.versionNotificationFrequency.comment=Как часто вы будете уведомлены об обновлениях?(Настройки клиента)\n0 = После подключения к серверу\n1 = Раз в день\n2 = После нового обновления.\n3 = Никогда (Оно только скроет уведомления. Мод всё равно будет слать увеломления в консоль).
+ichun.config.versionNotificationTypes.comment=Как КЛИЕНТ будет оповещаться об обновлениях? (В сервере обновление всегда будет выводится на консоль. В одиночной игре Вы будете признаваться сервером)\n0 = Уведомлять об обновлениях независимо от статуса игрока (Оператор или нет).\n1 = Уведомлять только Операторов сервера об обновлениях (Обновления для только клиентских модов будут отображаться)\n2 = Позволить клиенту показывать уведомления об обновлениях.
+ichun.config.versionNotificationFrequency.comment=Как часто Вы будете уведомлены об обновлениях?(Настройки клиента)\n0 = После подключения к серверу\n1 = Раз в день\n2 = После нового обновления.\n3 = Никогда (Это только скроет уведомления. Мод всё равно будет проверять обновления и слать уведомления в консоль).
+ichun.config.showPatronReward.comment=Вы хотите показать свою награду Patron другим игрокам?
 
 ichun.gui.newUpdate=Доступна новая версия мода!
