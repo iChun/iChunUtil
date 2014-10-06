@@ -56,7 +56,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Morph", versions);
-        versions.put("1.7.10", "0.9.0");
+        versions.put("1.7.10", "0.9.1");
         versions.put("1.7", "0.8.1");
 
         versions = new HashMap<String, String>();
