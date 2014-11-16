@@ -52,7 +52,7 @@ public class iChunUtil
     public static final int versionMC = 4;
     public static final String versionOfMC = "1.7.10";
 
-    public static final String version = versionMC + ".0.0";
+    public static final String version = versionMC + ".1.0";
 
     private static boolean hasPostLoad = false;
 

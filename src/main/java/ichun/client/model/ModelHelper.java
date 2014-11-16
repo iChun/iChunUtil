@@ -3,9 +3,7 @@ package ichun.client.model;
 import ichun.common.core.util.ObfHelper;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -215,8 +213,97 @@ public class ModelHelper
 		
 		return list;
 	}
-	
-	public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
+
+    public static HashMap<String, ModelRenderer> getModelCubesWithNames(ModelBase parent)
+    {
+        HashMap<String, ModelRenderer> list = new HashMap<String, ModelRenderer>();
+
+        HashMap<String,  ModelRenderer[]> list1 = new HashMap<String, ModelRenderer[]>();
+
+        if(parent != null)
+        {
+            Class clz = parent.getClass();
+            while(clz != ModelBase.class && ModelBase.class.isAssignableFrom(clz))
+            {
+                try
+                {
+                    Field[] fields = clz.getDeclaredFields();
+                    for(Field f : fields)
+                    {
+                        f.setAccessible(true);
+                        if(f.getType() == ModelRenderer.class)
+                        {
+                            if(clz == ModelBiped.class && !(f.getName().equalsIgnoreCase("bipedCloak") || f.getName().equalsIgnoreCase("k") || f.getName().equalsIgnoreCase("field_78122_k")) || clz != ModelBiped.class)
+                            {
+                                ModelRenderer rend = (ModelRenderer)f.get(parent);
+                                if(rend != null)
+                                {
+                                    list.put(f.getName(), rend); // Add normal parent fields
+                                }
+                            }
+                        }
+                        else if(f.getType() == ModelRenderer[].class)
+                        {
+                            ModelRenderer[] rend = (ModelRenderer[])f.get(parent);
+                            if(rend != null)
+                            {
+                                list1.put(f.getName(), rend);
+                            }
+                        }
+                    }
+                    clz = clz.getSuperclass();
+                }
+                catch(Exception e)
+                {
+                    throw new UnableToAccessFieldException(new String[0], e);
+                }
+            }
+        }
+
+        for(Map.Entry<String, ModelRenderer[]> e : list1.entrySet())
+        {
+            int count = 1;
+            for(ModelRenderer cube : e.getValue())
+            {
+                if(cube != null && !list.containsValue(cube))
+                {
+                    list.put(e.getKey() + count, cube); //Add stuff like flying blaze rods stored in MR[] fields.
+                    count++;
+                }
+            }
+        }
+
+        ArrayList<ModelRenderer> children = new ArrayList<ModelRenderer>();
+
+        for(Map.Entry<String, ModelRenderer> e : list.entrySet())
+        {
+            ModelRenderer cube = e.getValue();
+            for(ModelRenderer child : getChildren(cube, true, 0))
+            {
+                if(!children.contains(child))
+                {
+                    children.add(child);
+                }
+            }
+        }
+
+        for(ModelRenderer child : children)
+        {
+            Iterator<Map.Entry<String, ModelRenderer>> ite = list.entrySet().iterator();
+            while(ite.hasNext())
+            {
+                Map.Entry<String, ModelRenderer> e = ite.next();
+                if(e.getValue() == child)
+                {
+                    ite.remove();
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
 	{
 		ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
 		for(ModelBase base : parent)
