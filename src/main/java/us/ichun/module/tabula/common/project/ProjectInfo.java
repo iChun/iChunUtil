@@ -1,0 +1,359 @@
+package us.ichun.module.tabula.common.project;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ichun.common.core.techne.TC1Json;
+import ichun.common.core.techne.TC2Info;
+import ichun.common.iChunUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.resources.IResource;
+import org.apache.commons.io.IOUtils;
+import us.ichun.module.tabula.client.model.ModelBaseDummy;
+import us.ichun.module.tabula.client.model.ModelInfo;
+import us.ichun.module.tabula.common.project.components.CubeGroup;
+import us.ichun.module.tabula.common.project.components.CubeInfo;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+public class ProjectInfo
+{
+    public transient String identifier;
+    public transient File saveFile;
+    public transient String saveFileMd5;
+    public transient boolean saved;
+
+    public transient float cameraZoom = 1.0F;
+    public transient float cameraYaw;
+    public transient float cameraPitch;
+    public transient float cameraOffsetX;
+    public transient float cameraOffsetY;
+
+    public transient boolean ignoreNextImage;
+    public transient File textureFile;
+    public transient String textureFileMd5;
+
+    public transient long lastEdit;
+
+    public transient BufferedImage bufferedTexture;
+
+    @SideOnly(Side.CLIENT)
+    public transient ModelBaseDummy model;
+
+    public String modelName;
+    public String authorName;
+    public int projVersion; //TODO if projVersion < current version, do file repairs and resave.
+
+    public int textureWidth = 64;
+    public int textureHeight = 32;
+
+    public ArrayList<CubeGroup> cubeGroups;
+    public ArrayList<CubeInfo> cubes;
+
+    public int cubeCount;
+
+    public ProjectInfo()
+    {
+        cameraZoom = 1.0F;
+    }
+
+    public ProjectInfo(String name, String author)
+    {
+        this();
+        modelName = name;
+        authorName = author;
+
+        cubeGroups = new ArrayList<CubeGroup>();
+        cubes = new ArrayList<CubeInfo>();
+    }
+
+    public String getAsJson()
+    {
+        //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
+
+        return gson.toJson(this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void initClient()
+    {
+        model = new ModelBaseDummy(this);
+        model.textureWidth = textureWidth;
+        model.textureHeight = textureHeight;
+        for(int i = 0 ; i < cubes.size(); i++)
+        {
+            //TODO remember to support child models.
+            model.createModelFromCubeInfo(cubes.get(i));
+        }
+        //        final RenderCow render = ((RenderCow)RenderManager.instance.getEntityClassRenderObject(EntityCow.class));
+        //        ArrayList<ModelRenderer> boxes = new ArrayList<ModelRenderer>() {{
+        //            add(((ModelQuadruped)render.mainModel).body);
+        //            add(((ModelQuadruped)render.mainModel).head);
+        //            add(((ModelQuadruped)render.mainModel).leg1);
+        //            add(((ModelQuadruped)render.mainModel).leg2);
+        //            add(((ModelQuadruped)render.mainModel).leg3);
+        //            add(((ModelQuadruped)render.mainModel).leg4);
+        //        }};
+        //        for(int i = 0; i < boxes.size(); i++)
+        //        {
+        //            CubeInfo info = new CubeInfo("fake" + i);
+        //            info.modelCube = boxes.get(i);
+        //            model.cubes.add(info);
+        //        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void destroy()
+    {
+        if(model != null)
+        {
+            for(int i = model.cubes.size() - 1; i >= 0; i--)
+            {
+                model.removeCubeInfo(model.cubes.get(i));
+            }
+        }
+    }
+
+    public void createNewCube()
+    {
+        cubeCount++;
+        cubes.add(new CubeInfo("shape" + Integer.toString(cubeCount)));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean importModel(ModelInfo model, boolean texture)
+    {
+        for(Map.Entry<String, ModelRenderer> e : model.modelList.entrySet())
+        {
+            ModelRenderer rend = e.getValue();
+
+            for(int j = 0; j < rend.cubeList.size(); j++)
+            {
+                CubeInfo info = new CubeInfo(e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j)));
+                ModelBox box = (ModelBox)rend.cubeList.get(j);
+
+                info.dimensions[0] = (int)Math.abs(box.posX2 - box.posX1);
+                info.dimensions[1] = (int)Math.abs(box.posY2 - box.posY1);
+                info.dimensions[2] = (int)Math.abs(box.posZ2 - box.posZ1);
+
+                info.position[0] = rend.rotationPointX;
+                info.position[1] = rend.rotationPointY;
+                info.position[2] = rend.rotationPointZ;
+
+                info.offset[0] = box.posX1;
+                info.offset[1] = box.posY1;
+                info.offset[2] = box.posZ1;
+
+                info.rotation[0] = Math.toDegrees(rend.rotateAngleX);
+                info.rotation[1] = Math.toDegrees(rend.rotateAngleY);
+                info.rotation[2] = Math.toDegrees(rend.rotateAngleZ);
+
+                info.scale[0] = info.scale[1] = info.scale[2] = 1.0F;
+
+                info.txOffset[0] = rend.textureOffsetX;
+                info.txOffset[1] = rend.textureOffsetY;
+
+                info.txMirror = rend.mirror;
+
+                cubeCount++;
+                cubes.add(info);
+            }
+            //TODO handle children
+        }
+        if(texture)
+        {
+            if(model.texture != null)
+            {
+                InputStream inputstream = null;
+                try
+                {
+                    IResource iresource = Minecraft.getMinecraft().mcResourceManager.getResource(model.texture);
+                    inputstream = iresource.getInputStream();
+                    bufferedTexture = ImageIO.read(inputstream);
+
+                    if(bufferedTexture != null)
+                    {
+                        for(Map.Entry<String, ModelRenderer> e : model.modelList.entrySet())
+                        {
+                            ModelRenderer rend = e.getValue();
+
+                            textureHeight = (int)rend.textureHeight;
+                            textureWidth = (int)rend.textureWidth;
+
+                            break;
+                        }
+                        return true;
+                    }
+                }
+                catch(Exception e)
+                {
+
+                }
+            }
+            else
+            {
+                bufferedTexture = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void cloneFrom(ProjectInfo info)
+    {
+        //TODO link the textures together.
+        this.saveFile = info.saveFile;
+        this.saveFileMd5 = info.saveFileMd5;
+        this.bufferedTexture = info.bufferedTexture;
+        this.cameraZoom = info.cameraZoom;
+        this.cameraYaw = info.cameraYaw;
+        this.cameraPitch = info.cameraPitch;
+        this.cameraOffsetX = info.cameraOffsetX;
+        this.cameraOffsetY = info.cameraOffsetY;
+    }
+    //TODO texture size?
+
+    public static ProjectInfo openProject(File file)
+    {
+        try
+        {
+            ZipFile zipFile = new ZipFile(file);
+            Enumeration entries = zipFile.entries();
+
+            ZipEntry modelInfo = null;
+            HashMap<String, InputStream> images = new HashMap<String, InputStream>();
+
+            boolean tampered = false;
+
+            while(entries.hasMoreElements())
+            {
+                ZipEntry entry = (ZipEntry)entries.nextElement();
+                if(!entry.isDirectory())
+                {
+                    if(entry.getName().endsWith(".png") && entry.getCrc() != Long.decode("0xf970c898"))
+                    {
+                        images.put(entry.getName(), zipFile.getInputStream(entry));
+                    }
+                    if(entry.getName().endsWith(".xml") || entry.getName().endsWith(".json"))
+                    {
+                        modelInfo = entry;
+                    }
+                    if(!entry.getName().endsWith(".png") && !entry.getName().endsWith(".xml") && !entry.getName().endsWith(".json"))
+                    {
+                        tampered = true;
+                    }
+                }
+            }
+
+            ProjectInfo info = null;
+            if(modelInfo != null)
+            {
+                if(modelInfo.getName().endsWith(".xml"))
+                {
+                    info = convertTechneFile(TC2Info.convertTechneFile(zipFile.getInputStream(modelInfo), images));
+                }
+                else
+                {
+                    info = readModelFile(zipFile.getInputStream(modelInfo), images);
+                }
+            }
+
+            zipFile.close();
+
+            if(tampered)
+            {
+                iChunUtil.console(file.getName() + " is a tampered model file.", true);
+            }
+
+            return info;
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ProjectInfo convertTechneFile(TC2Info tc2Info)
+    {
+        //TODO convert techne to tabula
+        return null;
+    }
+
+    public static ProjectInfo readModelFile(InputStream json, HashMap<String, InputStream> images) throws IOException
+    {
+        if(json == null || images == null)
+        {
+            return null;
+        }
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(json, writer);
+        String jsonString = writer.toString();
+
+        ProjectInfo project = null;
+
+        try
+        {
+            project = (new Gson()).fromJson(jsonString, ProjectInfo.class);
+
+            InputStream stream = images.get("texture.png");
+            if(stream != null)
+            {
+                project.bufferedTexture = ImageIO.read(stream);
+                stream.close();
+            }
+        }
+        catch(JsonSyntaxException e)
+        {
+            TC2Info info;
+
+            try
+            {
+                info = (new Gson()).fromJson(jsonString, TC2Info.class);
+            }
+            catch(JsonSyntaxException e1)
+            {
+                info = (new Gson()).fromJson(jsonString.replaceAll("\u0000", ""), TC1Json.class).toTC2Info();
+            }
+            if(info != null)
+            {
+                for(TC2Info.Model model : info.Techne.Models)
+                {
+                    InputStream stream = images.get(model.Model.texture);
+                    if(stream != null)
+                    {
+                        model.Model.image = ImageIO.read(stream);
+                        stream.close();
+                    }
+                }
+
+                project = convertTechneFile(info);
+            }
+        }
+
+        json.close();
+
+        for(Map.Entry<String, InputStream> img : images.entrySet())
+        {
+            img.getValue().close();
+        }
+        return project;
+
+    }
+}

@@ -313,9 +313,9 @@ public class TC2Info
     /**
      * Converts a Techne 1 file into a TC2Info (Techne 2 compatible format), with the exception of Techne 1's "pieces" function.
      */
-    private static TC2Info convertTechneFile(InputStream xml, HashMap<String, InputStream> images) throws IOException, ParserConfigurationException, SAXException
+    public static TC2Info convertTechneFile(InputStream xml, HashMap<String, InputStream> images) throws IOException, ParserConfigurationException, SAXException
     {
-        if(xml == null || images == null || images.isEmpty())
+        if(xml == null || images == null)
         {
             return null;
         }
@@ -514,9 +514,9 @@ public class TC2Info
         return id;
     }
 
-    private static TC2Info readTechne2File(InputStream json, HashMap<String, InputStream> images) throws IOException
+    public static TC2Info readTechne2File(InputStream json, HashMap<String, InputStream> images) throws IOException
     {
-        if(json == null || images == null || images.isEmpty())
+        if(json == null || images == null)
         {
             return null;
         }

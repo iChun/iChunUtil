@@ -1,0 +1,11 @@
+package us.ichun.module.tabula.client.model;
+
+import net.minecraft.client.model.ModelBase;
+
+import java.util.ArrayList;
+
+public class ModelList
+{
+    public static ArrayList<ModelInfo> models = new ArrayList<ModelInfo>();
+    public static ArrayList<Class<? extends ModelBase>> modelBlacklist = new ArrayList<Class<? extends ModelBase>>();
+}

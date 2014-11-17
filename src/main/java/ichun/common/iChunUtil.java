@@ -44,6 +44,8 @@ import java.util.EnumMap;
         version = iChunUtil.version,
         dependencies = "required-after:Forge@[10.13.0.1186,)"
 )
+//hashmap.put(Type.SKIN, new MinecraftProfileTexture("http://skins.minecraft.net/MinecraftSkins/" + p_152790_1_.getName() +".png"));
+
 //TODO check out the new KeyEvent with key releases in build 1211
 public class iChunUtil
         implements IConfigUser
