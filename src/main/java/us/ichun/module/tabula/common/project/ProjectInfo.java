@@ -1,6 +1,7 @@
 package us.ichun.module.tabula.common.project;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,16 +20,14 @@ import us.ichun.module.tabula.common.project.components.CubeInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 public class ProjectInfo
 {
@@ -68,7 +67,11 @@ public class ProjectInfo
 
     public ProjectInfo()
     {
+        modelName = "";
+        authorName = "";
         cameraZoom = 1.0F;
+        cubeGroups = new ArrayList<CubeGroup>();
+        cubes = new ArrayList<CubeInfo>();
     }
 
     public ProjectInfo(String name, String author)
@@ -83,8 +86,8 @@ public class ProjectInfo
 
     public String getAsJson()
     {
-        //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //        Gson gson = new Gson();
 
         return gson.toJson(this);
     }
@@ -100,21 +103,6 @@ public class ProjectInfo
             //TODO remember to support child models.
             model.createModelFromCubeInfo(cubes.get(i));
         }
-        //        final RenderCow render = ((RenderCow)RenderManager.instance.getEntityClassRenderObject(EntityCow.class));
-        //        ArrayList<ModelRenderer> boxes = new ArrayList<ModelRenderer>() {{
-        //            add(((ModelQuadruped)render.mainModel).body);
-        //            add(((ModelQuadruped)render.mainModel).head);
-        //            add(((ModelQuadruped)render.mainModel).leg1);
-        //            add(((ModelQuadruped)render.mainModel).leg2);
-        //            add(((ModelQuadruped)render.mainModel).leg3);
-        //            add(((ModelQuadruped)render.mainModel).leg4);
-        //        }};
-        //        for(int i = 0; i < boxes.size(); i++)
-        //        {
-        //            CubeInfo info = new CubeInfo("fake" + i);
-        //            info.modelCube = boxes.get(i);
-        //            model.cubes.add(info);
-        //        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -265,11 +253,11 @@ public class ProjectInfo
             {
                 if(modelInfo.getName().endsWith(".xml"))
                 {
-                    info = convertTechneFile(TC2Info.convertTechneFile(zipFile.getInputStream(modelInfo), images));
+                    info = convertTechneFile(TC2Info.convertTechneFile(zipFile.getInputStream(modelInfo), images), file.getName());
                 }
                 else
                 {
-                    info = readModelFile(zipFile.getInputStream(modelInfo), images);
+                    info = readModelFile(zipFile.getInputStream(modelInfo), images, file.getName());
                 }
             }
 
@@ -289,13 +277,110 @@ public class ProjectInfo
         }
     }
 
-    public static ProjectInfo convertTechneFile(TC2Info tc2Info)
+    public static ProjectInfo convertTechneFile(TC2Info tc2Info, String fileName)
     {
-        //TODO convert techne to tabula
-        return null;
+        if(tc2Info == null)
+        {
+            return null;
+        }
+
+        ProjectInfo project = new ProjectInfo(fileName, "TechneToTabulaImporter");
+
+        project.projVersion = 1;
+        if(!tc2Info.Techne.Author.equals("ZeuX") && !tc2Info.Techne.Author.equals("NotZeux"))
+        {
+            project.authorName = tc2Info.Techne.Author;
+        }
+
+        float scaleX = 1.0F;
+        float scaleY = 1.0F;
+        float scaleZ = 1.0F;
+
+        for(TC2Info.Model model : tc2Info.Techne.Models)
+        {
+            try
+            {
+                String[] textureSize = model.Model.TextureSize.split(",");
+                project.textureWidth = Integer.parseInt(textureSize[0]);
+                project.textureHeight = Integer.parseInt(textureSize[1]);
+
+                if(project.bufferedTexture == null)
+                {
+                    project.bufferedTexture = model.Model.image;
+                }
+
+                String[] scale = model.Model.GlScale.split(",");
+                scaleX = Float.parseFloat(scale[0]);
+                scaleY = Float.parseFloat(scale[1]);
+                scaleZ = Float.parseFloat(scale[2]);
+
+                project.cubeCount += exploreTC2Info(project.cubes, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ);
+            }
+            catch(NumberFormatException e)
+            {
+                iChunUtil.console("Error parsing Techne 2 model for Tabula: Invalid number", true);
+                e.printStackTrace();
+            }
+            catch(ArrayIndexOutOfBoundsException e)
+            {
+                iChunUtil.console("Error parsing Techne 2 model for Tabula: Array too short", true);
+            }
+        }
+
+        return project;
     }
 
-    public static ProjectInfo readModelFile(InputStream json, HashMap<String, InputStream> images) throws IOException
+    private static int exploreTC2Info(ArrayList<CubeInfo> cubes, TC2Info.Group geometry, double posX, double posY, double posZ, double rotX, double rotY, double rotZ, float scaleX, float scaleY, float scaleZ)
+    {
+        int cubeCount = 0;
+        if(geometry.Shape != null)
+        {
+            for(TC2Info.Shape shape : geometry.Shape)
+            {
+                CubeInfo info = new CubeInfo(shape.Name == null ? "shape" + Integer.toString(cubeCount + 1) : shape.Name);
+
+                String[] textureOffset = shape.TextureOffset.split(",");
+                info.txOffset = new int[] { Integer.parseInt(textureOffset[0]), Integer.parseInt(textureOffset[1]) };
+                info.txMirror = !shape.IsMirrored.equals("False");
+
+                String[] pos = shape.Position.split(",");
+                String[] rot = shape.Rotation.split(",");
+                String[] size = shape.Size.split(",");
+                String[] offset = new String[] { "0", "0", "0" }; //Techne 2 files by default lack the Offset field.
+                if(shape.Offset != null)
+                {
+                    offset = shape.Offset.split(",");
+                }
+                info.position = new double[] { Float.parseFloat(pos[0]) + posX, Float.parseFloat(pos[1]) + posY, Float.parseFloat(pos[2]) + posZ };
+                info.offset = new double[] { Float.parseFloat(offset[0]), Float.parseFloat(offset[1]), Float.parseFloat(offset[2]) };
+                info.dimensions = new int[] { Integer.parseInt(size[0]), Integer.parseInt(size[1]), Integer.parseInt(size[2]) };
+
+                double rX = Float.parseFloat(rot[0]) + rotX;
+                double rY = Float.parseFloat(rot[1]) + rotY;
+                double rZ = Float.parseFloat(rot[2]) + rotZ;
+
+                //TODO find out how to rotate YZX to ZYX rotation
+                info.rotation = new double[] { Math.toDegrees(rX), Math.toDegrees(rY), Math.toDegrees(rZ) };
+                info.scale = new double[] { scaleX, scaleY, scaleZ };
+
+                cubes.add(info);
+
+                cubeCount++;
+            }
+        }
+        if(geometry.Null != null)
+        {
+            for(TC2Info.Null nul : geometry.Null)
+            {
+                String[] pos = nul.Position.split(",");
+                String[] rot = nul.Rotation.split(",");
+                cubeCount += exploreTC2Info(cubes, nul.Children, Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]), Float.parseFloat(rot[0]), Float.parseFloat(rot[1]), Float.parseFloat(rot[2]), scaleX, scaleY, scaleZ);
+            }
+        }
+        return cubeCount;
+    }
+
+    public static ProjectInfo readModelFile(InputStream json, HashMap<String, InputStream> images, String fileName) throws IOException
     {
         if(json == null || images == null)
         {
@@ -308,18 +393,7 @@ public class ProjectInfo
 
         ProjectInfo project = null;
 
-        try
-        {
-            project = (new Gson()).fromJson(jsonString, ProjectInfo.class);
-
-            InputStream stream = images.get("texture.png");
-            if(stream != null)
-            {
-                project.bufferedTexture = ImageIO.read(stream);
-                stream.close();
-            }
-        }
-        catch(JsonSyntaxException e)
+        if(jsonString.contains("Techne") || jsonString.contains("techne"))
         {
             TC2Info info;
 
@@ -343,7 +417,18 @@ public class ProjectInfo
                     }
                 }
 
-                project = convertTechneFile(info);
+                project = convertTechneFile(info, fileName);
+            }
+        }
+        else
+        {
+            project = (new Gson()).fromJson(jsonString, ProjectInfo.class);
+
+            InputStream stream = images.get("texture.png");
+            if(stream != null)
+            {
+                project.bufferedTexture = ImageIO.read(stream);
+                stream.close();
             }
         }
 
@@ -354,6 +439,39 @@ public class ProjectInfo
             img.getValue().close();
         }
         return project;
+    }
 
+    public static boolean saveProject(ProjectInfo info, File file)
+    {
+        try
+        {
+            file.getParentFile().mkdirs();
+
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+            out.setLevel(9);
+            out.putNextEntry(new ZipEntry("model.json"));
+
+            byte[] data = (new Gson()).toJson(info).getBytes();
+            out.write(data, 0, data.length);
+            out.closeEntry();
+
+            if(info.bufferedTexture != null)
+            {
+                out.putNextEntry(new ZipEntry("texture.png"));
+                ImageIO.write(info.bufferedTexture, "png", out);
+            }
+            out.closeEntry();
+
+            out.close();
+
+            info.saved = true;
+            return true;
+        }
+        catch(Exception e)
+        {
+            iChunUtil.console("Failed to save model: " + info.modelName, true);
+            e.printStackTrace();
+            return false;
+        }
     }
 }
