@@ -125,6 +125,10 @@ public class RendererHelper
 	
 	public static void drawColourOnScreen(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
 	{
+        if(width <= 0 || height <= 0)
+        {
+            return;
+        }
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();

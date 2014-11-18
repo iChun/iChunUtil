@@ -13,6 +13,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.resources.IResource;
 import org.apache.commons.io.IOUtils;
+import us.ichun.module.tabula.common.project.TechneConverter;
 import us.ichun.module.tabula.client.model.ModelBaseDummy;
 import us.ichun.module.tabula.client.model.ModelInfo;
 import us.ichun.module.tabula.common.project.components.CubeGroup;
@@ -314,7 +315,8 @@ public class ProjectInfo
                 scaleY = Float.parseFloat(scale[1]);
                 scaleZ = Float.parseFloat(scale[2]);
 
-                project.cubeCount += exploreTC2Info(project.cubes, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ);
+                boolean degrees = determineAngleType(model.Model.Geometry);
+                project.cubeCount += exploreTC2Info(project.cubes, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ, degrees);
             }
             catch(NumberFormatException e)
             {
@@ -330,7 +332,42 @@ public class ProjectInfo
         return project;
     }
 
-    private static int exploreTC2Info(ArrayList<CubeInfo> cubes, TC2Info.Group geometry, double posX, double posY, double posZ, double rotX, double rotY, double rotZ, float scaleX, float scaleY, float scaleZ)
+    private static boolean determineAngleType(TC2Info.Group geometry)
+    {
+        boolean degrees = false;
+        if(geometry.Shape != null)
+        {
+            for(TC2Info.Shape shape : geometry.Shape)
+            {
+                String[] rot = shape.Rotation.split(",");
+                double rX = Float.parseFloat(rot[0]);
+                double rY = Float.parseFloat(rot[1]);
+                double rZ = Float.parseFloat(rot[2]);
+
+                if(rX < -Math.PI || rX > Math.PI || rY < -Math.PI || rY > Math.PI || rZ < -Math.PI || rZ > Math.PI)
+                {
+                    degrees = true;
+                    break;
+                }
+            }
+
+        }
+        if(geometry.Null != null && !degrees)
+        {
+            for(TC2Info.Null nul : geometry.Null)
+            {
+                boolean degInner = determineAngleType(nul.Children);
+                if(degInner)
+                {
+                    degrees = degInner;
+                    break;
+                }
+            }
+        }
+        return degrees;
+    }
+
+    private static int exploreTC2Info(ArrayList<CubeInfo> cubes, TC2Info.Group geometry, double posX, double posY, double posZ, double rotX, double rotY, double rotZ, float scaleX, float scaleY, float scaleZ, boolean isDegrees)
     {
         int cubeCount = 0;
         if(geometry.Shape != null)
@@ -359,8 +396,16 @@ public class ProjectInfo
                 double rY = Float.parseFloat(rot[1]) + rotY;
                 double rZ = Float.parseFloat(rot[2]) + rotZ;
 
-                //TODO find out how to rotate YZX to ZYX rotation
-                info.rotation = new double[] { Math.toDegrees(rX), Math.toDegrees(rY), Math.toDegrees(rZ) };
+                TechneConverter.Rotation rotation;
+                if(isDegrees)
+                {
+                    rotation = TechneConverter.fromTechne(TechneConverter.Rotation.createFromDegrees(rX, rY, rZ));
+                }
+                else
+                {
+                    rotation = TechneConverter.fromTechne(TechneConverter.Rotation.createFromRadians(rX, rY, rZ));
+                }
+                info.rotation = new double[] { rotation.getDegreesX(), rotation.getDegreesY(), rotation.getDegreesZ() };
                 info.scale = new double[] { scaleX, scaleY, scaleZ };
 
                 cubes.add(info);
@@ -374,7 +419,7 @@ public class ProjectInfo
             {
                 String[] pos = nul.Position.split(",");
                 String[] rot = nul.Rotation.split(",");
-                cubeCount += exploreTC2Info(cubes, nul.Children, Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]), Float.parseFloat(rot[0]), Float.parseFloat(rot[1]), Float.parseFloat(rot[2]), scaleX, scaleY, scaleZ);
+                cubeCount += exploreTC2Info(cubes, nul.Children, Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]), Float.parseFloat(rot[0]), Float.parseFloat(rot[1]), Float.parseFloat(rot[2]), scaleX, scaleY, scaleZ, isDegrees);
             }
         }
         return cubeCount;

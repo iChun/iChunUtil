@@ -28,7 +28,7 @@ public class ModelBaseDummy extends ModelBase
 
     public void render(float f5)
     {
-        for(int i = 0; i < cubes.size(); i++)
+        for(int i = cubes.size() - 1; i >= 0 ; i--)
         {
             CubeInfo info = cubes.get(i);
             if(info.modelCube != null)
