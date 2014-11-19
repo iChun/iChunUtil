@@ -11,6 +11,7 @@ import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.resources.IResource;
 import org.apache.commons.io.IOUtils;
 import us.ichun.module.tabula.common.project.TechneConverter;
@@ -115,6 +116,7 @@ public class ProjectInfo
             {
                 model.removeCubeInfo(model.cubes.get(i));
             }
+            model.rotationPoint.destroy();
         }
     }
 
@@ -205,7 +207,6 @@ public class ProjectInfo
 
     public void cloneFrom(ProjectInfo info)
     {
-        //TODO link the textures together.
         this.saveFile = info.saveFile;
         this.saveFileMd5 = info.saveFileMd5;
         this.bufferedTexture = info.bufferedTexture;
@@ -215,7 +216,6 @@ public class ProjectInfo
         this.cameraOffsetX = info.cameraOffsetX;
         this.cameraOffsetY = info.cameraOffsetY;
     }
-    //TODO texture size?
 
     public static ProjectInfo openProject(File file)
     {

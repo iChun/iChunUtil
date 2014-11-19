@@ -4,6 +4,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 import us.ichun.module.tabula.common.project.ProjectInfo;
 import us.ichun.module.tabula.common.project.components.CubeInfo;
 
@@ -14,11 +15,15 @@ public class ModelBaseDummy extends ModelBase
     public ProjectInfo parent;
     public ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
 
+    public ModelRotationPoint rotationPoint;
+
     public ModelBaseDummy(ProjectInfo par)
     {
         parent = par;
         textureHeight = parent.textureHeight;
         textureWidth = parent.textureWidth;
+
+        rotationPoint = new ModelRotationPoint();
     }
 
     @Override
@@ -26,14 +31,136 @@ public class ModelBaseDummy extends ModelBase
     {
     }
 
-    public void render(float f5)
+    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, float zoomLevel, boolean hasTexture, int pass)
     {
         for(int i = cubes.size() - 1; i >= 0 ; i--)
         {
             CubeInfo info = cubes.get(i);
             if(info.modelCube != null)
             {
-                info.modelCube.render(f5);
+                if(cubesToSelect.isEmpty() && pass == 1)
+                {
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    info.modelCube.render(f5);
+                }
+                else if(cubesToSelect.contains(info))
+                {
+                    if(pass == 0)
+                    {
+                        GL11.glColor4f(0.0F, 0.0F, 0.7F, 0.8F);
+
+                        if(hasTexture)
+                        {
+                            GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        }
+                        GL11.glDisable(GL11.GL_LIGHTING);
+                        GL11.glEnable(GL11.GL_CULL_FACE);
+                        GL11.glPushMatrix();
+                        GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                        GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+
+                        rotationPoint.render(f5);
+
+                        //TODO check for child models?
+                        GL11.glPopMatrix();
+                        GL11.glDisable(GL11.GL_CULL_FACE);
+                        GL11.glEnable(GL11.GL_LIGHTING);
+                        if(hasTexture)
+                        {
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        }
+
+                        //Render cube
+                        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F);//to allow rendering of the rotation point internally
+                        info.modelCube.render(f5);
+
+                        if(hasTexture)
+                        {
+                            GL11.glDisable(GL11.GL_TEXTURE_2D);
+                        }
+                        GL11.glDisable(GL11.GL_LIGHTING);
+                        GL11.glPushMatrix();
+                        GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                        GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+
+                        if(info.modelCube.rotateAngleZ != 0.0F)
+                        {
+                            GL11.glRotatef(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                        }
+
+                        if(info.modelCube.rotateAngleY != 0.0F)
+                        {
+                            GL11.glRotatef(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                        }
+
+                        if(info.modelCube.rotateAngleX != 0.0F)
+                        {
+                            GL11.glRotatef(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                        }
+                        GL11.glTranslated(info.offset[0] * f5, info.offset[1] * f5, info.offset[2] * f5);
+
+                        float width = 4F * zoomLevel;
+                        float border = width * f5 * 0.000625F;
+                        GL11.glLineWidth(width);
+                        GL11.glColor4f(0.9F, 0.9F, 0.0F, 0.6F);
+                        GL11.glBegin(GL11.GL_LINES);
+
+                        GL11.glVertex3f(-border, 0.0F, 0.0F);
+                        GL11.glVertex3f(info.dimensions[0] * f5 + border, 0F, 0F);
+
+                        GL11.glVertex3f(-border, info.dimensions[1] * f5, 0.0F);
+                        GL11.glVertex3f(info.dimensions[0] * f5 + border, info.dimensions[1] * f5, 0F);
+
+                        GL11.glVertex3f(-border, 0.0F, info.dimensions[2] * f5);
+                        GL11.glVertex3f(info.dimensions[0] * f5 + border, 0F, info.dimensions[2] * f5);
+
+                        GL11.glVertex3f(-border, info.dimensions[1] * f5, info.dimensions[2] * f5);
+                        GL11.glVertex3f(info.dimensions[0] * f5 + border, info.dimensions[1] * f5, info.dimensions[2] * f5);
+
+                        GL11.glVertex3f(0.0F, 0.0F, -border);
+                        GL11.glVertex3f(0.0F, 0.0F, info.dimensions[2] * f5 + border);
+
+                        GL11.glVertex3f(0.0F, info.dimensions[1] * f5, -border);
+                        GL11.glVertex3f(0.0F, info.dimensions[1] * f5, info.dimensions[2] * f5 + border);
+
+                        GL11.glVertex3f(info.dimensions[0] * f5, 0.0F, -border);
+                        GL11.glVertex3f(info.dimensions[0] * f5, 0.0F, info.dimensions[2] * f5 + border);
+
+                        GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5, -border);
+                        GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5, info.dimensions[2] * f5 + border);
+
+                        GL11.glVertex3f(0.0F, -border, 0.0F);
+                        GL11.glVertex3f(0.0F, info.dimensions[1] * f5 + border, 0.0F);
+
+                        GL11.glVertex3f(info.dimensions[0] * f5, -border, 0.0F);
+                        GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5 + border, 0.0F);
+
+                        GL11.glVertex3f(0.0F, -border, info.dimensions[2] * f5);
+                        GL11.glVertex3f(0.0F, info.dimensions[1] * f5 + border, info.dimensions[2] * f5);
+
+                        GL11.glVertex3f(info.dimensions[0] * f5, -border, info.dimensions[2] * f5);
+                        GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5 + border, info.dimensions[2] * f5);
+
+                        //                    GL11.glEnd();
+                        //                    GL11.glBegin(GL11.GL_LINES);
+                        //                    GL11.glVertex3f(0.0F, 2.0F, 0.0F);
+                        //                    GL11.glVertex3f(15F, 2F, 0F);
+                        GL11.glEnd();
+                        //TODO check for child models?
+                        GL11.glPopMatrix();
+                        GL11.glEnable(GL11.GL_LIGHTING);
+                        if(hasTexture)
+                        {
+                            GL11.glEnable(GL11.GL_TEXTURE_2D);
+                        }
+                    }
+                }
+                else if(pass == 1)
+                {
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F);
+
+                    info.modelCube.render(f5);
+                }
             }
         }
     }
