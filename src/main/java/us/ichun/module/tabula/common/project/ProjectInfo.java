@@ -463,7 +463,7 @@ public class ProjectInfo
                 scaleZ = Float.parseFloat(scale[2]);
 
                 boolean degrees = determineAngleType(model.Model.Geometry);
-                project.cubeCount += exploreTC2Info(project.cubes, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ, degrees);
+                project.cubeCount += exploreTC2Info(project.cubes, project.cubeGroups, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ, degrees);
                 //TODO support groups
             }
             catch(NumberFormatException e)
@@ -515,7 +515,7 @@ public class ProjectInfo
         return degrees;
     }
 
-    private static int exploreTC2Info(ArrayList<CubeInfo> cubes, TC2Info.Group geometry, double posX, double posY, double posZ, double rotX, double rotY, double rotZ, float scaleX, float scaleY, float scaleZ, boolean isDegrees)
+    private static int exploreTC2Info(ArrayList<CubeInfo> cubes, ArrayList<CubeGroup> groups, TC2Info.Group geometry, double posX, double posY, double posZ, double rotX, double rotY, double rotZ, float scaleX, float scaleY, float scaleZ, boolean isDegrees)
     {
         int cubeCount = 0;
         if(geometry.Shape != null)
@@ -565,9 +565,11 @@ public class ProjectInfo
         {
             for(TC2Info.Null nul : geometry.Null)
             {
+                CubeGroup group = new CubeGroup(nul.Name);
+                groups.add(group);
                 String[] pos = nul.Position.split(",");
                 String[] rot = nul.Rotation.split(",");
-                cubeCount += exploreTC2Info(cubes, nul.Children, Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]), Float.parseFloat(rot[0]), Float.parseFloat(rot[1]), Float.parseFloat(rot[2]), scaleX, scaleY, scaleZ, isDegrees);
+                cubeCount += exploreTC2Info(group.cubes, group.cubeGroups, nul.Children, Float.parseFloat(pos[0]), Float.parseFloat(pos[1]), Float.parseFloat(pos[2]), Float.parseFloat(rot[0]), Float.parseFloat(rot[1]), Float.parseFloat(rot[2]), scaleX, scaleY, scaleZ, isDegrees);
             }
         }
         return cubeCount;
