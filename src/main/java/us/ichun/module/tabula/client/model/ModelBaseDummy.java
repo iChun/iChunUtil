@@ -73,7 +73,7 @@ public class ModelBaseDummy extends ModelBase
         }
     }
 
-    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, float zoomLevel, boolean hasTexture, int pass)
+    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass)
     {
         ArrayList<CubeInfo> cubesToRender = new ArrayList<CubeInfo>(cubesToSelect);
         ArrayList<CubeInfo> unrendered = new ArrayList<CubeInfo>(cubesToSelect);
@@ -96,7 +96,7 @@ public class ModelBaseDummy extends ModelBase
             CubeInfo info = cubes.get(i);
             if(info.modelCube != null)
             {
-                if(cubesToRender.isEmpty() && pass == 1)
+                if(cubesToRender.isEmpty() && pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -128,10 +128,10 @@ public class ModelBaseDummy extends ModelBase
                             GL11.glColor4f(r, g, b, 0.8F);
                         }
 
-                        renderSelectedCube(info, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
+                        renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
                     }
                 }
-                else if(pass == 1)
+                else if(pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F);
 
@@ -165,12 +165,12 @@ public class ModelBaseDummy extends ModelBase
                     GL11.glColor4f(r, g, b, 0.8F);
                 }
 
-                renderSelectedCube(info, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
+                renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
             }
         }
     }
 
-    public void renderSelectedCube(CubeInfo info, float f5, float zoomLevel, boolean hasTexture, boolean focus)
+    public void renderSelectedCube(CubeInfo info, ArrayList<CubeInfo> hidden, float f5, float zoomLevel, boolean hasTexture, boolean focus)
     {
         if(hasTexture)
         {
@@ -246,7 +246,7 @@ public class ModelBaseDummy extends ModelBase
 
         //Render cube
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F);//to allow rendering of the rotation point internally
-        if(info.parentIdentifier == null)//only render if it's not a child
+        if(info.parentIdentifier == null && (!info.hidden && !hidden.contains(info)))//only render if it's not a child
         {
             GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
             GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);

@@ -32,3 +32,5 @@ ichun.config.versionNotificationFrequency.comment=How often will you be notified
 ichun.config.showPatronReward.comment=Do you want to show your patron reward to other players?
 
 ichun.gui.newUpdate=New Mod Update Available!
+
+ichun.gui.moreOptions="Hit O to view more options"

@@ -20,5 +20,7 @@ public class CubeGroup
 
     public boolean txMirror = false;
 
+    public boolean hidden = false;
+
     public String identifier;
 }

@@ -30,6 +30,8 @@ public class CubeInfo
     public int[] txOffset = new int[2];
     public boolean txMirror = false;
 
+    public boolean hidden = false;
+
     private ArrayList<CubeInfo> children = new ArrayList<CubeInfo>();
     public String parentIdentifier;
 
@@ -43,6 +45,7 @@ public class CubeInfo
         children.add(info);
         info.scale = new double[] { 1D, 1D, 1D };
         info.parentIdentifier = identifier;
+        info.hidden = false;
     }
 
     public void removeChild(CubeInfo info)

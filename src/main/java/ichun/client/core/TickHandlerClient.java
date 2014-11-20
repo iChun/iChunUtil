@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class TickHandlerClient
             if(!ConfigHandler.configs.isEmpty() && mc.currentScreen != null && mc.currentScreen.getClass().equals(GuiOptions.class))
             {
                 GuiOptions gui = (GuiOptions)mc.currentScreen;
-                String s = "Hit O to view more options";
+                String s = StatCollector.translateToLocal("ichun.gui.moreOptions");
                 gui.drawString(mc.fontRenderer, s, gui.width - mc.fontRenderer.getStringWidth(s) - 2, gui.height - 10, 16777215);
 
                 if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
