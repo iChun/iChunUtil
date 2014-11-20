@@ -218,6 +218,7 @@ public class ProjectInfo
         {
             ModelRenderer rend = e.getValue();
 
+            CubeInfo firstCreated = null;
             for(int j = 0; j < rend.cubeList.size(); j++)
             {
                 CubeInfo info = new CubeInfo(e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j)));
@@ -248,8 +249,15 @@ public class ProjectInfo
 
                 cubeCount++;
                 cubes.add(info);
+                if(firstCreated == null)
+                {
+                    firstCreated = info;
+                }
             }
-            //TODO handle children
+            if(firstCreated != null)
+            {
+                createChildren(e.getKey(), rend, firstCreated);
+            }
         }
         if(texture)
         {
@@ -289,6 +297,60 @@ public class ProjectInfo
         }
         return false;
     }
+
+    @SideOnly(Side.CLIENT)
+    public void createChildren(String name, ModelRenderer rend, CubeInfo info)
+    {
+        if(rend.childModels == null)
+        {
+            return;
+        }
+        for(int i = 0; i < rend.childModels.size(); i++)
+        {
+            CubeInfo firstCreated = null;
+            ModelRenderer rend1 = (ModelRenderer)rend.childModels.get(i);
+            for(int j = 0; j < rend1.cubeList.size(); j++)
+            {
+                CubeInfo info1 = new CubeInfo(name + (rend1.cubeList.size() == 1 ? "Child" : ("Child - " + j)));
+                ModelBox box = (ModelBox)rend1.cubeList.get(j);
+
+                info1.dimensions[0] = (int)Math.abs(box.posX2 - box.posX1);
+                info1.dimensions[1] = (int)Math.abs(box.posY2 - box.posY1);
+                info1.dimensions[2] = (int)Math.abs(box.posZ2 - box.posZ1);
+
+                info1.position[0] = rend1.rotationPointX;
+                info1.position[1] = rend1.rotationPointY;
+                info1.position[2] = rend1.rotationPointZ;
+
+                info1.offset[0] = box.posX1;
+                info1.offset[1] = box.posY1;
+                info1.offset[2] = box.posZ1;
+
+                info1.rotation[0] = Math.toDegrees(rend1.rotateAngleX);
+                info1.rotation[1] = Math.toDegrees(rend1.rotateAngleY);
+                info1.rotation[2] = Math.toDegrees(rend1.rotateAngleZ);
+
+                info1.scale[0] = info1.scale[1] = info1.scale[2] = 1.0F;
+
+                info1.txOffset[0] = rend1.textureOffsetX;
+                info1.txOffset[1] = rend1.textureOffsetY;
+
+                info1.txMirror = rend1.mirror;
+
+                cubeCount++;
+                info.addChild(info1);
+                if(firstCreated == null)
+                {
+                    firstCreated = info1;
+                }
+            }
+            if(firstCreated != null)
+            {
+                createChildren(name + "Child", rend1, firstCreated);
+            }
+        }
+    }
+
 
     public void cloneFrom(ProjectInfo info)
     {

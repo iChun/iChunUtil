@@ -41,6 +41,7 @@ public class CubeInfo
     public void addChild(CubeInfo info)
     {
         children.add(info);
+        info.scale = new double[] { 1D, 1D, 1D };
         info.parentIdentifier = identifier;
     }
 

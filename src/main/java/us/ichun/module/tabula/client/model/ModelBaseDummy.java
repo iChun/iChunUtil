@@ -99,7 +99,17 @@ public class ModelBaseDummy extends ModelBase
                 if(cubesToRender.isEmpty() && pass == 1)
                 {
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                    GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+                    GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
+                    GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+                    GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+
                     info.modelCube.render(f5);
+
+                    GL11.glPopMatrix();
                 }
                 else if(cubesToRender.contains(info))
                 {
@@ -125,7 +135,16 @@ public class ModelBaseDummy extends ModelBase
                 {
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F);
 
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                    GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+                    GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
+                    GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+                    GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+
                     info.modelCube.render(f5);
+
+                    GL11.glPopMatrix();
                 }
             }
         }
@@ -164,9 +183,27 @@ public class ModelBaseDummy extends ModelBase
 
         GL11.glPushMatrix();
 
+        if(parents.isEmpty())
+        {
+            GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+            GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+            GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
+            GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+            GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+        }
+
         for(int i = parents.size() - 1; i >= 0; i--)
         {
             CubeInfo parent = parents.get(i);
+
+            if(i == parents.size() - 1)
+            {
+                GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+                GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+                GL11.glScaled(parent.scale[0], parent.scale[1], parent.scale[2]);
+                GL11.glTranslatef(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
+                GL11.glTranslatef(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
+            }
 
             GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
             GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
@@ -198,6 +235,8 @@ public class ModelBaseDummy extends ModelBase
 
         GL11.glPopMatrix();
 
+        GL11.glPushMatrix();
+
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_LIGHTING);
         if(hasTexture)
@@ -209,6 +248,11 @@ public class ModelBaseDummy extends ModelBase
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F);//to allow rendering of the rotation point internally
         if(info.parentIdentifier == null)//only render if it's not a child
         {
+            GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+            GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+            GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
+            GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+            GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
             info.modelCube.render(f5);
         }
 
@@ -225,6 +269,15 @@ public class ModelBaseDummy extends ModelBase
             for(int i = parents.size() - 1; i >= 0; i--)
             {
                 CubeInfo parent = parents.get(i);
+
+                if(i == parents.size() - 1)
+                {
+                    GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+                    GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+                    GL11.glScaled(parent.scale[0], parent.scale[1], parent.scale[2]);
+                    GL11.glTranslatef(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
+                    GL11.glTranslatef(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
+                }
 
                 GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
                 GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
@@ -316,6 +369,8 @@ public class ModelBaseDummy extends ModelBase
         {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
+
+        GL11.glPopMatrix();
     }
 
     public void createModelFromCubeInfo(CubeInfo info)
