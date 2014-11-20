@@ -54,6 +54,8 @@ public class ProjectInfo
 
     public transient BufferedImage bufferedTexture;
 
+    public transient boolean destroyed;
+
     @SideOnly(Side.CLIENT)
     public transient ModelBaseDummy model;
 
@@ -116,8 +118,9 @@ public class ProjectInfo
     @SideOnly(Side.CLIENT)
     public void destroy()
     {
-        if(model != null)
+        if(model != null && !destroyed)
         {
+            destroyed = true;
             for(int i = model.cubes.size() - 1; i >= 0; i--)
             {
                 model.removeCubeInfo(model.cubes.get(i));
