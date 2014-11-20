@@ -33,6 +33,8 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectInfo
 {
+    public static final int IDENTIFIER_LENGTH = 20;
+
     public transient String identifier;
     public transient File saveFile;
     public transient String saveFileMd5;
@@ -100,6 +102,10 @@ public class ProjectInfo
         model = new ModelBaseDummy(this);
         model.textureWidth = textureWidth;
         model.textureHeight = textureHeight;
+        for(int i = 0; i < cubeGroups.size(); i++)
+        {
+            createGroupCubes(cubeGroups.get(i));
+        }
         for(int i = 0 ; i < cubes.size(); i++)
         {
             //TODO remember to support child models.
@@ -120,10 +126,89 @@ public class ProjectInfo
         }
     }
 
+    public void createNewGroup()
+    {
+        cubeGroups.add(new CubeGroup("Group"));
+    }
+
     public void createNewCube()
     {
         cubeCount++;
         cubes.add(new CubeInfo("shape" + Integer.toString(cubeCount)));
+    }
+
+    private void createGroupCubes(CubeGroup group)
+    {
+        for(int i = 0; i < group.cubeGroups.size(); i++)
+        {
+            createGroupCubes(group.cubeGroups.get(i));
+        }
+        for(int i = 0; i < group.cubes.size(); i++)
+        {
+            //TODO remember to support child models.
+            model.createModelFromCubeInfo(group.cubes.get(i));
+        }
+    }
+
+    public Object getObjectByIdent(String ident)
+    {
+        Object obj = null;
+        for(CubeInfo inf : cubes)
+        {
+            if(obj == null)
+            {
+                obj = findObjectInCube(ident, inf);
+            }
+        }
+        for(CubeGroup group1 : cubeGroups)
+        {
+            if(obj == null)
+            {
+                obj = findObjectInGroup(ident, group1);
+            }
+        }
+        return obj;
+    }
+
+    public Object findObjectInCube(String ident, CubeInfo cube)
+    {
+        if(cube.identifier.equals(ident))
+        {
+            return cube;
+        }
+        Object obj = null;
+        for(CubeInfo inf : cube.getChildren())
+        {
+            if(obj == null)
+            {
+                obj = findObjectInCube(ident, inf);
+            }
+        }
+        return obj;
+    }
+
+    public Object findObjectInGroup(String ident, CubeGroup group)
+    {
+        if(group.identifier.equals(ident))
+        {
+            return group;
+        }
+        Object obj = null;
+        for(CubeInfo inf : group.cubes)
+        {
+            if(obj == null)
+            {
+                obj = findObjectInCube(ident, inf);
+            }
+        }
+        for(CubeGroup group1 : group.cubeGroups)
+        {
+            if(obj == null)
+            {
+                obj = findObjectInGroup(ident, group1);
+            }
+        }
+        return obj;
     }
 
     @SideOnly(Side.CLIENT)
@@ -317,6 +402,7 @@ public class ProjectInfo
 
                 boolean degrees = determineAngleType(model.Model.Geometry);
                 project.cubeCount += exploreTC2Info(project.cubes, model.Model.Geometry, 0, 0, 0, 0, 0, 0, scaleX, scaleY, scaleZ, degrees);
+                //TODO support groups
             }
             catch(NumberFormatException e)
             {
