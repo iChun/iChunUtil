@@ -129,6 +129,32 @@ public class ProjectInfo
         }
     }
 
+    public ArrayList<CubeInfo> getAllCubes()
+    {
+        ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
+        addAllCubes(cubes, this.cubes);
+        addAllCubesFromGroups(cubes, this.cubeGroups);
+        return cubes;
+    }
+
+    public void addAllCubes(ArrayList<CubeInfo> list, ArrayList<CubeInfo> cubes)
+    {
+        list.addAll(cubes);
+        for(CubeInfo cube : cubes)
+        {
+            addAllCubes(list, cube.getChildren());
+        }
+    }
+
+    public void addAllCubesFromGroups(ArrayList<CubeInfo> list, ArrayList<CubeGroup> groups)
+    {
+        for(CubeGroup group : groups)
+        {
+            addAllCubes(list, group.cubes);
+            addAllCubesFromGroups(list, group.cubeGroups);
+        }
+    }
+
     public void createNewGroup()
     {
         cubeGroups.add(new CubeGroup("Group"));
