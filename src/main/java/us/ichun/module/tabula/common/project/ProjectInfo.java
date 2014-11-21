@@ -271,11 +271,11 @@ public class ProjectInfo
 
                 info.scale[0] = info.scale[1] = info.scale[2] = 1.0F;
 
+                info.txMirror = rend.mirror;
+
                 PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
                 info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
                 info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
-
-                info.txMirror = rend.mirror;
 
                 info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2;
 
