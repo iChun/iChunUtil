@@ -324,41 +324,41 @@ public class ModelBaseDummy extends ModelBase
             GL11.glColor4f(0.9F, 0.9F, 0.0F, 0.6F);
             GL11.glBegin(GL11.GL_LINES);
 
-            GL11.glVertex3f(-border, 0.0F, 0.0F);
-            GL11.glVertex3f(info.dimensions[0] * f5 + border, 0F, 0F);
+            GL11.glVertex3f(-border - (float)info.mcScale * f5, - (float)info.mcScale * f5, - (float)info.mcScale * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5 + border, - (float)info.mcScale * f5, - (float)info.mcScale * f5);
 
-            GL11.glVertex3f(-border, info.dimensions[1] * f5, 0.0F);
-            GL11.glVertex3f(info.dimensions[0] * f5 + border, info.dimensions[1] * f5, 0F);
+            GL11.glVertex3f(-border - (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5, - (float)info.mcScale * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5 + border, (float)(info.dimensions[1] + info.mcScale) * f5, - (float)info.mcScale * f5);
 
-            GL11.glVertex3f(-border, 0.0F, info.dimensions[2] * f5);
-            GL11.glVertex3f(info.dimensions[0] * f5 + border, 0F, info.dimensions[2] * f5);
+            GL11.glVertex3f(-border - (float)info.mcScale * f5, - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5 + border, - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5);
 
-            GL11.glVertex3f(-border, info.dimensions[1] * f5, info.dimensions[2] * f5);
-            GL11.glVertex3f(info.dimensions[0] * f5 + border, info.dimensions[1] * f5, info.dimensions[2] * f5);
+            GL11.glVertex3f(-border - (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5, (float)(info.dimensions[2] + info.mcScale) * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5 + border, (float)(info.dimensions[1] + info.mcScale) * f5, (float)(info.dimensions[2] + info.mcScale) * f5);
 
-            GL11.glVertex3f(0.0F, 0.0F, -border);
-            GL11.glVertex3f(0.0F, 0.0F, info.dimensions[2] * f5 + border);
+            GL11.glVertex3f(- (float)info.mcScale * f5, - (float)info.mcScale * f5, -border - (float)info.mcScale * f5);
+            GL11.glVertex3f(- (float)info.mcScale * f5, - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5 + border);
 
-            GL11.glVertex3f(0.0F, info.dimensions[1] * f5, -border);
-            GL11.glVertex3f(0.0F, info.dimensions[1] * f5, info.dimensions[2] * f5 + border);
+            GL11.glVertex3f(- (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5, -border - (float)info.mcScale * f5);
+            GL11.glVertex3f(- (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5, (float)(info.dimensions[2] + info.mcScale) * f5 + border);
 
-            GL11.glVertex3f(info.dimensions[0] * f5, 0.0F, -border);
-            GL11.glVertex3f(info.dimensions[0] * f5, 0.0F, info.dimensions[2] * f5 + border);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, - (float)info.mcScale * f5, -border - (float)info.mcScale * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5 + border);
 
-            GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5, -border);
-            GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5, info.dimensions[2] * f5 + border);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, (float)(info.dimensions[1] + info.mcScale) * f5, -border - (float)info.mcScale * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, (float)(info.dimensions[1] + info.mcScale) * f5, (float)(info.dimensions[2] + info.mcScale) * f5 + border);
 
-            GL11.glVertex3f(0.0F, -border, 0.0F);
-            GL11.glVertex3f(0.0F, info.dimensions[1] * f5 + border, 0.0F);
+            GL11.glVertex3f(- (float)info.mcScale * f5, -border - (float)info.mcScale * f5, - (float)info.mcScale * f5);
+            GL11.glVertex3f(- (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5 + border, - (float)info.mcScale * f5);
 
-            GL11.glVertex3f(info.dimensions[0] * f5, -border, 0.0F);
-            GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5 + border, 0.0F);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, -border - (float)info.mcScale * f5, - (float)info.mcScale * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, (float)(info.dimensions[1] + info.mcScale) * f5 + border, - (float)info.mcScale * f5);
 
-            GL11.glVertex3f(0.0F, -border, info.dimensions[2] * f5);
-            GL11.glVertex3f(0.0F, info.dimensions[1] * f5 + border, info.dimensions[2] * f5);
+            GL11.glVertex3f(- (float)info.mcScale * f5, -border - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5 );
+            GL11.glVertex3f(- (float)info.mcScale * f5, (float)(info.dimensions[1] + info.mcScale) * f5 + border, (float)(info.dimensions[2] + info.mcScale) * f5 );
 
-            GL11.glVertex3f(info.dimensions[0] * f5, -border, info.dimensions[2] * f5);
-            GL11.glVertex3f(info.dimensions[0] * f5, info.dimensions[1] * f5 + border, info.dimensions[2] * f5);
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, -border - (float)info.mcScale * f5, (float)(info.dimensions[2] + info.mcScale) * f5 );
+            GL11.glVertex3f((float)(info.dimensions[0] + info.mcScale) * f5, (float)(info.dimensions[1] + info.mcScale) * f5 + border, (float)(info.dimensions[2] + info.mcScale) * f5 );
 
             GL11.glEnd();
 
@@ -378,7 +378,7 @@ public class ModelBaseDummy extends ModelBase
         cubes.add(info);
 
         info.modelCube = new ModelRenderer(this, info.txOffset[0], info.txOffset[1]);
-        info.modelCube.addBox((float)info.offset[0], (float)info.offset[1], (float)info.offset[2], info.dimensions[0], info.dimensions[1], info.dimensions[2]);
+        info.modelCube.addBox((float)info.offset[0], (float)info.offset[1], (float)info.offset[2], info.dimensions[0], info.dimensions[1], info.dimensions[2], (float)info.mcScale);
         info.modelCube.setRotationPoint((float)info.position[0], (float)info.position[1], (float)info.position[2]);
         info.modelCube.rotateAngleX = (float)Math.toRadians(info.rotation[0]);
         info.modelCube.rotateAngleY = (float)Math.toRadians(info.rotation[1]);

@@ -11,10 +11,9 @@ import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.resources.IResource;
 import org.apache.commons.io.IOUtils;
-import us.ichun.module.tabula.common.project.TechneConverter;
 import us.ichun.module.tabula.client.model.ModelBaseDummy;
 import us.ichun.module.tabula.client.model.ModelInfo;
 import us.ichun.module.tabula.common.project.components.CubeGroup;
@@ -275,6 +274,9 @@ public class ProjectInfo
                 info.txOffset[1] = rend.textureOffsetY;
 
                 info.txMirror = rend.mirror;
+
+                PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// get 1 and 2
+                info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2;
 
                 cubeCount++;
                 cubes.add(info);
