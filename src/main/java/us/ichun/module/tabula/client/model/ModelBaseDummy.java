@@ -378,8 +378,9 @@ public class ModelBaseDummy extends ModelBase
         cubes.add(info);
 
         info.modelCube = new ModelRenderer(this, info.txOffset[0], info.txOffset[1]);
-        info.modelCube.addBox((float)info.offset[0], (float)info.offset[1], (float)info.offset[2], info.dimensions[0], info.dimensions[1], info.dimensions[2], (float)info.mcScale);
+        info.modelCube.mirror = info.txMirror;
         info.modelCube.setRotationPoint((float)info.position[0], (float)info.position[1], (float)info.position[2]);
+        info.modelCube.addBox((float)info.offset[0], (float)info.offset[1], (float)info.offset[2], info.dimensions[0], info.dimensions[1], info.dimensions[2], (float)info.mcScale);
         info.modelCube.rotateAngleX = (float)Math.toRadians(info.rotation[0]);
         info.modelCube.rotateAngleY = (float)Math.toRadians(info.rotation[1]);
         info.modelCube.rotateAngleZ = (float)Math.toRadians(info.rotation[2]);
@@ -392,6 +393,7 @@ public class ModelBaseDummy extends ModelBase
         for(CubeInfo child : cube.getChildren())
         {
             child.modelCube = new ModelRenderer(this, child.txOffset[0], child.txOffset[1]);
+            child.modelCube.mirror = child.txMirror;
             child.modelCube.addBox((float)child.offset[0], (float)child.offset[1], (float)child.offset[2], child.dimensions[0], child.dimensions[1], child.dimensions[2]);
             child.modelCube.setRotationPoint((float)child.position[0], (float)child.position[1], (float)child.position[2]);
             child.modelCube.rotateAngleX = (float)Math.toRadians(child.rotation[0]);
