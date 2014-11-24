@@ -285,6 +285,12 @@ public class ProjectInfo
                 info.txMirror = rend.mirror;
 
                 PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
+
+                if(((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2 < 0.0D)//silly techne check to see if the model is really mirrored or not
+                {
+                    info.txMirror = false;
+                }
+
                 info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
                 info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
 
