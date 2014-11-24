@@ -258,6 +258,12 @@ public class ProjectInfo
         {
             ModelRenderer rend = e.getValue();
 
+            if(cubes.isEmpty())
+            {
+                textureHeight = (int)rend.textureHeight;
+                textureWidth = (int)rend.textureWidth;
+            }
+
             CubeInfo firstCreated = null;
             for(int j = 0; j < rend.cubeList.size(); j++)
             {
