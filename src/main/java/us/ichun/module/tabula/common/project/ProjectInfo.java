@@ -40,6 +40,10 @@ public class ProjectInfo
     public transient String saveFileMd5;
     public transient boolean saved;
 
+    public transient int lastAutosave;
+    public transient boolean autosaved;
+
+    public transient float cameraFov = 30F;
     public transient float cameraZoom = 1.0F;
     public transient float cameraYaw;
     public transient float cameraPitch;
@@ -55,6 +59,10 @@ public class ProjectInfo
     public transient BufferedImage bufferedTexture;
 
     public transient boolean destroyed;
+
+    public transient ArrayList<String> states;
+    public transient int lastState;
+    public transient int switchState;
 
     @SideOnly(Side.CLIENT)
     public transient ModelBaseDummy model;
@@ -75,9 +83,12 @@ public class ProjectInfo
     {
         modelName = "";
         authorName = "";
+        cameraFov = 30F;
         cameraZoom = 1.0F;
         cubeGroups = new ArrayList<CubeGroup>();
         cubes = new ArrayList<CubeInfo>();
+        states = new ArrayList<String>();
+        switchState = -1;
     }
 
     public ProjectInfo(String name, String author)
@@ -383,17 +394,33 @@ public class ProjectInfo
         }
     }
 
-
     public void cloneFrom(ProjectInfo info)
     {
         this.saveFile = info.saveFile;
         this.saveFileMd5 = info.saveFileMd5;
         this.bufferedTexture = info.bufferedTexture;
+        this.cameraFov = info.cameraFov;
         this.cameraZoom = info.cameraZoom;
         this.cameraYaw = info.cameraYaw;
         this.cameraPitch = info.cameraPitch;
         this.cameraOffsetX = info.cameraOffsetX;
         this.cameraOffsetY = info.cameraOffsetY;
+        this.lastAutosave = info.lastAutosave;
+    }
+
+    public void inherit(ProjectInfo info)//for use of mainframe
+    {
+        this.cloneFrom(info);
+        this.identifier = info.identifier;
+        this.ignoreNextImage = info.ignoreNextImage;
+        this.textureFile = info.textureFile;
+        this.textureFileMd5 = info.textureFileMd5;
+        this.states = info.states;
+        this.lastState = info.lastState;
+        this.projVersion = info.projVersion;
+        this.textureWidth = info.textureWidth;
+        this.textureHeight = info.textureHeight;
+        this.switchState = info.switchState;
     }
 
     public static ProjectInfo openProject(File file)

@@ -36,7 +36,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("iChunUtil", versions);
-        versions.put("1.7.10", "4.0.0");
+        versions.put("1.7.10", "4.1.0");
         versions.put("1.7", "3.3.0");
 
         versions = new HashMap<String, String>();
@@ -83,6 +83,10 @@ public class ModVersionJsonGen
         map.put("Sync", versions);
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
+
+        versions = new HashMap<String, String>();
+        map.put("Tabula", versions);
+        versions.put("1.7.10", "4.0.0");
 
         versions = new HashMap<String, String>();
         map.put("Torched", versions);
