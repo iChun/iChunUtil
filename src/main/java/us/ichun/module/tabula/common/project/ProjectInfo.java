@@ -647,7 +647,7 @@ public class ProjectInfo
 
         ProjectInfo project = null;
 
-        if(jsonString.contains("Techne") || jsonString.contains("techne"))
+        if(jsonString.contains("\"Techne\"") && jsonString.contains("@Version") && !jsonString.contains("TechneToTabulaImporter"))
         {
             TC2Info info;
 
