@@ -398,6 +398,8 @@ public class ProjectInfo
     {
         this.saveFile = info.saveFile;
         this.saveFileMd5 = info.saveFileMd5;
+        this.textureFile = info.textureFile;
+        this.ignoreNextImage = info.ignoreNextImage;
         this.bufferedTexture = info.bufferedTexture;
         this.cameraFov = info.cameraFov;
         this.cameraZoom = info.cameraZoom;
@@ -412,8 +414,6 @@ public class ProjectInfo
     {
         this.cloneFrom(info);
         this.identifier = info.identifier;
-        this.ignoreNextImage = info.ignoreNextImage;
-        this.textureFile = info.textureFile;
         this.textureFileMd5 = info.textureFileMd5;
         this.states = info.states;
         this.lastState = info.lastState;
