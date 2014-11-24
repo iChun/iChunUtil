@@ -148,7 +148,7 @@ public class iChunUtil
 
 //        EntityHelperBase.getUUIDFromUsernames("pahimar");
 //
-                ModVersionJsonGen.generate();
+//                ModVersionJsonGen.generate();
     }
 
     public static boolean getPostLoad()
