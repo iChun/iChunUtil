@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "4.1.1"
+version = "4.1.2"
 group = "ichun" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "iChunUtil"
 
@@ -57,7 +57,7 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
     manifest {
-        attributes 'FMLAT' : 'iChunUtil_at.cfg'
+        attributes 'FMLAT' : 'iChunUtil-deobf_at.cfg'
     }
 }
 
