@@ -56,6 +56,9 @@ task sourceJar(type: Jar) {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT' : 'iChunUtil_at.cfg'
+    }
 }
 
 // make sure all of these happen when we run build
