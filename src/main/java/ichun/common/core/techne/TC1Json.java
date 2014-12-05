@@ -123,7 +123,7 @@ public class TC1Json
 
                 String[] rotation = Techne.Models[i].Model.Geometry.Shape[j].Rotation.split(",");
                 info.Techne.Models[i].Model.Geometry.Shape[j].Rotation = (rotation[0].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[0])))) + "," + (rotation[1].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[1])))) + "," + (rotation[2].equals("0") ? "0" : Float.toString((float)Math.toRadians(Float.parseFloat(rotation[2]))));
-
+//TODO check and see if the Rotation is radians or degrees.
                 info.Techne.Models[i].Model.Geometry.Shape[j].Size = Techne.Models[i].Model.Geometry.Shape[j].Size;
                 info.Techne.Models[i].Model.Geometry.Shape[j].TextureOffset = Techne.Models[i].Model.Geometry.Shape[j].TextureOffset;
             }
