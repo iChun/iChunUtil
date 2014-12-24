@@ -54,7 +54,7 @@ public class CubeInfo
     public void removeChild(CubeInfo info)
     {
         children.remove(info);
-        if(info.parentIdentifier.equals(identifier))
+        if(info.parentIdentifier != null && info.parentIdentifier.equals(identifier))
         {
             info.parentIdentifier = null;
         }
