@@ -255,7 +255,7 @@ public class ImportTabula extends Importer
 
         ProjectInfo project = null;
 
-        if(jsonString.contains("\"Techne\"") && jsonString.contains("@Version") && !jsonString.contains("TechneToTabulaImporter"))
+        if((jsonString.contains("\"Techne\"") || jsonString.contains("\"\u0000T\u0000e\u0000c\u0000h\u0000n\u0000e\u0000\"")) && (jsonString.contains("@Version") || jsonString.contains("\u0000@\u0000V\u0000e\u0000r\u0000s\u0000i\u0000o\u0000n\u0000")) && !jsonString.contains("TechneToTabulaImporter"))
         {
             TC2Info info;
 

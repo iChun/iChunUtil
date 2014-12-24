@@ -33,4 +33,4 @@ ichun.config.showPatronReward.comment=Do you want to show your patron reward to 
 
 ichun.gui.newUpdate=New Mod Update Available!
 
-ichun.gui.moreOptions="Hit O to view more options"
+ichun.gui.moreOptions=Hit O to view more options
