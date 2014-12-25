@@ -1,5 +1,6 @@
 package us.ichun.module.tabula.client.formats;
 
+import org.apache.commons.io.FilenameUtils;
 import us.ichun.module.tabula.client.formats.types.ImportTabula;
 import us.ichun.module.tabula.client.formats.types.Importer;
 import us.ichun.module.tabula.common.project.ProjectInfo;
@@ -18,14 +19,14 @@ public class ImportList
 
     public static boolean isFileSupported(File file)
     {
-        return compatibleFormats.containsKey(file.getName().substring(file.getName().length() - 3, file.getName().length()));
+        return compatibleFormats.containsKey(FilenameUtils.getExtension(file.getName()));
     }
 
     public static ProjectInfo createProjectFromFile(File file)
     {
-        if(compatibleFormats.containsKey(file.getName().substring(file.getName().length() - 3, file.getName().length())))
+        if(compatibleFormats.containsKey(FilenameUtils.getExtension(file.getName())))
         {
-            return compatibleFormats.get(file.getName().substring(file.getName().length() - 3, file.getName().length())).createProjectInfo(file);
+            return compatibleFormats.get(FilenameUtils.getExtension(file.getName())).createProjectInfo(file);
         }
         return null;
     }
