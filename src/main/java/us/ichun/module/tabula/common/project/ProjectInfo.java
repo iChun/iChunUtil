@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream;
 public class ProjectInfo
 {
     public static final int IDENTIFIER_LENGTH = 20;
+    public static final int PROJ_VERSION = 2;
 
     public transient String identifier;
     public transient File saveFile;
@@ -68,6 +69,8 @@ public class ProjectInfo
 
     public int textureWidth = 64;
     public int textureHeight = 32;
+
+    public double[] scale = new double[] { 1.0D, 1.0D, 1.0D };
 
     public ArrayList<CubeGroup> cubeGroups;
     public ArrayList<CubeInfo> cubes;
@@ -465,6 +468,18 @@ public class ProjectInfo
         this.textureWidth = info.textureWidth;
         this.textureHeight = info.textureHeight;
         this.switchState = info.switchState;
+    }
+
+    public void repair()
+    {
+        while(projVersion < ProjectInfo.PROJ_VERSION)
+        {
+            if(projVersion == 1)
+            {
+                scale = new double[] { 1D, 1D, 1D };
+            }
+            projVersion++;
+        }
     }
 
     public static boolean saveProject(ProjectInfo info, File file)

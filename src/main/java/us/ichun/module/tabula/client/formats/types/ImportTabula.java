@@ -102,7 +102,7 @@ public class ImportTabula extends Importer
 
         ProjectInfo project = new ProjectInfo(fileName, "TechneToTabulaImporter");
 
-        project.projVersion = 1;
+        project.projVersion = ProjectInfo.PROJ_VERSION;
         if(!tc2Info.Techne.Author.equals("ZeuX") && !tc2Info.Techne.Author.equals("NotZeux"))
         {
             project.authorName = tc2Info.Techne.Author;
