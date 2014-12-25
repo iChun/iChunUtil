@@ -238,7 +238,16 @@ public class ModelHelper
                                 ModelRenderer rend = (ModelRenderer)f.get(parent);
                                 if(rend != null)
                                 {
-                                    list.put(f.getName(), rend); // Add normal parent fields
+									String name = f.getName();
+									if(rend.boxName != null)
+									{
+										name = rend.boxName;
+										while(list.containsKey(name))
+										{
+											name = name + "_";
+										}
+									}
+                                    list.put(name, rend); // Add normal parent fields
                                 }
                             }
                         }
