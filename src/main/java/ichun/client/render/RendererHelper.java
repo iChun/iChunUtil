@@ -150,9 +150,17 @@ public class RendererHelper
         double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
         double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
 
-        if(x < 0 || y < 0 || width <= 0 || height <= 0 || (int)Math.floor((double)(x + width) * scaleW) > mc.displayWidth || (int)Math.floor((double)(y + height) * scaleH) > mc.displayHeight)
+        if(width <= 0 || height <= 0 || (int)Math.floor((double)(x + width) * scaleW) > mc.displayWidth || (int)Math.floor((double)(y + height) * scaleH) > mc.displayHeight)
         {
             return;
+        }
+        if(x < 0)
+        {
+            x = 0;
+        }
+        if(y < 0)
+        {
+            y = 0;
         }
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
