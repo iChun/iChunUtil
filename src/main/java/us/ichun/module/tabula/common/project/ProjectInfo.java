@@ -1,17 +1,15 @@
 package us.ichun.module.tabula.common.project;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ichun.common.core.techne.TC1Json;
-import ichun.common.core.techne.TC2Info;
 import ichun.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.resources.IResource;
-import org.apache.commons.io.IOUtils;
 import us.ichun.module.tabula.client.model.ModelBaseDummy;
 import us.ichun.module.tabula.client.model.ModelInfo;
 import us.ichun.module.tabula.common.project.components.CubeGroup;
@@ -19,13 +17,12 @@ import us.ichun.module.tabula.common.project.components.CubeInfo;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public class ProjectInfo
@@ -101,8 +98,8 @@ public class ProjectInfo
 
     public String getAsJson()
     {
-//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                Gson gson = new Gson();
+        //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
 
         return gson.toJson(this);
     }
