@@ -12,6 +12,7 @@ import net.minecraft.client.model.TextureOffset;
 import net.minecraft.client.resources.IResource;
 import us.ichun.module.tabula.client.model.ModelBaseDummy;
 import us.ichun.module.tabula.client.model.ModelInfo;
+import us.ichun.module.tabula.common.project.components.Animation;
 import us.ichun.module.tabula.common.project.components.CubeGroup;
 import us.ichun.module.tabula.common.project.components.CubeInfo;
 
@@ -72,6 +73,8 @@ public class ProjectInfo
     public ArrayList<CubeGroup> cubeGroups;
     public ArrayList<CubeInfo> cubes;
 
+    public ArrayList<Animation> anims;
+
     public int cubeCount;
 
     public ProjectInfo()
@@ -82,6 +85,8 @@ public class ProjectInfo
         cameraZoom = 1.0F;
         cubeGroups = new ArrayList<CubeGroup>();
         cubes = new ArrayList<CubeInfo>();
+        anims = new ArrayList<Animation>();
+
         states = new ArrayList<String>();
         switchState = -1;
     }

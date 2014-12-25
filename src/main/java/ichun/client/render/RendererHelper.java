@@ -150,6 +150,11 @@ public class RendererHelper
         double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
         double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
 
+        if(x < 0 || y < 0 || width <= 0 || height <= 0 || (int)Math.floor((double)(x + width) * scaleW) > mc.displayWidth || (int)Math.floor((double)(y + height) * scaleH) > mc.displayHeight)
+        {
+            return;
+        }
+
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         GL11.glScissor((int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH)), (int)Math.floor((double)(x + width) * scaleW) - (int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.displayHeight - ((double)y * scaleH)) - (int)Math.floor((double)mc.displayHeight - ((double)(y + height) * scaleH))); //starts from lower left corner (minecraft starts from upper left)
