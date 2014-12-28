@@ -487,6 +487,11 @@ public class ProjectInfo
             if(projVersion == 1)
             {
                 scale = new double[] { 1D, 1D, 1D };
+
+                for(CubeInfo info : getAllCubes())
+                {
+                    info.opacity = 100D;
+                }
             }
             projVersion++;
         }

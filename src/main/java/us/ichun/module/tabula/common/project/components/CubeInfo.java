@@ -15,6 +15,7 @@ public class CubeInfo
         this.name = name;
         dimensions = new int[] { 1, 1, 1 };
         scale = new double[] { 1D, 1D, 1D };
+        opacity = 100D;
         identifier = RandomStringUtils.randomAscii(ProjectInfo.IDENTIFIER_LENGTH);
     }
 
@@ -49,6 +50,7 @@ public class CubeInfo
         children.add(info);
         info.scale = new double[] { 1D, 1D, 1D };
         info.mcScale = 0.0D;
+        info.opacity = opacity;
         info.parentIdentifier = identifier;
         info.hidden = false;
     }

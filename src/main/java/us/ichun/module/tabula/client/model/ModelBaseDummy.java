@@ -98,7 +98,7 @@ public class ModelBaseDummy extends ModelBase
             {
                 if(cubesToRender.isEmpty() && pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F * (float)(info.opacity / 100D));
 
                     GL11.glPushMatrix();
                     GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
@@ -133,7 +133,7 @@ public class ModelBaseDummy extends ModelBase
                 }
                 else if(pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F * (float)(info.opacity / 100D));
 
                     GL11.glPushMatrix();
                     GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
@@ -245,7 +245,7 @@ public class ModelBaseDummy extends ModelBase
         }
 
         //Render cube
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F);//to allow rendering of the rotation point internally
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F * (float)(info.opacity / 100D));//to allow rendering of the rotation point internally
         if(info.parentIdentifier == null && (!info.hidden && !hidden.contains(info)))//only render if it's not a child
         {
             GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);

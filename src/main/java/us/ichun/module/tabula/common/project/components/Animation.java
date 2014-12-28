@@ -15,6 +15,8 @@ public class Animation
 
     public HashMap<String, ArrayList<AnimationComponent>> sets = new HashMap<String, ArrayList<AnimationComponent>>(); // cube identifier to animation component
 
+    public transient int playTime;
+
     public Animation(String name)
     {
         this.name = name;
