@@ -30,7 +30,9 @@ public class CubeInfo
     public int[] txOffset = new int[2];
     public boolean txMirror = false;
 
-    public double mcScale = 0.0F;
+    public double mcScale = 0.0D;
+
+    public double opacity = 100D;
 
     public boolean hidden = false;
 

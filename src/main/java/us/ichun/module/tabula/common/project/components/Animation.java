@@ -20,4 +20,16 @@ public class Animation
         this.name = name;
         identifier = RandomStringUtils.randomAscii(ProjectInfo.IDENTIFIER_LENGTH);
     }
+
+    public void createAnimComponent(String cubeIdent, String name, int length, int pos)
+    {
+        ArrayList<AnimationComponent> set = sets.get(cubeIdent);
+        if(set == null)
+        {
+            set = new ArrayList<AnimationComponent>();
+            sets.put(cubeIdent, set);
+        }
+
+        set.add(new AnimationComponent(name, length, pos));
+    }
 }
