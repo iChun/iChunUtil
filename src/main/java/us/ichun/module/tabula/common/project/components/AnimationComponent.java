@@ -2,7 +2,7 @@ package us.ichun.module.tabula.common.project.components;
 
 import net.minecraft.client.model.ModelRenderer;
 
-public class AnimationSet
+public class AnimationComponent
 {
     public double[] posChange = new double[3];
     public double[] rotChange = new double[3];

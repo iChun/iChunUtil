@@ -176,6 +176,14 @@ public class ProjectInfo
         cubes.add(new CubeInfo("shape" + Integer.toString(cubeCount)));
     }
 
+    public void createNewAnimation(String name, boolean loop)
+    {
+        Animation anim = new Animation(name);
+        anim.loops = loop;
+
+        anims.add(anim);
+    }
+
     private void createGroupCubes(CubeGroup group)
     {
         for(int i = 0; i < group.cubeGroups.size(); i++)
