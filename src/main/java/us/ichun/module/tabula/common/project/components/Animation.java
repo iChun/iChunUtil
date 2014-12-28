@@ -42,19 +42,7 @@ public class Animation
         if(playing)
         {
             playTime++;
-            int lastTick = 0;
-            for(Map.Entry<String, ArrayList<AnimationComponent>> e : sets.entrySet())
-            {
-                for(AnimationComponent comp : e.getValue())
-                {
-                    if(comp.startKey + comp.length > lastTick)
-                    {
-                        lastTick = comp.startKey + comp.length;
-                    }
-                }
-            }
-
-            if(playTime > lastTick)
+            if(playTime > getLength())
             {
                 if(loops)
                 {
@@ -80,5 +68,21 @@ public class Animation
     public void stop()
     {
         playing = false;
+    }
+
+    public int getLength()
+    {
+        int lastTick = 0;
+        for(Map.Entry<String, ArrayList<AnimationComponent>> e : sets.entrySet())
+        {
+            for(AnimationComponent comp : e.getValue())
+            {
+                if(comp.startKey + comp.length > lastTick)
+                {
+                    lastTick = comp.startKey + comp.length;
+                }
+            }
+        }
+        return lastTick;
     }
 }
