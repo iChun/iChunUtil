@@ -368,6 +368,11 @@ public class Config
         }
     }
 
+    public int createIntProperty(String propName1, boolean changable, boolean isSessionProp, int i, int min, int max) //returns the config property
+    {
+        return createIntProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", changable, isSessionProp, i, min, max);
+    }
+
     public int createIntProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int i, int min, int max) //returns the config property
     {
         if(modId.equalsIgnoreCase(curMod) && printKey == 2)
@@ -434,6 +439,11 @@ public class Config
         return prop.getInt();
     }
 
+    public int createIntBoolProperty(String propName1, boolean changable, boolean isSessionProp, boolean flag) //returns the config property
+    {
+        return createIntBoolProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", changable, isSessionProp, flag);
+    }
+
     public int createIntBoolProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, boolean flag) //returns the config property
     {
         if(modId.equalsIgnoreCase(curMod) && printKey == 2)
@@ -498,6 +508,11 @@ public class Config
         save();
 
         return prop.getInt();
+    }
+
+    public int createColourProperty(String propName1, boolean changable, boolean isSessionProp, int colour) //returns the config val
+    {
+        return createColourProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", changable, isSessionProp, colour);
     }
 
     public int createColourProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, int colour) //returns the config val
@@ -572,6 +587,11 @@ public class Config
         return Integer.decode(prop.getString().trim());
     }
 
+    public String createStringProperty(String propName1, boolean changable, boolean isSessionProp, String value) //returns the config val
+    {
+        return createStringProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", changable, isSessionProp, value);
+    }
+
     public String createStringProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, String value) //returns the config val
     {
         if(modId.equalsIgnoreCase(curMod) && printKey == 2)
@@ -627,6 +647,11 @@ public class Config
         save();
 
         return prop.getString();
+    }
+
+    public Property createKeybindProperty(String propName1, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime, boolean ignoreHold) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
+    {
+        return createKeybindProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", keyValue, holdShift, holdCtrl, holdAlt, canPulse, pulseTime, ignoreHold);
     }
 
     public Property createKeybindProperty(String propName1, String fullPropName, String comment, int keyValue, boolean holdShift, boolean holdCtrl, boolean holdAlt, boolean canPulse, int pulseTime, boolean ignoreHold) //Custom keybinds. You don't get to define a category, and it's meant to be changed ingame.
@@ -758,6 +783,11 @@ public class Config
         return prop;
     }
 
+    public void createIntArrayProperty(String propName1, boolean changable, boolean isSessionProp, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
+    {
+        createIntArrayProperty(propName1, modId.toLowerCase() + ".config.prop." + propName1 + ".name",  modId.toLowerCase() + ".config.prop." + propName1 + ".comment", changable, isSessionProp, nestedIntArray, value, minMax, nestedMinMax);
+    }
+
     public void createIntArrayProperty(String propName1, String fullPropName, String comment, boolean changable, boolean isSessionProp, boolean nestedIntArray, String value, int[] minMax, int[] nestedMinMax) // formatting.. "int: nested int: nested int, int, int"
     {
         Property prop;
@@ -829,6 +859,11 @@ public class Config
         save();
 
         //does not return value;
+    }
+
+    public void setCurrentCategory(String cat)
+    {
+        setCurrentCategory(cat, modId.toLowerCase() + ".config.cat." + cat + ".name",  modId.toLowerCase() + ".config.cat." + cat + ".comment");
     }
 
     public void setCurrentCategory(String cat, String catName, String comment)

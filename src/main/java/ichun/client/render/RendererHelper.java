@@ -150,7 +150,7 @@ public class RendererHelper
         double scaleW = (double)mc.displayWidth / reso.getScaledWidth_double();
         double scaleH = (double)mc.displayHeight / reso.getScaledHeight_double();
 
-        if(width <= 0 || height <= 0 || (int)Math.floor((double)(x + width) * scaleW) > mc.displayWidth || (int)Math.floor((double)(y + height) * scaleH) > mc.displayHeight)
+        if(width <= 0 || height <= 0)
         {
             return;
         }

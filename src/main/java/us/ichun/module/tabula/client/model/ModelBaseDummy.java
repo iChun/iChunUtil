@@ -73,7 +73,7 @@ public class ModelBaseDummy extends ModelBase
         }
     }
 
-    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass)
+    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass, boolean renderRotationPoint)
     {
         ArrayList<CubeInfo> cubesToRender = new ArrayList<CubeInfo>(cubesToSelect);
         ArrayList<CubeInfo> unrendered = new ArrayList<CubeInfo>(cubesToSelect);
@@ -128,7 +128,7 @@ public class ModelBaseDummy extends ModelBase
                             GL11.glColor4f(r, g, b, 0.8F);
                         }
 
-                        renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
+                        renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint);
                     }
                 }
                 else if(pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
@@ -165,12 +165,12 @@ public class ModelBaseDummy extends ModelBase
                     GL11.glColor4f(r, g, b, 0.8F);
                 }
 
-                renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info));
+                renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint);
             }
         }
     }
 
-    public void renderSelectedCube(CubeInfo info, ArrayList<CubeInfo> hidden, float f5, float zoomLevel, boolean hasTexture, boolean focus)
+    public void renderSelectedCube(CubeInfo info, ArrayList<CubeInfo> hidden, float f5, float zoomLevel, boolean hasTexture, boolean focus, boolean renderRotationPoint)
     {
         if(hasTexture)
         {
@@ -228,7 +228,7 @@ public class ModelBaseDummy extends ModelBase
         GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
         GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
 
-        if(focus)
+        if(focus && renderRotationPoint)
         {
             rotationPoint.render(f5);
         }
