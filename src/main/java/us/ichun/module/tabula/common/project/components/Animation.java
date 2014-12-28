@@ -5,6 +5,7 @@ import us.ichun.module.tabula.common.project.ProjectInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Animation
 {
@@ -16,6 +17,7 @@ public class Animation
     public HashMap<String, ArrayList<AnimationComponent>> sets = new HashMap<String, ArrayList<AnimationComponent>>(); // cube identifier to animation component
 
     public transient int playTime;
+    public transient boolean playing;
 
     public Animation(String name)
     {
@@ -33,5 +35,50 @@ public class Animation
         }
 
         set.add(new AnimationComponent(name, length, pos));
+    }
+
+    public void update()
+    {
+        if(playing)
+        {
+            playTime++;
+            int lastTick = 0;
+            for(Map.Entry<String, ArrayList<AnimationComponent>> e : sets.entrySet())
+            {
+                for(AnimationComponent comp : e.getValue())
+                {
+                    if(comp.startKey + comp.length > lastTick)
+                    {
+                        lastTick = comp.startKey + comp.length;
+                    }
+                }
+            }
+
+            if(playTime > lastTick)
+            {
+                if(loops)
+                {
+                    playTime = 0;
+                }
+                else
+                {
+                    stop();
+                }
+            }
+        }
+    }
+
+    public void play()
+    {
+        if(!playing)
+        {
+            playing = true;
+            playTime = 0;
+        }
+    }
+
+    public void stop()
+    {
+        playing = false;
     }
 }
