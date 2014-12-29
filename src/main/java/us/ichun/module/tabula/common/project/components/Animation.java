@@ -1,11 +1,12 @@
 package us.ichun.module.tabula.common.project.components;
 
+import com.google.common.collect.Ordering;
 import org.apache.commons.lang3.RandomStringUtils;
 import us.ichun.module.tabula.common.project.ProjectInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Animation
 {
@@ -14,7 +15,7 @@ public class Animation
 
     public boolean loops;
 
-    public HashMap<String, ArrayList<AnimationComponent>> sets = new HashMap<String, ArrayList<AnimationComponent>>(); // cube identifier to animation component
+    public TreeMap<String, ArrayList<AnimationComponent>> sets = new TreeMap<String, ArrayList<AnimationComponent>>(Ordering.natural()); // cube identifier to animation component
 
     public transient int playTime;
     public transient boolean playing;
