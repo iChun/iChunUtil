@@ -480,6 +480,45 @@ public class ProjectInfo
         this.switchState = info.switchState;
     }
 
+    public float getMaximumSize() //horizontal max, vert is halved
+    {
+        ArrayList<CubeInfo> allCubes = getAllCubes();
+        double minX = 0F;
+        double minY = 0F;
+        double minZ = 0F;
+        double maxX = 0F;
+        double maxY = 0F;
+        double maxZ = 0F;
+        for(CubeInfo info : allCubes)
+        {
+            if((info.position[0] + info.offset[0]) * info.scale[0] < minX)
+            {
+                minX = (info.position[0] + info.offset[0]) * info.scale[0];
+            }
+            if((info.dimensions[0] + info.position[0] + info.offset[0]) * info.scale[0] > maxX)
+            {
+                maxX = (info.dimensions[0] + info.position[0] + info.offset[0]) * info.scale[0];
+            }
+            if((info.position[1] + info.offset[1]) * info.scale[1] < minY)
+            {
+                minY = (info.position[1] + info.offset[1]) * info.scale[1];
+            }
+            if((info.dimensions[1] + info.position[1] + info.offset[1]) * info.scale[1] > maxY)
+            {
+                maxY = (info.dimensions[1] + info.position[1] + info.offset[1]) * info.scale[1];
+            }
+            if((info.position[2] + info.offset[2]) * info.scale[2] < minZ)
+            {
+                minZ = (info.position[2] + info.offset[2]) * info.scale[2];
+            }
+            if((info.dimensions[2] + info.position[2] + info.offset[2]) * info.scale[2] > maxZ)
+            {
+                maxZ = (info.dimensions[2] + info.position[2] + info.offset[2]) * info.scale[2];
+            }
+        }
+        return (float)Math.max((maxX - minX) / scale[0], Math.max((maxY - minY) / (scale[1] * 2), (maxZ - minZ) / scale[2]));
+    }
+
     public void repair()
     {
         while(projVersion < ProjectInfo.PROJ_VERSION)
