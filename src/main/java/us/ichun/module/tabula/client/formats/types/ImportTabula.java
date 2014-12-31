@@ -90,7 +90,7 @@ public class ImportTabula extends Importer
     @Override
     public int getProjectVersion()
     {
-        return 1;//TODO update this over time;
+        return 2;//TODO update this over time;
     }
 
     public static ProjectInfo convertTechneFile(TC2Info tc2Info, String fileName)
