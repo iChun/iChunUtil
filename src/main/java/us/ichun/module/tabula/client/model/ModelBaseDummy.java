@@ -262,10 +262,12 @@ public class ModelBaseDummy extends ModelBase
                 GL11.glPushMatrix();
                 float scale = 0.75F;
                 GL11.glScalef(scale, scale, scale);
-                rotationControls.render(f5);
                 GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
-                rotationControls.render(f5);
                 GL11.glRotatef(90F, 0.0F, 0.0F, 1.0F);
+                rotationControls.render(f5);
+                GL11.glRotatef(90F, 0.0F, 0.0F, -1.0F);
+                rotationControls.render(f5);
+                GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
                 rotationControls.render(f5);
                 GL11.glPopMatrix();
             }
