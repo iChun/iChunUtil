@@ -136,6 +136,8 @@ public class ProjectInfo
                 model.removeCubeInfo(model.cubes.get(i));
             }
             model.rotationPoint.destroy();
+            model.rotationControls.destroy();
+            model.sizeControls.destroy();
         }
     }
 
@@ -317,6 +319,14 @@ public class ProjectInfo
 
                     info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
                     info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
+
+                    if(vertices[info.txMirror ? 2 : 1].texturePositionY > vertices[info.txMirror ? 1 : 2].texturePositionY)
+                    {
+                        info.txMirror = !info.txMirror;
+
+                        info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
+                        info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
+                    }
 
                     if(box.field_78247_g != null)
                     {

@@ -1,5 +1,6 @@
 package us.ichun.module.tabula.client.model;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
@@ -17,6 +18,8 @@ public class ModelBaseDummy extends ModelBase
     public ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
 
     public ModelRotationPoint rotationPoint;
+    public ModelSizeControls sizeControls;
+    public ModelRotationControls rotationControls;
 
     public ModelBaseDummy(ProjectInfo par)
     {
@@ -25,6 +28,8 @@ public class ModelBaseDummy extends ModelBase
         textureWidth = parent.textureWidth;
 
         rotationPoint = new ModelRotationPoint();
+        sizeControls = new ModelSizeControls();
+        rotationControls = new ModelRotationControls();
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ModelBaseDummy extends ModelBase
         }
     }
 
-    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass, boolean renderRotationPoint)
+    public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass, boolean renderRotationPoint, boolean renderControls)
     {
         ArrayList<CubeInfo> cubesToRender = new ArrayList<CubeInfo>(cubesToSelect);
         ArrayList<CubeInfo> unrendered = new ArrayList<CubeInfo>(cubesToSelect);
@@ -128,7 +133,7 @@ public class ModelBaseDummy extends ModelBase
                             GL11.glColor4f(r, g, b, 0.8F);
                         }
 
-                        renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint);
+                        renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint, renderControls);
                     }
                 }
                 else if(pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
@@ -165,12 +170,12 @@ public class ModelBaseDummy extends ModelBase
                     GL11.glColor4f(r, g, b, 0.8F);
                 }
 
-                renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint);
+                renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint, renderControls);
             }
         }
     }
 
-    public void renderSelectedCube(CubeInfo info, ArrayList<CubeInfo> hidden, float f5, float zoomLevel, boolean hasTexture, boolean focus, boolean renderRotationPoint)
+    public void renderSelectedCube(CubeInfo info, ArrayList<CubeInfo> hidden, float f5, float zoomLevel, boolean hasTexture, boolean focus, boolean renderRotationPoint, boolean renderControls)
     {
         if(hasTexture)
         {
@@ -231,6 +236,84 @@ public class ModelBaseDummy extends ModelBase
         if(focus && renderRotationPoint)
         {
             rotationPoint.render(f5);
+        }
+
+        if(renderControls)
+        {
+            GL11.glPushMatrix();
+
+            if(info.modelCube.rotateAngleZ != 0.0F)
+            {
+                GL11.glRotatef(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+            }
+
+            if(info.modelCube.rotateAngleY != 0.0F)
+            {
+                GL11.glRotatef(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+            }
+
+            if(info.modelCube.rotateAngleX != 0.0F)
+            {
+                GL11.glRotatef(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+            }
+
+            if(!GuiScreen.isShiftKeyDown())
+            {
+                GL11.glPushMatrix();
+                float scale = 0.75F;
+                GL11.glScalef(scale, scale, scale);
+                rotationControls.render(f5);
+                GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
+                rotationControls.render(f5);
+                GL11.glRotatef(90F, 0.0F, 0.0F, 1.0F);
+                rotationControls.render(f5);
+                GL11.glPopMatrix();
+            }
+            else
+            {
+                GL11.glPushMatrix();
+                float scale1 = 0.5F;
+                GL11.glScalef(scale1, scale1, scale1);
+
+                GL11.glPushMatrix();
+                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * (1D + (info.dimensions[1] + info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), -(0.125D * (1D - (info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GL11.glRotatef(180F, 0F, 0F, -1F);
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslated((0.125F * (1D + info.dimensions[0] + info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GL11.glRotatef(90F, 0F, 0F, -1F);
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslated(-(0.125F * (1D - info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GL11.glRotatef(90F, 0F, 0F, 1F);
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (1D + info.dimensions[2] + info.offset[2] + info.mcScale)));
+                GL11.glRotatef(90F, 1F, 0F, 0F);
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), -(0.125F * (1D - info.offset[2] + info.mcScale)));
+                GL11.glRotatef(90F, -1F, 0F, 0F);
+                sizeControls.render(f5);
+                GL11.glPopMatrix();
+
+                GL11.glPopMatrix();
+            }
+
+            GL11.glPopMatrix();
         }
 
         GL11.glPopMatrix();
