@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.HashMap;
 
 public class ModelInfo
+        implements Comparable
 {
     public final ResourceLocation texture;
     public final ModelBase modelParent;
@@ -20,5 +21,16 @@ public class ModelInfo
         this.modelParent = modelParent;
         this.modelList = ModelHelper.getModelCubesWithNames(modelParent);
         this.clz = clz;
+    }
+
+    @Override
+    public int compareTo(Object arg0)
+    {
+        if(arg0 instanceof ModelInfo)
+        {
+            ModelInfo info = (ModelInfo)arg0;
+            return modelParent.getClass().getSimpleName().compareTo(info.modelParent.getClass().getSimpleName());
+        }
+        return 0;
     }
 }
