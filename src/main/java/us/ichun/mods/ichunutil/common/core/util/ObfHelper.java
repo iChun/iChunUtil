@@ -18,6 +18,14 @@ public class ObfHelper
 
     private static final String obfVersion = "1.8";
 
+    //EntityLivingBase
+    public static final String getHurtSoundObf = "func_70621_aR";
+    public static final String getHurtSoundDeobf = "getHurtSound";
+
+    //EntityLivingBase
+    public static final String getDeathSoundObf = "func_70673_aS";
+    public static final String getDeathSoundDeobf = "getDeathSound";
+
     //RenderLivingEntity
 	public static final String preRenderCallbackObf = "func_77041_b";
 	public static final String preRenderCallbackDeobf = "preRenderCallback";
