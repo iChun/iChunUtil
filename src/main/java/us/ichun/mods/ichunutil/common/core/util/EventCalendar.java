@@ -17,11 +17,13 @@ public class EventCalendar
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        switch(calendar.get(2)) //month
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        switch(calendar.get(Calendar.MONTH)) //month
         {
             case 1:
             {
-                if(calendar.get(5) == 1)
+                if(day == 1)
                 {
                     isNewYear = true;
                 }
@@ -29,7 +31,7 @@ public class EventCalendar
             }
             case 3:
             {
-                if(calendar.get(5) == 9) //day
+                if(day == 9)
                 {
                     isPgBirthday = true;
                 }
@@ -37,7 +39,7 @@ public class EventCalendar
             }
             case 4:
             {
-                if(calendar.get(5) == 1)
+                if(day == 1)
                 {
                     isAFDay = true;
                 }
@@ -45,7 +47,7 @@ public class EventCalendar
             }
             case 10:
             {
-                if(calendar.get(5) == 31)
+                if(day == 31)
                 {
                     isHalloween = true;
                 }
@@ -53,14 +55,13 @@ public class EventCalendar
             }
             case 12:
             {
-                if(calendar.get(5) == 25)
+                if(day == 25)
                 {
                     isChristmas = true;
                 }
                 break;
             }
         }
-        day = calendar.get(5);
     }
 
     public static boolean isNewYear()

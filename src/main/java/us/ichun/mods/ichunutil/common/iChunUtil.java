@@ -38,7 +38,7 @@ import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[10.13.0.1186,)"
+        dependencies = "required-after:Forge@[1.8-11.14.0.1281-1.8,)"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) })));
 
@@ -68,7 +68,7 @@ public class iChunUtil
     @Instance("iChunUtil")
     public static iChunUtil instance;
 
-    @SidedProxy(clientSide = "ClientProxy", serverSide = "CommonProxy")
+    @SidedProxy(clientSide = "us.ichun.mods.ichunutil.client.core.ClientProxy", serverSide = "us.ichun.mods.ichunutil.common.core.CommonProxy")
     public static CommonProxy proxy;
 
     @Override
