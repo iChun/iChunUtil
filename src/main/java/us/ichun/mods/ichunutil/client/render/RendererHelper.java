@@ -1,17 +1,31 @@
 package us.ichun.mods.ichunutil.client.render;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class RendererHelper
@@ -84,6 +98,95 @@ public class RendererHelper
     //
     //		GlStateManager.popMatrix();
     //	}
+
+    public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).setBlurMipmap(false, false);
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(2.0F, 2.0F, 2.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+        if (model.isBuiltInRenderer() && stack != null)
+        {
+            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
+            TileEntityItemStackRenderer.instance.renderByItem(stack);
+        }
+        else
+        {
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+            worldrenderer.startDrawingQuads();
+            worldrenderer.setVertexFormat(DefaultVertexFormats.ITEM);
+            EnumFacing[] aenumfacing = EnumFacing.values();
+            int j = aenumfacing.length;
+
+            for (int k = 0; k < j; ++k)
+            {
+                EnumFacing enumfacing = aenumfacing[k];
+                renderQuads(worldrenderer, model.getFaceQuads(enumfacing), color, stack);
+            }
+
+            renderQuads(worldrenderer, model.getGeneralQuads(), color, stack);
+            tessellator.draw();
+        }
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+        mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
+    }
+
+    private static void renderQuads(WorldRenderer renderer, List quads, int color, ItemStack stack)
+    {
+        BakedQuad bakedquad;
+        int j;
+
+        for (Iterator iterator = quads.iterator(); iterator.hasNext(); renderQuad(renderer, bakedquad, j))
+        {
+            bakedquad = (BakedQuad)iterator.next();
+            j = color;
+
+            if (color == -1)
+            {
+                if(bakedquad.hasTintIndex() && stack != null && stack.getItem() != null)
+                {
+                    j = stack.getItem().getColorFromItemStack(stack, bakedquad.getTintIndex());
+
+                    if(EntityRenderer.anaglyphEnable)
+                    {
+                        j = TextureUtil.anaglyphColor(j);
+                    }
+
+                    j |= -16777216;
+                }
+            }
+        }
+    }
+
+    private static void renderQuad(WorldRenderer renderer, BakedQuad quad, int color)
+    {
+        renderer.addVertexData(quad.getVertexData());
+        renderer.putColor4(color);
+        putQuadNormal(renderer, quad);
+    }
+
+    private static void putQuadNormal(WorldRenderer renderer, BakedQuad quad)
+    {
+        Vec3i vec3i = quad.getFace().getDirectionVec();
+        renderer.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+    }
 
     public static void setColorFromInt(int color) {
         float r = (color >> 16 & 255) / 255.0F;
