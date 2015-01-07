@@ -233,89 +233,91 @@ public class ModelBaseDummy extends ModelBase
         GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
         GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
 
-        if(focus && renderRotationPoint)
+        if(focus)
         {
-            rotationPoint.render(f5);
-        }
-
-        if(renderControls)
-        {
-            GlStateManager.pushMatrix();
-
-            if(info.modelCube.rotateAngleZ != 0.0F)
+            if(renderRotationPoint)
             {
-                GlStateManager.rotate(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                rotationPoint.render(f5);
             }
-
-            if(info.modelCube.rotateAngleY != 0.0F)
-            {
-                GlStateManager.rotate(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
-            }
-
-            if(info.modelCube.rotateAngleX != 0.0F)
-            {
-                GlStateManager.rotate(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
-            }
-
-            if(!GuiScreen.isShiftKeyDown())
+            if(renderControls)
             {
                 GlStateManager.pushMatrix();
-                float scale = 0.75F;
-                GlStateManager.scale(scale, scale, scale);
-                GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.rotate(90F, 0.0F, 0.0F, 1.0F);
-                rotationControls.render(f5);
-                GlStateManager.rotate(90F, 0.0F, 0.0F, -1.0F);
-                rotationControls.render(f5);
-                GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
-                rotationControls.render(f5);
+
+                if(info.modelCube.rotateAngleZ != 0.0F)
+                {
+                    GlStateManager.rotate(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                }
+
+                if(info.modelCube.rotateAngleY != 0.0F)
+                {
+                    GlStateManager.rotate(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                }
+
+                if(info.modelCube.rotateAngleX != 0.0F)
+                {
+                    GlStateManager.rotate(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                }
+
+                if(!GuiScreen.isShiftKeyDown())
+                {
+                    GlStateManager.pushMatrix();
+                    float scale = 0.75F;
+                    GlStateManager.scale(scale, scale, scale);
+                    GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
+                    GlStateManager.rotate(90F, 0.0F, 0.0F, 1.0F);
+                    rotationControls.render(f5);
+                    GlStateManager.rotate(90F, 0.0F, 0.0F, -1.0F);
+                    rotationControls.render(f5);
+                    GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
+                    rotationControls.render(f5);
+                    GlStateManager.popMatrix();
+                }
+                else
+                {
+                    GlStateManager.pushMatrix();
+                    float scale1 = 0.5F;
+                    GlStateManager.scale(scale1, scale1, scale1);
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * (1D + (info.dimensions[1] + info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), -(0.125D * (1D - (info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                    GlStateManager.rotate(180F, 0F, 0F, -1F);
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate((0.125F * (1D + info.dimensions[0] + info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                    GlStateManager.rotate(90F, 0F, 0F, -1F);
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(-(0.125F * (1D - info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                    GlStateManager.rotate(90F, 0F, 0F, 1F);
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (1D + info.dimensions[2] + info.offset[2] + info.mcScale)));
+                    GlStateManager.rotate(90F, 1F, 0F, 0F);
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), -(0.125F * (1D - info.offset[2] + info.mcScale)));
+                    GlStateManager.rotate(90F, -1F, 0F, 0F);
+                    sizeControls.render(f5);
+                    GlStateManager.popMatrix();
+
+                    GlStateManager.popMatrix();
+                }
+
                 GlStateManager.popMatrix();
             }
-            else
-            {
-                GlStateManager.pushMatrix();
-                float scale1 = 0.5F;
-                GlStateManager.scale(scale1, scale1, scale1);
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * (1D + (info.dimensions[1] + info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), -(0.125D * (1D - (info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GlStateManager.rotate(180F, 0F, 0F, -1F);
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((0.125F * (1D + info.dimensions[0] + info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GlStateManager.rotate(90F, 0F, 0F, -1F);
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(-(0.125F * (1D - info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GlStateManager.rotate(90F, 0F, 0F, 1F);
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (1D + info.dimensions[2] + info.offset[2] + info.mcScale)));
-                GlStateManager.rotate(90F, 1F, 0F, 0F);
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), -(0.125F * (1D - info.offset[2] + info.mcScale)));
-                GlStateManager.rotate(90F, -1F, 0F, 0F);
-                sizeControls.render(f5);
-                GlStateManager.popMatrix();
-
-                GlStateManager.popMatrix();
-            }
-
-            GlStateManager.popMatrix();
         }
 
         GlStateManager.popMatrix();
