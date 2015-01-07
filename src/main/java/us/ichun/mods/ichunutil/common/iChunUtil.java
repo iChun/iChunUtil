@@ -40,7 +40,6 @@ import java.util.ArrayList;
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) })));
 
-//TODO check out the new KeyEvent with key releases in build 1211
 public class iChunUtil
         implements IConfigUser
 {

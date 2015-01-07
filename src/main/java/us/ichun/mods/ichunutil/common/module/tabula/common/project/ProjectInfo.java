@@ -3,6 +3,7 @@ package us.ichun.mods.ichunutil.common.module.tabula.common.project;
 import com.google.gson.Gson;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import us.ichun.mods.ichunutil.client.model.ModelHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
@@ -283,62 +284,14 @@ public class ProjectInfo
 
                 cubeCount++;
                 cubes.add(info);
-                if(firstCreated == null)
-                {
-                    firstCreated = info;
-                }
+                firstCreated = info;
             }
             else
             {
                 for(int j = 0; j < rend.cubeList.size(); j++)
                 {
                     ModelBox box = (ModelBox)rend.cubeList.get(j);
-                    CubeInfo info = new CubeInfo(box.field_78247_g != null ? (box.field_78247_g.substring(box.field_78247_g.lastIndexOf(".") + 1)) : (e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j))));
-
-                    info.dimensions[0] = (int)Math.abs(box.posX2 - box.posX1);
-                    info.dimensions[1] = (int)Math.abs(box.posY2 - box.posY1);
-                    info.dimensions[2] = (int)Math.abs(box.posZ2 - box.posZ1);
-
-                    info.position[0] = rend.rotationPointX;
-                    info.position[1] = rend.rotationPointY;
-                    info.position[2] = rend.rotationPointZ;
-
-                    info.offset[0] = box.posX1;
-                    info.offset[1] = box.posY1;
-                    info.offset[2] = box.posZ1;
-
-                    info.rotation[0] = Math.toDegrees(rend.rotateAngleX);
-                    info.rotation[1] = Math.toDegrees(rend.rotateAngleY);
-                    info.rotation[2] = Math.toDegrees(rend.rotateAngleZ);
-
-                    info.scale[0] = info.scale[1] = info.scale[2] = 1.0F;
-
-                    PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
-
-                    info.txMirror = (((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
-
-                    info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
-                    info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
-
-                    if(vertices[info.txMirror ? 2 : 1].texturePositionY > vertices[info.txMirror ? 1 : 2].texturePositionY)
-                    {
-                        info.txMirror = !info.txMirror;
-
-                        info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
-                        info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
-                    }
-
-                    if(box.field_78247_g != null)
-                    {
-                        TextureOffset textureoffset = rend.baseModel.getTextureOffset(box.field_78247_g);
-                        if(textureoffset != null)
-                        {
-                            info.txOffset[0] = textureoffset.textureOffsetX;
-                            info.txOffset[1] = textureoffset.textureOffsetY;
-                        }
-                    }
-
-                    info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2;
+                    CubeInfo info = ModelHelper.createCubeInfoFromModelBox(rend, box, box.field_78247_g != null ? (box.field_78247_g.substring(box.field_78247_g.lastIndexOf(".") + 1)) : (e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j))));
 
                     cubeCount++;
                     cubes.add(info);

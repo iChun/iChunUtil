@@ -18,6 +18,8 @@ public class ObfHelper
 
     private static final String obfVersion = "1.8";
 
+    public static final String[] mainModel = new String[] { "field_77045_g", "mainModel" };
+
     //EntityLivingBase
     public static final String getHurtSoundObf = "func_70621_aR";
     public static final String getHurtSoundDeobf = "getHurtSound";
