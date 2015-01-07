@@ -1,11 +1,10 @@
 package us.ichun.mods.ichunutil.common.core.packet;
 
-import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
-import us.ichun.mods.ichunutil.common.core.network.PacketHandler;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.relauncher.Side;
+import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class PacketShowPatronReward extends AbstractPacket
 {
@@ -42,6 +41,6 @@ public class PacketShowPatronReward extends AbstractPacket
             iChunUtil.patronList.remove(player.getGameProfile().getId().toString());
         }
 
-        PacketHandler.sendToAll(iChunUtil.channels, new PacketPatrons());
+        iChunUtil.channel.sendToAll(new PacketPatrons());
     }
 }

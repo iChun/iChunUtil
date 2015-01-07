@@ -42,7 +42,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
     }
 
-    public static EnumMap<Side, FMLEmbeddedChannel> getChannelHandlers(String modId, Class<? extends AbstractPacket>...packetTypes)
+    public static PacketChannel getChannelHandlers(String modId, Class<? extends AbstractPacket>...packetTypes)
     {
         if(packetTypes.length == 0)
         {
@@ -59,7 +59,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             channel.pipeline().addAfter(codec, "PacketExecuter", executer);
         }
 
-        return handlers;
+        return new PacketChannel(modId, handlers);
     }
 
     @Sharable

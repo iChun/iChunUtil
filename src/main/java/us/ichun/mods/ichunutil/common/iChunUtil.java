@@ -1,5 +1,7 @@
 package us.ichun.mods.ichunutil.common;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -11,30 +13,26 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.config.Config;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.config.IConfigUser;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
-import us.ichun.mods.ichunutil.common.core.network.PacketHandler;
+import us.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import us.ichun.mods.ichunutil.common.core.packet.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.packet.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
 import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Property;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
@@ -56,7 +54,7 @@ public class iChunUtil
 
     private static Logger logger = LogManager.getLogger("iChunUtil");
 
-    public static EnumMap<Side, FMLEmbeddedChannel> channels;
+    public static PacketChannel channel;
 
     public static Config config;
 
@@ -114,7 +112,7 @@ public class iChunUtil
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
 
-        channels = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class);
+        channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class);
     }
 
     @EventHandler
@@ -140,9 +138,9 @@ public class iChunUtil
 
         hasMorphMod = Loader.isModLoaded("Morph");
 
-//        EntityHelperBase.getUUIDFromUsernames("pahimar");
-//
-//                ModVersionJsonGen.generate();
+        //        EntityHelperBase.getUUIDFromUsernames("pahimar");
+        //
+        //                ModVersionJsonGen.generate();
     }
 
     public static boolean getPostLoad()
@@ -165,8 +163,8 @@ public class iChunUtil
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
-        PacketHandler.sendToPlayer(channels, new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().canSendCommands(event.player.getGameProfile())), event.player);
-        PacketHandler.sendToPlayer(channels, new PacketPatrons(), event.player);
+        channel.sendToPlayer(new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().canSendCommands(event.player.getGameProfile())), event.player);
+        channel.sendToPlayer(new PacketPatrons(), event.player);
     }
 
     public static void console(String s, boolean warning)

@@ -78,7 +78,9 @@ public class ModelHelper
 			return list;
 		}
 	}
-	
+
+	//TODO redo this. Tabula has a better/close to perfect reconstruction
+	@Deprecated
 	public static ModelRenderer buildCopy(ModelRenderer original, ModelBase copyBase, int depth, boolean hasFullModelBox, boolean exactDupe) //exactDupes cannot be modified or it may cause issues!
 	{
         int txOffsetX = original.textureOffsetX;

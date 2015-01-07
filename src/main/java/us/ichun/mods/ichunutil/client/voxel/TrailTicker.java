@@ -1,15 +1,14 @@
 package us.ichun.mods.ichunutil.client.voxel;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.network.PacketHandler;
-import us.ichun.mods.ichunutil.common.core.packet.PacketShowPatronReward;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import us.ichun.mods.ichunutil.common.core.packet.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,7 +73,7 @@ public class TrailTicker
             if(tellServerAsPatron)
             {
                 tellServerAsPatron = false;
-                PacketHandler.sendToServer(iChunUtil.channels, new PacketShowPatronReward(iChunUtil.config.getInt("showPatronReward") == 1));
+                iChunUtil.channel.sendToServer(new PacketShowPatronReward(iChunUtil.config.getInt("showPatronReward") == 1));
             }
         }
     }
