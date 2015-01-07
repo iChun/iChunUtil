@@ -1,0 +1,1 @@
+If you have an error with protected/private access etc, you need to put /src/main/resources/META-INF/iChunUtil_AT.cfg into Forge's src folder (same fodler structure) and rerun setupDecompWorkspace

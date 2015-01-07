@@ -1,16 +1,16 @@
 package us.ichun.mods.ichunutil.client.voxel;
 
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -44,8 +44,8 @@ public class RenderVoxels extends Render
             return;
         }
 
-        GL11.glPushMatrix();
-//        GL11.glTranslatef((float)d, (float)d1, (float)d2);
+        GlStateManager.pushMatrix();
+        //        GlStateManager.translate((float)d, (float)d1, (float)d2);
 
         ArrayList<LocationInfo> loc = iChunUtil.proxy.trailTicker.getPlayerLocationInfo(sd.parent);
 
@@ -141,6 +141,6 @@ public class RenderVoxels extends Render
 
         sd.model.renderPlayer(sd, entity.worldObj.getWorldTime(), entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 }

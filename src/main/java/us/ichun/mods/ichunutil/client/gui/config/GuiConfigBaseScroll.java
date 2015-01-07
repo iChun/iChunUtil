@@ -1,14 +1,14 @@
 package us.ichun.mods.ichunutil.client.gui.config;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
-import us.ichun.mods.ichunutil.common.core.config.Config;
-import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiSlot;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 
 public class GuiConfigBaseScroll extends GuiSlot
 {
@@ -40,34 +40,34 @@ public class GuiConfigBaseScroll extends GuiSlot
     {
         if (!flag)
         {
-        	Config oriCfg = config;
-        	if(config == null)
-        	{
-        		Config cfg = ConfigHandler.configs.get(i);
-        		if(!cfg.categories.isEmpty())
-        		{
+            Config oriCfg = config;
+            if(config == null)
+            {
+                Config cfg = ConfigHandler.configs.get(i);
+                if(!cfg.categories.isEmpty())
+                {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-        			FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(controls, controls.gameSets, cfg));
-        			return;
-        		}
-        		else
-        		{
-        			config = cfg;
-        		}
-        	}
-        	if(config != null)
-        	{
-        		if(config.categoriesList.size() > 0)
-        		{
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(controls, controls.gameSets, cfg));
+                    return;
+                }
+                else
+                {
+                    config = cfg;
+                }
+            }
+            if(config != null)
+            {
+                if(config.categoriesList.size() > 0)
+                {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-        			FMLClientHandler.instance().showGuiScreen(new GuiConfigSetter(controls, controls.gameSets, config, config.categoriesList.get(i), config.categories.get(config.categoriesList.get(i))));
-        		}
-        		else
-        		{
-        			config = oriCfg;
-        		}
-        	}
-        	//load configs
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigSetter(controls, controls.gameSets, config, config.categoriesList.get(i), config.categories.get(config.categoriesList.get(i))));
+                }
+                else
+                {
+                    config = oriCfg;
+                }
+            }
+            //load configs
         }
     }
 
@@ -100,11 +100,11 @@ public class GuiConfigBaseScroll extends GuiSlot
 
         if(config == null && ConfigHandler.configs.get(index).categoriesList.isEmpty())
         {
-        	k = 0;
+            k = 0;
         }
-        
+
         mc.renderEngine.bindTexture(WIDGITS);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         controls.drawTexturedModalRect(xPosition, yPosition, 0, 46 + k * 20, width / 2, height);
         controls.drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + k * 20, width / 2, height);
 

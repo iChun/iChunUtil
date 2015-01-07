@@ -1,26 +1,26 @@
 package us.ichun.mods.ichunutil.client.gui.config;
 
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.client.keybind.KeyBind;
-import us.ichun.mods.ichunutil.client.render.RendererHelper;
-import us.ichun.mods.ichunutil.common.core.config.Config;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
+import us.ichun.mods.ichunutil.client.render.RendererHelper;
+import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.*;
 
@@ -39,17 +39,17 @@ public class GuiConfigSetterScroll extends GuiSlot
     private int selectedIntArrayProp = -1;
     private int intArraySlots = 0;
     private String selectedText;
-	public byte blinker;
-	public GuiTextField textDummy;
-	private boolean needRestart;
+    public byte blinker;
+    public GuiTextField textDummy;
+    private boolean needRestart;
 
     private boolean settingKeybind;
     private boolean releasedMouse;
     private int lastKeyHeld;
     private int keyHeldTime;
 
-	private ArrayList<Integer> intArrayList = new ArrayList<Integer>();
-	private LinkedHashMap<Integer, ArrayList<Integer>> nestedIntArrayList = new LinkedHashMap<Integer, ArrayList<Integer>>();
+    private ArrayList<Integer> intArrayList = new ArrayList<Integer>();
+    private LinkedHashMap<Integer, ArrayList<Integer>> nestedIntArrayList = new LinkedHashMap<Integer, ArrayList<Integer>>();
 
     public GuiConfigSetterScroll(GuiConfigSetter guiConfigSetter, Config cfg, ArrayList<Property> props, Minecraft mc)
     {
@@ -66,13 +66,13 @@ public class GuiConfigSetterScroll extends GuiSlot
         textDummy.setMaxStringLength(80);
 
         propNames = new ArrayList<String>();
-        
+
         for(Property p : properties)
         {
-        	propNames.add(config.propName.get(p));
+            propNames.add(config.propName.get(p));
         }
         Collections.sort(propNames);
-        
+
         needRestart = false;
         settingKeybind = false;
         releasedMouse = false;
@@ -102,64 +102,64 @@ public class GuiConfigSetterScroll extends GuiSlot
         }
         if (!flag)
         {
-        	if(selected != -1) //update property
-        	{
+            if(selected != -1) //update property
+            {
                 boolean selectedIntArraySlot = selectedIntArrayProp != -1 && selected > selectedIntArrayProp && selected <= selectedIntArrayProp + intArraySlots;
                 Property prop;
                 if(selectedIntArraySlot)
                 {
-                	prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
+                    prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
                 }
                 else
                 {
-                	prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && selected > selectedIntArrayProp ? selected - intArraySlots : selected)));
+                    prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && selected > selectedIntArrayProp ? selected - intArraySlots : selected)));
                 }
-                
-           		if(isValidValue(prop, selectedText))
-           		{
-           			updateProperty(prop, selectedText);
-           		}
-        	}
 
-    		selected = i;
-    		
-    		boolean isIntArraySlot = selectedIntArrayProp != -1 && i > selectedIntArrayProp && i <= selectedIntArrayProp + intArraySlots;
-        	
-    		if(isIntArraySlot)
-    		{
-    			selectedText = "";
-    		}
-    		else
-    		{
-    			intArrayList.clear();
-    			nestedIntArrayList.clear();
-    			
-            	Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i)));
+                if(isValidValue(prop, selectedText))
+                {
+                    updateProperty(prop, selectedText);
+                }
+            }
+
+            selected = i;
+
+            boolean isIntArraySlot = selectedIntArrayProp != -1 && i > selectedIntArrayProp && i <= selectedIntArrayProp + intArraySlots;
+
+            if(isIntArraySlot)
+            {
+                selectedText = "";
+            }
+            else
+            {
+                intArrayList.clear();
+                nestedIntArrayList.clear();
+
+                Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i)));
                 Config.EnumPropType type = config.getPropType(prop);
-            	if(type == Config.EnumPropType.INT_ARRAY || type == Config.EnumPropType.NESTED_INT_ARRAY)
-            	{
-            		if((selectedIntArrayProp != -1 && i > selectedIntArrayProp ? i - intArraySlots : i) > selectedIntArrayProp)
-            		{
-            			selected = selectedIntArrayProp = i - intArraySlots;
-            		}
-            		else
-            		{
-            			selected = selectedIntArrayProp = i;
-            		}
+                if(type == Config.EnumPropType.INT_ARRAY || type == Config.EnumPropType.NESTED_INT_ARRAY)
+                {
+                    if((selectedIntArrayProp != -1 && i > selectedIntArrayProp ? i - intArraySlots : i) > selectedIntArrayProp)
+                    {
+                        selected = selectedIntArrayProp = i - intArraySlots;
+                    }
+                    else
+                    {
+                        selected = selectedIntArrayProp = i;
+                    }
 
-            		String value = prop.getString();
+                    String value = prop.getString();
 
-            		if(type == Config.EnumPropType.NESTED_INT_ARRAY)
-            		{
-            			nestedIntArrayList = config.parseNestedIntArray(value);
-            			intArraySlots = nestedIntArrayList.size() + 1;
-            		}
-            		else
-            		{
-            			intArrayList = config.parseIntArray(value);
-            			intArraySlots = 1;
-            		}
-            	}
+                    if(type == Config.EnumPropType.NESTED_INT_ARRAY)
+                    {
+                        nestedIntArrayList = config.parseNestedIntArray(value);
+                        intArraySlots = nestedIntArrayList.size() + 1;
+                    }
+                    else
+                    {
+                        intArrayList = config.parseIntArray(value);
+                        intArraySlots = 1;
+                    }
+                }
                 else if(type == Config.EnumPropType.INT_BOOL)
                 {
                     prop.set(prop.getInt() == 1 ? 0 : 1);
@@ -167,8 +167,8 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     selected = -1;
                 }
-            	else
-            	{
+                else
+                {
                     if(type == Config.EnumPropType.KEYBIND)
                     {
                         settingKeybind = true;
@@ -176,17 +176,17 @@ public class GuiConfigSetterScroll extends GuiSlot
                         keyHeldTime = 0;
                     }
 
-            		selected = selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i;
-            		intArraySlots = 0;
-            		selectedIntArrayProp = -1;
-            		selectedText = (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString());
-            	}
-    		}
-    		textDummy.setText(selectedText);
-    		textDummy.setCursorPositionEnd();
+                    selected = selectedIntArrayProp != -1  && i > selectedIntArrayProp ? i - intArraySlots : i;
+                    intArraySlots = 0;
+                    selectedIntArrayProp = -1;
+                    selectedText = (prop.getType() == Type.INTEGER ? Integer.toString(prop.getInt()) : prop.getString());
+                }
+            }
+            textDummy.setText(selectedText);
+            textDummy.setCursorPositionEnd();
         }
     }
-    
+
     public boolean isValidValue(Property prop, String s)
     {
         switch(config.getPropType(prop))
@@ -311,7 +311,7 @@ public class GuiConfigSetterScroll extends GuiSlot
             }
         }
     }
-    
+
     public boolean updateProperty(Property prop, String s)
     {
         String _default = prop.getString();
@@ -502,7 +502,7 @@ public class GuiConfigSetterScroll extends GuiSlot
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         this.mc.getTextureManager().bindTexture(Gui.optionsBackground);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         worldrenderer.startDrawingQuads();
         worldrenderer.setColorRGBA_I(4210752, p_148136_4_);
@@ -522,10 +522,10 @@ public class GuiConfigSetterScroll extends GuiSlot
 
         super.drawScreen(mX, mY, f);
 
-        GL11.glTranslatef(10F, 0F, 0F);
+        GlStateManager.translate(10F, 0F, 0F);
         this.overlayBackground(0, this.top, 255, 255);
         this.overlayBackground(this.bottom, controls.height, 255, 255);
-        GL11.glTranslatef(-10F, 0F, 0F);
+        GlStateManager.translate(-10F, 0F, 0F);
 
         if(settingKeybind)
         {
@@ -576,7 +576,7 @@ public class GuiConfigSetterScroll extends GuiSlot
             }
         }
     }
-    
+
     @Override
     protected int getScrollBarX()
     {
@@ -586,10 +586,10 @@ public class GuiConfigSetterScroll extends GuiSlot
     @Override
     protected void drawSlot(int index, int xPosition, int yPosition, int l, int mouseX, int mouseY)
     {
-    	if(index >= getSize())
-    	{
-    		return;
-    	}
+        if(index >= getSize())
+        {
+            return;
+        }
         //If you're reading this, I know this GUI is bad and I should feel bad.. I'm sorry :( -iChun
         String textDummyString = textDummy.getText();
         int textDummyCursorPosition = textDummy.getCursorPosition();
@@ -601,59 +601,59 @@ public class GuiConfigSetterScroll extends GuiSlot
         int k = (flag ? 2 : 1);
 
         mc.renderEngine.bindTexture(WIDGITS);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         boolean isIntArraySlot = selectedIntArrayProp != -1 && index > selectedIntArrayProp && index <= selectedIntArrayProp + intArraySlots;
         if(isIntArraySlot)
         {
-        	//draw Int Array Slot
-	        Gui.drawRect(xPosition + width - 45, yPosition, xPosition + width - 5, yPosition + height, -6250336);
-	        Gui.drawRect(xPosition + width - 45 + 1, yPosition + 1, xPosition + width - 5 - 1, yPosition + height - 1, -16777216);
-	        
-	        Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
-	        
-	        StringBuilder sb = new StringBuilder("> ");
-	        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
-	        {
-	        	for(int i = 0; i < intArrayList.size(); i++)
-	        	{
-	        		sb.append(intArrayList.get(i));
-	        		if(i < intArrayList.size() - 1)
-	        		{
-	        			sb.append(", ");
-	        		}
-	        	}
-	        }
-	        else
-	        {
-	        	int i = 0;
-	        	for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
-	        	{
-	        		i++;
-	        		if(index - selectedIntArrayProp == i)
-	        		{
-	        			sb.append(e.getKey());
-	        			for(int m = 0; m < e.getValue().size(); m++)
-	        			{
-	        				if(m == 0)
-	        				{
-	    	        			sb.append(": ");
-	        				}
-	    	        		sb.append(e.getValue().get(m));
-	    	        		if(m < e.getValue().size() - 1)
-	    	        		{
-	    	        			sb.append(": ");
-	    	        		}
-	        			}
-	        			break;
-	        		}
-	        	}
-	        }
-	        controls.drawString(mc.fontRendererObj, sb.toString(), xPosition + 5, yPosition + (height - 8) / 2, k == 2 ? 14737632 : -6250336);
-	        
-	        if(selected == index)
-	        {
-	        	String value = selectedText + (blinker > 8 ? "_" : "");
+            //draw Int Array Slot
+            Gui.drawRect(xPosition + width - 45, yPosition, xPosition + width - 5, yPosition + height, -6250336);
+            Gui.drawRect(xPosition + width - 45 + 1, yPosition + 1, xPosition + width - 5 - 1, yPosition + height - 1, -16777216);
+
+            Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
+
+            StringBuilder sb = new StringBuilder("> ");
+            if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
+            {
+                for(int i = 0; i < intArrayList.size(); i++)
+                {
+                    sb.append(intArrayList.get(i));
+                    if(i < intArrayList.size() - 1)
+                    {
+                        sb.append(", ");
+                    }
+                }
+            }
+            else
+            {
+                int i = 0;
+                for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
+                {
+                    i++;
+                    if(index - selectedIntArrayProp == i)
+                    {
+                        sb.append(e.getKey());
+                        for(int m = 0; m < e.getValue().size(); m++)
+                        {
+                            if(m == 0)
+                            {
+                                sb.append(": ");
+                            }
+                            sb.append(e.getValue().get(m));
+                            if(m < e.getValue().size() - 1)
+                            {
+                                sb.append(": ");
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            controls.drawString(mc.fontRendererObj, sb.toString(), xPosition + 5, yPosition + (height - 8) / 2, k == 2 ? 14737632 : -6250336);
+
+            if(selected == index)
+            {
+                String value = selectedText + (blinker > 8 ? "_" : "");
 
                 textDummy.setEnabled(true);
                 textDummy.setText(value);
@@ -674,20 +674,20 @@ public class GuiConfigSetterScroll extends GuiSlot
                     textDummy.setCursorPosition(0);
                 }
 
-                GL11.glPushMatrix();
-                GL11.glTranslatef(xPosition + width - 45, yPosition, 0F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(xPosition + width - 45, yPosition, 0F);
                 textDummy.drawTextBox();
 
                 textDummy.setEnabled(false);
 
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-//                controls.drawString(mc.fontRendererObj, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
-	        }
+                //                controls.drawString(mc.fontRendererObj, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
+            }
         }
         else
         {
-        	Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index)));
+            Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index)));
 
             switch(config.getPropType(prop))
             {
@@ -724,19 +724,19 @@ public class GuiConfigSetterScroll extends GuiSlot
 
                     controls.drawCenteredString(mc.fontRendererObj, settingKeybind && selected == index ? ">???<" : GameSettings.getKeyDisplayString(key), xPosition + width - 35, yPosition + (height - 8) / 2, selected == index ? 16777045 : clr);
 
-                    GL11.glPushMatrix();
+                    GlStateManager.pushMatrix();
 
-                    GL11.glScalef(0.5F, 0.5F, 0.5F);
+                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
                     if(keyString.contains("SHIFT") || settingKeybind && selected == index)
                     {
                         controls.drawString(mc.fontRendererObj, "Shift", (xPosition + width - 70) * 2 - 6 - 18, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isShiftKeyDown() ? 16777045 : -6250336 : clr);
-                        GL11.glTranslatef(0.0F, 14F, 0.0F);
+                        GlStateManager.translate(0.0F, 14F, 0.0F);
                     }
 
                     if(keyString.contains("CTRL") || settingKeybind && selected == index)
                     {
                         controls.drawString(mc.fontRendererObj, "Ctrl", (xPosition + width - 70) * 2 - 6 - 14, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? GuiScreen.isCtrlKeyDown() ? 16777045 : -6250336 : clr);
-                        GL11.glTranslatef(0.0F, 14F, 0.0F);
+                        GlStateManager.translate(0.0F, 14F, 0.0F);
                     }
 
                     if(keyString.contains("ALT") || settingKeybind && selected == index)
@@ -744,7 +744,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                         controls.drawString(mc.fontRendererObj, "Alt", (xPosition + width - 70) * 2 - 6 - 8, (yPosition + (height - 8) / 2) * 2 - 10, settingKeybind && selected == index ? (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) ? 16777045 : -6250336 : clr);
                     }
 
-                    GL11.glPopMatrix();
+                    GlStateManager.popMatrix();
 
                     break;
                 }
@@ -824,13 +824,13 @@ public class GuiConfigSetterScroll extends GuiSlot
                         textDummy.setCursorPosition(0);
                     }
 
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(xPosition + width - 50, yPosition, 0F);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(xPosition + width - 50, yPosition, 0F);
                     textDummy.drawTextBox();
 
                     textDummy.setEnabled(false);
 
-                    GL11.glPopMatrix();
+                    GlStateManager.popMatrix();
                     //    	        controls.drawString(mc.fontRendererObj, value, xPosition + width, yPosition + (height - 8) / 2, 0xFFFFFFFF);
 
                     break;
@@ -839,35 +839,35 @@ public class GuiConfigSetterScroll extends GuiSlot
 
             String str = (k == 2 ? EnumChatFormatting.YELLOW : "") + StatCollector.translateToLocal(propNames.get(selectedIntArrayProp != -1 && index > selectedIntArrayProp ? index - intArraySlots : index));
             controls.drawString(mc.fontRendererObj, str, xPosition, yPosition + (height - 8) / 2, 0xFFFFFFFF);
-                        
+
             if(k == 2 && prop.comment != null)
             {
-    	        ArrayList<String> tooltip = new ArrayList<String>();
-    	        String[] comments = prop.comment.split("\n");
-    	        for(int i = 0; i < comments.length; i++)
-    	        {
+                ArrayList<String> tooltip = new ArrayList<String>();
+                String[] comments = prop.comment.split("\n");
+                for(int i = 0; i < comments.length; i++)
+                {
                     if(config.getPropType(prop) == Config.EnumPropType.INT_BOOL && i > comments.length - 4)
                     {
                         continue;
                     }
-    	        	tooltip.add(comments[i]);
-    	        }
-    	        controls.drawTooltip(tooltip, xPosition + width, 35);
+                    tooltip.add(comments[i]);
+                }
+                controls.drawTooltip(tooltip, xPosition + width, 35);
             }
         }
 
         textDummy.setText(textDummyString);
         textDummy.setCursorPosition(textDummyCursorPosition);
-        
+
         if(needRestart)
         {
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "Some changes", 4, height, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "require a client", 4, height + 12, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "restart.", 4, height + 26, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "Some changes", 4, height + 54, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "may not take", 4, height + 68, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "effect if they", 4, height + 82, 0xFFFFFFFF);
-        	controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "are serverside", 4, height + 96, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "Some changes", 4, height, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "require a client", 4, height + 12, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "restart.", 4, height + 26, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "Some changes", 4, height + 54, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "may not take", 4, height + 68, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "effect if they", 4, height + 82, 0xFFFFFFFF);
+            controls.drawString(mc.fontRendererObj, EnumChatFormatting.RED + "are serverside", 4, height + 96, 0xFFFFFFFF);
         }
     }
 
@@ -910,68 +910,68 @@ public class GuiConfigSetterScroll extends GuiSlot
             }
             return true;
         }
-    	if(selected != -1)
-    	{
-    		if(i == Keyboard.KEY_RETURN)
-    		{
-    			boolean isIntArraySlot = selectedIntArrayProp != -1 && selected > selectedIntArrayProp && selected <= selectedIntArrayProp + intArraySlots;
-    			
-    			if(isIntArraySlot)
-    			{
-    				Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
-	           		if(isValidValue(prop, selectedText))
-	           		{
-	    		        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
-	    		        {
-	    		        	intArrayList.add(Integer.parseInt(selectedText));
-	    		        }
-	    		        else
-	    		        {
-	    		        	if(selected == selectedIntArrayProp + intArraySlots)
-	    		        	{
-	    		        		nestedIntArrayList.put(Integer.parseInt(selectedText), new ArrayList<Integer>());
-	    		        		intArraySlots++;
-	    		        	}
-	    		        	else
-	    		        	{
-	        		        	int m = 0;
-	        		        	Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
-	        		        	while(ite.hasNext())
-	        		        	{
-	        		        		Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
-	        		        		m++;
-	        		        		if(selected - selectedIntArrayProp == m)
-	        		        		{
-	        		        			e.getValue().add(Integer.parseInt(selectedText));
-	        		        			break;
-	        		        		}
-	        		        	}
-	    		        	}
-	    		        }
-	    		        textDummy.setText("");
-	        			textDummy.setCursorPositionEnd();
-	        			textDummy.setEnabled(true);
-	        			textDummy.setFocused(true);
-	        			textDummy.textboxKeyTyped(c, i);
-	        			textDummy.setEnabled(false);
-	        			textDummy.setFocused(false);
-	        			textDummy.setCursorPositionEnd();
-	        			selectedText = textDummy.getText();
-	        			
-	        			updateProperty(prop, selectedText);
-	           		}
-    			}
-    			else
-    			{
-	           		Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-	           		if(isValidValue(prop, selectedText))
-	           		{
-	           			updateProperty(prop, selectedText);
-	           		}
-	       			selected = -1;
-    			}
-    		}
-    		else
+        if(selected != -1)
+        {
+            if(i == Keyboard.KEY_RETURN)
+            {
+                boolean isIntArraySlot = selectedIntArrayProp != -1 && selected > selectedIntArrayProp && selected <= selectedIntArrayProp + intArraySlots;
+
+                if(isIntArraySlot)
+                {
+                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selectedIntArrayProp)));
+                    if(isValidValue(prop, selectedText))
+                    {
+                        if(config.getPropType(prop) == Config.EnumPropType.INT_ARRAY)
+                        {
+                            intArrayList.add(Integer.parseInt(selectedText));
+                        }
+                        else
+                        {
+                            if(selected == selectedIntArrayProp + intArraySlots)
+                            {
+                                nestedIntArrayList.put(Integer.parseInt(selectedText), new ArrayList<Integer>());
+                                intArraySlots++;
+                            }
+                            else
+                            {
+                                int m = 0;
+                                Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
+                                while(ite.hasNext())
+                                {
+                                    Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
+                                    m++;
+                                    if(selected - selectedIntArrayProp == m)
+                                    {
+                                        e.getValue().add(Integer.parseInt(selectedText));
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        textDummy.setText("");
+                        textDummy.setCursorPositionEnd();
+                        textDummy.setEnabled(true);
+                        textDummy.setFocused(true);
+                        textDummy.textboxKeyTyped(c, i);
+                        textDummy.setEnabled(false);
+                        textDummy.setFocused(false);
+                        textDummy.setCursorPositionEnd();
+                        selectedText = textDummy.getText();
+
+                        updateProperty(prop, selectedText);
+                    }
+                }
+                else
+                {
+                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
+                    if(isValidValue(prop, selectedText))
+                    {
+                        updateProperty(prop, selectedText);
+                    }
+                    selected = -1;
+                }
+            }
+            else
             {
                 if(selectedIntArrayProp != -1 && selectedText.equalsIgnoreCase("") && i == Keyboard.KEY_BACK)
                 {
@@ -1039,7 +1039,7 @@ public class GuiConfigSetterScroll extends GuiSlot
                     }
                 }
             }
-    	}
+        }
         return true;
     }
 

@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.ProjectInfo;
@@ -102,18 +103,18 @@ public class ModelBaseDummy extends ModelBase
             {
                 if(cubesToRender.isEmpty() && pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F * (float)(info.opacity / 100D));
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F * (float)(info.opacity / 100D));
 
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-                    GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
-                    GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
-                    GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
-                    GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                    GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+                    GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
+                    GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+                    GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
 
                     info.modelCube.render(f5);
 
-                    GL11.glPopMatrix();
+                    GlStateManager.popMatrix();
                 }
                 else if(cubesToRender.contains(info))
                 {
@@ -121,7 +122,7 @@ public class ModelBaseDummy extends ModelBase
                     {
                         if(cubesToRender.size() == 1)
                         {
-                            GL11.glColor4f(0.0F, 0.0F, 0.7F, 0.8F);
+                            GlStateManager.color(0.0F, 0.0F, 0.7F, 0.8F);
                         }
                         else
                         {
@@ -129,7 +130,7 @@ public class ModelBaseDummy extends ModelBase
                             float r = (clr >> 16 & 0xff) / 255.0F;
                             float g = (clr >> 8 & 0xff) / 255.0F;
                             float b = (clr & 0xff) / 255.0F;
-                            GL11.glColor4f(r, g, b, 0.8F);
+                            GlStateManager.color(r, g, b, 0.8F);
                         }
 
                         renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint, renderControls);
@@ -137,18 +138,18 @@ public class ModelBaseDummy extends ModelBase
                 }
                 else if(pass == 1 && (!info.hidden && !cubesToHide.contains(info)))
                 {
-                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.3F * (float)(info.opacity / 100D));
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 0.3F * (float)(info.opacity / 100D));
 
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-                    GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
-                    GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
-                    GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
-                    GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+                    GlStateManager.pushMatrix();
+                    GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                    GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+                    GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
+                    GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+                    GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
 
                     info.modelCube.render(f5);
 
-                    GL11.glPopMatrix();
+                    GlStateManager.popMatrix();
                 }
             }
         }
@@ -158,7 +159,7 @@ public class ModelBaseDummy extends ModelBase
             {
                 if(cubesToRender.size() == 1)
                 {
-                    GL11.glColor4f(0.0F, 0.0F, 0.7F, 0.8F);
+                    GlStateManager.color(0.0F, 0.0F, 0.7F, 0.8F);
                 }
                 else
                 {
@@ -166,7 +167,7 @@ public class ModelBaseDummy extends ModelBase
                     float r = (clr >> 16 & 0xff) / 255.0F;
                     float g = (clr >> 8 & 0xff) / 255.0F;
                     float b = (clr & 0xff) / 255.0F;
-                    GL11.glColor4f(r, g, b, 0.8F);
+                    GlStateManager.color(r, g, b, 0.8F);
                 }
 
                 renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint, renderControls);
@@ -178,22 +179,22 @@ public class ModelBaseDummy extends ModelBase
     {
         if(hasTexture)
         {
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
         }
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_CULL_FACE);
+        GlStateManager.disableLighting();
+        GlStateManager.enableCull();
 
         ArrayList<CubeInfo> parents = getParents(info);
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
         if(parents.isEmpty())
         {
-            GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-            GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
-            GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
-            GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
-            GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+            GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+            GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+            GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
+            GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+            GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
         }
 
         for(int i = parents.size() - 1; i >= 0; i--)
@@ -202,35 +203,35 @@ public class ModelBaseDummy extends ModelBase
 
             if(i == parents.size() - 1)
             {
-                GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
-                GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
-                GL11.glScaled(parent.scale[0], parent.scale[1], parent.scale[2]);
-                GL11.glTranslatef(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
-                GL11.glTranslatef(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
+                GlStateManager.translate(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+                GlStateManager.translate(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+                GlStateManager.scale(parent.scale[0], parent.scale[1], parent.scale[2]);
+                GlStateManager.translate(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
+                GlStateManager.translate(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
             }
 
-            GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
-            GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+            GlStateManager.translate(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+            GlStateManager.translate(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
 
             if(parent.modelCube.rotateAngleZ != 0.0F)
             {
-                GL11.glRotatef(parent.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(parent.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
             }
 
             if(parent.modelCube.rotateAngleY != 0.0F)
             {
-                GL11.glRotatef(parent.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(parent.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
             }
 
             if(parent.modelCube.rotateAngleX != 0.0F)
             {
-                GL11.glRotatef(parent.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(parent.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
             }
 
         }
 
-        GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-        GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+        GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+        GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
 
         if(focus && renderRotationPoint)
         {
@@ -239,116 +240,116 @@ public class ModelBaseDummy extends ModelBase
 
         if(renderControls)
         {
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
 
             if(info.modelCube.rotateAngleZ != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
             }
 
             if(info.modelCube.rotateAngleY != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
             }
 
             if(info.modelCube.rotateAngleX != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
             }
 
             if(!GuiScreen.isShiftKeyDown())
             {
-                GL11.glPushMatrix();
+                GlStateManager.pushMatrix();
                 float scale = 0.75F;
-                GL11.glScalef(scale, scale, scale);
-                GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(90F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.scale(scale, scale, scale);
+                GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(90F, 0.0F, 0.0F, 1.0F);
                 rotationControls.render(f5);
-                GL11.glRotatef(90F, 0.0F, 0.0F, -1.0F);
+                GlStateManager.rotate(90F, 0.0F, 0.0F, -1.0F);
                 rotationControls.render(f5);
-                GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
                 rotationControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
             }
             else
             {
-                GL11.glPushMatrix();
+                GlStateManager.pushMatrix();
                 float scale1 = 0.5F;
-                GL11.glScalef(scale1, scale1, scale1);
+                GlStateManager.scale(scale1, scale1, scale1);
 
-                GL11.glPushMatrix();
-                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * (1D + (info.dimensions[1] + info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * (1D + (info.dimensions[1] + info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), -(0.125D * (1D - (info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GL11.glRotatef(180F, 0F, 0F, -1F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), -(0.125D * (1D - (info.offset[1]) + info.mcScale)), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GlStateManager.rotate(180F, 0F, 0F, -1F);
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated((0.125F * (1D + info.dimensions[0] + info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GL11.glRotatef(90F, 0F, 0F, -1F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((0.125F * (1D + info.dimensions[0] + info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GlStateManager.rotate(90F, 0F, 0F, -1F);
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated(-(0.125F * (1D - info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
-                GL11.glRotatef(90F, 0F, 0F, 1F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(-(0.125F * (1D - info.offset[0] + info.mcScale)), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (info.dimensions[2] / 2D + info.offset[2])));
+                GlStateManager.rotate(90F, 0F, 0F, 1F);
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (1D + info.dimensions[2] + info.offset[2] + info.mcScale)));
-                GL11.glRotatef(90F, 1F, 0F, 0F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), (0.125F * (1D + info.dimensions[2] + info.offset[2] + info.mcScale)));
+                GlStateManager.rotate(90F, 1F, 0F, 0F);
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), -(0.125F * (1D - info.offset[2] + info.mcScale)));
-                GL11.glRotatef(90F, -1F, 0F, 0F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate((0.125F * (info.dimensions[0] / 2D + info.offset[0])), (0.125D * ((info.dimensions[1] / 2D + info.offset[1]))), -(0.125F * (1D - info.offset[2] + info.mcScale)));
+                GlStateManager.rotate(90F, -1F, 0F, 0F);
                 sizeControls.render(f5);
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
 
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
             }
 
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_LIGHTING);
+        GlStateManager.disableCull();
+        GlStateManager.enableLighting();
         if(hasTexture)
         {
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GlStateManager.enableTexture2D();
         }
 
         //Render cube
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.90F * (float)(info.opacity / 100D));//to allow rendering of the rotation point internally
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 0.90F * (float)(info.opacity / 100D));//to allow rendering of the rotation point internally
         if(info.parentIdentifier == null && (!info.hidden && !hidden.contains(info)))//only render if it's not a child
         {
-            GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-            GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
-            GL11.glScaled(info.scale[0], info.scale[1], info.scale[2]);
-            GL11.glTranslatef(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
-            GL11.glTranslatef(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+            GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+            GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+            GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
+            GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+            GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
             info.modelCube.render(f5);
         }
 
         if(hasTexture)
         {
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
         }
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
 
         if(focus)
         {
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
 
             for(int i = parents.size() - 1; i >= 0; i--)
             {
@@ -356,56 +357,56 @@ public class ModelBaseDummy extends ModelBase
 
                 if(i == parents.size() - 1)
                 {
-                    GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
-                    GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
-                    GL11.glScaled(parent.scale[0], parent.scale[1], parent.scale[2]);
-                    GL11.glTranslatef(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
-                    GL11.glTranslatef(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
+                    GlStateManager.translate(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+                    GlStateManager.translate(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+                    GlStateManager.scale(parent.scale[0], parent.scale[1], parent.scale[2]);
+                    GlStateManager.translate(-parent.modelCube.offsetX, -parent.modelCube.offsetY, -parent.modelCube.offsetZ);
+                    GlStateManager.translate(-parent.modelCube.rotationPointX * f5, -parent.modelCube.rotationPointY * f5, -parent.modelCube.rotationPointZ * f5);
                 }
 
-                GL11.glTranslatef(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
-                GL11.glTranslatef(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
+                GlStateManager.translate(parent.modelCube.offsetX, parent.modelCube.offsetY, parent.modelCube.offsetZ);
+                GlStateManager.translate(parent.modelCube.rotationPointX * f5, parent.modelCube.rotationPointY * f5, parent.modelCube.rotationPointZ * f5);
 
                 if(parent.modelCube.rotateAngleZ != 0.0F)
                 {
-                    GL11.glRotatef(parent.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                    GlStateManager.rotate(parent.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
                 }
 
                 if(parent.modelCube.rotateAngleY != 0.0F)
                 {
-                    GL11.glRotatef(parent.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                    GlStateManager.rotate(parent.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
                 }
 
                 if(parent.modelCube.rotateAngleX != 0.0F)
                 {
-                    GL11.glRotatef(parent.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                    GlStateManager.rotate(parent.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
                 }
 
             }
 
-            GL11.glTranslatef(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-            GL11.glTranslatef(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+            GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+            GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
 
             if(info.modelCube.rotateAngleZ != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
             }
 
             if(info.modelCube.rotateAngleY != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
             }
 
             if(info.modelCube.rotateAngleX != 0.0F)
             {
-                GL11.glRotatef(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(info.modelCube.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
             }
-            GL11.glTranslated(info.offset[0] * f5, info.offset[1] * f5, info.offset[2] * f5);
+            GlStateManager.translate(info.offset[0] * f5, info.offset[1] * f5, info.offset[2] * f5);
 
             float width = 4F * zoomLevel;
             float border = width * f5 * 0.000625F;
             GL11.glLineWidth(width);
-            GL11.glColor4f(0.9F, 0.9F, 0.0F, 0.6F);
+            GlStateManager.color(0.9F, 0.9F, 0.0F, 0.6F);
             GL11.glBegin(GL11.GL_LINES);
 
             GL11.glVertex3f(-border - (float)info.mcScale * f5, - (float)info.mcScale * f5, - (float)info.mcScale * f5);
@@ -446,15 +447,15 @@ public class ModelBaseDummy extends ModelBase
 
             GL11.glEnd();
 
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
-        GL11.glEnable(GL11.GL_LIGHTING);
+        GlStateManager.enableLighting();
         if(hasTexture)
         {
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GlStateManager.enableTexture2D();
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     public void createModelFromCubeInfo(CubeInfo info)

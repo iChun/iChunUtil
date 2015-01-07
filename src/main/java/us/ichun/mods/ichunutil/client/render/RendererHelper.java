@@ -2,6 +2,7 @@ package us.ichun.mods.ichunutil.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.shader.Framebuffer;
@@ -28,14 +29,14 @@ public class RendererHelper
     //		if (textureManager == null) return;
     //		Item item = stack.getItem();
     //
-    //		GL11.glPushMatrix();
+    //		GlStateManager.pushMatrix();
     //
     //		Tessellator tessellator = Tessellator.instance;
-    //		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-    //		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-    //		GL11.glTranslatef(-0.5F, -0.5F, 1 / 32.0F);
+    //		GlStateManager.enableRescaleNormal();
+    //		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+    //		GlStateManager.translate(-0.5F, -0.5F, 1 / 32.0F);
     //
-    //		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    //		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     //
     //		int passes = item.getRenderPasses(stack.getItemDamage());
     //		for (int pass = 0; pass < passes; pass++) {
@@ -51,44 +52,44 @@ public class RendererHelper
     //
     //		if (stack.hasEffect(0)) {
     //			GL11.glDepthFunc(GL11.GL_EQUAL);
-    //			GL11.glDisable(GL11.GL_LIGHTING);
+    //			GlStateManager.disableLighting();
     //			textureManager.bindTexture(texEnchant);
-    //			GL11.glEnable(GL11.GL_BLEND);
-    //			GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+    //			GlStateManager.enableBlend();
+    //			GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
     //			float f7 = 0.76F;
-    //			GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
+    //			GlStateManager.color(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
     //			GL11.glMatrixMode(GL11.GL_TEXTURE);
-    //			GL11.glPushMatrix();
+    //			GlStateManager.pushMatrix();
     //			float f8 = 0.125F;
-    //			GL11.glScalef(f8, f8, f8);
+    //			GlStateManager.scale(f8, f8, f8);
     //			float f9 = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
-    //			GL11.glTranslatef(f9, 0.0F, 0.0F);
-    //			GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+    //			GlStateManager.translate(f9, 0.0F, 0.0F);
+    //			GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
     //			ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
-    //			GL11.glPopMatrix();
-    //			GL11.glPushMatrix();
-    //			GL11.glScalef(f8, f8, f8);
+    //			GlStateManager.popMatrix();
+    //			GlStateManager.pushMatrix();
+    //			GlStateManager.scale(f8, f8, f8);
     //			f9 = Minecraft.getSystemTime() % 4873L / 4873.0F * 8.0F;
-    //			GL11.glTranslatef(-f9, 0.0F, 0.0F);
-    //			GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+    //			GlStateManager.translate(-f9, 0.0F, 0.0F);
+    //			GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
     //			ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
-    //			GL11.glPopMatrix();
+    //			GlStateManager.popMatrix();
     //			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-    //			GL11.glDisable(GL11.GL_BLEND);
-    //			GL11.glEnable(GL11.GL_LIGHTING);
+    //			GlStateManager.disableBlend();
+    //			GlStateManager.enableLighting();
     //			GL11.glDepthFunc(GL11.GL_LEQUAL);
     //		}
     //
-    //		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+    //		GlStateManager.disableRescaleNormal();
     //
-    //		GL11.glPopMatrix();
+    //		GlStateManager.popMatrix();
     //	}
 
     public static void setColorFromInt(int color) {
         float r = (color >> 16 & 255) / 255.0F;
         float g = (color >> 8 & 255) / 255.0F;
         float b = (color & 255) / 255.0F;
-        GL11.glColor4f(r, g, b, 1.0F);
+        GlStateManager.color(r, g, b, 1.0F);
     }
 
     public static void drawTextureOnScreen(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
@@ -123,7 +124,7 @@ public class RendererHelper
         {
             return;
         }
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GlStateManager.disableTexture2D();
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.startDrawingQuads();
@@ -133,7 +134,7 @@ public class RendererHelper
         worldrenderer.addVertex(posX + width, posY			, zLevel);
         worldrenderer.addVertex(posX		  , posY			, zLevel);
         tessellator.draw();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
     }
 
     public static void startGlScissor(int x, int y, int width, int height)//From top left corner, like how Minecraft guis are. Don't forget to call endGlScissor after rendering
@@ -178,19 +179,19 @@ public class RendererHelper
 
         GL11.glEnable(GL11.GL_STENCIL_TEST);
 
-        GL11.glColorMask(false, false, false, false);
-        GL11.glDepthMask(false);
+        GlStateManager.colorMask(false, false, false, false);
+        GlStateManager.depthMask(false);
 
         GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
         GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
 
         GL11.glStencilMask(0xFF);
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
         RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, 60, 60, 0);
 
-        GL11.glColorMask(true, true, true, true);
-        GL11.glDepthMask(true);
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(true);
 
         GL11.glStencilMask(0x00);
 
@@ -211,13 +212,13 @@ public class RendererHelper
 
         RendererHelper.startGlScissor(reso1.getScaledWidth() / 2 - 50, reso1.getScaledHeight() / 2 - 50, 100, 100);
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
-        GL11.glTranslatef(-15F, 15F, 0F);
+        GlStateManager.translate(-15F, 15F, 0F);
 
         RendererHelper.drawColourOnScreen(0xffffff, 255, 0, 0, reso1.getScaledWidth_double(), reso1.getScaledHeight_double(), 0);
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
         RendererHelper.endGlScissor();
     }

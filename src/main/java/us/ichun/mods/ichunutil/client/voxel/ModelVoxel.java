@@ -2,6 +2,7 @@ package us.ichun.mods.ichunutil.client.voxel;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -10,27 +11,27 @@ import java.util.Random;
 
 public class ModelVoxel extends ModelBase
 {
-	public Random rand = new Random();
+    public Random rand = new Random();
 
-	public ModelRenderer[] modelHead;
-	public ModelRenderer[] modelBody;
-	public ModelRenderer[] modelLimb;
-	public ModelRenderer[] modelLimbMirrored;
-	
-	public ModelVoxel()
-	{
-		modelHead = new ModelRenderer[8 * 8 * 8];
-		modelBody = new ModelRenderer[12 * 4 * 8];
-		modelLimb = new ModelRenderer[12 * 4 * 4];
-		modelLimbMirrored = new ModelRenderer[12 * 4 * 4];
-		
+    public ModelRenderer[] modelHead;
+    public ModelRenderer[] modelBody;
+    public ModelRenderer[] modelLimb;
+    public ModelRenderer[] modelLimbMirrored;
+
+    public ModelVoxel()
+    {
+        modelHead = new ModelRenderer[8 * 8 * 8];
+        modelBody = new ModelRenderer[12 * 4 * 8];
+        modelLimb = new ModelRenderer[12 * 4 * 4];
+        modelLimbMirrored = new ModelRenderer[12 * 4 * 4];
+
 
         int sizeX = 8;
         int sizeY = 8;
         int sizeZ = 8;
-		
-		textureWidth = 48;
-		textureHeight = 24;
+
+        textureWidth = 48;
+        textureHeight = 24;
 
         for(int i = 0; i < sizeX; i++)
         {
@@ -38,99 +39,99 @@ public class ModelVoxel extends ModelBase
             {
                 for(int k = 0; k < sizeZ; k++)
                 {
-                	if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
-                	{
-						int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
-						int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2;
+                    if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
+                    {
+                        int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
+                        int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2;
 
-                		ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
-                		modelHead[i + j * sizeX + k * sizeY * sizeX] = pixel;
-                		pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
-                	}
+                        ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
+                        modelHead[i + j * sizeX + k * sizeY * sizeX] = pixel;
+                        pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
+                    }
                 }
             }
         }
-        
+
         sizeX = 8;
         sizeY = 12;
         sizeZ = 4;
-        
+
         for(int i = 0; i < sizeX; i++)
         {
             for(int j = 0; j < sizeY; j++)
             {
                 for(int k = 0; k < sizeZ; k++)
                 {
-                	if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
-                	{
-						int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
-						int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2; 
-						
-                		ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
-                		modelBody[i + j * sizeX + k * sizeY * sizeX] = pixel;
-                		pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
-                	}
+                    if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
+                    {
+                        int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
+                        int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2;
+
+                        ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
+                        modelBody[i + j * sizeX + k * sizeY * sizeX] = pixel;
+                        pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
+                    }
                 }
             }
         }
 
-	    sizeX = 4;
-	    sizeY = 12;
-	    sizeZ = 4;
-        
+        sizeX = 4;
+        sizeY = 12;
+        sizeZ = 4;
+
         for(int i = 0; i < sizeX; i++)
         {
             for(int j = 0; j < sizeY; j++)
             {
                 for(int k = 0; k < sizeZ; k++)
                 {
-                	if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
-                	{
-						int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
-						int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2; 
-						
-                		ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
-                		modelLimb[i + j * sizeX + k * sizeY * sizeX] = pixel;
-                		pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
-                	}
+                    if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
+                    {
+                        int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
+                        int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2;
+
+                        ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
+                        modelLimb[i + j * sizeX + k * sizeY * sizeX] = pixel;
+                        pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
+                    }
                 }
             }
         }
-        
+
         for(int i = 0; i < sizeX; i++)
         {
             for(int j = 0; j < sizeY; j++)
             {
                 for(int k = 0; k < sizeZ; k++)
                 {
-                	if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
-                	{
-						int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
-						int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2; 
-						
-                		ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
-                		pixel.mirror = true;
-                		modelLimbMirrored[i + j * sizeX + k * sizeY * sizeX] = pixel;
-                		pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
-                	}
+                    if(i == 0 || i == sizeX - 1 || j == 0 || j == sizeY - 1 || k == 0 || k == sizeZ - 1)
+                    {
+                        int x = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeX + sizeZ + i : k == 0 ? sizeX + sizeZ + sizeX + sizeZ + i - 3 : k == sizeZ - 1 ? sizeX + sizeZ + i - 1 : k > 0 && i < sizeX / 2 ? sizeX + sizeZ + sizeX + sizeZ - 3 - k : sizeX - 1 + k;
+                        int y = j == sizeY - 1 && !(i == 0 || i == sizeX - 1 || k == 0 || k == sizeZ - 1) ? sizeZ - k : sizeZ + sizeY - j - 2;
+
+                        ModelRenderer pixel = new ModelRenderer(this, x, sizeZ + sizeY - j - 2);
+                        pixel.mirror = true;
+                        modelLimbMirrored[i + j * sizeX + k * sizeY * sizeX] = pixel;
+                        pixel.addBox(-0.5F, -0.5F, -0.5F, 1, 1, 1);
+                    }
                 }
             }
         }
-	}
+    }
 
     //TODO yOffset has been removed. Check that this still renders properly
-	public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<LocationInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
-	{
-		GL11.glPushMatrix();
+    public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<LocationInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
+    {
+        GlStateManager.pushMatrix();
 
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.003921569F);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
+        GlStateManager.disableCull();
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
 
 
         //last one = newest. first = oldest
@@ -146,19 +147,19 @@ public class ModelVoxel extends ModelBase
             int prog = (int)(time - info.lastTick);
             float prog2 = MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F);
 
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
             double tX = trail.prevPosX + (trail.posX - trail.prevPosX) * renderTick;
             double tY = trail.prevPosY + (trail.posY - trail.prevPosY) * renderTick;
             double tZ = trail.prevPosZ + (trail.posZ - trail.prevPosZ) * renderTick;
-            GL11.glTranslated(info.posX - tX + pX, info.posY - tY + pY, info.posZ - tZ + pZ);
+            GlStateManager.translate(info.posX - tX + pX, info.posY - tY + pY, info.posZ - tZ + pZ);
 
-            GL11.glScalef(-1.0F, -1.0F, 1.0F);
+            GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
             float scale = 0.9375F;
-            GL11.glScalef(scale, scale, scale);
-            GL11.glTranslatef(0.0F, -0.6825F, 0.0F);
+            GlStateManager.scale(scale, scale, scale);
+            GlStateManager.translate(0.0F, -0.6825F, 0.0F);
 
-            GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
 
             rand.setSeed(info.lastTick + seedBase);
 
@@ -166,48 +167,48 @@ public class ModelVoxel extends ModelBase
 
             if(skins == null)
             {
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glColor4f(0.7F, 0.7F, 0.7F, 0.8F);
+                GlStateManager.disableTexture2D();
+                GlStateManager.color(0.7F, 0.7F, 0.7F, 0.8F);
             }
             else
             {
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.9F - 0.9F * (MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F)));
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F - 0.9F * (MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F)));
             }
 
             if(skins != null)
             {
                 if(i < 2)
                 {
-                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, skins[0]);
+                    GlStateManager.bindTexture(skins[0]);
                 }
                 else if(i < 4)
                 {
-                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, skins[1]);
+                    GlStateManager.bindTexture(skins[1]);
                 }
                 else
                 {
-                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, skins[i - 2]);
+                    GlStateManager.bindTexture(skins[i - 2]);
                 }
             }
             renderLimb(prog, i, info.sneaking, info.renderYawOffset, info.rotationYawHead, info.rotationPitch, info.limbSwing, info.limbSwingAmount, info.yawChange * prog * (1.0F - 0.4F * prog2), info.pitchChange * prog * (1.0F - 0.4F * prog2), f5, renderTick);
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
 
-        GL11.glDisable(GL11.GL_BLEND);
-		
-		if(skins == null)
-		{
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		}
+        GlStateManager.disableBlend();
 
-        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+        if(skins == null)
+        {
+            GlStateManager.enableTexture2D();
+        }
 
-		GL11.glPopMatrix();
-	}
-	
-	public void renderLimb(int progInt, int limb, boolean sneaking, float renderYaw, float rotationYaw, float rotationPitch, float limbSwing, float limbSwingAmount, float yaw, float pitch, float f5, float renderTick)
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+
+        GlStateManager.popMatrix();
+    }
+
+    public void renderLimb(int progInt, int limb, boolean sneaking, float renderYaw, float rotationYaw, float rotationPitch, float limbSwing, float limbSwingAmount, float yaw, float pitch, float f5, float renderTick)
     {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         //0 = left leg
         //1 = right leg
         //2 = left arm
@@ -224,11 +225,11 @@ public class ModelVoxel extends ModelBase
 
         if(limb != 5)
         {
-            GL11.glRotatef(renderYaw, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(renderYaw, 0.0F, 1.0F, 0.0F);
         }
         else
         {
-            GL11.glRotatef(rotationYaw, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(rotationYaw, 0.0F, 1.0F, 0.0F);
         }
 
 
@@ -262,7 +263,7 @@ public class ModelVoxel extends ModelBase
             j = rand.nextInt(sizeY) - sizeY;
             k = rand.nextInt(sizeZ) - (sizeZ / 2);
         }
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
 
         ModelRenderer[] list;
         if(limb < 4)
@@ -287,33 +288,33 @@ public class ModelVoxel extends ModelBase
 
         if(limb == 0)
         {
-            GL11.glTranslatef(2F/16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), 0.0F, 0.0F);
+            GlStateManager.translate(2F / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), 0.0F, 0.0F);
         }
         else if(limb == 1)
         {
-            GL11.glTranslatef(-2F/16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), 0.0F, 0.0F);
+            GlStateManager.translate(-2F / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), 0.0F, 0.0F);
         }
         else if(limb == 2)
         {
-            GL11.glTranslatef(4F/16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), -10F/16F * shatterProg, 0.0F);
+            GlStateManager.translate(4F / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), -10F / 16F * shatterProg, 0.0F);
             pixel.rotationPointX = 2F;
             pixel.rotationPointY = -2F * shatterProg;
         }
         else if(limb == 3)
         {
-            GL11.glTranslatef(-4F/16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), -10F/16F * shatterProg, 0.0F);
+            GlStateManager.translate(-4F / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), -10F / 16F * shatterProg, 0.0F);
             pixel.rotationPointX = -2F;
             pixel.rotationPointY = -2F * shatterProg;
         }
         else if(limb == 4)
         {
-            GL11.glTranslatef(0.0F, -12F/16F * shatterProg, 0.0F);
+            GlStateManager.translate(0.0F, -12F / 16F * shatterProg, 0.0F);
         }
         else if(limb == 5)
         {
-            GL11.glTranslatef(0.0F, sneaking ? -9F/16F : -12F/16F * shatterProg, 0.0F);
+            GlStateManager.translate(0.0F, sneaking ? -9F / 16F : -12F / 16F * shatterProg, 0.0F);
 
-            GL11.glRotatef(rotationPitch, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(rotationPitch, 1.0F, 0.0F, 0.0F);
             pixel.rotationPointY = -8F * shatterProg;
         }
 
@@ -321,25 +322,25 @@ public class ModelVoxel extends ModelBase
         {
             if(limb == 0 || limb == 3)
             {
-                GL11.glRotated((Math.toDegrees(Math.cos(f8 * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount)) * shatterProg, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate((float)(Math.toDegrees(Math.cos(f8 * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount)) * shatterProg, 1.0F, 0.0F, 0.0F);
             }
             if(limb == 1 || limb == 2)
             {
-                GL11.glRotated((Math.toDegrees(Math.cos(f8 * 0.6662F) * 1.4F * limbSwingAmount)) * shatterProg, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate((float)(Math.toDegrees(Math.cos(f8 * 0.6662F) * 1.4F * limbSwingAmount)) * shatterProg, 1.0F, 0.0F, 0.0F);
             }
         }
 
-        GL11.glTranslatef(0.0F, 11F/16F * (1.0F - shatterProg) + rand.nextFloat() * 0.01F, 0.0F);
+        GlStateManager.translate(0.0F, 11F / 16F * (1.0F - shatterProg) + rand.nextFloat() * 0.01F, 0.0F);
 
-        GL11.glTranslatef(-(offsetX + (i + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), (-(offsetY + (j + 0.5F)) / 16F) * shatterProg, -(offsetZ + (k + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg));
+        GlStateManager.translate(-(offsetX + (i + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg), (-(offsetY + (j + 0.5F)) / 16F) * shatterProg, -(offsetZ + (k + 0.5F)) / 16F + ((rand.nextFloat() - 0.5F) * spread * properShatterProg));
         pixel.rotateAngleX = pitch / (180F / (float)Math.PI);
         pixel.rotateAngleY = yaw / (180F / (float)Math.PI);
 
         double vScale = Math.pow((1.0D - prog), 0.75D);
-        GL11.glScaled(vScale, vScale, vScale);
+        GlStateManager.scale(vScale, vScale, vScale);
         pixel.render(f5);
 
-        GL11.glPopMatrix();
-        GL11.glPopMatrix();
-	}
+        GlStateManager.popMatrix();
+        GlStateManager.popMatrix();
+    }
 }

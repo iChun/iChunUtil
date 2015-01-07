@@ -1,17 +1,17 @@
 package us.ichun.mods.ichunutil.client.gui;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,23 +90,23 @@ public class GuiModUpdateNotification extends Gui
 
     private void updateWindowScale()
     {
-        GL11.glViewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
+        GlStateManager.viewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+        GlStateManager.loadIdentity();
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.loadIdentity();
         this.width = this.mc.displayWidth;
         this.height = this.mc.displayHeight;
         ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         this.width = scaledresolution.getScaledWidth();
         this.height = scaledresolution.getScaledHeight();
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0.0D, (double)this.width, (double)this.height, 0.0D, 1000.0D, 3000.0D);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
-        GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(0.0D, (double)this.width, (double)this.height, 0.0D, 1000.0D, 3000.0D);
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        GlStateManager.loadIdentity();
+        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
     }
 
     public void update()
@@ -152,8 +152,8 @@ public class GuiModUpdateNotification extends Gui
                 }
 
                 this.updateWindowScale();
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-                GL11.glDepthMask(false);
+                GlStateManager.disableDepth();
+                GlStateManager.depthMask(false);
                 double d1 = d0 * 2.0D;
 
                 if(d1 > 1.0D)
@@ -173,21 +173,21 @@ public class GuiModUpdateNotification extends Gui
                 d1 *= d1;
                 int i = 0;
                 int j = (int)(32D * k * (1.0D - d1)) - (int)(d1 * 36.0D);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.enableTexture2D();
                 this.mc.getTextureManager().bindTexture(rlAchievement);
-                GL11.glDisable(GL11.GL_LIGHTING);
+                GlStateManager.disableLighting();
                 this.drawTexturedModalRect(i, j, 96, 202, 160, 32);
 
                 this.mc.fontRendererObj.drawString(this.topText, i + 10, j + 7, -256);
                 this.mc.fontRendererObj.drawString(modUpdates.get(k), i + 15, j + 18, -1);
 
                 RenderHelper.enableGUIStandardItemLighting();
-                GL11.glDisable(GL11.GL_LIGHTING);
-                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-                GL11.glDepthMask(true);
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
+                GlStateManager.disableLighting();
+                GlStateManager.enableRescaleNormal();
+                GlStateManager.enableColorMaterial();
+                GlStateManager.depthMask(true);
+                GlStateManager.enableDepth();
             }
         }
     }

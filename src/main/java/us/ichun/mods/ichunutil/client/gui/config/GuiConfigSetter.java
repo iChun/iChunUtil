@@ -1,5 +1,15 @@
 package us.ichun.mods.ichunutil.client.gui.config;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.gui.GuiKeyBindingList;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraftforge.common.config.Property;
+import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.common.core.config.Config;
 
 import java.io.IOException;
@@ -7,64 +17,51 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiControls;
-import net.minecraft.client.gui.GuiKeyBindingList;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraftforge.common.config.Property;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-public class GuiConfigSetter extends GuiControls 
+public class GuiConfigSetter extends GuiControls
 {
-	
-	private GuiConfigSetterScroll scrollPane;
-	
-	public GameSettings gameSets;
-	
-	private Config config;
-	
-	public ArrayList<Property> properties;
+
+    private GuiConfigSetterScroll scrollPane;
+
+    public GameSettings gameSets;
+
+    private Config config;
+
+    public ArrayList<Property> properties;
     private GuiButton selectedBtn;
 
     public GuiConfigSetter(GuiScreen parentScreen, GameSettings gameSettings, Config cfg, String title, ArrayList<Property> cat)
-	{
-		super(parentScreen, gameSettings);
-		gameSets = gameSettings;
-		config = cfg;
+    {
+        super(parentScreen, gameSettings);
+        gameSets = gameSettings;
+        config = cfg;
         screenTitle = cfg.modName + " - " + title;
-		properties = cat;
+        properties = cat;
         keyBindingList = new GuiKeyBindingList(this, Minecraft.getMinecraft());
-	}
-	
-	@Override
+    }
+
+    @Override
     public void initGui()
     {
-    	this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done")));
-        
+        this.buttonList.add(new GuiButton(200, this.width / 2 - 100, this.height - 28, I18n.format("gui.done")));
+
         scrollPane = new GuiConfigSetterScroll(this, config, properties, mc);
         scrollPane.registerScrollButtons(7, 8);
-    	
+
     }
-	
-	@Override
+
+    @Override
     public void updateScreen()
     {
         scrollPane.tick();
     }
-	
-	@Override
-	public void onGuiClosed() 
-	{
-		scrollPane.keyTyped((char) 42, Keyboard.KEY_RETURN);
-	}
-    
-	@Override
+
+    @Override
+    public void onGuiClosed()
+    {
+        scrollPane.keyTyped((char) 42, Keyboard.KEY_RETURN);
+    }
+
+    @Override
     public void drawScreen(int par1, int par2, float par3)
     {
         this.drawDefaultBackground();
@@ -78,7 +75,7 @@ public class GuiConfigSetter extends GuiControls
         }
     }
 
-	@Override
+    @Override
     protected void keyTyped(char par1, int par2)
     {
         if (scrollPane.keyTyped(par1, par2))
@@ -136,40 +133,40 @@ public class GuiConfigSetter extends GuiControls
     {
         if (!par1List.isEmpty())
         {
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GlStateManager.disableRescaleNormal();
+            GlStateManager.disableDepth();
             int k = 0;
-            
-        	boolean shouldBreak = false;
+
+            boolean shouldBreak = false;
             while(!shouldBreak)
             {
-            	for(int i = 0; i < par1List.size(); i++)
-            	{
-            		String s = (String)par1List.get(i);
-            		if(s.length() > 17)
-            		{
-            			par1List.remove(i);
-            			String temp = s.substring(0, 17);
-            			int lastIndex = temp.lastIndexOf(" ");
-            			if(lastIndex == -1)
-            			{
-            				lastIndex = 17;
-            			}
-            			else
-            			{
-            				lastIndex++;
-            			}
-            			par1List.add(i, s.substring(0, lastIndex));
-            			par1List.add(i + 1, s.substring(lastIndex, s.length()));
-            			break;
-            		}
-            		if(i == par1List.size() - 1)
-            		{
-            			shouldBreak = true;
-            		}
-            	}
+                for(int i = 0; i < par1List.size(); i++)
+                {
+                    String s = (String)par1List.get(i);
+                    if(s.length() > 17)
+                    {
+                        par1List.remove(i);
+                        String temp = s.substring(0, 17);
+                        int lastIndex = temp.lastIndexOf(" ");
+                        if(lastIndex == -1)
+                        {
+                            lastIndex = 17;
+                        }
+                        else
+                        {
+                            lastIndex++;
+                        }
+                        par1List.add(i, s.substring(0, lastIndex));
+                        par1List.add(i + 1, s.substring(lastIndex, s.length()));
+                        break;
+                    }
+                    if(i == par1List.size() - 1)
+                    {
+                        shouldBreak = true;
+                    }
+                }
             }
-            
+
             Iterator iterator = par1List.iterator();
 
             while (iterator.hasNext())
@@ -182,7 +179,7 @@ public class GuiConfigSetter extends GuiControls
                     k = l;
                 }
             }
-            
+
             int i1 = par2 + 12;
             int j1 = par3 - 12;
             int k1 = 8;
@@ -230,8 +227,8 @@ public class GuiConfigSetter extends GuiControls
             }
 
             this.zLevel = 0.0F;
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableDepth();
+            GlStateManager.enableRescaleNormal();
         }
     }
 
