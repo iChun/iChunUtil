@@ -437,6 +437,73 @@ public class ModelHelper
 		return base1;
 	}
 
+	public static boolean areModelsEqual(ModelBase model1, ModelBase model2)//Compares two model bases. Ugly code but it works.
+	{
+		if(model1.getClass() == model2.getClass() && model1.textureHeight == model2.textureHeight && model1.textureWidth == model2.textureWidth)
+		{
+			ArrayList<ModelRenderer> parts1 = getModelCubes(model1);
+			ArrayList<ModelRenderer> parts2 = getModelCubes(model2);
+			if(parts1.size() == parts2.size())
+			{
+				for(int i = parts1.size() - 1; i >= 0; i--)
+				{
+					ModelRenderer rend1 = parts1.get(i);
+					boolean remove = true;
+					for(int k = rend1.cubeList.size() - 1; k >= 0; k--)
+					{
+						ModelBox box1 = (ModelBox)rend1.cubeList.get(k);
+						CubeInfo cube1 = createCubeInfoFromModelBox(rend1, box1, box1.field_78247_g != null ? box1.field_78247_g : "");
+						boolean found = false;
+						for(int j = parts2.size() - 1; j >= 0; j--)
+						{
+							ModelRenderer rend2 = parts2.get(j);
+							if(rend1.cubeList.size() == rend2.cubeList.size() && (rend1.childModels == null && rend2.childModels == null || rend1.childModels != null && rend2.childModels != null && rend1.childModels.size() == rend2.childModels.size()))
+							{
+								for(int l = rend2.cubeList.size(); l >= 0; l--)
+								{
+									ModelBox box2 = (ModelBox)rend2.cubeList.get(l);
+									CubeInfo cube2 = createCubeInfoFromModelBox(rend2, box2, box2.field_78247_g != null ? box2.field_78247_g : "");
+									for(int m = 0; m < 3; m++)
+									{
+										if(cube1.dimensions[m] == cube2.dimensions[m] && cube1.offset[m] == cube2.offset[m])
+										{
+											if(m == 2)
+											{
+												found = true;
+											}
+										}
+										else
+										{
+											break;
+										}
+									}
+									if(found)
+									{
+										break;
+									}
+								}
+							}
+							if(found)
+							{
+								break;
+							}
+						}
+						if(!found)
+						{
+							remove = false;
+						}
+					}
+					if(remove)
+					{
+						parts1.remove(i);
+					}
+				}
+				return parts1.isEmpty();
+			}
+		}
+		return false;
+	}
+
 	//Gets the model cubes from the entity living.
 	public static ArrayList<ModelRenderer> getModelCubes(Entity entity)
 	{
