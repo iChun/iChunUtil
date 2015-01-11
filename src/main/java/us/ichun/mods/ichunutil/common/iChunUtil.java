@@ -40,6 +40,7 @@ import java.util.ArrayList;
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) })));
 
+//TODO easter egg for AFday?
 public class iChunUtil
         implements IConfigUser
 {

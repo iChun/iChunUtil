@@ -86,7 +86,7 @@ public class ModVersionJsonGen
 
         versions = new HashMap<String, String>();
         map.put("Tabula", versions);
-        versions.put("1.7.10", "4.1.0");
+        versions.put("1.7.10", "4.1.1");
 
         versions = new HashMap<String, String>();
         map.put("Torched", versions);
