@@ -403,7 +403,12 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String commentLocal = StatCollector.translateToLocal(comment);
+            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            {
+                iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
+            }
+            List cms = Splitter.on("\\n").splitToList(commentLocal);
             String cm = "";
             for(int ll = 0; ll < cms.size(); ll++)
             {
@@ -474,7 +479,12 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String commentLocal = StatCollector.translateToLocal(comment);
+            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            {
+                iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
+            }
+            List cms = Splitter.on("\\n").splitToList(commentLocal);
             String cm = "";
             for(int ll = 0; ll < cms.size(); ll++)
             {
@@ -552,7 +562,12 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String commentLocal = StatCollector.translateToLocal(comment);
+            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            {
+                iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
+            }
+            List cms = Splitter.on("\\n").splitToList(commentLocal);
             String cm = "";
             for(int ll = 0; ll < cms.size(); ll++)
             {
@@ -614,7 +629,12 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String commentLocal = StatCollector.translateToLocal(comment);
+            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            {
+                iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
+            }
+            List cms = Splitter.on("\\n").splitToList(commentLocal);
             String cm = "";
             for(int ll = 0; ll < cms.size(); ll++)
             {
@@ -803,7 +823,12 @@ public class Config
 
         if (!comment.equalsIgnoreCase(""))
         {
-            List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+            String commentLocal = StatCollector.translateToLocal(comment);
+            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            {
+                iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
+            }
+            List cms = Splitter.on("\\n").splitToList(commentLocal);
             String cm = "";
             for(int ll = 0; ll < cms.size(); ll++)
             {
@@ -870,7 +895,12 @@ public class Config
     {
         currentCat = cat;
         currentCatName = StatCollector.translateToLocal(catName);
-        List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal(comment));
+        String commentLocal = StatCollector.translateToLocal(comment);
+        if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+        {
+            iChunUtil.console("Config category " + catName + " from mod " + modId + " may not be localized!", true);
+        }
+        List cms = Splitter.on("\\n").splitToList(commentLocal);
         String cm = "";
         for(int ll = 0; ll < cms.size(); ll++)
         {

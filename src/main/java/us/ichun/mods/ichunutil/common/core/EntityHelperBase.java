@@ -116,7 +116,8 @@ public class EntityHelperBase
 
     public static void getUUIDFromUsernames(String...names)
     {
-        System.out.println("UUIDs from Names");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n\nUUIDs from Names\n");
         ArrayList<String> namesList = new ArrayList<String>();
         ArrayList<String> uuidList = new ArrayList<String>();
         for(String s : names)
@@ -127,12 +128,13 @@ public class EntityHelperBase
         }
         for(int i = 0; i < namesList.size(); i++)
         {
-            System.out.println(namesList.get(i));
+            sb.append(namesList.get(i)).append("\n");
         }
         for(int i = 0; i < uuidList.size(); i++)
         {
-            System.out.println(uuidList.get(i));
+            sb.append(uuidList.get(i)).append("\n");
         }
+        System.out.println(sb.toString());
     }
 
     public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d)
