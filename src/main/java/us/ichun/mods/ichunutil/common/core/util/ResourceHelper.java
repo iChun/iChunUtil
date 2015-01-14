@@ -12,6 +12,8 @@ public class ResourceHelper
 {
 	public static final ResourceLocation texPig = new ResourceLocation("textures/entity/pig/pig.png");
 	public static final ResourceLocation texFont = new ResourceLocation("textures/font/ascii.png");
+	public static final ResourceLocation texGlint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+
 	private static File fileAssets;
 	private static File fileMods;
 	private static File fileConfig;

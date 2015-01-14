@@ -22,6 +22,7 @@ import net.minecraft.util.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
+import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,75 +31,6 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class RendererHelper
 {
-    public static final ResourceLocation texEnchant = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-
-    //TODO GlStateManager replacing all GL11 stuffs.
-
-    // Taken from copygirl. Thanks!
-    //TODO renderItem
-    //	public static void renderItemIn3d(ItemStack stack)
-    //	{
-    //		TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-    //		// Not sure why but this can be null when the world loads.
-    //		if (textureManager == null) return;
-    //		Item item = stack.getItem();
-    //
-    //		GlStateManager.pushMatrix();
-    //
-    //		Tessellator tessellator = Tessellator.instance;
-    //		GlStateManager.enableRescaleNormal();
-    //		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-    //		GlStateManager.translate(-0.5F, -0.5F, 1 / 32.0F);
-    //
-    //		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-    //
-    //		int passes = item.getRenderPasses(stack.getItemDamage());
-    //		for (int pass = 0; pass < passes; pass++) {
-    //			textureManager.bindTexture(((stack.getItemSpriteNumber() == 0) ? TextureMap.locationBlocksTexture : TextureMap.locationItemsTexture));
-    //            IIcon icon = item.getIcon(stack, pass);
-    //			float minU = icon.getMinU();
-    //			float maxU = icon.getMaxU();
-    //			float minV = icon.getMinV();
-    //			float maxV = icon.getMaxV();
-    //			setColorFromInt(item.getColorFromItemStack(stack, pass));
-    //			ItemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
-    //		}
-    //
-    //		if (stack.hasEffect(0)) {
-    //			GL11.glDepthFunc(GL11.GL_EQUAL);
-    //			GlStateManager.disableLighting();
-    //			textureManager.bindTexture(texEnchant);
-    //			GlStateManager.enableBlend();
-    //			GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
-    //			float f7 = 0.76F;
-    //			GlStateManager.color(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
-    //			GL11.glMatrixMode(GL11.GL_TEXTURE);
-    //			GlStateManager.pushMatrix();
-    //			float f8 = 0.125F;
-    //			GlStateManager.scale(f8, f8, f8);
-    //			float f9 = Minecraft.getSystemTime() % 3000L / 3000.0F * 8.0F;
-    //			GlStateManager.translate(f9, 0.0F, 0.0F);
-    //			GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
-    //			ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
-    //			GlStateManager.popMatrix();
-    //			GlStateManager.pushMatrix();
-    //			GlStateManager.scale(f8, f8, f8);
-    //			f9 = Minecraft.getSystemTime() % 4873L / 4873.0F * 8.0F;
-    //			GlStateManager.translate(-f9, 0.0F, 0.0F);
-    //			GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
-    //			ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
-    //			GlStateManager.popMatrix();
-    //			GL11.glMatrixMode(GL11.GL_MODELVIEW);
-    //			GlStateManager.disableBlend();
-    //			GlStateManager.enableLighting();
-    //			GL11.glDepthFunc(GL11.GL_LEQUAL);
-    //		}
-    //
-    //		GlStateManager.disableRescaleNormal();
-    //
-    //		GlStateManager.popMatrix();
-    //	}
-
     public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
     {
         Minecraft mc = Minecraft.getMinecraft();
@@ -124,21 +56,38 @@ public class RendererHelper
         else
         {
             GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-            Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-            worldrenderer.startDrawingQuads();
-            worldrenderer.setVertexFormat(DefaultVertexFormats.ITEM);
-            EnumFacing[] aenumfacing = EnumFacing.values();
-            int j = aenumfacing.length;
 
-            for (int k = 0; k < j; ++k)
+            renderModel(model, color, stack);
+
+            if (stack != null && stack.hasEffect())
             {
-                EnumFacing enumfacing = aenumfacing[k];
-                renderQuads(worldrenderer, model.getFaceQuads(enumfacing), color, stack);
+                GlStateManager.depthMask(false);
+                GlStateManager.depthFunc(GL11.GL_EQUAL);
+                GlStateManager.disableLighting();
+                GlStateManager.blendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+                mc.getTextureManager().bindTexture(ResourceHelper.texGlint);
+                GlStateManager.matrixMode(GL11.GL_TEXTURE);
+                GlStateManager.pushMatrix();
+                GlStateManager.scale(8.0F, 8.0F, 8.0F);
+                float f = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
+                GlStateManager.translate(f, 0.0F, 0.0F);
+                GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
+                renderModel(model, -8372020, null);
+                GlStateManager.popMatrix();
+                GlStateManager.pushMatrix();
+                GlStateManager.scale(8.0F, 8.0F, 8.0F);
+                float f1 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F / 8.0F;
+                GlStateManager.translate(-f1, 0.0F, 0.0F);
+                GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
+                renderModel(model, -8372020, null);
+                GlStateManager.popMatrix();
+                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GlStateManager.enableLighting();
+                GlStateManager.depthFunc(GL11.GL_LEQUAL);
+                GlStateManager.depthMask(true);
+                mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
             }
-
-            renderQuads(worldrenderer, model.getGeneralQuads(), color, stack);
-            tessellator.draw();
         }
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
@@ -146,6 +95,25 @@ public class RendererHelper
         GlStateManager.popMatrix();
         mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         mc.getTextureManager().getTexture(TextureMap.locationBlocksTexture).restoreLastBlurMipmap();
+    }
+
+    private static void renderModel(IBakedModel model, int color, ItemStack stack)
+    {
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setVertexFormat(DefaultVertexFormats.ITEM);
+        EnumFacing[] aenumfacing = EnumFacing.values();
+        int j = aenumfacing.length;
+
+        for (int k = 0; k < j; ++k)
+        {
+            EnumFacing enumfacing = aenumfacing[k];
+            renderQuads(worldrenderer, model.getFaceQuads(enumfacing), color, stack);
+        }
+
+        renderQuads(worldrenderer, model.getGeneralQuads(), color, stack);
+        tessellator.draw();
     }
 
     private static void renderQuads(WorldRenderer renderer, List quads, int color, ItemStack stack)

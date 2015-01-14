@@ -25,6 +25,7 @@ import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.config.IConfigUser;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
 import us.ichun.mods.ichunutil.common.core.network.PacketChannel;
+import us.ichun.mods.ichunutil.common.core.network.PacketExecuter;
 import us.ichun.mods.ichunutil.common.core.packet.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.packet.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
@@ -85,6 +86,8 @@ public class iChunUtil
         ObfHelper.detectObfuscation();
 
         proxy.preInit();
+
+        FMLCommonHandler.instance().bus().register(new PacketExecuter());
 
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);

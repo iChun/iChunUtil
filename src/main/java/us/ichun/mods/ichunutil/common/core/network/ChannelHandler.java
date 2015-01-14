@@ -50,7 +50,9 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         EnumMap<Side, FMLEmbeddedChannel> handlers = NetworkRegistry.INSTANCE.newChannel(modId, new ChannelHandler(modId, packetTypes));
 
-        PacketExecuter executer = new PacketExecuter();
+        PacketChannel channel1 = new PacketChannel(modId, handlers);
+
+        PacketExecuter executer = new PacketExecuter(channel1);
 
         for(Map.Entry<Side, FMLEmbeddedChannel> e : handlers.entrySet())
         {
@@ -59,12 +61,21 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             channel.pipeline().addAfter(codec, "PacketExecuter", executer);
         }
 
-        return new PacketChannel(modId, handlers);
+        PacketChannel.registeredChannels.add(channel1);
+
+        return channel1;
     }
 
     @Sharable
     private static class PacketExecuter extends SimpleChannelInboundHandler<AbstractPacket>
     {
+        private final PacketChannel channel;
+
+        public PacketExecuter(PacketChannel channel)
+        {
+            this.channel = channel;
+        }
+
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, AbstractPacket msg) throws Exception
         {
@@ -80,7 +91,15 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
                 player = this.getClientPlayer();
             }
 
-            msg.execute(side, player);
+            if(!msg.requiresMainThread())
+            {
+                msg.execute(side, player);
+            }
+            else
+            {
+                msg.setFields(player);
+                channel.queuedPackets.get(side).add(msg);
+            }
         }
 
         @SideOnly(Side.CLIENT)

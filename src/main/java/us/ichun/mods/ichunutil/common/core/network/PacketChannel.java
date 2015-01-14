@@ -7,13 +7,17 @@ import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 public class PacketChannel
 {
+    public static ArrayList<PacketChannel> registeredChannels = new ArrayList<PacketChannel>();
+
     private final String modId;
     private final EnumMap<Side, FMLEmbeddedChannel> channels;
-    
+    public final EnumMap<Side, ArrayList<AbstractPacket>> queuedPackets = new EnumMap<Side, ArrayList<AbstractPacket>>(Side.class) {{ put(Side.CLIENT, new ArrayList<AbstractPacket>()); put(Side.SERVER, new ArrayList<AbstractPacket>()); }};
+
     public PacketChannel(String id, EnumMap<Side, FMLEmbeddedChannel> chans)
     {
         modId = id;
