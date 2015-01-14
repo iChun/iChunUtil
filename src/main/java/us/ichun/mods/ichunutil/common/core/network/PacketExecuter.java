@@ -14,11 +14,15 @@ public class PacketExecuter
         {
             for(PacketChannel channel : PacketChannel.registeredChannels)
             {
-                for(AbstractPacket packet : channel.queuedPackets.get(Side.SERVER))
+                synchronized(channel.queuedPackets)
                 {
-                    packet.execute(Side.SERVER, packet.player);
+                    for(int i = 0; i< channel.queuedPackets.get(Side.SERVER).size(); i++)
+                    {
+                        AbstractPacket packet = channel.queuedPackets.get(Side.SERVER).get(i);
+                        packet.execute(Side.SERVER, packet.player);
+                    }
+                    channel.queuedPackets.get(Side.SERVER).clear();
                 }
-                channel.queuedPackets.get(Side.SERVER).clear();
             }
         }
     }
@@ -31,11 +35,15 @@ public class PacketExecuter
         {
             for(PacketChannel channel : PacketChannel.registeredChannels)
             {
-                for(AbstractPacket packet : channel.queuedPackets.get(Side.CLIENT))
+                synchronized(channel.queuedPackets)
                 {
-                    packet.execute(Side.CLIENT, packet.player);
+                    for(int i = 0; i< channel.queuedPackets.get(Side.CLIENT).size(); i++)
+                    {
+                        AbstractPacket packet = channel.queuedPackets.get(Side.CLIENT).get(i);
+                        packet.execute(Side.CLIENT, packet.player);
+                    }
+                    channel.queuedPackets.get(Side.CLIENT).clear();
                 }
-                channel.queuedPackets.get(Side.CLIENT).clear();
             }
         }
     }

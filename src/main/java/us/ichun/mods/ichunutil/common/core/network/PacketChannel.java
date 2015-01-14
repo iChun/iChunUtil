@@ -8,7 +8,9 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Map;
 
 public class PacketChannel
 {
@@ -16,19 +18,19 @@ public class PacketChannel
 
     private final String modId;
     private final EnumMap<Side, FMLEmbeddedChannel> channels;
-    public final EnumMap<Side, ArrayList<AbstractPacket>> queuedPackets = new EnumMap<Side, ArrayList<AbstractPacket>>(Side.class) {{ put(Side.CLIENT, new ArrayList<AbstractPacket>()); put(Side.SERVER, new ArrayList<AbstractPacket>()); }};
+    public final Map<Side, ArrayList<AbstractPacket>> queuedPackets = Collections.synchronizedMap(new EnumMap<Side, ArrayList<AbstractPacket>>(Side.class) {{ put(Side.CLIENT, new ArrayList<AbstractPacket>()); put(Side.SERVER, new ArrayList<AbstractPacket>()); }});
 
     public PacketChannel(String id, EnumMap<Side, FMLEmbeddedChannel> chans)
     {
         modId = id;
         channels = chans;
     }
-    
+
     public EnumMap<Side, FMLEmbeddedChannel> getChannels()
     {
         return channels;
     }
-    
+
     public String getModId()
     {
         return modId;

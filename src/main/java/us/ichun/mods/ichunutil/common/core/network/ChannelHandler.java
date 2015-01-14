@@ -98,7 +98,10 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             else
             {
                 msg.setFields(player);
-                channel.queuedPackets.get(side).add(msg);
+                synchronized(channel.queuedPackets)
+                {
+                    channel.queuedPackets.get(side).add(msg);
+                }
             }
         }
 
