@@ -404,7 +404,7 @@ public class Config
         if (!comment.equalsIgnoreCase(""))
         {
             String commentLocal = StatCollector.translateToLocal(comment);
-            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
             {
                 iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
             }
@@ -480,7 +480,7 @@ public class Config
         if (!comment.equalsIgnoreCase(""))
         {
             String commentLocal = StatCollector.translateToLocal(comment);
-            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
             {
                 iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
             }
@@ -563,7 +563,7 @@ public class Config
         if (!comment.equalsIgnoreCase(""))
         {
             String commentLocal = StatCollector.translateToLocal(comment);
-            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
             {
                 iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
             }
@@ -630,7 +630,7 @@ public class Config
         if (!comment.equalsIgnoreCase(""))
         {
             String commentLocal = StatCollector.translateToLocal(comment);
-            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
             {
                 iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
             }
@@ -824,7 +824,7 @@ public class Config
         if (!comment.equalsIgnoreCase(""))
         {
             String commentLocal = StatCollector.translateToLocal(comment);
-            if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+            if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
             {
                 iChunUtil.console("Config property " + propName1 + " from mod " + modId + " may not be localized!", true);
             }
@@ -896,7 +896,7 @@ public class Config
         currentCat = cat;
         currentCatName = StatCollector.translateToLocal(catName);
         String commentLocal = StatCollector.translateToLocal(comment);
-        if(commentLocal.split(".").length >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
+        if(Splitter.on(".").splitToList(commentLocal).size() >= 2 && commentLocal.indexOf(" ") == -1) //localized but no comment?
         {
             iChunUtil.console("Config category " + catName + " from mod " + modId + " may not be localized!", true);
         }

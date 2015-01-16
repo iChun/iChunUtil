@@ -151,8 +151,6 @@ public class iChunUtil
         return hasPostLoad;
     }
 
-    //TODO iconRegister replacement for TextureStitchEvent.Pre ?
-
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onClientConnection(FMLNetworkEvent.ClientConnectedToServerEvent event)
