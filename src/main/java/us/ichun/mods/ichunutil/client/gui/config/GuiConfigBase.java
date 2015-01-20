@@ -1,6 +1,5 @@
 package us.ichun.mods.ichunutil.client.gui.config;
 
-import us.ichun.mods.ichunutil.common.core.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiControls;
@@ -8,6 +7,7 @@ import net.minecraft.client.gui.GuiKeyBindingList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
+import us.ichun.mods.ichunutil.common.core.config.Config;
 
 import java.io.IOException;
 

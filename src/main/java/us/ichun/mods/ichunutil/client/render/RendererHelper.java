@@ -59,7 +59,7 @@ public class RendererHelper
 
             renderModel(model, color, stack);
 
-            if (stack != null && stack.hasEffect())
+            if (stack != null && stack.getItem() != null && stack.hasEffect())
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.depthFunc(GL11.GL_EQUAL);
