@@ -34,3 +34,10 @@ ichun.config.showPatronReward.comment=Do you want to show your patron reward to 
 ichun.gui.newUpdate=New Mod Update Available!
 
 ichun.gui.moreOptions=Hit %s to view more options
+
+element.minimize=Minimize
+element.expand=Expand
+
+element.button.ok=OK
+element.button.cancel=Cancel
+
