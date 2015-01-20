@@ -19,7 +19,7 @@ public class PacketExecuter
                     for(int i = 0; i< channel.queuedPackets.get(Side.SERVER).size(); i++)
                     {
                         AbstractPacket packet = channel.queuedPackets.get(Side.SERVER).get(i);
-                        packet.execute(Side.SERVER, packet.player);
+                        packet.execute(Side.SERVER, packet.playerServer);
                     }
                     channel.queuedPackets.get(Side.SERVER).clear();
                 }
@@ -40,7 +40,7 @@ public class PacketExecuter
                     for(int i = 0; i< channel.queuedPackets.get(Side.CLIENT).size(); i++)
                     {
                         AbstractPacket packet = channel.queuedPackets.get(Side.CLIENT).get(i);
-                        packet.execute(Side.CLIENT, packet.player);
+                        packet.execute(Side.CLIENT, packet.playerClient);
                     }
                     channel.queuedPackets.get(Side.CLIENT).clear();
                 }

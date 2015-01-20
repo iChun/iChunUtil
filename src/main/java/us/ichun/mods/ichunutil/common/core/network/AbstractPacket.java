@@ -6,7 +6,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class AbstractPacket
 {
-    protected EntityPlayer player;
+    protected EntityPlayer playerClient;
+    protected EntityPlayer playerServer;
 
     /**
      * Write packet info in this function
@@ -29,9 +30,4 @@ public abstract class AbstractPacket
      * @return is packet executed on the main ticking thread.
      */
     public boolean requiresMainThread(){ return true; };
-
-    protected void setFields(EntityPlayer player)
-    {
-        this.player = player;
-    }
 }

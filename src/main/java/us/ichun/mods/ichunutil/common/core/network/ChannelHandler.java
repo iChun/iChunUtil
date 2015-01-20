@@ -50,7 +50,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         EnumMap<Side, FMLEmbeddedChannel> handlers = NetworkRegistry.INSTANCE.newChannel(modId, new ChannelHandler(modId, packetTypes));
 
-        PacketChannel channel1 = new PacketChannel(modId, handlers);
+        PacketChannel channel1 = new PacketChannel(modId, handlers, packetTypes);
 
         PacketExecuter executer = new PacketExecuter(channel1);
 
@@ -97,7 +97,14 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             }
             else
             {
-                msg.setFields(player);
+                if(side.isServer())
+                {
+                    msg.playerServer = player;
+                }
+                else
+                {
+                    msg.playerClient = player;
+                }
                 synchronized(channel.queuedPackets)
                 {
                     channel.queuedPackets.get(side).add(msg);
