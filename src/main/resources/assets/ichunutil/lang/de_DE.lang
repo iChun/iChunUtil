@@ -32,3 +32,9 @@ ichun.config.versionNotificationFrequency.comment=Wie oft wirst du über ein Upd
 ichun.config.showPatronReward.comment=Willst du deine Patron Belohnung anderen Spielern zeigen?
 
 ichun.gui.newUpdate=Neues Mod-Update verfügbar!
+
+element.minimize=Minimieren
+element.expand=Erweitern
+
+element.button.ok=OK
+element.button.cancel=Abbrechen

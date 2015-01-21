@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 public class Theme
 {
-    private static transient Theme instance = new Theme();
+    private static transient Theme instance = new Theme(); //defaults. Try not to change this if possible.
 
     public transient String filename;
 
@@ -47,6 +47,11 @@ public class Theme
     public int[] fontChat                            = new int[] { 220, 220, 220 };
     public int[] font                                = new int[] { 255, 255, 255 };
     public int[] fontDim                             = new int[] { 150, 150, 150 };
+
+    public static Theme getInstance()
+    {
+        return instance;
+    }
 
     public static void loadTheme(Theme themeToLoad)
     {

@@ -17,10 +17,10 @@ import java.util.HashMap;
 
 public class CommonProxy
 {
-    public static TickHandlerClient tickHandlerClient;
-    public static TrailTicker trailTicker;
-    public static HashMap<String, String> versionChecker = new HashMap<String, String>();
-    public static HashMap<String, String> prevVerChecker = new HashMap<String, String>();
+    public TickHandlerClient tickHandlerClient;
+    public TrailTicker trailTicker;
+    public HashMap<String, String> versionChecker = new HashMap<String, String>();
+    public HashMap<String, String> prevVerChecker = new HashMap<String, String>();
 
     public void preInit()
     {

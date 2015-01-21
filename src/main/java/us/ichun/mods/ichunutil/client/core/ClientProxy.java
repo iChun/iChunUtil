@@ -35,15 +35,15 @@ public class ClientProxy extends CommonProxy
         Config.configKeybind = new Configuration(file);
         Config.configKeybind.load();
 
+        tickHandlerClient = new TickHandlerClient();
+        FMLCommonHandler.instance().bus().register(tickHandlerClient);
+
         (new ThreadGetPatrons()).start();
     }
 
     @Override
     public void init()
     {
-        tickHandlerClient = new TickHandlerClient();
-        FMLCommonHandler.instance().bus().register(tickHandlerClient);
-
         trailTicker = new TrailTicker();
         FMLCommonHandler.instance().bus().register(trailTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());

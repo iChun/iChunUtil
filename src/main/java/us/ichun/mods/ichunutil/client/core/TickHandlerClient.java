@@ -26,7 +26,6 @@ import java.util.Map;
 //TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client.
 public class TickHandlerClient
 {
-
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
     {
