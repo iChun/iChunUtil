@@ -13,7 +13,7 @@ public class ElementTextInput extends Element
     public String tooltip;
     public int spacing;
 
-    public ElementTextInput(Window window, int x, int y, int w, int h, int ID, String tip, int maxLength)
+    public ElementTextInput(Window window, int x, int y, int w, int h, int ID, String tip, int maxLength, String currentText)
     {
         super(window, x, y, w, 12, ID, false); //12 for height?
         textField = new GuiTextField(0, parent.workspace.getFontRenderer(), parent.posX + posX + 2, parent.posY + posY + 2, width - 9, parent.workspace.getFontRenderer().FONT_HEIGHT);
@@ -21,13 +21,24 @@ public class ElementTextInput extends Element
         textField.setEnableBackgroundDrawing(false);
         textField.setTextColor(Theme.getAsHex(parent.workspace.currentTheme.font));
         textField.setCanLoseFocus(false);
+        textField.setText(currentText);
         tooltip = tip;
         spacing = parent.width - width - x;
     }
 
+    public ElementTextInput(Window window, int x, int y, int w, int h, int ID, String tip, int maxLength)
+    {
+        this(window, x, y, w, h, ID, tip, maxLength, "");
+    }
+
     public ElementTextInput(Window window, int x, int y, int w, int h, int ID, String tip)
     {
-        this(window, x, y, w, h, ID, tip, 80);
+        this(window, x, y, w, h, ID, tip, 80, "");
+    }
+
+    public ElementTextInput(Window window, int x, int y, int w, int h, int ID, String tip, String currentText)
+    {
+        this(window, x, y, w, h, ID, tip, 80, currentText);
     }
 
     @Override
@@ -42,7 +53,7 @@ public class ElementTextInput extends Element
     {
         if(textField.isFocused())
         {
-            textField.mouseClicked(getPosX() + mouseX, getPosY() + mouseY, id);
+            textField.mouseClicked(parent.posX + mouseX + 2, parent.posY + mouseY + 2, id);
         }
         return true;
     }

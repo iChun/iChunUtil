@@ -38,3 +38,11 @@ element.expand=Erweitern
 
 element.button.ok=OK
 element.button.cancel=Abbrechen
+
+window.popup.title=Achtung!
+
+window.saveAs.title=Speichern unter
+window.saveAs.fileName=Dateiname
+window.saveAs.overwrite=Überschreiben?
+window.saveAs.confirmOverwrite=Datei existiert bereits! Überschreiben?
+window.saveAs.failed=Speichern der Datei fehlgeschlagen.

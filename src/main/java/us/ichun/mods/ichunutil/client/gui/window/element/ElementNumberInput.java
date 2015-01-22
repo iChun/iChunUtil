@@ -143,7 +143,7 @@ public class ElementNumberInput extends Element
         {
             if(textFields.get(selectedTextField).isFocused())
             {
-                textFields.get(selectedTextField).mouseClicked(getPosX() + mouseX, getPosY() + mouseY, id);
+                textFields.get(selectedTextField).mouseClicked(parent.posX + mouseX + 2, parent.posY + mouseY + 2, id);
             }
         }
 

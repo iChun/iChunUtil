@@ -41,3 +41,10 @@ element.expand=Expand
 element.button.ok=OK
 element.button.cancel=Cancel
 
+window.popup.title=Alert!
+
+window.saveAs.title=Save As
+window.saveAs.fileName=File Name
+window.saveAs.overwrite=Overwrite?
+window.saveAs.confirmOverwrite=File already exists! Confirm overwrite?
+window.saveAs.failed=Failed to save file.

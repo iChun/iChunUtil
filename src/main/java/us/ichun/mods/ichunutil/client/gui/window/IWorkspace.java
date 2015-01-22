@@ -44,7 +44,7 @@ public abstract class IWorkspace extends GuiScreen
 
     public int TOP_DOCK_HEIGHT = 19;
 
-    public Theme currentTheme;
+    public Theme currentTheme = Theme.copyInstance();
 
     public ArrayList<ArrayList<Window>> levels = new ArrayList<ArrayList<Window>>();
 

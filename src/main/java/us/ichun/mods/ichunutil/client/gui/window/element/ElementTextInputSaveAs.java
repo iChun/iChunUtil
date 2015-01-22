@@ -11,6 +11,11 @@ public class ElementTextInputSaveAs extends ElementTextInput
         super(window, x, y, w, h, ID, tip, 60);
     }
 
+    public ElementTextInputSaveAs(Window window, int x, int y, int w, int h, int ID, String tip, String curText)
+    {
+        super(window, x, y, w, h, ID, tip, 60, curText);
+    }
+
     @Override
     public void checkAndCorrectText(String oldText)//Text needs to be corrected cause this becomes a field name in the future
     {
