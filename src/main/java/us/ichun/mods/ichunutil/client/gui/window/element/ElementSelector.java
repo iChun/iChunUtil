@@ -45,7 +45,7 @@ public class ElementSelector extends Element
         {
             RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementInputBorder[0], parent.workspace.currentTheme.elementInputBorder[1], parent.workspace.currentTheme.elementInputBorder[2], 255, getPosX(), getPosY(), height, height, 0);
         }
-        parent.workspace.getFontRenderer().drawString("<", getPosX() + height - ((height + parent.workspace.getFontRenderer().getStringWidth("<")) / 2), getPosY() + height - ((height +  parent.workspace.getFontRenderer().FONT_HEIGHT) / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
+        parent.workspace.getFontRenderer().drawString("◀", getPosX() + height - ((height + parent.workspace.getFontRenderer().getStringWidth("◀")) / 2), getPosY() + height - ((height +  parent.workspace.getFontRenderer().FONT_HEIGHT) / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
 
         boolean hoverRight = mouseX >= posX + width - height && mouseX <= posX + width && mouseY >= posY && mouseY <= posY + height;
         if(hoverRight)
@@ -63,7 +63,7 @@ public class ElementSelector extends Element
         {
             RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementInputBorder[0], parent.workspace.currentTheme.elementInputBorder[1], parent.workspace.currentTheme.elementInputBorder[2], 255, getPosX() + width - height, getPosY(), height, height, 0);
         }
-        parent.workspace.getFontRenderer().drawString(">", getPosX() + width - ((height + parent.workspace.getFontRenderer().getStringWidth(">")) / 2), getPosY() + height - ((height +  parent.workspace.getFontRenderer().FONT_HEIGHT) / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
+        parent.workspace.getFontRenderer().drawString("▶", getPosX() + width - ((height + parent.workspace.getFontRenderer().getStringWidth("▶")) / 2), getPosY() + height - ((height +  parent.workspace.getFontRenderer().FONT_HEIGHT) / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
 
         if(!choices.containsKey(selected))
         {

@@ -3,12 +3,11 @@ package us.ichun.mods.ichunutil.common.core.util;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class IOUtil
 {
@@ -72,8 +71,6 @@ public class IOUtil
         return complete.digest();
     }
 
-    // see this How-to for a faster way to convert
-    // a byte array to a HEX string
     public static String getMD5Checksum(File file){
         try{
             byte[] b = createChecksum(file);
@@ -104,5 +101,32 @@ public class IOUtil
         final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    //compresses a string using gzip
+    public static byte[] compress(String string) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
+        GZIPOutputStream gos = new GZIPOutputStream(os);
+        gos.write(string.getBytes());
+        gos.close();
+        byte[] compressed = os.toByteArray();
+        os.close();
+        return compressed;
+    }
+
+    //decompressed a byte array to a string using gzip
+    public static String decompress(byte[] compressed) throws IOException {
+        final int BUFFER_SIZE = 32;
+        ByteArrayInputStream is = new ByteArrayInputStream(compressed);
+        GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
+        StringBuilder string = new StringBuilder();
+        byte[] data = new byte[BUFFER_SIZE];
+        int bytesRead;
+        while ((bytesRead = gis.read(data)) != -1) {
+            string.append(new String(data, 0, bytesRead));
+        }
+        gis.close();
+        is.close();
+        return string.toString();
     }
 }

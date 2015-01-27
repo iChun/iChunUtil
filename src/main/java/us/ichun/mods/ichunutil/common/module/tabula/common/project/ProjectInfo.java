@@ -517,8 +517,8 @@ public class ProjectInfo
             {
                 out.putNextEntry(new ZipEntry("texture.png"));
                 ImageIO.write(info.bufferedTexture, "png", out);
+                out.closeEntry();
             }
-            out.closeEntry();
 
             out.close();
 

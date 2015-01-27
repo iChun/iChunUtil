@@ -190,9 +190,10 @@ public class Window
         clickId = id;
 
         boolean clickedElement = false;
-        for(int k = elements.size() - 1; k >= 0; k--)
+        ArrayList<Element> els = new ArrayList<Element>(elements);
+        for(int k = els.size() - 1; k >= 0; k--)
         {
-            Element element = elements.get(k);
+            Element element = els.get(k);
             if(element.mouseInBoundary(mouseX, mouseY) && (minimized && element.ignoreMinimized || !minimized) && workspace.canClickOnElement(this, element) && element.onClick(mouseX, mouseY, id))
             {
                 if(id == 0)
