@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import us.ichun.mods.ichunutil.common.core.packet.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;

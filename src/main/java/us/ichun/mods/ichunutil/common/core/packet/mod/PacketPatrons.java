@@ -1,4 +1,4 @@
-package us.ichun.mods.ichunutil.common.core.packet;
+package us.ichun.mods.ichunutil.common.core.packet.mod;
 
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;

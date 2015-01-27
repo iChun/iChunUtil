@@ -1,4 +1,4 @@
-package us.ichun.mods.ichunutil.common.core.packet;
+package us.ichun.mods.ichunutil.common.core.packet.mod;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

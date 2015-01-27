@@ -288,6 +288,10 @@ public abstract class IWorkspace extends GuiScreen
                                     {
                                         tabs = new WindowTabs(this, window);
                                     }
+                                    if(windowDragged.minimized)
+                                    {
+                                        windowDragged.toggleMinimize();
+                                    }
                                     tabs.addWindow(windowDragged, true);
                                     levels.get(i).remove(j);
                                     levels.get(i).add(j, tabs);

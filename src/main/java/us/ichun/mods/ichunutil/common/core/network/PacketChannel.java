@@ -21,7 +21,7 @@ public class PacketChannel
     private final Class<? extends AbstractPacket>[] packetTypes;
     public final Map<Side, ArrayList<AbstractPacket>> queuedPackets = Collections.synchronizedMap(new EnumMap<Side, ArrayList<AbstractPacket>>(Side.class) {{ put(Side.CLIENT, new ArrayList<AbstractPacket>()); put(Side.SERVER, new ArrayList<AbstractPacket>()); }});
 
-    public PacketChannel(String id, EnumMap<Side, FMLEmbeddedChannel> chans, Class<? extends AbstractPacket>[] types)
+    protected PacketChannel(String id, EnumMap<Side, FMLEmbeddedChannel> chans, Class<? extends AbstractPacket>[] types)
     {
         modId = id;
         channels = chans;

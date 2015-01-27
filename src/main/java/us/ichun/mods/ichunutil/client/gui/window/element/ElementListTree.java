@@ -35,6 +35,7 @@ public abstract class ElementListTree extends Element
     public Tree treeDragged;
     public int dragX;
     public int dragY;
+    public double dragScroll;
 
     public Tree treeClicked;
     public int clickTimeout;
@@ -331,6 +332,7 @@ public abstract class ElementListTree extends Element
                 int offY = 0;
                 if(dragDraw)
                 {
+                    scrollHeight -= (height - totalHeight) * (sliderProg - dragScroll);
                     offX = mouseX - dragX;
                     offY = mouseY - dragY + (int)scrollHeight;
                 }
@@ -488,6 +490,7 @@ public abstract class ElementListTree extends Element
                         treeDragged = this;
                         dragX = mouseX;
                         dragY = mouseY;
+                        dragScroll = sliderProg;
                     }
                 }
             }
