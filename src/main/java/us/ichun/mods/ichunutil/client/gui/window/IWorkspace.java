@@ -10,6 +10,7 @@ import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementWindow;
+import us.ichun.mods.ichunutil.client.gui.window.element.ITextInput;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public abstract class IWorkspace extends GuiScreen
     public int elementDragY;
 
     public Element elementSelected;
+    public int selectedMouseX;
+    public int selectedMouseY;
 
     public Window windowDragged;
     public int dragType; //1 = title drag, 2 >= border drag.
@@ -155,6 +158,10 @@ public abstract class IWorkspace extends GuiScreen
             if(elementSelected != null)
             {
                 elementSelected.selected();
+                if(elementSelected instanceof ITextInput)
+                {
+                    elementSelected.onClick(selectedMouseX, selectedMouseY, 0);
+                }
             }
             if(prevElementSelected != null)
             {

@@ -203,6 +203,8 @@ public class Window
                     workspace.elementDragY = posY + mouseY;
                 }
                 workspace.elementSelected = element;
+                workspace.selectedMouseX = mouseX;
+                workspace.selectedMouseX = mouseY;
                 clickedElement = true;
             }
         }
