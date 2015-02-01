@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -14,7 +13,6 @@ import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetter;
 import us.ichun.mods.ichunutil.client.gui.window.IWorkspace;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
-import us.ichun.mods.ichunutil.client.gui.window.element.ElementButtonTextured;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementToggle;
 
 public class GuiConfigs extends IWorkspace
@@ -27,6 +25,8 @@ public class GuiConfigs extends IWorkspace
     public WindowSetter windowSetter;
 
     public boolean needsRestart;
+
+    public int keyBindTimeout;
 
     public GuiConfigs(int scale, GuiScreen screen)
     {
@@ -61,6 +61,10 @@ public class GuiConfigs extends IWorkspace
     public void updateScreen()
     {
         super.updateScreen();
+        if(keyBindTimeout > 0)
+        {
+            keyBindTimeout--;
+        }
     }
 
     @Override

@@ -528,51 +528,6 @@ public class GuiConfigSetterScroll extends GuiSlot
 
         if(settingKeybind)
         {
-            if(!releasedMouse)
-            {
-                releasedMouse = !Mouse.isButtonDown(0);
-            }
-            else
-            {
-                for(int i = 0; i < 16; i++)
-                {
-                    if(Mouse.isButtonDown(i))
-                    {
-                        if(Minecraft.isRunningOnMac && i == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)))
-                        {
-                            i = 1;
-                        }
-
-                        Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-                        if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
-                        {
-                            StringBuilder sb = new StringBuilder();
-
-                            sb.append(i - 100);
-
-                            if(GuiScreen.isShiftKeyDown())
-                            {
-                                sb.append(":SHIFT");
-                            }
-                            if(GuiScreen.isCtrlKeyDown())
-                            {
-                                sb.append(":CTRL");
-                            }
-                            if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
-                            {
-                                sb.append(":ALT");
-                            }
-
-                            updateProperty(prop, sb.toString());
-
-                            settingKeybind = false;
-                            selected = -1;
-                        }
-
-                        break;
-                    }
-                }
-            }
         }
     }
 
@@ -874,40 +829,6 @@ public class GuiConfigSetterScroll extends GuiSlot
     {
         if(settingKeybind)
         {
-            Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-            if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
-            {
-                if(i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU)
-                {
-                    lastKeyHeld = i;
-                    keyHeldTime = 0;
-                }
-                else
-                {
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.append(i);
-
-                    if(GuiScreen.isShiftKeyDown())
-                    {
-                        sb.append(":SHIFT");
-                    }
-                    if(GuiScreen.isCtrlKeyDown())
-                    {
-                        sb.append(":CTRL");
-                    }
-                    if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
-                    {
-                        sb.append(":ALT");
-                    }
-
-                    updateProperty(prop, sb.toString());
-
-                    settingKeybind = false;
-                    selected = -1;
-                }
-            }
-            return true;
         }
         if(selected != -1)
         {
@@ -1052,39 +973,6 @@ public class GuiConfigSetterScroll extends GuiSlot
 
         if(settingKeybind)
         {
-            if(GuiScreen.isShiftKeyDown() || GuiScreen.isCtrlKeyDown() || (Keyboard.isKeyDown(Keyboard.KEY_LMENU) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)))
-            {
-                keyHeldTime++;
-                if(keyHeldTime >= 60)
-                {
-                    keyHeldTime = 0;
-                    Property prop = config.props.get(config.propNameToProp.get(propNames.get(selected)));
-                    if(config.getPropType(prop) == Config.EnumPropType.KEYBIND)
-                    {
-                        StringBuilder sb = new StringBuilder();
-
-                        sb.append(lastKeyHeld);
-
-                        if(GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT))
-                        {
-                            sb.append(":SHIFT");
-                        }
-                        if(GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)))
-                        {
-                            sb.append(":CTRL");
-                        }
-                        if((Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) && !(lastKeyHeld == 56 || lastKeyHeld == 184))
-                        {
-                            sb.append(":ALT");
-                        }
-
-                        updateProperty(prop, sb.toString());
-
-                        settingKeybind = false;
-                        selected = -1;
-                    }
-                }
-            }
         }
     }
 }

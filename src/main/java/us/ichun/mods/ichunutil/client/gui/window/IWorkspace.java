@@ -105,7 +105,9 @@ public abstract class IWorkspace extends GuiScreen
         Element prevElementSelected = elementSelected;
         elementSelected = null;
 
-        GlStateManager.translate(0F, 0F, 1000F);
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.translate(0F, 0F, 100F);
         for(int i = levels.size() - 1; i >= 0 ; i--)
         {
             for(int j = levels.get(i).size() - 1; j >= 0; j--)

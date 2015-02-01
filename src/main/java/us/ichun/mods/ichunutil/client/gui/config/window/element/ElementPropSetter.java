@@ -1,18 +1,20 @@
 package us.ichun.mods.ichunutil.client.gui.config.window.element;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
+import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetKeyBind;
 import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetter;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
-import us.ichun.mods.ichunutil.client.gui.window.element.Element;
-import us.ichun.mods.ichunutil.client.gui.window.element.ElementNumberInput;
-import us.ichun.mods.ichunutil.client.gui.window.element.ElementTextInput;
-import us.ichun.mods.ichunutil.client.gui.window.element.ElementToggle;
+import us.ichun.mods.ichunutil.client.gui.window.WindowPopup;
+import us.ichun.mods.ichunutil.client.gui.window.element.*;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.Config;
@@ -589,6 +591,10 @@ public class ElementPropSetter extends Element
                 {
                     val = ((ElementNumberInput)tree.element).textFields.get(0).getText();
                 }
+                else
+                {
+                    val = tree.propInfo.prop.getString();
+                }
                 if(isValidValue(tree.config, tree.propInfo.prop, val))
                 {
                     config = tree.config;
@@ -639,6 +645,11 @@ public class ElementPropSetter extends Element
                 case INT_BOOL:
                 {
                     element = new ElementToggle(parent, 0, 0, 0, 12, 0, false, 0, 0, "gui.yes", null, propInfo.prop.getInt() == 1);
+                    break;
+                }
+                case KEYBIND:
+                {
+                    element = new ElementButton(parent, 0, 0, 0, 12, 0, false, 0, 0, "");
                     break;
                 }
 
@@ -702,6 +713,11 @@ public class ElementPropSetter extends Element
                 parent.workspace.elementSelected.selected();
                 parent.workspace.elementSelected.onClick(mouseX, mouseY, 0);
 
+                if(propInfo.type.equals(Config.EnumPropType.KEYBIND) && ((GuiConfigs)parent.workspace).keyBindTimeout == 0)
+                {
+                    parent.workspace.addWindowOnTop(new WindowSetKeyBind((GuiConfigs)parent.workspace, 300, 200, 180, 80, "ichun.config.gui.hitHeys", config, propInfo.prop).putInMiddleOfScreen());
+                }
+
                 if(clickTimeout > 0 && treeClicked == this)
                 {
                     triggerParent();
@@ -721,6 +737,49 @@ public class ElementPropSetter extends Element
                 {
                     ElementToggle toggle = (ElementToggle)element;
                     toggle.text = toggle.toggledState ? "gui.yes" : "gui.no";
+                }
+                else if(element instanceof ElementButton)
+                {
+                    ElementButton button = (ElementButton)element;
+
+                    w -= 10;
+                    x += 10;
+
+                    String keyString = propInfo.prop.getString();
+                    String[] strings = keyString.split(":");
+
+                    int key = 0;
+                    if(strings.length > 0)
+                    {
+                        key = Integer.parseInt(strings[0].trim());
+                    }
+
+                    button.text = GameSettings.getKeyDisplayString(key);
+
+                    GlStateManager.pushMatrix();
+
+                    float scale = 0.5F;
+                    GlStateManager.scale(scale, scale, scale);
+                    GlStateManager.translate(0.0F, -1F, 0.0F);
+
+                    if(keyString.contains("SHIFT"))
+                    {
+                        parent.workspace.drawString(parent.workspace.getFontRenderer(), "Shift", (int)((button.getPosX() - 1) / scale) - parent.workspace.getFontRenderer().getStringWidth("Shift"), (int)(button.getPosY() / scale), parent.workspace.currentTheme.getAsHex(parent.workspace.currentTheme.font));
+                        GlStateManager.translate(0.0F, 10F, 0.0F);
+                    }
+
+                    if(keyString.contains("CTRL"))
+                    {
+                        parent.workspace.drawString(parent.workspace.getFontRenderer(), "Ctrl", (int)((button.getPosX() - 1) / scale) - parent.workspace.getFontRenderer().getStringWidth("Ctrl"), (int)(button.getPosY() / scale), parent.workspace.currentTheme.getAsHex(parent.workspace.currentTheme.font));
+                        GlStateManager.translate(0.0F, 10F, 0.0F);
+                    }
+
+                    if(keyString.contains("ALT"))
+                    {
+                        parent.workspace.drawString(parent.workspace.getFontRenderer(), "Alt", (int)((button.getPosX() - 1) / scale) - parent.workspace.getFontRenderer().getStringWidth("Alt"), (int)(button.getPosY() / scale), parent.workspace.currentTheme.getAsHex(parent.workspace.currentTheme.font));
+                    }
+
+                    GlStateManager.popMatrix();
                 }
 
                 boolean flag = x != element.posX || y != element.posY || w != element.width;
