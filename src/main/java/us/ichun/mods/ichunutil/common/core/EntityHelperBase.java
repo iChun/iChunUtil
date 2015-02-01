@@ -8,14 +8,21 @@ import com.mojang.authlib.ProfileLookupCallback;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.*;
+import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import net.minecraft.potion.Potion;
+import net.minecraft.stats.AchievementList;
+import net.minecraft.stats.StatList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
@@ -135,6 +142,154 @@ public class EntityHelperBase
             sb.append(uuidList.get(i)).append("\n");
         }
         System.out.println(sb.toString());
+    }
+
+    public static void attackEntityWithItem(EntityLivingBase attacker, Entity targetEntity)
+    {
+        if (targetEntity.canAttackWithItem())
+        {
+            if (!targetEntity.hitByEntity(attacker))
+            {
+                float f = (float)attacker.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
+                byte b0 = 0;
+                float f1 = 0.0F;
+
+                if (targetEntity instanceof EntityLivingBase)
+                {
+                    f1 = EnchantmentHelper.func_152377_a(attacker.getHeldItem(), ((EntityLivingBase)targetEntity).getCreatureAttribute());
+                }
+                else
+                {
+                    f1 = EnchantmentHelper.func_152377_a(attacker.getHeldItem(), EnumCreatureAttribute.UNDEFINED);
+                }
+
+                int j = b0 + EnchantmentHelper.getKnockbackModifier(attacker);
+
+                if (attacker.isSprinting())
+                {
+                    ++j;
+                }
+
+                if (f > 0.0F || f1 > 0.0F)
+                {
+                    boolean flag = attacker.fallDistance > 0.0F && !attacker.onGround && !attacker.isOnLadder() && !attacker.isInWater() && !attacker.isPotionActive(Potion.blindness) && attacker.ridingEntity == null && targetEntity instanceof EntityLivingBase;
+
+                    if (flag && f > 0.0F)
+                    {
+                        f *= 1.5F;
+                    }
+
+                    f += f1;
+                    boolean flag1 = false;
+                    int i = EnchantmentHelper.getFireAspectModifier(attacker);
+
+                    if (targetEntity instanceof EntityLivingBase && i > 0 && !targetEntity.isBurning())
+                    {
+                        flag1 = true;
+                        targetEntity.setFire(1);
+                    }
+
+                    double d0 = targetEntity.motionX;
+                    double d1 = targetEntity.motionY;
+                    double d2 = targetEntity.motionZ;
+                    boolean flag2 = targetEntity.attackEntityFrom(attacker instanceof EntityPlayer ? DamageSource.causePlayerDamage((EntityPlayer)attacker) : DamageSource.causeMobDamage(attacker), f);
+
+                    if (flag2)
+                    {
+                        if (j > 0)
+                        {
+                            targetEntity.addVelocity((double)(-MathHelper.sin(attacker.rotationYaw * (float)Math.PI / 180.0F) * (float)j * 0.5F), 0.1D, (double)(MathHelper.cos(attacker.rotationYaw * (float)Math.PI / 180.0F) * (float)j * 0.5F));
+                            attacker.motionX *= 0.6D;
+                            attacker.motionZ *= 0.6D;
+                            attacker.setSprinting(false);
+                        }
+
+                        if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged)
+                        {
+                            ((EntityPlayerMP)targetEntity).playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(targetEntity));
+                            targetEntity.velocityChanged = false;
+                            targetEntity.motionX = d0;
+                            targetEntity.motionY = d1;
+                            targetEntity.motionZ = d2;
+                        }
+
+                        EntityPlayer player = null;
+                        if(attacker instanceof EntityPlayer)
+                        {
+                            player = (EntityPlayer)attacker;
+                        }
+
+                        if(player != null)
+                        {
+                            if(flag)
+                            {
+                                player.onCriticalHit(targetEntity);
+                            }
+
+                            if(f1 > 0.0F)
+                            {
+                                player.onEnchantmentCritical(targetEntity);
+                            }
+
+                            if(f >= 18.0F)
+                            {
+                                player.triggerAchievement(AchievementList.overkill);
+                            }
+                        }
+
+                        attacker.setLastAttacker(targetEntity);
+
+                        if (targetEntity instanceof EntityLivingBase)
+                        {
+                            EnchantmentHelper.func_151384_a((EntityLivingBase)targetEntity, attacker);
+                        }
+
+                        EnchantmentHelper.func_151385_b(attacker, targetEntity);
+                        ItemStack itemstack = attacker.getHeldItem();
+                        Object object = targetEntity;
+
+                        if (targetEntity instanceof EntityDragonPart)
+                        {
+                            IEntityMultiPart ientitymultipart = ((EntityDragonPart)targetEntity).entityDragonObj;
+
+                            if (ientitymultipart instanceof EntityLivingBase)
+                            {
+                                object = (EntityLivingBase)ientitymultipart;
+                            }
+                        }
+
+                        if(player != null)
+                        {
+                            if(itemstack != null && object instanceof EntityLivingBase)
+                            {
+                                itemstack.hitEntity((EntityLivingBase)object, player);
+
+                                if(itemstack.stackSize <= 0)
+                                {
+                                    player.destroyCurrentEquippedItem();
+                                }
+                            }
+
+                            if(targetEntity instanceof EntityLivingBase)
+                            {
+                                player.addStat(StatList.damageDealtStat, Math.round(f * 10.0F));
+
+                                if(i > 0)
+                                {
+                                    targetEntity.setFire(i * 4);
+                                }
+                            }
+
+                            player.addExhaustion(0.3F);
+                        }
+                    }
+                    else if (flag1)
+                    {
+                        targetEntity.extinguish();
+                    }
+                }
+            }
+        }
     }
 
     public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d)
