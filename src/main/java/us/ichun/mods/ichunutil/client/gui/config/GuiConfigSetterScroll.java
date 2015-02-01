@@ -339,7 +339,6 @@ public class GuiConfigSetterScroll extends GuiSlot
                     {
                         def = config.sessionState.get(Side.SERVER).get(prop.getName());
                         config.sessionState.get(Side.SERVER).put(prop.getName(), i);
-                        System.out.println(prop.getName());
                     }
 
                     if(config.parent.onConfigChange(config, prop))

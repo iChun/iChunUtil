@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
+import us.ichun.mods.ichunutil.common.core.config.Config;
 import us.ichun.mods.ichunutil.common.core.util.IOUtil;
 import us.ichun.mods.ichunutil.common.module.tabula.client.model.ModelInfo;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.components.Animation;
@@ -19,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class ElementListTree extends Element
+public class ElementListTree extends Element
 {
     public int spacerL;
     public int spacerR;
@@ -215,7 +216,7 @@ public abstract class ElementListTree extends Element
         rmbDown = Mouse.isButtonDown(1);
     }
 
-    public abstract void dragOnto(Object draggedOn, Object dragged);
+    public void dragOnto(Object draggedOn, Object dragged){}
 
     @Override
     public void resized()
@@ -261,6 +262,14 @@ public abstract class ElementListTree extends Element
         if(obj instanceof Animation)
         {
             selectedIdentifier = ((Animation)obj).identifier;
+        }
+        else if(obj instanceof Config)
+        {
+            selectedIdentifier = ((Config)obj).modName;
+        }
+        else if(obj instanceof String)
+        {
+            selectedIdentifier = ((String)obj);
         }
     }
 
@@ -393,7 +402,7 @@ public abstract class ElementListTree extends Element
                     }
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     RendererHelper.drawTextureOnScreen(txModel, getPosX() + offX + 1.5D + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, theHeight - 4, theHeight - 4, 0);
-                    parent.workspace.getFontRenderer().drawString(reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
                     if(info.parentIdentifier == null && realBorder && rClicking)
                     {
                         rightClickElement(attachedObject);
@@ -433,7 +442,7 @@ public abstract class ElementListTree extends Element
                     }
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     RendererHelper.drawTextureOnScreen(txGroup, getPosX() + offX + 1.5D + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, theHeight - 4, theHeight - 4, 0);
-                    parent.workspace.getFontRenderer().drawString(reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
                     if(realBorder && rClicking)
                     {
                         rightClickElement(attachedObject);
@@ -442,7 +451,7 @@ public abstract class ElementListTree extends Element
                 else if(attachedObject instanceof ModelInfo)
                 {
                     ModelInfo info = (ModelInfo)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(reString(info.modelParent.getClass().getSimpleName() + " - " + info.clz.getSimpleName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.modelParent.getClass().getSimpleName() + " - " + info.clz.getSimpleName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof File)
                 {
@@ -454,21 +463,25 @@ public abstract class ElementListTree extends Element
                 else if(attachedObject instanceof Theme)
                 {
                     Theme theme = (Theme)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(reString(theme.name + " - " + theme.author, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(theme.name + " - " + theme.author, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof Animation)
                 {
                     Animation anim = (Animation)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(reString(anim.name, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(anim.name, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof String)
                 {
-                    parent.workspace.getFontRenderer().drawString(reString((String)attachedObject, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString((String)attachedObject, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                }
+                else if(attachedObject instanceof Config)
+                {
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(((Config)attachedObject).modName, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof IListable)
                 {
                     IListable info = (IListable)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(reString(StatCollector.translateToLocal(info.getName()), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(StatCollector.translateToLocal(info.getName()), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
 
                 if(realBorder && clicking)
@@ -506,26 +519,6 @@ public abstract class ElementListTree extends Element
                     tree.selected = false;
                 }
             }
-        }
-
-        public String reString(String s, int width)
-        {
-            while(s.length() > 1 && parent.workspace.getFontRenderer().getStringWidth(s) > width - 3 - (attached * 5))
-            {
-                if(s.startsWith("..."))
-                {
-                    break;
-                }
-                if(s.endsWith("..."))
-                {
-                    s = s.substring(0, s.length() - 5) + "...";
-                }
-                else
-                {
-                    s = s.substring(0, s.length() - 1) + "...";
-                }
-            }
-            return s;
         }
     }
 }

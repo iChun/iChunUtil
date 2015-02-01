@@ -77,27 +77,7 @@ public class ElementSelector extends Element
             }
         }
 
-        parent.workspace.getFontRenderer().drawString(reString(selected, width - height - height), getPosX() + height + 2, getPosY() + 2, Theme.getAsHex(parent.workspace.currentTheme.font), false);
-    }
-
-    public String reString(String s, int width)
-    {
-        while(s.length() > 1 && parent.workspace.getFontRenderer().getStringWidth(s) > width - 3)
-        {
-            if(s.startsWith("..."))
-            {
-                break;
-            }
-            if(s.endsWith("..."))
-            {
-                s = s.substring(0, s.length() - 5) + "...";
-            }
-            else
-            {
-                s = s.substring(0, s.length() - 1) + "...";
-            }
-        }
-        return s;
+        parent.workspace.getFontRenderer().drawString(parent.workspace.reString(selected, width - height - height), getPosX() + height + 2, getPosY() + 2, Theme.getAsHex(parent.workspace.currentTheme.font), false);
     }
 
     @Override

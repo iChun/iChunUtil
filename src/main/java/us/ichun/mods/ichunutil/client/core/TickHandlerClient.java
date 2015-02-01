@@ -1,23 +1,25 @@
 package us.ichun.mods.ichunutil.client.core;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiOptions;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigBase;
+import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiOptions;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,11 @@ import java.util.Map;
 //TODO check all the tick handlers for world and player ticks to make sure that the side is only called on server/client.
 public class TickHandlerClient
 {
+    public TickHandlerClient()
+    {
+        buttonDummy = new GuiButton(0, 0, 0, "");
+    }
+
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
     {
@@ -47,22 +54,35 @@ public class TickHandlerClient
         {
             if(!ConfigHandler.configs.isEmpty() && mc.currentScreen != null && mc.currentScreen.getClass().equals(GuiOptions.class))
             {
+                ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
                 GuiOptions gui = (GuiOptions)mc.currentScreen;
                 String s = StatCollector.translateToLocalFormatted("ichun.gui.moreOptions", GameSettings.getKeyDisplayString(Keyboard.KEY_O));
+                int width = mc.fontRendererObj.getStringWidth(s);
+                int i = Mouse.getX() * reso.getScaledWidth() / mc.displayWidth;
+                int j = reso.getScaledHeight() - Mouse.getY() * reso.getScaledHeight() / mc.displayHeight - 1;
+                buttonDummy.xPosition = reso.getScaledWidth() - (width + 5);
+                buttonDummy.yPosition = reso.getScaledHeight() - (mc.fontRendererObj.FONT_HEIGHT + 4);
+                buttonDummy.width = width + 40;
+                buttonDummy.height = 20;
+                buttonDummy.drawButton(mc, 0, 0);
                 gui.drawString(mc.fontRendererObj, s, gui.width - mc.fontRendererObj.getStringWidth(s) - 2, gui.height - 10, 16777215);
 
-                if(!optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
+                if(!mouseLeftDown && Mouse.isButtonDown(0) && i >= buttonDummy.xPosition && i <= reso.getScaledWidth() && j >= buttonDummy.yPosition && j <= reso.getScaledHeight() || !optionsKeyDown && Keyboard.isKeyDown(Keyboard.KEY_O))
                 {
-                    mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, mc.gameSettings, null));
+                    buttonDummy.playPressSound(mc.getSoundHandler());
+                    int oriScale = mc.gameSettings.guiScale;
+                    mc.gameSettings.guiScale = 2;
+//                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, mc.gameSettings, null));
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigs(oriScale, mc.currentScreen));
                 }
 
+                mouseLeftDown = Mouse.isButtonDown(0);
                 optionsKeyDown = Keyboard.isKeyDown(Keyboard.KEY_O);
             }
             if(mc.theWorld != null)
             {
-//                RendererHelper.renderTestStencil();
-//                RendererHelper.renderTestSciccor();
+                //                RendererHelper.renderTestStencil();
+                //                RendererHelper.renderTestSciccor();
 
                 if(modUpdateNotification != null)
                 {
@@ -102,8 +122,10 @@ public class TickHandlerClient
     }
 
     public GuiModUpdateNotification modUpdateNotification;
-    
+
     public boolean optionsKeyDown;
+    public boolean mouseLeftDown;
+    public GuiButton buttonDummy;
 
     public int screenWidth = Minecraft.getMinecraft().displayWidth;
     public int screenHeight = Minecraft.getMinecraft().displayHeight;

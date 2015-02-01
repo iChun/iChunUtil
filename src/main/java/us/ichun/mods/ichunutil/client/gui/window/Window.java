@@ -56,8 +56,11 @@ public class Window
 
         if(hasTitle)
         {
-            elements.add(new ElementMinimize(this, width - 13, 2, 10, 10, -100));
             elements.add(new ElementTitle(this, 0, 0, parent.width - 13, 13, -100));
+        }
+        if(canMinimize())
+        {
+            elements.add(new ElementMinimize(this, width - 13, 2, 10, 10, -100));
         }
 
         docked = -1;
@@ -279,6 +282,8 @@ public class Window
     {
         return false;
     }
+
+    public boolean canMinimize() { return true; }
 
     public boolean invertMinimizeSymbol()
     {

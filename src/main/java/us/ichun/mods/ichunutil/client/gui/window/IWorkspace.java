@@ -710,7 +710,7 @@ public abstract class IWorkspace extends GuiScreen
 
     public void screenResize()
     {
-        for(int i = 0; i <= 3; i++)
+        for(int i = 0; i < VARIABLE_LEVEL; i++)
         {
             ArrayList<Window> docked = levels.get(i);
             for(int j = 0; j < docked.size(); j++)
@@ -756,7 +756,7 @@ public abstract class IWorkspace extends GuiScreen
             }
         }
 
-        for(int i = 4; i < levels.size(); i++)
+        for(int i = VARIABLE_LEVEL; i < levels.size(); i++)
         {
             ArrayList<Window> docked = levels.get(i);
             for(int j = 0; j < docked.size(); j++)
@@ -767,6 +767,8 @@ public abstract class IWorkspace extends GuiScreen
                 {
                     window.putInMiddleOfScreen();
                 }
+
+                window.resized();
             }
         }
 
@@ -798,5 +800,25 @@ public abstract class IWorkspace extends GuiScreen
                 }
             }
         }
+    }
+
+    public String reString(String s, int width)
+    {
+        while(s.length() > 1 && getFontRenderer().getStringWidth(s) > width - 3)
+        {
+            if(s.startsWith("..."))
+            {
+                break;
+            }
+            if(s.endsWith("..."))
+            {
+                s = s.substring(0, s.length() - 4) + "...";
+            }
+            else
+            {
+                s = s.substring(0, s.length() - 1) + "...";
+            }
+        }
+        return s;
     }
 }
