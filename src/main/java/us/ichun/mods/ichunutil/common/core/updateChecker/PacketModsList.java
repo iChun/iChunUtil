@@ -1,11 +1,11 @@
 package us.ichun.mods.ichunutil.common.core.updateChecker;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import us.ichun.mods.ichunutil.common.iChunUtil;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.HashMap;
 
@@ -43,12 +43,12 @@ public class PacketModsList extends AbstractPacket
             name = ByteBufUtils.readUTF8String(buffer);
         }
 
-        if(iChunUtil.config.getInt("versionNotificationTypes") == 1 && !isOp && iChunUtil.proxy.tickHandlerClient.modUpdateNotification != null)
+        if(iChunUtil.config.versionNotificationTypes == 1 && !isOp && iChunUtil.proxy.tickHandlerClient.modUpdateNotification != null)
         {
             iChunUtil.proxy.tickHandlerClient.modUpdateNotification.clearModUpdates();
         }
 
-        if(iChunUtil.config.getInt("versionNotificationTypes") == 0 || iChunUtil.config.getInt("versionNotificationTypes") == 1 && isOp)
+        if(iChunUtil.config.versionNotificationTypes == 0 || iChunUtil.config.versionNotificationTypes == 1 && isOp)
         {
             ModVersionChecker.compareServerVersions(versions);
         }

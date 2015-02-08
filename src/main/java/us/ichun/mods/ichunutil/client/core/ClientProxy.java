@@ -1,8 +1,13 @@
 package us.ichun.mods.ichunutil.client.core;
 
+import com.google.common.base.Splitter;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,13 +19,11 @@ import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
 import us.ichun.mods.ichunutil.client.voxel.RenderVoxels;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
-import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class ClientProxy extends CommonProxy
@@ -32,8 +35,20 @@ public class ClientProxy extends CommonProxy
         ResourceHelper.init();
 
         File file = new File(ResourceHelper.getConfigFolder(), "iChunUtil_KeyBinds.cfg");
-        Config.configKeybind = new Configuration(file);
-        Config.configKeybind.load();
+        ConfigHandler.configKeybind = new Configuration(file);
+        ConfigHandler.configKeybind.load();
+
+        List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal("ichunutil.config.cat.keybind.comment"));
+        String cm = "";
+        for(int ll = 0; ll < cms.size(); ll++)
+        {
+            cm = cm + cms.get(ll);
+            if(ll != cms.size() - 1)
+            {
+                cm = cm + "\n";
+            }
+        }
+        ConfigHandler.configKeybind.addCustomCategoryComment("keybinds", cm);
 
         tickHandlerClient = new TickHandlerClient();
         FMLCommonHandler.instance().bus().register(tickHandlerClient);

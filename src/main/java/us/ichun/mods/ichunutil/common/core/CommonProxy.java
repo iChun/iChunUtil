@@ -8,6 +8,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.core.TickHandlerClient;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
+import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketSession;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
 import us.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.settings.KeyBinding;
@@ -25,6 +30,8 @@ public class CommonProxy
     public void preInit()
     {
         EventCalendar.checkDate();
+
+        iChunUtil.channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class);
     }
 
     public void init()

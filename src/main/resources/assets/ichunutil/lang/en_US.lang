@@ -1,44 +1,45 @@
-ichun.config.cat.general.name=General Options
-ichun.config.cat.gameplay.name=Gameplay
-ichun.config.cat.globalOptions.name=Global Options
-ichun.config.cat.serverOptions.name=Server Options
-ichun.config.cat.clientOnly.name=Client Only
+ichunutil.config.cat.general.name=General Options
+ichunutil.config.cat.gameplay.name=Gameplay
+ichunutil.config.cat.globalOptions.name=Global Options
+ichunutil.config.cat.serverOptions.name=Server Options
+ichunutil.config.cat.clientOnly.name=Client Only
 
-ichun.config.cat.general.comment=These options are general options that don't fit any other category.
-ichun.config.cat.gameplay.comment=These options affect the gameplay while using the mod.
-ichun.config.cat.globalOptions.comment=These options affect both servers and clients that load the mod.
-ichun.config.cat.serverOptions.comment=These options affect only the server that loads the mod.
-ichun.config.cat.clientOnly.comment=These options affect only the client that loads the mod.
+ichunutil.config.cat.general.comment=These options are general options that don't fit any other category.
+ichunutil.config.cat.gameplay.comment=These options affect the gameplay while using the mod.
+ichunutil.config.cat.globalOptions.comment=These options affect both servers and clients that load the mod.
+ichunutil.config.cat.serverOptions.comment=These options affect only the server that loads the mod.
+ichunutil.config.cat.clientOnly.comment=These options affect only the client that loads the mod.
 
-ichun.config.keybind.comment=If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
-ichun.config.keybind.tip1=These key binds allow a combination of Shift/Ctrl/Alt
-ichun.config.keybind.tip2=Try holding those down when setting a key bind
-ichun.config.keybind.tip3=If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.
+ichunutil.config.cat.keybind.name=Key Binds
+ichunutil.config.cat.keybind.comment=If you're reading this, I would strongly recommend changing the keybinds ingame.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
+ichunutil.config.cat.keybind.tip1=These key binds allow a combination of Shift/Ctrl/Alt
+ichunutil.config.cat.keybind.tip2=Try holding those down when setting a key bind
+ichunutil.config.cat.keybind.tip3=If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.
 
-ichun.config.versionCheck.name=Update Checker
-ichun.config.versionSave.name=Update Checker Save
-ichun.config.patreon.name=Patreon
+ichunutil.config.cat.versionCheck.name=Update Checker
+ichunutil.config.cat.versionSave.name=Update Checker Save
+ichunutil.config.cat.patreon.name=Patreon
 
-ichun.config.versionCheck.comment=These configs are for the mod version update checker added by iChunUtil.
-ichun.config.versionSave.comment=These are save info for the update checker. Don't change these unless you want to break stuff.
-ichun.config.patreon.comment=Patreon related configs.
+ichunutil.config.cat.versionCheck.comment=These configs are for the mod version update checker added by iChunUtil.
+ichunutil.config.cat.versionSave.comment=These are save info for the update checker. Don't change these unless you want to break stuff.
+ichunutil.config.cat.patreon.comment=Patreon related configs.
 
-ichun.config.versionNotificationTypes.name=Update Notification Types
-ichun.config.versionNotificationFrequency.name=Update Notification Frequency
-ichun.config.showPatronReward.name=Show Patron Reward
+ichunutil.config.prop.versionNotificationTypes.name=Update Notification Types
+ichunutil.config.prop.versionNotificationFrequency.name=Update Notification Frequency
+ichunutil.config.prop.showPatronReward.name=Show Patron Reward
 
-ichun.config.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status (op or not).\n1 = Notify only server ops of updates (Clientside only mod updates will still show)\n2 = Allow client to notify themselves of updates.
-ichun.config.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once you connect to server\n1 = Once a day\n2 = Only once until newer updates.\n3 = Never (This just hides notifications. The mod will still check for updates and print out to the console).
-ichun.config.showPatronReward.comment=Do you want to show your patron reward to other players?
+ichunutil.config.prop.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status (op or not).\n1 = Notify only server ops of updates (Clientside only mod updates will still show)\n2 = Allow client to notify themselves of updates.
+ichunutil.config.prop.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once you connect to server\n1 = Once a day\n2 = Only once until newer updates.\n3 = Never (This just hides notifications. The mod will still check for updates and print out to the console).
+ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron reward to other players?
 
 ichun.gui.newUpdate=New Mod Update Available!
 
 ichun.gui.moreOptions=Hit %s or click here to view more options
 
-ichun.config.gui.options=Options
-ichun.config.gui.needsRestart=Some changes require a client restart
-ichun.config.gui.setKeyBind=Set Key Bind
-ichun.config.gui.hitHeys=Setting key... Holding SHIFT/CTRL/ALT are optional
+ichunutil.config.gui.options=Options
+ichunutil.config.gui.needsRestart=Some changes require a client restart
+ichunutil.config.gui.setKeyBind=Set Key Bind
+ichunutil.config.gui.hitHeys=Setting key... Holding SHIFT/CTRL/ALT are optional
 
 element.minimize=Minimize
 element.expand=Expand

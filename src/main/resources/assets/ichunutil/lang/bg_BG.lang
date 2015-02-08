@@ -1,30 +1,30 @@
-ichun.config.cat.general.name = Общи опции
-ichun.config.cat.gameplay.name = Gameplay
-ichun.config.cat.globalOptions.name = Глобални Options
-Опции ichun.config.cat.serverOptions.name = Сървър
-ichun.config.cat.clientOnly.name = Client Само
+ichunutil.config.cat.general.name = Общи опции
+ichunutil.config.cat.gameplay.name = Gameplay
+ichunutil.config.cat.globalOptions.name = Глобални Options
+ichunutil.config.cat.serverOptions.name = Сървър
+ichunutil.config.cat.clientOnly.name = Client Само
 
-ichun.config.cat.general.comment = Тези опции са общи опции, които не се вписват в никоя друга категория.
-ichun.config.cat.gameplay.comment = Тези опции влияят на геймплея, докато използвате Mod.
-ichun.config.cat.globalOptions.comment = Тези опции влияят на сървъри, така и за клиенти, които се зареждат на Министерството на отбраната.
-ichun.config.cat.serverOptions.comment = Тези опции засягат само на сървъра, който зарежда Mod.
-ichun.config.cat.clientOnly.comment = Тези опции засягат само на клиента, която се зарежда на Министерството на отбраната.
+ichunutil.config.cat.general.comment = Тези опции са общи опции, които не се вписват в никоя друга категория.
+ichunutil.config.cat.gameplay.comment = Тези опции влияят на геймплея, докато използвате Mod.
+ichunutil.config.cat.globalOptions.comment = Тези опции влияят на сървъри, така и за клиенти, които се зареждат на Министерството на отбраната.
+ichunutil.config.cat.serverOptions.comment = Тези опции засягат само на сървъра, който зарежда Mod.
+ichunutil.config.cat.clientOnly.comment = Тези опции засягат само на клиента, която се зарежда на Министерството на отбраната.
 
-ichun.config.keybind.comment = Ако четете това, аз силно препоръчвам променя в играта keybinds. \ niChunUtil използва персонализирани keybinds. . Отиди на страницата с опции и натиснете O, за да покажем други опции \ н \ nАко наистина трябва да редактирате конфигурационния файл, чийто формат е <key code>, и добавите или ": SHIFT", ": CTRL", или ": . ALT "за ключове, които искате да задържите в същото време \ nFor ключови кодове посетете: http://minecraft.gamepedia.com/Key_codes \ nExample: 48: SHIFT: ALT ще се свърже с бутон B, когато държите Shift и Alt.
-ichun.config.keybind.tip1 = Тези ключови свързва позволяват комбинация от Shift / Ctrl / Alt
-ichun.config.keybind.tip2 = Опитайте се държи тези надолу, когато задавате ключов свързват
-ichun.config.keybind.tip3 = Ако искате да обвържете Shift / Ctrl / Alt, да ги задръжте за 3 секунди. Последно ключов проведе, ще бъде вързано.
+ichunutil.config.cat.keybind.comment = Ако четете това, аз силно препоръчвам променя в играта keybinds. \niChunUtil използва персонализирани keybinds. . Отиди на страницата с опции и натиснете O, за да покажем други опции \ н \ nАко наистина трябва да редактирате конфигурационния файл, чийто формат е <key code>, и добавите или ": SHIFT", ": CTRL", или ": . ALT "за ключове, които искате да задържите в същото време \ nFor ключови кодове посетете: http://minecraft.gamepedia.com/Key_codes \ nExample: 48: SHIFT: ALT ще се свърже с бутон B, когато държите Shift и Alt.
+ichunutil.config.cat.keybind.tip1 = Тези ключови свързва позволяват комбинация от Shift / Ctrl / Alt
+ichunutil.config.cat.keybind.tip2 = Опитайте се държи тези надолу, когато задавате ключов свързват
+ichunutil.config.cat.keybind.tip3 = Ако искате да обвържете Shift / Ctrl / Alt, да ги задръжте за 3 секунди. Последно ключов проведе, ще бъде вързано.
 
-ichun.config.versionCheck.name = Обновяване Checker
-ichun.config.versionSave.name = Обновяване Checker Save
+ichunutil.config.prop.versionCheck.name = Обновяване Checker
+ichunutil.config.prop.versionSave.name = Обновяване Checker Save
 
-ichun.config.versionCheck.comment = Тези конфигурационни файлове са за Министерството на отбраната на добавяне от iChunUtil актуализация версия проверка.
-ichun.config.versionSave.comment = Това са спести Информация за проверка за обновления. Не променяйте тези освен ако не искате да се прекъсне неща.
+ichunutil.config.prop.versionCheck.comment = Тези конфигурационни файлове са за Министерството на отбраната на добавяне от iChunUtil актуализация версия проверка.
+ichunutil.config.prop.versionSave.comment = Това са спести Информация за проверка за обновления. Не променяйте тези освен ако не искате да се прекъсне неща.
 
-Видове ichun.config.versionNotificationTypes.name = Уведомяване при обновяване
-ichun.config.versionNotificationFrequency.name = Обновяване Уведомление Frequency
+ichunutil.config.prop.versionNotificationTypes.name = Уведомяване при обновяване
+ichunutil.config.prop.versionNotificationFrequency.name = Обновяване Уведомление Frequency
 
-ichun.config.versionNotificationTypes.comment = Как ще бъдат уведомени КЛИЕНТА за новини? (Сървъри винаги ще имат актуализацията отпечатва на конзолата. Сингълплейър се присъедини към себе си самостоятелно хоства сървъра) \ n0 = Уведоми известия независимо от статута на играч (ОП или не). \ N1 = Уведоми само сървърните операции на актуализации (Clientside само мод актуализации ще продължат да се показват) \ N 2 = Позволи клиент, за да се уведоми за актуализации.
-ichun.config.versionNotificationFrequency.comment = Колко често ще бъдат уведомени за актуализацията? (Client довереник) \ n0 = След като се свърже със сървъра \ n1 = Веднъж на ден \ n2 = Само веднъж, докато по-новите актуализации. \ n3 = Never (Това просто скрива уведомления. Министерството на отбраната ще продължи да проверява за актуализации и разпечатате на конзолата).
+ichunutil.config.prop.versionNotificationTypes.comment = Как ще бъдат уведомени КЛИЕНТА за новини? (Сървъри винаги ще имат актуализацията отпечатва на конзолата. Сингълплейър се присъедини към себе си самостоятелно хоства сървъра) \ n0 = Уведоми известия независимо от статута на играч (ОП или не). \ N1 = Уведоми само сървърните операции на актуализации (Clientside само мод актуализации ще продължат да се показват) \ N 2 = Позволи клиент, за да се уведоми за актуализации.
+ichunutil.config.prop.versionNotificationFrequency.comment = Колко често ще бъдат уведомени за актуализацията? (Client довереник) \ n0 = След като се свърже със сървъра \ n1 = Веднъж на ден \ n2 = Само веднъж, докато по-новите актуализации. \ n3 = Never (Това просто скрива уведомления. Министерството на отбраната ще продължи да проверява за актуализации и разпечатате на конзолата).
 
 ichun.gui.newUpdate = New Mod обновяване на разположение!

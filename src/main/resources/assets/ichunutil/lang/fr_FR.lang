@@ -1,30 +1,30 @@
-ichun.config.cat.general.name=Options générales
-ichun.config.cat.gameplay.name=Jouabilité
-ichun.config.cat.globalOptions.name=Options globales
-ichun.config.cat.serverOptions.name=Options serveur
-ichun.config.cat.clientOnly.name=Côté client seulement
+ichunutil.config.cat.general.name=Options générales
+ichunutil.config.cat.gameplay.name=Jouabilité
+ichunutil.config.cat.globalOptions.name=Options globales
+ichunutil.config.cat.serverOptions.name=Options serveur
+ichunutil.config.cat.clientOnly.name=Côté client seulement
 
-ichun.config.cat.general.comment=Ces options sont des options générales qui ne rentrent dans aucune autre catégorie.
-ichun.config.cat.gameplay.comment=Ces options affectent la jouabilité pendant l'utilisation du mod.
-ichun.config.cat.globalOptions.comment=Ces options affectent le client et le serveur utilisant le mod.
-ichun.config.cat.serverOptions.comment=Ces paramètres affectent seulement le serveur utilisant le mod.
-ichun.config.cat.clientOnly.comment=Ces paramètres affectent seulement le client utilisant le mod.
+ichunutil.config.cat.general.comment=Ces options sont des options générales qui ne rentrent dans aucune autre catégorie.
+ichunutil.config.cat.gameplay.comment=Ces options affectent la jouabilité pendant l'utilisation du mod.
+ichunutil.config.cat.globalOptions.comment=Ces options affectent le client et le serveur utilisant le mod.
+ichunutil.config.cat.serverOptions.comment=Ces paramètres affectent seulement le serveur utilisant le mod.
+ichunutil.config.cat.clientOnly.comment=Ces paramètres affectent seulement le client utilisant le mod.
 
-ichun.config.keybind.comment=Si vous lisez ceci, je recommande fortement de changer l'affectation des touches en jeu.\niChunUtil utilise des touches clavier spécifiques. Allez dans les options et appuyez sur O pour afficher les autres options.\n\nSi vous devez vraiment éditer le fichier de configuration, le format est <code clavier>, suivi éventuellement de ":SHIFT", ":CTRL", ou ":ALT" pour les touches que vous voulez appuyer en même temps.\nPour les codes de touches clavier, allez sur: http://minecraft.gamepedia.com/Key_codes \nExemple: 48:SHIFT:ALT affectera la touche B avec les touches Alt et Maj.
-ichun.config.keybind.tip1=Ces touches peuvent être combinées avec Maj/Ctrl/Alt
-ichun.config.keybind.tip2=Essayez de les garder enfoncées quand vous affectez la combinaison
-ichun.config.keybind.tip3=Si vous voulez affecter Maj/Ctrl/Alt, tenez cette touche pendant 3 secondes. La dernière touche tenue sera affectée.
+ichunutil.config.cat.keybind.comment=Si vous lisez ceci, je recommande fortement de changer l'affectation des touches en jeu.\niChunUtil utilise des touches clavier spécifiques. Allez dans les options et appuyez sur O pour afficher les autres options.\n\nSi vous devez vraiment éditer le fichier de configuration, le format est <code clavier>, suivi éventuellement de ":SHIFT", ":CTRL", ou ":ALT" pour les touches que vous voulez appuyer en même temps.\nPour les codes de touches clavier, allez sur: http://minecraft.gamepedia.com/Key_codes \nExemple: 48:SHIFT:ALT affectera la touche B avec les touches Alt et Maj.
+ichunutil.config.cat.keybind.tip1=Ces touches peuvent être combinées avec Maj/Ctrl/Alt
+ichunutil.config.cat.keybind.tip2=Essayez de les garder enfoncées quand vous affectez la combinaison
+ichunutil.config.cat.keybind.tip3=Si vous voulez affecter Maj/Ctrl/Alt, tenez cette touche pendant 3 secondes. La dernière touche tenue sera affectée.
 
-ichun.config.versionCheck.name=Vérifier une mise à jour
-ichun.config.versionSave.name=Sauvegarde de la vérification de mise à jour
+ichunutil.config.prop.versionCheck.name=Vérifier une mise à jour
+ichunutil.config.prop.versionSave.name=Sauvegarde de la vérification de mise à jour
 
-ichun.config.versionCheck.comment=Ces options sont pour le système de vérification des mises à jour, ajouté par iChunUtil.
-ichun.config.versionSave.comment=Ce sont des informations de sauvegarde pour le système de vérification de sauvegarde. N'y touchez pas sauf si vous voulez casser des trucs.
+ichunutil.config.prop.versionCheck.comment=Ces options sont pour le système de vérification des mises à jour, ajouté par iChunUtil.
+ichunutil.config.prop.versionSave.comment=Ce sont des informations de sauvegarde pour le système de vérification de sauvegarde. N'y touchez pas sauf si vous voulez casser des trucs.
 
-ichun.config.versionNotificationTypes.name=Type de notification de mise à jour
-ichun.config.versionNotificationFrequency.name=Fréquence de notification de mise à jour
+ichunutil.config.prop.versionNotificationTypes.name=Type de notification de mise à jour
+ichunutil.config.prop.versionNotificationFrequency.name=Fréquence de notification de mise à jour
 
-ichun.config.versionNotificationTypes.comment=Comment le CLIENT sera averti des mises à jour ? (Les serveurs auront toujours cette notification affichée dans la console. En solo, vous rejoignez un serveur auto-hébergé)\n0 = Avertir des mises à jour peu importe le statut du joueur (admin ou pas).\n1 = Avertir seulement les admins des mises à jour (Les mises à jour de mods client seul s'afficheront quand même)\n2 = Autoriser les notifications par le client.
-ichun.config.versionNotificationFrequency.comment=Quand serez vous averti des mises à jour ? (Configuration client)\n0 = Dès que vous vous connectez au serveur\n1 = Une fois par jour\n2 = Une seule fois jusqu'à la prochaine mise à jour.\n3 = Jamais (Cela cache juste les notifications. Le mod continuera tout de même à vérifier les mises à jour et à les afficher dans la console).
+ichunutil.config.prop.versionNotificationTypes.comment=Comment le CLIENT sera averti des mises à jour ? (Les serveurs auront toujours cette notification affichée dans la console. En solo, vous rejoignez un serveur auto-hébergé)\n0 = Avertir des mises à jour peu importe le statut du joueur (admin ou pas).\n1 = Avertir seulement les admins des mises à jour (Les mises à jour de mods client seul s'afficheront quand même)\n2 = Autoriser les notifications par le client.
+ichunutil.config.prop.versionNotificationFrequency.comment=Quand serez vous averti des mises à jour ? (Configuration client)\n0 = Dès que vous vous connectez au serveur\n1 = Une fois par jour\n2 = Une seule fois jusqu'à la prochaine mise à jour.\n3 = Jamais (Cela cache juste les notifications. Le mod continuera tout de même à vérifier les mises à jour et à les afficher dans la console).
 
 ichun.gui.newUpdate=Nouvelle version du mod disponible !

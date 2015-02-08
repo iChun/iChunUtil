@@ -69,8 +69,8 @@ public class ModVersionChecker
                     {
                     }
 
-                    differentDay = iChunUtil.config.props.get("dayCheck").getInt() != EventCalendar.day;
-                    iChunUtil.config.props.get("dayCheck").set(EventCalendar.day);
+                    differentDay = iChunUtil.config.dayCheck != EventCalendar.day;
+                    iChunUtil.config.dayCheck = (EventCalendar.day);
 
                     StringBuilder sb = new StringBuilder();
                     ArrayList<String> names = new ArrayList<String>();
@@ -90,7 +90,7 @@ public class ModVersionChecker
                             sb.append(", ");
                         }
                     }
-                    iChunUtil.config.props.get("lastCheck").set(sb.toString());
+                    iChunUtil.config.lastCheck = (sb.toString());
 
                     iChunUtil.config.save();
                 }

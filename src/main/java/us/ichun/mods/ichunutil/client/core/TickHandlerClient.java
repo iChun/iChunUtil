@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
-import us.ichun.mods.ichunutil.client.gui.config.GuiConfigBase;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
@@ -72,7 +71,7 @@ public class TickHandlerClient
                     buttonDummy.playPressSound(mc.getSoundHandler());
                     int oriScale = mc.gameSettings.guiScale;
                     mc.gameSettings.guiScale = 2;
-//                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, mc.gameSettings, null));
+                    //                    FMLClientHandler.instance().showGuiScreen(new GuiConfigBase(gui, mc.gameSettings, null));
                     FMLClientHandler.instance().showGuiScreen(new GuiConfigs(oriScale, mc.currentScreen));
                 }
 

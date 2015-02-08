@@ -73,7 +73,7 @@ public class TrailTicker
             if(tellServerAsPatron)
             {
                 tellServerAsPatron = false;
-                iChunUtil.channel.sendToServer(new PacketShowPatronReward(iChunUtil.config.getInt("showPatronReward") == 1));
+                iChunUtil.channel.sendToServer(new PacketShowPatronReward(iChunUtil.config.showPatronReward == 1));
             }
         }
     }

@@ -6,8 +6,7 @@ import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementButton;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementListTree;
-import us.ichun.mods.ichunutil.client.gui.window.element.ElementToggle;
-import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 
 public class WindowConfigs extends Window
@@ -16,14 +15,14 @@ public class WindowConfigs extends Window
 
     public WindowConfigs(IWorkspace parent, int x, int y, int w, int h, int minW, int minH)
     {
-        super(parent, x, y, w, h, minW, minH, "ichun.config.gui.options", true);
+        super(parent, x, y, w, h, minW, minH, "ichunutil.config.gui.options", true);
 
         elements.add(new ElementButton(this, 10, height - 22, 60, 16, -1, false, 0, 1, "gui.done"));
 
         configs = new ElementListTree(this, BORDER_SIZE + 1, BORDER_SIZE + 1 + 10, width - (BORDER_SIZE * 2 + 2), height - BORDER_SIZE - 22 - 16, 3, false, false);
         elements.add(configs);
 
-        for(Config config : ConfigHandler.configs)
+        for(ConfigBase config : ConfigHandler.configs)
         {
             configs.createTree(null, config, 13, 0, false, false);
         }

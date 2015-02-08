@@ -1,24 +1,20 @@
 package us.ichun.mods.ichunutil.client.gui.config.window.element;
 
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
-import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
-import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetKeyBind;
 import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetter;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
-import us.ichun.mods.ichunutil.client.gui.window.WindowPopup;
 import us.ichun.mods.ichunutil.client.gui.window.element.*;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
-import us.ichun.mods.ichunutil.common.core.config.Config;
-import us.ichun.mods.ichunutil.common.iChunUtil;
+import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
+import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
+import us.ichun.mods.ichunutil.common.core.config.types.Colour;
 
 import java.util.ArrayList;
 
@@ -97,9 +93,9 @@ public class ElementPropSetter extends Element
         {
             Tree tree = trees.get(i);
             treeHeight1 += tree.getHeight();
-            if(parent.workspace.getFontRenderer().getStringWidth(tree.propInfo.localized) > longestName)
+            if(parent.workspace.getFontRenderer().getStringWidth(tree.propInfo.name) > longestName)
             {
-                longestName = parent.workspace.getFontRenderer().getStringWidth(tree.propInfo.localized);
+                longestName = parent.workspace.getFontRenderer().getStringWidth(tree.propInfo.name);
             }
         }
         space = Math.min(200, Math.max(width - 40 - longestName, 50));
@@ -248,7 +244,7 @@ public class ElementPropSetter extends Element
 
             if(mX >= posX && mX < posX + width + (treeHeight1 > height ? 10 : 0) && mY >= posY + treeHeight + scrollHeight && mY < posY + treeHeight + scrollHeight + tree.getHeight())
             {
-                return tree.propInfo.prop.comment;
+                return tree.propInfo.comment;
             }
 
             treeHeight += tree.getHeight();
@@ -256,308 +252,308 @@ public class ElementPropSetter extends Element
         return null; //return null for no tooltip. This is localized.
     }
 
-    public boolean isValidValue(Config config, Property prop, String s)
-    {
-        switch(config.getPropType(prop))
-        {
-            case COLOUR:
-            {
-                try
-                {
-                    Integer.decode(s);
-                    return s.length() < 8;
-                }
-                catch(NumberFormatException e)
-                {
-                    return false;
-                }
-            }
-            case INT_BOOL:
-            case INT:
-            {
-                try
-                {
-                    int i = Integer.parseInt(s);
-                    int[] minmax = config.minmax.get(prop);
-                    if(!(i >= minmax[0] && i <= minmax[1]))
-                    {
-                        return false;
-                    }
-                    return true;
-                }
-                catch(NumberFormatException e)
-                {
-                    return false;
-                }
-            }
-            case KEYBIND:
-            case STRING:
-            {
-                return true;
-            }
-            //TODO update these
-            //            case INT_ARRAY:
-            //            {
-            //                try
-            //                {
-            //                    int i = Integer.parseInt(s);
-            //                    int[] minmax = config.minmax.get(prop);
-            //                    if(!(i >= minmax[0] && i <= minmax[1]))
-            //                    {
-            //                        return false;
-            //                    }
-            //                    if(intArrayList.contains(Integer.parseInt(s)))
-            //                    {
-            //                        return false;
-            //                    }
-            //                    return true;
-            //                }
-            //                catch(NumberFormatException e)
-            //                {
-            //                    return false;
-            //                }
-            //            }
-            //            case NESTED_INT_ARRAY:
-            //            {
-            //                if(selected == selectedIntArrayProp + intArraySlots)
-            //                {
-            //                    try
-            //                    {
-            //                        int i = Integer.parseInt(s);
-            //                        int[] minmax = config.minmax.get(prop);
-            //                        if(!(i >= minmax[0] && i <= minmax[1]))
-            //                        {
-            //                            return false;
-            //                        }
-            //                        if(nestedIntArrayList.containsKey(Integer.parseInt(s)))
-            //                        {
-            //                            return false;
-            //                        }
-            //                        return true;
-            //                    }
-            //                    catch(NumberFormatException e)
-            //                    {
-            //                        return false;
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    try
-            //                    {
-            //                        int i = Integer.parseInt(s);
-            //                        int[] minmax = config.nestedMinmax.get(prop);
-            //                        if(!(i >= minmax[0] && i <= minmax[1]))
-            //                        {
-            //                            return false;
-            //                        }
-            //
-            //                        int m = 0;
-            //                        Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
-            //                        while(ite.hasNext())
-            //                        {
-            //                            Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
-            //                            m++;
-            //                            if(selected - selectedIntArrayProp == m)
-            //                            {
-            //                                if(e.getValue().contains(Integer.parseInt(s)))
-            //                                {
-            //                                    return false;
-            //                                }
-            //                                break;
-            //                            }
-            //                        }
-            //
-            //                        return true;
-            //                    }
-            //                    catch(NumberFormatException e)
-            //                    {
-            //                        return false;
-            //                    }
-            //                }
-            //            }
-            default:
-            {
-                return false;
-            }
-        }
-    }
+    //    public boolean isValidValue(ConfigOld config, Property prop, String s)
+    //    {
+    //        switch(config.getPropType(prop))
+    //        {
+    //            case COLOUR:
+    //            {
+    //                try
+    //                {
+    //                    Integer.decode(s);
+    //                    return s.length() < 8;
+    //                }
+    //                catch(NumberFormatException e)
+    //                {
+    //                    return false;
+    //                }
+    //            }
+    //            case INT_BOOL:
+    //            case INT:
+    //            {
+    //                try
+    //                {
+    //                    int i = Integer.parseInt(s);
+    //                    int[] minmax = config.minmax.get(prop);
+    //                    if(!(i >= minmax[0] && i <= minmax[1]))
+    //                    {
+    //                        return false;
+    //                    }
+    //                    return true;
+    //                }
+    //                catch(NumberFormatException e)
+    //                {
+    //                    return false;
+    //                }
+    //            }
+    //            case KEYBIND:
+    //            case STRING:
+    //            {
+    //                return true;
+    //            }
+    //TODO update these
+    //            case INT_ARRAY:
+    //            {
+    //                try
+    //                {
+    //                    int i = Integer.parseInt(s);
+    //                    int[] minmax = config.minmax.get(prop);
+    //                    if(!(i >= minmax[0] && i <= minmax[1]))
+    //                    {
+    //                        return false;
+    //                    }
+    //                    if(intArrayList.contains(Integer.parseInt(s)))
+    //                    {
+    //                        return false;
+    //                    }
+    //                    return true;
+    //                }
+    //                catch(NumberFormatException e)
+    //                {
+    //                    return false;
+    //                }
+    //            }
+    //            case NESTED_INT_ARRAY:
+    //            {
+    //                if(selected == selectedIntArrayProp + intArraySlots)
+    //                {
+    //                    try
+    //                    {
+    //                        int i = Integer.parseInt(s);
+    //                        int[] minmax = config.minmax.get(prop);
+    //                        if(!(i >= minmax[0] && i <= minmax[1]))
+    //                        {
+    //                            return false;
+    //                        }
+    //                        if(nestedIntArrayList.containsKey(Integer.parseInt(s)))
+    //                        {
+    //                            return false;
+    //                        }
+    //                        return true;
+    //                    }
+    //                    catch(NumberFormatException e)
+    //                    {
+    //                        return false;
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    try
+    //                    {
+    //                        int i = Integer.parseInt(s);
+    //                        int[] minmax = config.nestedMinmax.get(prop);
+    //                        if(!(i >= minmax[0] && i <= minmax[1]))
+    //                        {
+    //                            return false;
+    //                        }
+    //
+    //                        int m = 0;
+    //                        Iterator<Map.Entry<Integer, ArrayList<Integer>>> ite = nestedIntArrayList.entrySet().iterator();
+    //                        while(ite.hasNext())
+    //                        {
+    //                            Map.Entry<Integer, ArrayList<Integer>> e = ite.next();
+    //                            m++;
+    //                            if(selected - selectedIntArrayProp == m)
+    //                            {
+    //                                if(e.getValue().contains(Integer.parseInt(s)))
+    //                                {
+    //                                    return false;
+    //                                }
+    //                                break;
+    //                            }
+    //                        }
+    //
+    //                        return true;
+    //                    }
+    //                    catch(NumberFormatException e)
+    //                    {
+    //                        return false;
+    //                    }
+    //                }
+    //            }
+    //            default:
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //    }
 
-    public boolean updateProperty(Config config, Property prop, String s)
-    {
-        String _default = prop.getString();
+        public boolean updateProperty(ConfigBase config, Property prop, String s){return true;}
+    //    {
+    //        String _default = prop.getString();
+    //
+    //        switch(config.getPropType(prop))
+    //        {
+    //            case INT_BOOL:
+    //            case INT:
+    //            {
+    //                try
+    //                {
+    //                    int i = Integer.parseInt(s);
+    //
+    //                    int[] minmax = config.minmax.get(prop);
+    //                    if(!(i >= minmax[0] && i <= minmax[1]))
+    //                    {
+    //                        return false;
+    //                    }
+    //
+    //                    prop.set(i);
+    //
+    //                    Object def = null;
+    //
+    //                    if(config.sessionProps.contains(prop))
+    //                    {
+    //                        def = config.sessionState.get(Side.SERVER).get(prop.getName());
+    //                        config.sessionState.get(Side.SERVER).put(prop.getName(), i);
+    //                    }
+    //
+    //                    if(config.parent.onConfigChange(config, prop))
+    //                    {
+    //                        config.save();
+    //
+    //                        if(config.propNeedsRestart.contains(prop))
+    //                        {
+    //                            ((GuiConfigs)parent.workspace).needsRestart();
+    //                        }
+    //                    }
+    //                    else
+    //                    {
+    //                        prop.set(_default);
+    //
+    //                        if(def != null)
+    //                        {
+    //                            config.sessionState.get(Side.SERVER).put(prop.getName(), def);
+    //                        }
+    //                        return false;
+    //                    }
+    //                    return true;
+    //                }
+    //                catch(NumberFormatException e)
+    //                {
+    //                    return false;
+    //                }
+    //            }
+    //            //TODO fix these
+    //            //            case INT_ARRAY:
+    //            //            {
+    //            //                StringBuilder sb = new StringBuilder();
+    //            //
+    //            //                for(int i = 0; i < intArrayList.size(); i++)
+    //            //                {
+    //            //                    sb.append(intArrayList.get(i));
+    //            //                    if(i < intArrayList.size() - 1)
+    //            //                    {
+    //            //                        sb.append(", ");
+    //            //                    }
+    //            //                }
+    //            //                prop.set(sb.toString());
+    //            //
+    //            //                break;
+    //            //            }
+    //            //            case NESTED_INT_ARRAY:
+    //            //            {
+    //            //                StringBuilder sb = new StringBuilder();
+    //            //                int i = 0;
+    //            //                for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
+    //            //                {
+    //            //                    sb.append(e.getKey());
+    //            //                    for(int m = 0; m < e.getValue().size(); m++)
+    //            //                    {
+    //            //                        if(m == 0)
+    //            //                        {
+    //            //                            sb.append(": ");
+    //            //                        }
+    //            //                        sb.append(e.getValue().get(m));
+    //            //                        if(m < e.getValue().size() - 1)
+    //            //                        {
+    //            //                            sb.append(": ");
+    //            //                        }
+    //            //                    }
+    //            //                    if(i < nestedIntArrayList.size() - 1 || e.getValue().isEmpty() && i < nestedIntArrayList.size() - 1)
+    //            //                    {
+    //            //                        sb.append(", ");
+    //            //                    }
+    //            //                    i++;
+    //            //                }
+    //            //                prop.set(sb.toString());
+    //            //
+    //            //                break;
+    //            //            }
+    //            case KEYBIND:
+    //            {
+    //                KeyBind oriKeyBind = config.keyBindMap.get(prop);
+    //
+    //                String keyString = s;
+    //                String[] strings = keyString.split(":");
+    //                KeyBind bind;
+    //                try
+    //                {
+    //                    bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"), false);
+    //                }
+    //                catch(Exception e)
+    //                {
+    //                    iChunUtil.console("Error parsing key, this shouldn't happen: " + keyString, true);
+    //                    e.printStackTrace();
+    //                    bind = oriKeyBind;
+    //                }
+    //
+    //                config.keyBindMap.put(prop.getName(), iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
+    //
+    //                prop.set(s);
+    //
+    //                break;
+    //            }
+    //            case COLOUR:
+    //            case STRING:
+    //            {
+    //                prop.set(s);
+    //
+    //                break;
+    //            }
+    //            default:
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //
+    //        Object def = null;
+    //
+    //        if(config.sessionProps.contains(prop))
+    //        {
+    //            def = config.sessionState.get(Side.SERVER).get(prop.getName());
+    //            config.sessionState.get(Side.SERVER).put(prop.getName(), prop.getString());
+    //        }
+    //
+    //        if(config.parent.onConfigChange(config, prop))
+    //        {
+    //            if(config.getPropType(prop).equals(ConfigOld.EnumPropType.KEYBIND))
+    //            {
+    //                ConfigOld.configKeybind.save();
+    //            }
+    //            else
+    //            {
+    //                config.save();
+    //            }
+    //
+    //            if(config.propNeedsRestart.contains(prop))
+    //            {
+    //                ((GuiConfigs)parent.workspace).needsRestart();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            prop.set(_default);
+    //
+    //            if(def != null)
+    //            {
+    //                config.sessionState.get(Side.SERVER).put(prop.getName(), def);
+    //            }
+    //            return false;
+    //        }
+    //        return true;
+    //    }
 
-        switch(config.getPropType(prop))
-        {
-            case INT_BOOL:
-            case INT:
-            {
-                try
-                {
-                    int i = Integer.parseInt(s);
-
-                    int[] minmax = config.minmax.get(prop);
-                    if(!(i >= minmax[0] && i <= minmax[1]))
-                    {
-                        return false;
-                    }
-
-                    prop.set(i);
-
-                    Object def = null;
-
-                    if(config.sessionProps.contains(prop))
-                    {
-                        def = config.sessionState.get(Side.SERVER).get(prop.getName());
-                        config.sessionState.get(Side.SERVER).put(prop.getName(), i);
-                    }
-
-                    if(config.parent.onConfigChange(config, prop))
-                    {
-                        config.save();
-
-                        if(config.propNeedsRestart.contains(prop))
-                        {
-                            ((GuiConfigs)parent.workspace).needsRestart();
-                        }
-                    }
-                    else
-                    {
-                        prop.set(_default);
-
-                        if(def != null)
-                        {
-                            config.sessionState.get(Side.SERVER).put(prop.getName(), def);
-                        }
-                        return false;
-                    }
-                    return true;
-                }
-                catch(NumberFormatException e)
-                {
-                    return false;
-                }
-            }
-            //TODO fix these
-            //            case INT_ARRAY:
-            //            {
-            //                StringBuilder sb = new StringBuilder();
-            //
-            //                for(int i = 0; i < intArrayList.size(); i++)
-            //                {
-            //                    sb.append(intArrayList.get(i));
-            //                    if(i < intArrayList.size() - 1)
-            //                    {
-            //                        sb.append(", ");
-            //                    }
-            //                }
-            //                prop.set(sb.toString());
-            //
-            //                break;
-            //            }
-            //            case NESTED_INT_ARRAY:
-            //            {
-            //                StringBuilder sb = new StringBuilder();
-            //                int i = 0;
-            //                for(Map.Entry<Integer, ArrayList<Integer>> e : nestedIntArrayList.entrySet())
-            //                {
-            //                    sb.append(e.getKey());
-            //                    for(int m = 0; m < e.getValue().size(); m++)
-            //                    {
-            //                        if(m == 0)
-            //                        {
-            //                            sb.append(": ");
-            //                        }
-            //                        sb.append(e.getValue().get(m));
-            //                        if(m < e.getValue().size() - 1)
-            //                        {
-            //                            sb.append(": ");
-            //                        }
-            //                    }
-            //                    if(i < nestedIntArrayList.size() - 1 || e.getValue().isEmpty() && i < nestedIntArrayList.size() - 1)
-            //                    {
-            //                        sb.append(", ");
-            //                    }
-            //                    i++;
-            //                }
-            //                prop.set(sb.toString());
-            //
-            //                break;
-            //            }
-            case KEYBIND:
-            {
-                KeyBind oriKeyBind = config.keyBindMap.get(prop);
-
-                String keyString = s;
-                String[] strings = keyString.split(":");
-                KeyBind bind;
-                try
-                {
-                    bind = new KeyBind(Integer.parseInt(strings[0].trim()), keyString.contains("SHIFT"), keyString.contains("CTRL"), keyString.contains("ALT"), false);
-                }
-                catch(Exception e)
-                {
-                    iChunUtil.console("Error parsing key, this shouldn't happen: " + keyString, true);
-                    e.printStackTrace();
-                    bind = oriKeyBind;
-                }
-
-                config.keyBindMap.put(prop.getName(), iChunUtil.proxy.registerKeyBind(bind, oriKeyBind));
-
-                prop.set(s);
-
-                break;
-            }
-            case COLOUR:
-            case STRING:
-            {
-                prop.set(s);
-
-                break;
-            }
-            default:
-            {
-                return false;
-            }
-        }
-
-        Object def = null;
-
-        if(config.sessionProps.contains(prop))
-        {
-            def = config.sessionState.get(Side.SERVER).get(prop.getName());
-            config.sessionState.get(Side.SERVER).put(prop.getName(), prop.getString());
-        }
-
-        if(config.parent.onConfigChange(config, prop))
-        {
-            if(config.getPropType(prop).equals(Config.EnumPropType.KEYBIND))
-            {
-                Config.configKeybind.save();
-            }
-            else
-            {
-                config.save();
-            }
-
-            if(config.propNeedsRestart.contains(prop))
-            {
-                ((GuiConfigs)parent.workspace).needsRestart();
-            }
-        }
-        else
-        {
-            prop.set(_default);
-
-            if(def != null)
-            {
-                config.sessionState.get(Side.SERVER).put(prop.getName(), def);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    public void createTree(Config conf, WindowSetter.PropInfo obj, int h)
+    public void createTree(ConfigBase conf, ConfigBase.PropInfo obj, int h)
     {
         trees.add(new Tree(conf, obj, h));
     }
@@ -573,7 +569,7 @@ public class ElementPropSetter extends Element
 
     public void save()
     {
-        Config config = null;
+        ConfigBase config = null;
         for(Tree tree : trees)
         {
             if(tree.element != null)
@@ -593,13 +589,13 @@ public class ElementPropSetter extends Element
                 }
                 else
                 {
-                    val = tree.propInfo.prop.getString();
+//                    val = tree.propInfo.prop.getString();
                 }
-                if(isValidValue(tree.config, tree.propInfo.prop, val))
-                {
-                    config = tree.config;
-                    updateProperty(tree.config, tree.propInfo.prop, val);
-                }
+                //                if(isValidValue(tree.config, tree.propInfo.prop, val))
+                //                {
+                //                    config = tree.config;
+                //                    updateProperty(tree.config, tree.propInfo.prop, val);
+                //                }
             }
         }
         if(config != null)
@@ -610,8 +606,8 @@ public class ElementPropSetter extends Element
 
     public class Tree
     {
-        public Config config;
-        public WindowSetter.PropInfo propInfo;
+        public ConfigBase config;
+        public ConfigBase.PropInfo propInfo;
 
         public Element element;
 
@@ -619,45 +615,45 @@ public class ElementPropSetter extends Element
 
         public boolean selected;
 
-        public Tree(Config conf, WindowSetter.PropInfo obj, int h)
+        public Tree(ConfigBase conf, ConfigBase.PropInfo obj, int h)
         {
             config = conf;
             propInfo = obj;
             theHeight = h;
-            switch(propInfo.type)
+            try
             {
-                case COLOUR:
-                case STRING:
+                obj.field.setAccessible(true);
+                Class clz = obj.field.getType();
+                if(clz.equals(int.class))
                 {
-                    element = new ElementTextInput(parent, 0, 0, 40, 12, 0, "", propInfo.prop.getString()); //last arg is current text
-                    break;
-                }
-                case INT:
-                {
-                    int[] minmax = config.minmax.get(propInfo.prop);
-                    if(minmax == null)
+                    int[] minmax = new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE };
+                    if(obj.field.isAnnotationPresent(IntMinMax.class))
                     {
-                        minmax = new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE };
+                        IntMinMax minMax = obj.field.getAnnotation(IntMinMax.class);
+                        minmax[0] = minMax.min();
+                        minmax[1] = minMax.max();
+
+                        element = new ElementNumberInput(parent, 0, 0, 40, 12, 0, "", 1, false, minmax[0], minmax[1], obj.field.getInt(conf));
                     }
-                    element = new ElementNumberInput(parent, 0, 0, 40, 12, 0, "", 1, false, minmax[0], minmax[1], propInfo.prop.getInt());
-                    break;
+                    else if(obj.field.isAnnotationPresent(IntBool.class))
+                    {
+                        element = new ElementToggle(parent, 0, 0, 0, 12, 0, false, 0, 0, "gui.yes", null, obj.field.getInt(conf) == 1);
+                    }
                 }
-                case INT_BOOL:
+                else if(clz.equals(Colour.class))
                 {
-                    element = new ElementToggle(parent, 0, 0, 0, 12, 0, false, 0, 0, "gui.yes", null, propInfo.prop.getInt() == 1);
-                    break;
+                    element = new ElementTextInput(parent, 0, 0, 40, 12, 0, "", ((Colour)obj.field.get(conf)).getColour()); //last arg is current text
                 }
-                case KEYBIND:
+                else if(clz.equals(String.class))
+                {
+                    element = new ElementTextInput(parent, 0, 0, 40, 12, 0, "", (String)obj.field.get(conf)); //last arg is current text
+                }
+                else if(clz.equals(KeyBind.class))
                 {
                     element = new ElementButton(parent, 0, 0, 0, 12, 0, false, 0, 0, "");
-                    break;
                 }
-
-                //                        INT_ARRAY,
-                //                        NESTED_INT_ARRAY,
-                //                        KEYBIND,
-
             }
+            catch(Exception ignored){}
         }
 
         public void resized()
@@ -701,7 +697,7 @@ public class ElementPropSetter extends Element
                 }
             }
 
-            parent.workspace.getFontRenderer().drawString(parent.workspace.reString(propInfo.localized, width - 60), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+            parent.workspace.getFontRenderer().drawString(parent.workspace.reString(propInfo.name, width - 60), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
 
             if(realBorder && clicking)
             {
@@ -713,10 +709,10 @@ public class ElementPropSetter extends Element
                 parent.workspace.elementSelected.selected();
                 parent.workspace.elementSelected.onClick(mouseX, mouseY, 0);
 
-                if(propInfo.type.equals(Config.EnumPropType.KEYBIND) && ((GuiConfigs)parent.workspace).keyBindTimeout == 0)
-                {
-                    parent.workspace.addWindowOnTop(new WindowSetKeyBind((GuiConfigs)parent.workspace, 300, 200, 180, 80, "ichun.config.gui.hitHeys", config, propInfo.prop).putInMiddleOfScreen());
-                }
+                //                if(propInfo.type.equals(ConfigOld.EnumPropType.KEYBIND) && ((GuiConfigs)parent.workspace).keyBindTimeout == 0)
+                //                {
+                //                    parent.workspace.addWindowOnTop(new WindowSetKeyBind((GuiConfigs)parent.workspace, 300, 200, 180, 80, "ichun.config.gui.hitHeys", config, propInfo.prop).putInMiddleOfScreen());
+                //                }
 
                 if(clickTimeout > 0 && treeClicked == this)
                 {
@@ -738,23 +734,28 @@ public class ElementPropSetter extends Element
                     ElementToggle toggle = (ElementToggle)element;
                     toggle.text = toggle.toggledState ? "gui.yes" : "gui.no";
                 }
-                else if(element instanceof ElementButton)
+                else if(element instanceof ElementButton && propInfo.field.getType().equals(KeyBind.class))
                 {
                     ElementButton button = (ElementButton)element;
 
                     w -= 10;
                     x += 10;
 
-                    String keyString = propInfo.prop.getString();
-                    String[] strings = keyString.split(":");
-
-                    int key = 0;
-                    if(strings.length > 0)
+                    String keyString = "";
+                    try
                     {
-                        key = Integer.parseInt(strings[0].trim());
-                    }
+                        keyString = ((KeyBind)propInfo.field.get(config)).serialize();
+                        String[] strings = keyString.split(":");
 
-                    button.text = GameSettings.getKeyDisplayString(key);
+                        int key = 0;
+                        if(strings.length > 0)
+                        {
+                            key = Integer.parseInt(strings[0].trim());
+                        }
+
+                        button.text = GameSettings.getKeyDisplayString(key);
+                    }
+                    catch(Exception ignored){}
 
                     GlStateManager.pushMatrix();
 

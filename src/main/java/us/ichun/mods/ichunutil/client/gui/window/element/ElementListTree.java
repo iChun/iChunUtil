@@ -8,7 +8,7 @@ import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
-import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.util.IOUtil;
 import us.ichun.mods.ichunutil.common.module.tabula.client.model.ModelInfo;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.components.Animation;
@@ -263,9 +263,13 @@ public class ElementListTree extends Element
         {
             selectedIdentifier = ((Animation)obj).identifier;
         }
-        else if(obj instanceof Config)
+        else if(obj instanceof ConfigBase)
         {
-            selectedIdentifier = ((Config)obj).modName;
+            selectedIdentifier = ((ConfigBase)obj).getModName();
+        }
+        else if(obj instanceof ConfigBase.CategoryInfo)
+        {
+            selectedIdentifier = ((ConfigBase.CategoryInfo)obj).category;
         }
         else if(obj instanceof String)
         {
@@ -474,9 +478,13 @@ public class ElementListTree extends Element
                 {
                     parent.workspace.getFontRenderer().drawString(parent.workspace.reString((String)attachedObject, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
-                else if(attachedObject instanceof Config)
+                else if(attachedObject instanceof ConfigBase)
                 {
-                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(((Config)attachedObject).modName, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(((ConfigBase)attachedObject).getModName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                }
+                else if(attachedObject instanceof ConfigBase.CategoryInfo)
+                {
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(((ConfigBase.CategoryInfo)attachedObject).name, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof IListable)
                 {

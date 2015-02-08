@@ -1,7 +1,6 @@
 package us.ichun.mods.ichunutil.common;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -11,28 +10,23 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
-import us.ichun.mods.ichunutil.common.core.config.Config;
+import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
-import us.ichun.mods.ichunutil.common.core.config.IConfigUser;
-import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
+import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
+import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
+import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import us.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import us.ichun.mods.ichunutil.common.core.network.PacketExecuter;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
-import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
@@ -43,7 +37,6 @@ import java.util.ArrayList;
 
 //TODO easter egg for AFday?
 public class iChunUtil
-        implements IConfigUser
 {
     //MC version, bumped up every MC update.
     public static final int versionMC = 5;
@@ -70,14 +63,52 @@ public class iChunUtil
     @SidedProxy(clientSide = "us.ichun.mods.ichunutil.client.core.ClientProxy", serverSide = "us.ichun.mods.ichunutil.common.core.CommonProxy")
     public static CommonProxy proxy;
 
-    @Override
-    public boolean onConfigChange(Config cfg, Property prop)
+    public class Config extends ConfigBase
     {
-        if(prop.getName().equalsIgnoreCase("showPatronReward"))
+        @ConfigProp(category = "versionCheck")
+        @IntMinMax(min = 0, max = 2)
+        public int versionNotificationTypes = 1;
+
+        @ConfigProp(category = "versionCheck")
+        @IntMinMax(min = 0, max = 3)
+        public int versionNotificationFrequency = 0;
+
+        @ConfigProp(category = "versionSave", comment = "", nameOverride = "Last Check")
+        public String lastCheck = "";
+
+        @ConfigProp(category = "versionSave", comment = "", nameOverride = "Day Check")
+        @IntMinMax(min = 0, max = 35)
+        public int dayCheck = 0;
+
+        @ConfigProp(category = "patreon", hidden = true)
+        @IntBool
+        public int showPatronReward = 1;
+
+        public Config(File file)
         {
-            proxy.trailTicker.tellServerAsPatron = true;
+            super(file);
         }
-        return true;
+
+        @Override
+        public String getModId()
+        {
+            return "ichunutil";
+        }
+
+        @Override
+        public String getModName()
+        {
+            return "iChunUtil";
+        }
+
+        @Override
+        public void onConfigChange(Field field, Object original)
+        {
+            if(field.getName().equals("showPatronReward"))
+            {
+                iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
+            }
+        }
     }
 
     @EventHandler
@@ -89,20 +120,13 @@ public class iChunUtil
 
         FMLCommonHandler.instance().bus().register(new PacketExecuter());
 
-        FMLCommonHandler.instance().bus().register(this);
-        MinecraftForge.EVENT_BUS.register(this);
+        us.ichun.mods.ichunutil.common.core.EventHandler eventHandler = new us.ichun.mods.ichunutil.common.core.EventHandler();
+        FMLCommonHandler.instance().bus().register(eventHandler);
+        MinecraftForge.EVENT_BUS.register(eventHandler);
 
-        config = ConfigHandler.createConfig(event.getSuggestedConfigurationFile(), "ichunutil", "iChunUtil", logger, instance);
+        config = (Config)ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
 
-        config.setCurrentCategory("versionCheck", "ichun.config.versionCheck.name", "ichun.config.versionCheck.comment");
-        config.createIntProperty("versionNotificationTypes", "ichun.config.versionNotificationTypes.name", "ichun.config.versionNotificationTypes.comment", true, false, 1, 0, 2);
-        config.createIntProperty("versionNotificationFrequency", "ichun.config.versionNotificationFrequency.name", "ichun.config.versionNotificationFrequency.comment", true, false, 0, 0, 3);
-
-        config.setCurrentCategory("versionSave", "ichun.config.versionSave.name", "ichun.config.versionSave.comment");
-        String lastCheck = config.createStringProperty("lastCheck", "Last Check", "", false, false, "");
-        config.createIntProperty("dayCheck", "Day Check", "", false, false, 0, 0, 35);
-
-        String[] split = lastCheck.split(", ");
+        String[] split = config.lastCheck.split(", ");
 
         for(String s : split)
         {
@@ -114,8 +138,6 @@ public class iChunUtil
         }
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
-
-        channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class);
     }
 
     @EventHandler
@@ -130,13 +152,13 @@ public class iChunUtil
     public void postLoad(FMLPostInitializationEvent event)
     {
         hasPostLoad = true;
-        for(Config cfg : ConfigHandler.configs)
+        for(ConfigBase cfg : ConfigHandler.configs)
         {
             cfg.setup();
         }
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient() && Config.configKeybind != null)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient() && ConfigHandler.configKeybind != null)
         {
-            Config.configKeybind.save();
+            ConfigHandler.configKeybind.save();
         }
 
         hasMorphMod = Loader.isModLoaded("Morph");
@@ -149,23 +171,6 @@ public class iChunUtil
     public static boolean getPostLoad()
     {
         return hasPostLoad;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onClientConnection(FMLNetworkEvent.ClientConnectedToServerEvent event)
-    {
-        if(isPatron)
-        {
-            proxy.trailTicker.tellServerAsPatron = true;
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
-    {
-        channel.sendToPlayer(new PacketModsList(config.getInt("versionNotificationTypes"), FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().canSendCommands(event.player.getGameProfile())), event.player);
-        channel.sendToPlayer(new PacketPatrons(), event.player);
     }
 
     public static void console(String s, boolean warning)

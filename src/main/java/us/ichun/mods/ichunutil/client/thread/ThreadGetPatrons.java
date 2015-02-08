@@ -38,9 +38,7 @@ public class ThreadGetPatrons extends Thread
                     if(s.replaceAll("-", "").equalsIgnoreCase(Minecraft.getMinecraft().getSession().getPlayerID()))
                     {
                         iChunUtil.isPatron = true;
-                        iChunUtil.config.setCurrentCategory("patreon", "ichun.config.patreon.name", "ichun.config.patreon.comment");
-                        iChunUtil.config.createIntBoolProperty("showPatronReward", "ichun.config.showPatronReward.name", "ichun.config.showPatronReward.comment", true, false, true);
-                        iChunUtil.config.save();
+                        iChunUtil.config.reveal("showPatronReward");
                     }
                 }
             }

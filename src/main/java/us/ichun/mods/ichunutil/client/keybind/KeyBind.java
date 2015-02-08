@@ -1,20 +1,20 @@
 package us.ichun.mods.ichunutil.client.keybind;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public class KeyBind
 {
-    public final int keyIndex;
+    public int keyIndex;
 
-    public final boolean holdShift;
-    public final boolean holdCtrl;
-    public final boolean holdAlt;
+    public boolean holdShift;
+    public boolean holdCtrl;
+    public boolean holdAlt;
 
     public boolean canPulse;
     public int pulseTime;
@@ -138,5 +138,39 @@ public class KeyBind
     public boolean isPressed()
     {
         return pressed;
+    }
+
+    public String serialize()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(keyIndex);
+
+        if(GuiScreen.isShiftKeyDown())
+        {
+            sb.append(":SHIFT");
+        }
+        if(GuiScreen.isCtrlKeyDown())
+        {
+            sb.append(":CTRL");
+        }
+        if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
+        {
+            sb.append(":ALT");
+        }
+        return sb.toString();
+    }
+
+    public void deserialize(String s)
+    {
+        String[] strings = s.split(":");
+        try
+        {
+            keyIndex = Integer.parseInt(strings[0].trim());
+            holdShift = s.contains("SHIFT");
+            holdCtrl = s.contains("CTRL");
+            holdAlt = s.contains("ALT");
+        }
+        catch(NumberFormatException ignored){}
     }
 }
