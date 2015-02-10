@@ -492,7 +492,32 @@ public class ElementListTree extends Element
                     parent.workspace.getFontRenderer().drawString(parent.workspace.reString(StatCollector.translateToLocal(info.getName()), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
 
-                if(realBorder && clicking)
+                boolean found = false;
+                boolean obstructed = false;
+
+                for(int i = parent.workspace.levels.size() - 1; i >= 0 ; i--)
+                {
+                    if(found)
+                    {
+                        break;
+                    }
+                    for(int j = 0; j < parent.workspace.levels.get(i).size(); j++)
+                    {
+                        Window window = parent.workspace.levels.get(i).get(j);
+                        if(window == parent)
+                        {
+                            found = true;
+                            break;
+                        }
+                        if(mouseX >= window.posX && mouseX <= window.posX + window.getWidth() && mouseY >= window.posY && mouseY <= window.posY + window.getHeight())
+                        {
+                            obstructed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(realBorder && clicking && !obstructed)
                 {
                     selected = true;
                     deselectOthers(trees);

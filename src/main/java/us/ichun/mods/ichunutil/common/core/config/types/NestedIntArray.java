@@ -1,16 +1,14 @@
 package us.ichun.mods.ichunutil.common.core.config.types;
 
-import org.apache.logging.log4j.Level;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class NestedIntArray
 {
-    public HashMap<Integer, ArrayList<Integer>> values = new HashMap<Integer, ArrayList<Integer>>();
+    public TreeMap<Integer, ArrayList<Integer>> values = new TreeMap<Integer, ArrayList<Integer>>();
 
-    public NestedIntArray(HashMap<Integer, ArrayList<Integer>> vals)
+    public NestedIntArray(TreeMap<Integer, ArrayList<Integer>> vals)
     {
         values = vals;
     }

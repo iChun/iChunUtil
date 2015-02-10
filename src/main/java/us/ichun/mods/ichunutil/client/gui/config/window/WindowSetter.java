@@ -39,6 +39,7 @@ public class WindowSetter extends Window
 
     public void draw(int mouseX, int mouseY) //4 pixel border?
     {
+        //TODO ignore all input if the set-prop windows are open
         if(parent.windowCats.configs.selectedIdentifier.isEmpty())
         {
             return;
@@ -58,7 +59,6 @@ public class WindowSetter extends Window
                         selectedCat = cat;
                         titleLocale = cat.name;
 
-                        TreeMap<String, String> localizedToPropName = new TreeMap<String, String>();
                         props.trees.clear();
                         props.sliderProg = 0.0D;
                         for(ConfigBase.PropInfo prop : parent.windowCats.selectedConfig.categories.get(selectedCat))

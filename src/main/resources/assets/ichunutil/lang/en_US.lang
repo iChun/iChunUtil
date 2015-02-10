@@ -39,7 +39,10 @@ ichun.gui.moreOptions=Hit %s or click here to view more options
 ichunutil.config.gui.options=Options
 ichunutil.config.gui.needsRestart=Some changes require a client restart
 ichunutil.config.gui.setKeyBind=Set Key Bind
-ichunutil.config.gui.hitHeys=Setting key... Holding SHIFT/CTRL/ALT are optional
+ichunutil.config.gui.hitKeys=Setting key... Holding SHIFT/CTRL/ALT are optional
+ichunutil.config.gui.setStringArray=Set String Array
+ichunutil.config.gui.setIntArray=Set Integer Array
+ichunutil.config.gui.setNestedIntArray=Set Nested Integer Array
 
 element.minimize=Minimize
 element.expand=Expand

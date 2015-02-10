@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class PacketSession extends AbstractPacket
 {
@@ -115,7 +116,7 @@ public class PacketSession extends AbstractPacket
             }
             else if(type == 2)
             {
-                NestedIntArray ints = new NestedIntArray(new HashMap<Integer, ArrayList<Integer>>());
+                NestedIntArray ints = new NestedIntArray(new TreeMap<Integer, ArrayList<Integer>>());
                 ints.deserialize(ByteBufUtils.readUTF8String(buffer), Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
                 vars.put(var, ints);

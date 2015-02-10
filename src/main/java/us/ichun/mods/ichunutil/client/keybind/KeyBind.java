@@ -146,15 +146,15 @@ public class KeyBind
 
         sb.append(keyIndex);
 
-        if(GuiScreen.isShiftKeyDown())
+        if(holdShift)
         {
             sb.append(":SHIFT");
         }
-        if(GuiScreen.isCtrlKeyDown())
+        if(holdCtrl)
         {
             sb.append(":CTRL");
         }
-        if(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184))
+        if(holdAlt)
         {
             sb.append(":ALT");
         }

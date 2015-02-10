@@ -5,6 +5,8 @@ import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 import us.ichun.mods.ichunutil.client.gui.config.window.WindowSetKeyBind;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class ElementKeyBindHook extends Element
 {
@@ -23,10 +25,13 @@ public class ElementKeyBindHook extends Element
     @Override
     public void keyInput(char c, int i)
     {
-        if(i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU)
+        if((i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU))
         {
+            if(bind.lastKeyHeld != i)
+            {
+                bind.keyHeldTime = 0;
+            }
             bind.lastKeyHeld = i;
-            bind.keyHeldTime = 0;
         }
         else
         {
@@ -47,8 +52,16 @@ public class ElementKeyBindHook extends Element
                 sb.append(":ALT");
             }
 
-            bind.parent.windowSetter.props.updateProperty(bind.config, bind.prop, sb.toString());
-            bind.elementTriggered(this);
+            try
+            {
+                KeyBind bind = (KeyBind)this.bind.prop.field.get(this.bind.config);
+
+                this.bind.prop.field.set(this.bind.config, iChunUtil.proxy.registerKeyBind(new KeyBind(i, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind));
+                this.bind.elementTriggered(this);
+            }
+            catch(Exception ignored)
+            {
+            }
         }
     }
 }

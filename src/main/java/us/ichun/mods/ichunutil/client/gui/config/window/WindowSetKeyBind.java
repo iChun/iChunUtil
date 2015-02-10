@@ -11,13 +11,16 @@ import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.gui.config.window.element.ElementKeyBindHook;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
+import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class WindowSetKeyBind extends Window
 {
     public GuiConfigs parent;
     public ConfigBase config;
-    public Property prop;
+    public ConfigBase.PropInfo prop;
 
     public boolean releasedMouse;
     public int lastKeyHeld;
@@ -27,12 +30,12 @@ public class WindowSetKeyBind extends Window
 
     public ElementKeyBindHook hook;
 
-    public WindowSetKeyBind(GuiConfigs parent, int w, int h, int minW, int minH, String msg, ConfigBase conf, Property property)
+    public WindowSetKeyBind(GuiConfigs parent, int w, int h, int minW, int minH, String msg, ConfigBase conf, ConfigBase.PropInfo info)
     {
-        super(parent, 0, 0, w, h, minW, minH, "ichun.config.gui.setKeyBind", true);
+        super(parent, 0, 0, w, h, minW, minH, "ichunutil.config.gui.setKeyBind", true);
         this.parent = parent;
         this.config = conf;
-        this.prop = property;
+        this.prop = info;
         message = msg;
         hook = new ElementKeyBindHook(this, 0,0,0,0,0,true);
     }
@@ -76,11 +79,25 @@ public class WindowSetKeyBind extends Window
                         sb.append(":ALT");
                     }
 
-                    parent.windowSetter.props.updateProperty(config, prop, sb.toString());
-                    parent.windowSetter.props.saveTimeout = 10;
-                    parent.keyBindTimeout = 5;
-                    parent.removeWindow(this, true);
-                    parent.elementSelected = null;
+                    try
+                    {
+                        KeyBind bind = (KeyBind)prop.field.get(config);
+
+                        ConfigProp propInfo = prop.field.getAnnotation(ConfigProp.class);
+                        if(!propInfo.changeable())
+                        {
+                            parent.needsRestart();
+                        }
+                        prop.field.set(config, iChunUtil.proxy.registerKeyBind(new KeyBind(i - 100, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind));
+
+                        parent.windowSetter.props.saveTimeout = 10;
+                        parent.keyBindTimeout = 5;
+                        parent.removeWindow(this, true);
+                        parent.elementSelected = null;
+                    }
+                    catch(Exception ignored)
+                    {
+                    }
 
                     break;
                 }
@@ -115,11 +132,20 @@ public class WindowSetKeyBind extends Window
                     sb.append(":ALT");
                 }
 
-                parent.windowSetter.props.updateProperty(config, prop, sb.toString());
-                parent.windowSetter.props.saveTimeout = 10;
-                parent.keyBindTimeout = 5;
-                parent.removeWindow(this, true);
-                parent.elementSelected = null;
+                try
+                {
+                    KeyBind bind = (KeyBind)prop.field.get(config);
+
+                    prop.field.set(config, iChunUtil.proxy.registerKeyBind(new KeyBind(lastKeyHeld, GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT), GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184) && !(lastKeyHeld == 56 || lastKeyHeld == 184), bind.ignoreHold), bind));
+
+                    parent.windowSetter.props.saveTimeout = 10;
+                    parent.keyBindTimeout = 5;
+                    parent.removeWindow(this, true);
+                    parent.elementSelected = null;
+                }
+                catch(Exception ignored)
+                {
+                }
             }
         }
     }

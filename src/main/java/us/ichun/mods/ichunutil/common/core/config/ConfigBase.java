@@ -96,7 +96,7 @@ public abstract class ConfigBase
             categories.put(info, fields);
         }
         String comment = propInfo.comment().equals("undefined") ? StatCollector.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".comment") : StatCollector.translateToLocal(propInfo.comment());
-        if(Splitter.on(".").splitToList(comment).size() >= 2 && !comment.contains(" ")) //localized but no comment?
+        if(Splitter.on(".").splitToList(comment).size() >= 2 && !comment.contains(" ") && !setup) //localized but no comment?
         {
             iChunUtil.console("Config property " + field.getName() + " from mod " + getModName() + " may not be localized!", true);
         }
@@ -190,7 +190,7 @@ public abstract class ConfigBase
                 }
                 else
                 {
-                    clr.deserialize(config.getString(field.getName(), propInfo.category(), (String)field.get(this), comment));
+                    clr.deserialize(config.getString(field.getName(), propInfo.category(), ((Colour)field.get(this)).serialize(), comment));
                 }
             }
             else if(clz.equals(String.class))
