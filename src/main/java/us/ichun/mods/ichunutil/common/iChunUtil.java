@@ -163,7 +163,7 @@ public class iChunUtil
 
         hasMorphMod = Loader.isModLoaded("Morph");
 
-        //        EntityHelperBase.getUUIDFromUsernames("pahimar");
+//                us.ichun.mods.ichunutil.common.core.EntityHelperBase.getUUIDFromUsernames("pahimar");
         //
         //                ModVersionJsonGen.generate();
     }
