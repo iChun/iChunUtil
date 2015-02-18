@@ -304,7 +304,7 @@ public class ElementPropSetter extends Element
             {
                 obj.field.setAccessible(true);
                 Class clz = obj.field.getType();
-                if(clz.equals(int.class))
+                if(clz.equals(int.class) || clz.equals(Integer.class))
                 {
                     int[] minmax = new int[] { Integer.MIN_VALUE, Integer.MAX_VALUE };
                     if(obj.field.isAnnotationPresent(IntMinMax.class))

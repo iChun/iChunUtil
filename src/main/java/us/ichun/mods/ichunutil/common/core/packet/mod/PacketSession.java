@@ -39,13 +39,14 @@ public class PacketSession extends AbstractPacket
             ByteBufUtils.writeUTF8String(buffer, e.getKey().getName());
 
             Object obj = e.getValue();
-            if(obj.getClass().equals(int.class))
+            Class clz = obj.getClass();
+            if(clz.equals(int.class) || clz.equals(Integer.class))
             {
                 buffer.writeInt(0);// TYPE
 
                 buffer.writeInt((Integer)obj);
             }
-            else if(obj.getClass().equals(int[].class))
+            else if(clz.equals(int[].class))
             {
                 buffer.writeInt(1);// TYPE
 
@@ -56,26 +57,26 @@ public class PacketSession extends AbstractPacket
                     buffer.writeInt(ints[i]);
                 }
             }
-            else if(obj.getClass().equals(NestedIntArray.class))
+            else if(clz.equals(NestedIntArray.class))
             {
                 buffer.writeInt(2);// TYPE
 
                 ByteBufUtils.writeUTF8String(buffer, ((NestedIntArray)obj).serialize());
 
             }
-            else if(obj.getClass().equals(Colour.class))
+            else if(clz.equals(Colour.class))
             {
                 buffer.writeInt(3);// TYPE
 
                 ByteBufUtils.writeUTF8String(buffer, ((Colour)obj).serialize());
             }
-            else if(obj.getClass().equals(String.class))
+            else if(clz.equals(String.class))
             {
                 buffer.writeInt(4);// TYPE
 
                 ByteBufUtils.writeUTF8String(buffer, ((String)obj));
             }
-            else if(obj.getClass().equals(String[].class))
+            else if(clz.equals(String[].class))
             {
                 buffer.writeInt(5);// TYPE
 
@@ -86,6 +87,10 @@ public class PacketSession extends AbstractPacket
                     ByteBufUtils.writeUTF8String(buffer, strings[i]);
                 }
             }
+            else
+            {
+                throw new RuntimeException("Trying to send an unsupported field for a session: " + clz.getName());
+            }
         }
         ByteBufUtils.writeUTF8String(buffer, "##endPacket");
     }
@@ -94,6 +99,7 @@ public class PacketSession extends AbstractPacket
     public void readFrom(ByteBuf buffer, Side side)
     {
         modId = ByteBufUtils.readUTF8String(buffer);
+        vars = new HashMap<String, Object>();
 
         String var = ByteBufUtils.readUTF8String(buffer);
         while(!var.equals("##endPacket"))
@@ -142,6 +148,8 @@ public class PacketSession extends AbstractPacket
 
                 vars.put(var, ints);
             }
+
+            var = ByteBufUtils.readUTF8String(buffer);
         }
     }
 
