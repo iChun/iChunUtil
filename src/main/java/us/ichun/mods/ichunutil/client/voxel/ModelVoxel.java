@@ -119,7 +119,6 @@ public class ModelVoxel extends ModelBase
         }
     }
 
-    //TODO yOffset has been removed. Check that this still renders properly
     public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<LocationInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
     {
         GlStateManager.pushMatrix();

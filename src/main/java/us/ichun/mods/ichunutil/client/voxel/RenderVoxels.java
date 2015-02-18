@@ -139,7 +139,7 @@ public class RenderVoxels extends Render
             }
         }
 
-        sd.model.renderPlayer(sd, entity.worldObj.getWorldTime(), entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
+        sd.model.renderPlayer(sd, sd.age, entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
 
         GlStateManager.popMatrix();
     }

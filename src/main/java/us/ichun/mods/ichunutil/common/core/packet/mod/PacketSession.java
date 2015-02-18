@@ -75,7 +75,7 @@ public class PacketSession extends AbstractPacket
 
                 ByteBufUtils.writeUTF8String(buffer, ((String)obj));
             }
-            else if(obj.getClass().equals(String[].class));
+            else if(obj.getClass().equals(String[].class))
             {
                 buffer.writeInt(5);// TYPE
 

@@ -63,7 +63,7 @@ public class LocationInfo
             }
         }
         txLocation = ((AbstractClientPlayer)player).getLocationSkin();
-        if(canRender && player.isInvisible())
+        if(canRender && (player.isInvisible() || player.isPlayerSleeping()))
         {
             canRender = false;
         }
