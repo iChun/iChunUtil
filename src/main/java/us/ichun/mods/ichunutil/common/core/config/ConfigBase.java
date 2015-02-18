@@ -320,6 +320,10 @@ public abstract class ConfigBase
         iChunUtil.channel.sendToPlayer(new PacketSession(this), player);
     }
 
+    public void onReceiveSession()
+    {
+    }
+
     public void reveal(String...toReveal)
     {
         boolean add = false;

@@ -183,24 +183,4 @@ public class iChunUtil
     {
         console(s, false);
     }
-
-    public static void console(int i)
-    {
-        console((new Integer(i)).toString());
-    }
-
-    public static void console(boolean b)
-    {
-        console((new Boolean(b)).toString());
-    }
-
-    public static void console(float f)
-    {
-        console((new Float(f)).toString());
-    }
-
-    public static void console(double d)
-    {
-        console((new Double(d)).toString());
-    }
 }

@@ -164,6 +164,7 @@ public class PacketSession extends AbstractPacket
                     }
                     catch(Exception ignored){}
                 }
+                conf.onReceiveSession();
                 break;
             }
         }

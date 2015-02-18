@@ -16,7 +16,7 @@ public class ObfHelper
 {
     public static boolean obfuscation;
 
-    private static final String obfVersion = "1.8";
+    private static final String obfVersion = "1.8.0";
 
     public static final String[] mainModel = new String[] { "field_77045_g", "mainModel" };
 
@@ -59,6 +59,10 @@ public class ObfHelper
         }
         catch (Exception e)
         {
+        }
+        if(!iChunUtil.versionOfMC.equals(obfVersion))
+        {
+            iChunUtil.console("ObfHelper Strings are not updated!", true);
         }
     }
     

@@ -39,7 +39,6 @@ public class WindowSetter extends Window
 
     public void draw(int mouseX, int mouseY) //4 pixel border?
     {
-        //TODO ignore all input if the set-prop windows are open
         if(parent.windowCats.configs.selectedIdentifier.isEmpty())
         {
             return;
