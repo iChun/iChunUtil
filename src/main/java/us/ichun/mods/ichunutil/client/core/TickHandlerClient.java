@@ -8,6 +8,8 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,6 +21,9 @@ import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
+import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
+import us.ichun.mods.ichunutil.common.tracker.TrackerRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +97,21 @@ public class TickHandlerClient
     }
 
     @SubscribeEvent
+    public void playerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isClient() && event.phase.equals(TickEvent.Phase.END))
+        {
+            for(TrackerRegistry reg : trackedEntities)
+            {
+                if(reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getName().equals(event.player.getName()))
+                {
+                    reg.entityToTrack = event.player;
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event)
     {
         if(event.phase == TickEvent.Phase.END)
@@ -118,6 +138,44 @@ public class TickHandlerClient
             }
             e.getValue().tick();
         }
+        for(int i = trackedEntities.size() - 1; i >= 0; i--)
+        {
+            TrackerRegistry reg = trackedEntities.get(i);
+            if(!reg.update())
+            {
+                trackedEntities.remove(i);
+            }
+        }
+    }
+
+    public ArrayList<EntityInfo> getOrRegisterEntityTracker(EntityLivingBase ent, int length, Class<? extends IAdditionalTrackerInfo> additionalInfo, boolean persist)
+    {
+        ArrayList<EntityInfo> info = null;
+
+        //Check if the Tracker already exists
+        for(TrackerRegistry reg : trackedEntities)
+        {
+            if(reg.entityToTrack == ent || reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getName().equals(ent.getName()) && ent instanceof EntityPlayer)
+            {
+                if(length > reg.length)
+                {
+                    reg.length = length;
+                }
+                reg.addTracker(additionalInfo);
+                info = reg.trackedInfo;
+                break;
+            }
+        }
+
+        //Create tracker if it doesn't exist;
+        if(info == null)
+        {
+            TrackerRegistry reg = (new TrackerRegistry(persist && ent instanceof EntityPlayer ? TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER : TrackerRegistry.EnumTrackerType.SPECIFIC, ent, length)).addTracker(additionalInfo);
+            trackedEntities.add(reg);
+            info = reg.trackedInfo;
+        }
+
+        return info;
     }
 
     public GuiModUpdateNotification modUpdateNotification;
@@ -131,4 +189,6 @@ public class TickHandlerClient
 
     public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
+
+    public ArrayList<TrackerRegistry> trackedEntities = new ArrayList<TrackerRegistry>();
 }

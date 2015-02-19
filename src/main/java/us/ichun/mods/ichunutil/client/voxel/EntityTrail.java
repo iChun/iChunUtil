@@ -17,8 +17,6 @@ public class EntityTrail extends Entity
 
     public ModelVoxel model;
 
-    public int age;
-
     public EntityTrail(World par1World)
     {
         super(par1World);
@@ -48,8 +46,6 @@ public class EntityTrail extends Entity
     public void onUpdate()
     {
         ticksExisted++;
-        age++;
-
         if(parent == null || !parent.isEntityAlive() || parent.isChild() || iChunUtil.proxy.trailTicker.streaks.get(parent.getName()) != this)
         {
             setDead();

@@ -5,6 +5,8 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
+import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
+import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -119,7 +121,7 @@ public class ModelVoxel extends ModelBase
         }
     }
 
-    public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<LocationInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
+    public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<EntityInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
     {
         GlStateManager.pushMatrix();
 
@@ -134,16 +136,35 @@ public class ModelVoxel extends ModelBase
 
 
         //last one = newest. first = oldest
-        for(int j = loc.size() - 1; j >= 0; j--)
+        for(int j = 0; j < Math.min(loc.size(), 100); j++)
         {
-            LocationInfo info = loc.get(j);
+            EntityInfo info = loc.get(j);
 
-            if(info.lastTick % 2 == 0 || !info.canRender)
+            if(info.lastTick % 2 == 0)
             {
                 continue;
             }
 
-            int prog = (int)(time - info.lastTick);
+            boolean canRender = true;
+
+            TrailTracker info1 = null;
+
+            for(IAdditionalTrackerInfo tracker : info.additionalInfo)
+            {
+                if(tracker instanceof TrailTracker)
+                {
+                    info1 = ((TrailTracker)tracker);
+                    canRender = info1.canRender;
+                    break;
+                }
+            }
+
+            if(!canRender || info1 == null)
+            {
+                continue;
+            }
+
+            int prog = j;
             float prog2 = MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F);
 
             GlStateManager.pushMatrix();
@@ -189,7 +210,7 @@ public class ModelVoxel extends ModelBase
                     GlStateManager.bindTexture(skins[i - 2]);
                 }
             }
-            renderLimb(prog, i, info.sneaking, info.renderYawOffset, info.rotationYawHead, info.rotationPitch, info.limbSwing, info.limbSwingAmount, info.yawChange * prog * (1.0F - 0.4F * prog2), info.pitchChange * prog * (1.0F - 0.4F * prog2), f5, renderTick);
+            renderLimb(prog, i, info.sneaking, info.renderYawOffset, info.rotationYawHead, info.rotationPitch, info.limbSwing, info.limbSwingAmount, info1.yawChange * prog * (1.0F - 0.4F * prog2), info1.pitchChange * prog * (1.0F - 0.4F * prog2), f5, renderTick);
             GlStateManager.popMatrix();
         }
 

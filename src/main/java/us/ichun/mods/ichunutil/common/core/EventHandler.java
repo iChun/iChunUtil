@@ -37,6 +37,7 @@ public class EventHandler
         {
             conf.resetSession();
         }
+        iChunUtil.proxy.tickHandlerClient.trackedEntities.clear();
     }
 
     @SubscribeEvent

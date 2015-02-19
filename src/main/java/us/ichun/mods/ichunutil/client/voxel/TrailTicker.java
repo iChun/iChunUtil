@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.iChunUtil;
+import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,36 +108,7 @@ public class TrailTicker
                 streaks.put(player.getName(), hat);
                 world.spawnEntityInWorld(hat);
             }
-
-            ArrayList<LocationInfo> loc = getPlayerLocationInfo(player);
-            LocationInfo oldest = loc.get(0);
-            loc.remove(0);
-            loc.add(oldest);
-            oldest.update(player);
         }
-    }
-
-    public ArrayList<LocationInfo> getPlayerLocationInfo(EntityPlayer player)
-    {
-        ArrayList<LocationInfo> loc = playerLoc.get(player.getName());//0 = oldest
-        if(loc == null)
-        {
-            loc = new ArrayList<LocationInfo>();
-            playerLoc.put(player.getName(), loc);
-        }
-        int time = 100;
-        if(loc.size() < time)
-        {
-            for(int i = 0; i < (time - loc.size()); i++)
-            {
-                loc.add(0, new LocationInfo(player));
-            }
-        }
-        else if(loc.size() > time)
-        {
-            loc.remove(0);
-        }
-        return loc;
     }
 
     public void updatePos(EntityTrail streak)
@@ -158,7 +130,6 @@ public class TrailTicker
 
     public WorldClient worldInstance;
 
-    public HashMap<String, ArrayList<LocationInfo>> playerLoc = new HashMap<String, ArrayList<LocationInfo>>();
 
     public HashMap<String, EntityTrail> streaks = new HashMap<String, EntityTrail>();
 

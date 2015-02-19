@@ -11,6 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
+import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
+import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -47,13 +49,19 @@ public class RenderVoxels extends Render
         GlStateManager.pushMatrix();
         //        GlStateManager.translate((float)d, (float)d1, (float)d2);
 
-        ArrayList<LocationInfo> loc = iChunUtil.proxy.trailTicker.getPlayerLocationInfo(sd.parent);
+        ArrayList<EntityInfo> loc = iChunUtil.proxy.tickHandlerClient.getOrRegisterEntityTracker(sd.parent, 100, TrailTracker.class, true);
 
         ResourceLocation rl = sd.parent.getLocationSkin();
 
-        if(loc.get(20).txLocation != null)
+        if(loc.size() > 21)
         {
-            rl = loc.get(20).txLocation;
+            for(IAdditionalTrackerInfo tracker : loc.get(20).additionalInfo)
+            {
+                if(tracker instanceof TrailTracker && ((TrailTracker)tracker).txLocation != null)
+                {
+                    rl = ((TrailTracker)tracker).txLocation;
+                }
+            }
         }
 
         BufferedImage[] skins = restitchedSkins.get(rl);
@@ -139,7 +147,7 @@ public class RenderVoxels extends Render
             }
         }
 
-        sd.model.renderPlayer(sd, sd.age, entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
+        sd.model.renderPlayer(sd, 0, entity.hashCode(), loc, d, d1, d2, 0.0625F, f1, restitchedSkinsId.get(rl));
 
         GlStateManager.popMatrix();
     }
