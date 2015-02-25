@@ -14,6 +14,8 @@ import us.ichun.mods.ichunutil.client.gui.window.IWorkspace;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementToggle;
+import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 
 public class GuiConfigs extends IWorkspace
 {
@@ -41,6 +43,11 @@ public class GuiConfigs extends IWorkspace
         addWindowOnTop(windowConfigs);
         addWindowOnTop(windowCats);
         addWindowOnTop(windowSetter);
+
+        for(ConfigBase config : ConfigHandler.configs)
+        {
+            config.enterConfigScreen();
+        }
     }
 
     @Override
@@ -52,6 +59,11 @@ public class GuiConfigs extends IWorkspace
     @Override
     public void onGuiClosed()
     {
+        for(ConfigBase config : ConfigHandler.configs)
+        {
+            config.exitConfigScreen();
+        }
+
         Keyboard.enableRepeatEvents(false);
 
         Minecraft.getMinecraft().gameSettings.guiScale = oriScale;

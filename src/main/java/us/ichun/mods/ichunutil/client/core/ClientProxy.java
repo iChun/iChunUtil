@@ -5,7 +5,9 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.item.Item;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -21,6 +23,7 @@ import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.io.File;
 import java.util.List;
@@ -59,6 +62,10 @@ public class ClientProxy extends CommonProxy
     @Override
     public void init()
     {
+        super.init();
+
+        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
+
         trailTicker = new TrailTicker();
         FMLCommonHandler.instance().bus().register(trailTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());

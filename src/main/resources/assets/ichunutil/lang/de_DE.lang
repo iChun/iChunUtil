@@ -46,3 +46,5 @@ window.saveAs.fileName=Dateiname
 window.saveAs.overwrite=Überschreiben?
 window.saveAs.confirmOverwrite=Datei existiert bereits! Überschreiben?
 window.saveAs.failed=Speichern der Datei fehlgeschlagen.
+
+tile.ichunutil.block.compactporkchop.name=Kompaktes rohes Schweinefleisch

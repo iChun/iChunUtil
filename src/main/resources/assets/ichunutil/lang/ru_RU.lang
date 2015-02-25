@@ -53,3 +53,5 @@ window.saveAs.fileName=Имя файла
 window.saveAs.overwrite=Перезаписать?
 window.saveAs.confirmOverwrite=Файл уже существует! Перезаписать?
 window.saveAs.failed=Не удалось сохранить файл.
+
+tile.ichunutil.block.compactporkchop.name=Компактный Блок Свинины

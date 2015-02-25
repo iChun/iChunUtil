@@ -1,5 +1,10 @@
 package us.ichun.mods.ichunutil.common;
 
+import net.minecraft.block.Block;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -10,6 +15,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +35,7 @@ import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
@@ -63,6 +71,8 @@ public class iChunUtil
     @SidedProxy(clientSide = "us.ichun.mods.ichunutil.client.core.ClientProxy", serverSide = "us.ichun.mods.ichunutil.common.core.CommonProxy")
     public static CommonProxy proxy;
 
+    public static Block blockCompactPorkchop;
+
     public class Config extends ConfigBase
     {
         @ConfigProp(category = "versionCheck")
@@ -83,6 +93,10 @@ public class iChunUtil
         @ConfigProp(category = "patreon", hidden = true)
         @IntBool
         public int showPatronReward = 1;
+
+        @ConfigProp(useSession = true, category = "block")
+        @IntBool
+        public int enableCompactPorkchop = 1;
 
         public Config(File file)
         {
@@ -109,14 +123,38 @@ public class iChunUtil
                 iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
             }
         }
+
+        @Override
+        public void onReceiveSession()
+        {
+            List<ItemStack> compactPorkchops = OreDictionary.getOres("blockCompactRawPorkchop");
+            if(compactPorkchops.size() == 1 && compactPorkchops.get(0).getItem() != null && Block.getBlockFromItem(compactPorkchops.get(0).getItem()) == (blockCompactPorkchop)) //Only handle the recipe if it's the only oredict entry for the block.
+            {
+                List recipes = CraftingManager.getInstance().getRecipeList();
+                for(int i = recipes.size() - 1; i >= 0; i--)
+                {
+                    if(recipes.get(i) instanceof ShapedRecipes)
+                    {
+                        ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
+                        if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
+                        {
+                            recipes.remove(i);
+                        }
+                    }
+                }
+
+                if(enableCompactPorkchop == 1)
+                {
+                    GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.porkchop);
+                }
+            }
+        }
     }
 
     @EventHandler
     public void preLoad(FMLPreInitializationEvent event)
     {
         ObfHelper.detectObfuscation();
-
-        proxy.preInit();
 
         FMLCommonHandler.instance().bus().register(new PacketExecuter());
 
@@ -136,6 +174,8 @@ public class iChunUtil
                 proxy.prevVerChecker.put(str[0], str[1]);
             }
         }
+
+        proxy.preInit();
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
     }
@@ -163,7 +203,7 @@ public class iChunUtil
 
         hasMorphMod = Loader.isModLoaded("Morph");
 
-//                us.ichun.mods.ichunutil.common.core.EntityHelperBase.getUUIDFromUsernames("pahimar");
+        //                us.ichun.mods.ichunutil.common.core.EntityHelperBase.getUUIDFromUsernames("pahimar");
         //
         //                ModVersionJsonGen.generate();
     }

@@ -27,3 +27,5 @@ ichunutil.config.prop.versionNotificationTypes.comment=¿Cómo se notificarán l
 ichunutil.config.prop.versionNotificationFrequency.comment=¿Cada cuánto tiempo se te notificará de la actualización?(Configuración de cliente)\n0 = Cuando te conectas al servidor.\n1 = Una vez al día.\n2 = Solo una vez.\n3 = Nunca (Oculta las notificaciones. El mod seguirá buscando actualizaciones y lo mostrará en la consola).
 
 ichun.gui.newUpdate=¡Nueva actualización disponible!
+
+tile.ichunutil.block.compactporkchop.name=Carne de cerdo cruda compacta

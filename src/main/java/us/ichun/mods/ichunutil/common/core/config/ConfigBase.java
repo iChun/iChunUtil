@@ -36,6 +36,7 @@ public abstract class ConfigBase
     public TreeMap<CategoryInfo, ArrayList<ConfigBase.PropInfo>> categories = new TreeMap<CategoryInfo, ArrayList<ConfigBase.PropInfo>>(Ordering.natural());
 
     public HashMap<Field, Object> session = new HashMap<Field, Object>();
+    public HashMap<Field, Object> configScreen = new HashMap<Field, Object>();
 
     public ConfigBase(File file, String... unhide)
     {
@@ -132,6 +133,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), field.getInt(this)).set(field.getInt(this));
+                    config.get(propInfo.category(), field.getName(), field.getInt(this)).comment = comment;
                 }
                 else
                 {
@@ -151,6 +153,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), (int[])field.get(this)).set((int[])field.get(this));
+                    config.get(propInfo.category(), field.getName(), (int[])field.get(this)).comment = comment;
                 }
                 else
                 {
@@ -175,6 +178,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), nestedIntArray.serialize()).set(nestedIntArray.serialize());
+                    config.get(propInfo.category(), field.getName(), nestedIntArray.serialize()).comment = comment;
                 }
                 else
                 {
@@ -187,6 +191,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), clr.serialize()).set(clr.serialize());
+                    config.get(propInfo.category(), field.getName(), clr.serialize()).comment = comment;
                 }
                 else
                 {
@@ -198,6 +203,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), (String)field.get(this)).set((String)field.get(this));
+                    config.get(propInfo.category(), field.getName(), (String)field.get(this)).comment = comment;
                 }
                 else
                 {
@@ -217,6 +223,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(propInfo.category(), field.getName(), (String[])field.get(this)).set((String[])field.get(this));
+                    config.get(propInfo.category(), field.getName(), (String[])field.get(this)).comment = comment;
                 }
                 else
                 {
@@ -237,6 +244,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     ConfigHandler.configKeybind.get(propInfo.category(), field.getName(), bind.serialize()).set(bind.serialize());
+                    ConfigHandler.configKeybind.get(propInfo.category(), field.getName(), bind.serialize()).comment = comment;
                 }
                 else
                 {
@@ -255,11 +263,11 @@ public abstract class ConfigBase
                 fields.add(propInfo1);
             }
 
-            if(!propInfo.changeable())
+            if(!propInfo.changeable() && !unchangable.contains(field))
             {
                 unchangable.add(field);
             }
-            if(propInfo.useSession())
+            if(propInfo.useSession() && !sessionProp.contains(field))
             {
                 sessionProp.add(field);
             }
@@ -274,7 +282,7 @@ public abstract class ConfigBase
             CategoryInfo info = e.getKey();
             String cat = info.category;
             String comment;
-            if(cat.equals("general") || cat.equals("gameplay") || cat.equals("globalOptions") || cat.equals("serverOptions") || cat.equals("clientOnly") || cat.equals("keybind"))
+            if(cat.equals("general") || cat.equals("gameplay") || cat.equals("globalOptions") || cat.equals("serverOptions") || cat.equals("clientOnly") || cat.equals("keybind") || cat.equals("block"))
             {
                 info.name = StatCollector.translateToLocal(String.format("ichunutil.config.cat.%s.name", cat));
                 comment = StatCollector.translateToLocal(String.format("ichunutil.config.cat.%s.comment", cat));
@@ -322,6 +330,35 @@ public abstract class ConfigBase
 
     public void onReceiveSession()
     {
+    }
+
+    public void enterConfigScreen()
+    {
+        for(Field field : sessionProp)
+        {
+            try
+            {
+                field.setAccessible(true);
+                configScreen.put(field, field.get(this));
+            }
+            catch(Exception ignored){}
+        }
+        resetSession();
+    }
+
+    public void exitConfigScreen()
+    {
+        storeSession();
+        for(Map.Entry<Field, Object> e : configScreen.entrySet())
+        {
+            try
+            {
+                e.getKey().setAccessible(true);
+                e.getKey().set(this, e.getValue());
+            }
+            catch(Exception ignored){}
+        }
+        configScreen.clear();
     }
 
     public void reveal(String...toReveal)

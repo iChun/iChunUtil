@@ -2,12 +2,16 @@ package us.ichun.mods.ichunutil.common.core;
 
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import us.ichun.mods.ichunutil.client.core.TickHandlerClient;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
+import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketSession;
@@ -31,11 +35,16 @@ public class CommonProxy
     {
         EventCalendar.checkDate();
 
+        iChunUtil.blockCompactPorkchop = (new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop");
+
+        GameRegistry.registerBlock(iChunUtil.blockCompactPorkchop, "compactPorkchop");
+
         iChunUtil.channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class);
     }
 
     public void init()
     {
+        OreDictionary.registerOre("blockCompactRawPorkchop", iChunUtil.blockCompactPorkchop);
     }
 
     public GameProfileRepository createProfileRepo()
