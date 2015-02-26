@@ -135,9 +135,9 @@ public class ModelHelper
 			info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
 		}
 
-		if(box.field_78247_g != null)
+		if(box.boxName != null)
 		{
-			TextureOffset textureoffset = rend.baseModel.getTextureOffset(box.field_78247_g);
+			TextureOffset textureoffset = rend.baseModel.getTextureOffset(box.boxName);
 			if(textureoffset != null)
 			{
 				info.txOffset[0] = textureoffset.textureOffsetX;
@@ -163,7 +163,7 @@ public class ModelHelper
 		for(int j = 0; j < original.cubeList.size(); j++)
 		{
 			ModelBox box = (ModelBox)original.cubeList.get(j);
-			CubeInfo info = createCubeInfoFromModelBox(original, box, box.field_78247_g != null ? (box.field_78247_g.substring(box.field_78247_g.lastIndexOf(".") + 1)) : "");
+			CubeInfo info = createCubeInfoFromModelBox(original, box, box.boxName != null ? (box.boxName.substring(box.boxName.lastIndexOf(".") + 1)) : "");
 
 			cubeCopy.mirror = info.txMirror;
 			cubeCopy.textureOffsetX = info.txOffset[0];
@@ -452,7 +452,7 @@ public class ModelHelper
 					for(int k = rend1.cubeList.size() - 1; k >= 0; k--)
 					{
 						ModelBox box1 = (ModelBox)rend1.cubeList.get(k);
-						CubeInfo cube1 = createCubeInfoFromModelBox(rend1, box1, box1.field_78247_g != null ? box1.field_78247_g : "");
+						CubeInfo cube1 = createCubeInfoFromModelBox(rend1, box1, box1.boxName != null ? box1.boxName : "");
 						boolean found = false;
 						for(int j = parts2.size() - 1; j >= 0; j--)
 						{
@@ -462,7 +462,7 @@ public class ModelHelper
 								for(int l = rend2.cubeList.size(); l >= 0; l--)
 								{
 									ModelBox box2 = (ModelBox)rend2.cubeList.get(l);
-									CubeInfo cube2 = createCubeInfoFromModelBox(rend2, box2, box2.field_78247_g != null ? box2.field_78247_g : "");
+									CubeInfo cube2 = createCubeInfoFromModelBox(rend2, box2, box2.boxName != null ? box2.boxName : "");
 									for(int m = 0; m < 3; m++)
 									{
 										if(cube1.dimensions[m] == cube2.dimensions[m] && cube1.offset[m] == cube2.offset[m])

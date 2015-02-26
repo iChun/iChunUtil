@@ -291,7 +291,7 @@ public class ProjectInfo
                 for(int j = 0; j < rend.cubeList.size(); j++)
                 {
                     ModelBox box = (ModelBox)rend.cubeList.get(j);
-                    CubeInfo info = ModelHelper.createCubeInfoFromModelBox(rend, box, box.field_78247_g != null ? (box.field_78247_g.substring(box.field_78247_g.lastIndexOf(".") + 1)) : (e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j))));
+                    CubeInfo info = ModelHelper.createCubeInfoFromModelBox(rend, box, box.boxName != null ? (box.boxName.substring(box.boxName.lastIndexOf(".") + 1)) : (e.getKey() + (rend.cubeList.size() == 1 ? "" : (" - " + j))));
 
                     cubeCount++;
                     cubes.add(info);
@@ -360,9 +360,9 @@ public class ProjectInfo
             {
                 String fullName = name + (rend1.cubeList.size() == 1 ? "Child" : ("Child - " + j));
                 ModelBox box = (ModelBox)rend1.cubeList.get(j);
-                if(box.field_78247_g != null)
+                if(box.boxName != null)
                 {
-                    fullName = box.field_78247_g.substring(box.field_78247_g.lastIndexOf(".") + 1);
+                    fullName = box.boxName.substring(box.boxName.lastIndexOf(".") + 1);
                 }
                 CubeInfo info1 = new CubeInfo(fullName);
 
@@ -387,9 +387,9 @@ public class ProjectInfo
                 info1.txOffset[0] = rend1.textureOffsetX;
                 info1.txOffset[1] = rend1.textureOffsetY;
 
-                if(box.field_78247_g != null)
+                if(box.boxName != null)
                 {
-                    TextureOffset textureoffset = rend1.baseModel.getTextureOffset(box.field_78247_g);
+                    TextureOffset textureoffset = rend1.baseModel.getTextureOffset(box.boxName);
                     if(textureoffset != null)
                     {
                         info1.txOffset[0] = textureoffset.textureOffsetX;

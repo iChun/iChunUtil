@@ -83,7 +83,7 @@ public class PacketChannel
         {
             EntityPlayer player1 = (EntityPlayer)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(i);
 
-            if(player.getName().equalsIgnoreCase(player1.getName()))
+            if(player.getCommandSenderName().equalsIgnoreCase(player1.getCommandSenderName()))
             {
                 continue;
             }

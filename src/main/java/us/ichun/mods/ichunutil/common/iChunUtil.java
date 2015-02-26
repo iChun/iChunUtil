@@ -39,11 +39,12 @@ import java.util.List;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[1.8-11.14.0.1281-1.8,)"
+        dependencies = "required-after:Forge@[1.8-11.14.1.1328,)"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 
 //TODO easter egg for AFday?
+//TODO check out the new clientSideOnly/serverSideOnly stuff in Forge.
 public class iChunUtil
 {
     //MC version, bumped up every MC update.

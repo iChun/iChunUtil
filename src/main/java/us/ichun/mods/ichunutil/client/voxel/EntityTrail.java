@@ -46,7 +46,7 @@ public class EntityTrail extends Entity
     public void onUpdate()
     {
         ticksExisted++;
-        if(parent == null || !parent.isEntityAlive() || parent.isChild() || iChunUtil.proxy.trailTicker.streaks.get(parent.getName()) != this)
+        if(parent == null || !parent.isEntityAlive() || parent.isChild() || iChunUtil.proxy.trailTicker.streaks.get(parent.getCommandSenderName()) != this)
         {
             setDead();
             return;

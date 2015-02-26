@@ -41,7 +41,7 @@ public class RenderVoxels extends Render
     {
         EntityTrail sd = (EntityTrail)entity;
 
-        if(sd.parent.getName().equals(Minecraft.getMinecraft().getRenderViewEntity().getName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+        if(sd.parent.getCommandSenderName().equals(Minecraft.getMinecraft().getRenderViewEntity().getCommandSenderName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
         {
             return;
         }

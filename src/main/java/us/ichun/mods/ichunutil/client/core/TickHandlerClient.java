@@ -103,7 +103,7 @@ public class TickHandlerClient
         {
             for(TrackerRegistry reg : trackedEntities)
             {
-                if(reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getName().equals(event.player.getName()))
+                if(reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getCommandSenderName().equals(event.player.getCommandSenderName()))
                 {
                     reg.entityToTrack = event.player;
                 }
@@ -155,7 +155,7 @@ public class TickHandlerClient
         //Check if the Tracker already exists
         for(TrackerRegistry reg : trackedEntities)
         {
-            if(reg.entityToTrack == ent || reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getName().equals(ent.getName()) && ent instanceof EntityPlayer)
+            if(reg.entityToTrack == ent || reg.type.equals(TrackerRegistry.EnumTrackerType.PERSISTENT_PLAYER) && reg.entityToTrack.getCommandSenderName().equals(ent.getCommandSenderName()) && ent instanceof EntityPlayer)
             {
                 if(length > reg.length)
                 {

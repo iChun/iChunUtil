@@ -85,17 +85,17 @@ public class TrailTicker
         if(event.side == Side.CLIENT && event.phase == TickEvent.Phase.END)
         {
             AbstractClientPlayer player = (AbstractClientPlayer)event.player;
-            if(player.worldObj.getPlayerEntityByName(player.getName()) != player)
+            if(player.worldObj.getPlayerEntityByName(player.getCommandSenderName()) != player)
             {
                 return;
             }
 
             WorldClient world = Minecraft.getMinecraft().theWorld;
 
-            EntityTrail hat = streaks.get(player.getName());
+            EntityTrail hat = streaks.get(player.getCommandSenderName());
             if(hat == null || hat.isDead)
             {
-                if(player.getName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getName()))
+                if(player.getCommandSenderName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
                 {
                     //Assume respawn
                     for(Entry<String, EntityTrail> e : streaks.entrySet())
@@ -105,7 +105,7 @@ public class TrailTicker
                 }
 
                 hat = new EntityTrail(world, player);
-                streaks.put(player.getName(), hat);
+                streaks.put(player.getCommandSenderName(), hat);
                 world.spawnEntityInWorld(hat);
             }
         }

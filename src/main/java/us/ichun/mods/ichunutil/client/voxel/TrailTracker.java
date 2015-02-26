@@ -43,15 +43,15 @@ public class TrailTracker
             }
             if(canRender && iChunUtil.hasMorphMod)
             {
-                if(morph.api.Api.hasMorph(player.getName(), true))
+                if(morph.api.Api.hasMorph(player.getCommandSenderName(), true))
                 {
-                    if(morph.api.Api.morphProgress(player.getName(), true) < 1.0F || !(morph.api.Api.getMorphEntity(player.getName(), true) instanceof AbstractClientPlayer))
+                    if(morph.api.Api.morphProgress(player.getCommandSenderName(), true) < 1.0F || !(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer))
                     {
                         canRender = false;
                     }
-                    if(morph.api.Api.getMorphEntity(player.getName(), true) instanceof AbstractClientPlayer)
+                    if(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer)
                     {
-                        txLocation = ((AbstractClientPlayer)morph.api.Api.getMorphEntity(player.getName(), true)).getLocationSkin();
+                        txLocation = ((AbstractClientPlayer)morph.api.Api.getMorphEntity(player.getCommandSenderName(), true)).getLocationSkin();
                     }
                 }
             }
