@@ -15,6 +15,7 @@ import us.ichun.mods.ichunutil.client.gui.window.element.*;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
+import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
@@ -281,6 +282,10 @@ public class ElementPropSetter extends Element
                 tree.config.save();
                 break;
             }
+        }
+        if(ConfigHandler.configKeybind.hasChanged())
+        {
+            ConfigHandler.configKeybind.save();
         }
     }
 

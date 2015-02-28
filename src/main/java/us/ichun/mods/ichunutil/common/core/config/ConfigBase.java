@@ -243,12 +243,12 @@ public abstract class ConfigBase
                 KeyBind bind = (KeyBind)field.get(this);
                 if(write)
                 {
-                    ConfigHandler.configKeybind.get(propInfo.category(), field.getName(), bind.serialize()).set(bind.serialize());
-                    ConfigHandler.configKeybind.get(propInfo.category(), field.getName(), bind.serialize()).comment = comment;
+                    ConfigHandler.configKeybind.get("keybinds", getModId().toLowerCase() + "." + field.getName(), bind.serialize()).set(bind.serialize());
+                    ConfigHandler.configKeybind.get("keybinds", getModId().toLowerCase() + "." + field.getName(), bind.serialize()).comment = comment;
                 }
                 else
                 {
-                    bind.deserialize(ConfigHandler.configKeybind.getString(getModId().toLowerCase() + "." + field.getName(), propInfo.category(), bind.serialize(), comment));
+                    bind.deserialize(ConfigHandler.configKeybind.getString(getModId().toLowerCase() + "." + field.getName(), "keybinds", bind.serialize(), comment));
                     bind = iChunUtil.proxy.registerKeyBind(bind, null);
                     field.set(this, bind);
                 }
