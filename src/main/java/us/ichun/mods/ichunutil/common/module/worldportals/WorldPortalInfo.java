@@ -27,9 +27,11 @@ public class WorldPortalInfo
     public double offsetHeight = 1.0D; //height offset of scanzone
     public double offsetDepth = 0.1D; //depth offset of scanzone
 
-    public boolean active = true; //TODO would this be the same as enabling teleport?
+    public boolean active = true;
 
     public boolean project = false;
+
+    public int teleport = 1; //0 = off, 1 = oneway/twoway, 2 = frustrum, 3 = windowstyle //TODO think about how to do frustrum style teleporting and window style teleporting.
 
     //Non portal specific configs
     public WorldPortalInfo pair;
@@ -72,6 +74,7 @@ public class WorldPortalInfo
     public void transverseTo(WorldPortalInfo otherPortal)
     {
         //TODO active check
+        //TODO teleport checks esp for window... maybe in shouldTransverse() or something
     }
 
     public void write(NBTTagCompound tag)
@@ -89,6 +92,8 @@ public class WorldPortalInfo
         tag.setBoolean("active", active);
 
         tag.setBoolean("project", project);
+
+        tag.setInteger("teleport", teleport);
 
         if(pair != null && pair.parent != null)
         {
@@ -116,6 +121,8 @@ public class WorldPortalInfo
 
         project = tag.getBoolean("project");
 
+        teleport = tag.getInteger("teleport");
+
         if(height < 0.1D)
         {
             height = 0.1D;
@@ -142,7 +149,7 @@ public class WorldPortalInfo
 
     public AxisAlignedBB getScanZone()
     {
-        return null;
+        return null; //TODO this
     }
 
     @SideOnly(Side.CLIENT)

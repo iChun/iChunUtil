@@ -211,7 +211,7 @@ public class iChunUtil
 
         //                us.ichun.mods.ichunutil.common.core.EntityHelperBase.getUUIDFromUsernames("pahimar");
         //
-        //                ModVersionJsonGen.generate();
+//        us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionJsonGen.generate();
     }
 
     public static boolean getPostLoad()
