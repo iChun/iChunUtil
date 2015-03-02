@@ -45,6 +45,7 @@ import java.util.List;
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 
 //TODO check out the new clientSideOnly/serverSideOnly stuff in Forge.
+//TODO update the authors in mcmodinfo to authorList
 public class iChunUtil
 {
     //MC version, bumped up every MC update.
