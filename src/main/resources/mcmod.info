@@ -5,7 +5,7 @@
   "version" : "${version}",
   "url" : "http://www.ichun.us/",
   "credits" : "",
-  "authors": [
+  "authorList": [
     "iChun", "Kihira"
   ],
   "description": "Shared library mod required by several of iChun's Mods.",
