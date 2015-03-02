@@ -56,4 +56,11 @@ public class BlockCompactPorkchop extends Block
             list.add(new ItemStack(itemIn, 1, 0));
         }
     }
+
+    //For ObfHelper use to check
+    @Override
+    public Block setBlockUnbreakable()
+    {
+        return super.setBlockUnbreakable();
+    }
 }

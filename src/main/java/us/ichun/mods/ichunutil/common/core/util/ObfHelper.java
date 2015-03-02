@@ -3,6 +3,7 @@ package us.ichun.mods.ichunutil.common.core.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
@@ -53,16 +54,22 @@ public class ObfHelper
             	if(f.getName().equalsIgnoreCase("loadedEntityList"))
             	{
             		obfuscation = false;
-            		return;
+                    if(!iChunUtil.versionOfMC.equals(obfVersion))
+                    {
+                        iChunUtil.console("ObfHelper Strings are not updated!", true);
+                    }
+                    return;
             	}
             }
+
+            BlockCompactPorkchop.class.getDeclaredMethod("func_149722_s"); // will only reach here if in dev env, setBlockUnbreakable
         }
-        catch (Exception e)
+        catch(NoSuchMethodException e)
         {
+            throw new RuntimeException("You're running the deobf version of iChunUtil in an obfuscated environment! Don't do this!");
         }
-        if(!iChunUtil.versionOfMC.equals(obfVersion))
+        catch (Exception ignored)
         {
-            iChunUtil.console("ObfHelper Strings are not updated!", true);
         }
     }
     
