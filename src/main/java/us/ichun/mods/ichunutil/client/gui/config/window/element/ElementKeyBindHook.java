@@ -56,7 +56,9 @@ public class ElementKeyBindHook extends Element
             {
                 KeyBind bind = (KeyBind)this.bind.prop.field.get(this.bind.config);
 
-                this.bind.prop.field.set(this.bind.config, iChunUtil.proxy.registerKeyBind(new KeyBind(i, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind));
+                KeyBind newKey = iChunUtil.proxy.registerKeyBind(new KeyBind(i, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind);
+                this.bind.prop.field.set(this.bind.config, newKey);
+                this.bind.config.onConfigChange(this.bind.prop.field, newKey);
                 this.bind.elementTriggered(this);
             }
             catch(Exception ignored)

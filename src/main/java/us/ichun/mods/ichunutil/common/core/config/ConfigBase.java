@@ -379,7 +379,7 @@ public abstract class ConfigBase
         }
     }
 
-    public void onConfigChange(Field field, Object original)
+    public void onConfigChange(Field field, Object original) //Nested int array and keybind original is the new var, no ori cause lazy
     {
     }
 

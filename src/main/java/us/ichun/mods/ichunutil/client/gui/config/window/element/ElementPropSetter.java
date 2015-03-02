@@ -22,6 +22,7 @@ import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import us.ichun.mods.ichunutil.common.core.config.types.Colour;
 import us.ichun.mods.ichunutil.common.core.config.types.NestedIntArray;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class ElementPropSetter extends Element
@@ -583,7 +584,7 @@ public class ElementPropSetter extends Element
                                 ((GuiConfigs)parent.workspace).needsRestart();
                             }
                             propInfo.field.set(config, val);
-                            saveTimeout = 10;
+                            updateField(propInfo.field, oldVal);
                         }
                     }
                     else if(clz.equals(String.class))
@@ -598,7 +599,7 @@ public class ElementPropSetter extends Element
                                 ((GuiConfigs)parent.workspace).needsRestart();
                             }
                             propInfo.field.set(config, newText);
-                            saveTimeout = 10;
+                            updateField(propInfo.field, oldText);
                         }
                     }
                     else if(clz.equals(Colour.class))
@@ -615,8 +616,9 @@ public class ElementPropSetter extends Element
                                 {
                                     ((GuiConfigs)parent.workspace).needsRestart();
                                 }
+                                int oriClr = clr.getColour();
                                 clr.deserialize("#" + ((ElementTextInput)element).textField.getText());
-                                saveTimeout = 10;
+                                updateField(propInfo.field, new Colour(oriClr));
                             }
                         }
                         catch(NumberFormatException e)
@@ -654,6 +656,12 @@ public class ElementPropSetter extends Element
                     tree.selected = false;
                 }
             }
+        }
+
+        public void updateField(Field field, Object ori)
+        {
+            config.onConfigChange(field, ori);
+            saveTimeout = 10;
         }
     }
 }

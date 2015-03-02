@@ -28,6 +28,7 @@ import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import us.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import us.ichun.mods.ichunutil.common.core.network.PacketExecuter;
+import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
@@ -64,7 +65,7 @@ public class iChunUtil
     public static boolean hasMorphMod;
     public static boolean isPatron;
     //Server's patron list. Client's is in TrailTicker
-    public static ArrayList<String> patronList = new ArrayList<String>();
+    public static ArrayList<PatronInfo> patronList = new ArrayList<PatronInfo>();
 
     @Instance("iChunUtil")
     public static iChunUtil instance;
@@ -95,6 +96,10 @@ public class iChunUtil
         @IntBool
         public int showPatronReward = 1;
 
+        @ConfigProp(category = "patreon", hidden = true)
+        @IntMinMax(min = 1, max = 2)
+        public int patronRewardType = 1;
+
         @ConfigProp(useSession = true, category = "block")
         @IntBool
         public int enableCompactPorkchop = 1;
@@ -119,7 +124,7 @@ public class iChunUtil
         @Override
         public void onConfigChange(Field field, Object original)
         {
-            if(field.getName().equals("showPatronReward"))
+            if(field.getName().equals("showPatronReward") || field.getName().equals("patronRewardType"))
             {
                 iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
             }

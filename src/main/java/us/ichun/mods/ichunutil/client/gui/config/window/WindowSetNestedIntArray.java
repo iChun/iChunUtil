@@ -209,6 +209,7 @@ public class WindowSetNestedIntArray extends Window
                     {
                         parent.needsRestart();
                     }
+                    config.onConfigChange(prop.field, vals);
 
                     parent.windowSetter.props.saveTimeout = 10;
                     parent.keyBindTimeout = 5;

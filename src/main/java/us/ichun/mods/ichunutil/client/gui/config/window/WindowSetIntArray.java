@@ -107,7 +107,9 @@ public class WindowSetIntArray extends Window
                 {
                     parent.needsRestart();
                 }
+                int[] ori = (int[])prop.field.get(config);
                 prop.field.set(config, array);
+                config.onConfigChange(prop.field, ori);
 
                 parent.windowSetter.props.saveTimeout = 10;
                 parent.keyBindTimeout = 5;

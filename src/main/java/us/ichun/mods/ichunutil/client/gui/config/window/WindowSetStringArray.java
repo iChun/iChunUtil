@@ -1,21 +1,12 @@
 package us.ichun.mods.ichunutil.client.gui.config.window;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
-import us.ichun.mods.ichunutil.client.gui.config.window.element.ElementKeyBindHook;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementButton;
 import us.ichun.mods.ichunutil.client.gui.window.element.ElementTextInput;
-import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 
@@ -107,7 +98,9 @@ public class WindowSetStringArray extends Window
                 {
                     parent.needsRestart();
                 }
+                String[] ori = (String[])prop.field.get(config);
                 prop.field.set(config, array);
+                config.onConfigChange(prop.field, ori);
 
                 parent.windowSetter.props.saveTimeout = 10;
                 parent.keyBindTimeout = 5;

@@ -1,14 +1,10 @@
 package us.ichun.mods.ichunutil.client.gui.config.window;
 
-import net.minecraftforge.common.config.Property;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.gui.config.window.element.ElementPropSetter;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class WindowSetter extends Window
 {

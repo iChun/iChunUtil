@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
+import us.ichun.mods.ichunutil.client.layer.LayerSnout;
 import us.ichun.mods.ichunutil.client.thread.ThreadGetPatrons;
 import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
 import us.ichun.mods.ichunutil.client.voxel.RenderVoxels;
@@ -69,6 +71,11 @@ public class ClientProxy extends CommonProxy
         trailTicker = new TrailTicker();
         FMLCommonHandler.instance().bus().register(trailTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());
+
+        RenderPlayer renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"));
+        renderPlayer.addLayer(new LayerSnout(renderPlayer));
+        renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"));
+        renderPlayer.addLayer(new LayerSnout(renderPlayer));
     }
 
     @Override

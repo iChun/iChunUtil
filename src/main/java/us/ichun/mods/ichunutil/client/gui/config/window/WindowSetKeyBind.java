@@ -3,7 +3,6 @@ package us.ichun.mods.ichunutil.client.gui.config.window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.config.Property;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
@@ -88,7 +87,9 @@ public class WindowSetKeyBind extends Window
                         {
                             parent.needsRestart();
                         }
-                        prop.field.set(config, iChunUtil.proxy.registerKeyBind(new KeyBind(i - 100, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind));
+                        KeyBind newKey = iChunUtil.proxy.registerKeyBind(new KeyBind(i - 100, GuiScreen.isShiftKeyDown(), GuiScreen.isCtrlKeyDown(), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184), bind.ignoreHold), bind);
+                        prop.field.set(config, newKey);
+                        config.onConfigChange(prop.field, newKey);
 
                         parent.windowSetter.props.saveTimeout = 10;
                         parent.keyBindTimeout = 5;
@@ -136,7 +137,9 @@ public class WindowSetKeyBind extends Window
                 {
                     KeyBind bind = (KeyBind)prop.field.get(config);
 
-                    prop.field.set(config, iChunUtil.proxy.registerKeyBind(new KeyBind(lastKeyHeld, GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT), GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184) && !(lastKeyHeld == 56 || lastKeyHeld == 184), bind.ignoreHold), bind));
+                    KeyBind newKey = iChunUtil.proxy.registerKeyBind(new KeyBind(lastKeyHeld, GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT), GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184) && !(lastKeyHeld == 56 || lastKeyHeld == 184), bind.ignoreHold), bind);
+                    prop.field.set(config, newKey);
+                    config.onConfigChange(prop.field, newKey);
 
                     parent.windowSetter.props.saveTimeout = 10;
                     parent.keyBindTimeout = 5;

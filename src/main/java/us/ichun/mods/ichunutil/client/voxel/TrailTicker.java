@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 
@@ -74,7 +75,7 @@ public class TrailTicker
             if(tellServerAsPatron)
             {
                 tellServerAsPatron = false;
-                iChunUtil.channel.sendToServer(new PacketShowPatronReward(iChunUtil.config.showPatronReward == 1));
+                iChunUtil.channel.sendToServer(new PacketShowPatronReward(iChunUtil.config.showPatronReward == 1, iChunUtil.config.patronRewardType));
             }
         }
     }
@@ -130,10 +131,9 @@ public class TrailTicker
 
     public WorldClient worldInstance;
 
-
     public HashMap<String, EntityTrail> streaks = new HashMap<String, EntityTrail>();
 
-    public ArrayList<String> patronList = new ArrayList<String>();
+    public ArrayList<PatronInfo> patronList = new ArrayList<PatronInfo>();
 
     public boolean tellServerAsPatron;
 }
