@@ -27,6 +27,7 @@ import java.util.HashMap;
 public class CommonProxy
 {
     public TickHandlerClient tickHandlerClient;
+    public TickHandlerServer tickHandlerServer;
     public TrailTicker trailTicker;
     public HashMap<String, String> versionChecker = new HashMap<String, String>();
     public HashMap<String, String> prevVerChecker = new HashMap<String, String>();
@@ -38,6 +39,9 @@ public class CommonProxy
         iChunUtil.blockCompactPorkchop = (new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop");
 
         GameRegistry.registerBlock(iChunUtil.blockCompactPorkchop, "compactPorkchop");
+
+        tickHandlerServer = new TickHandlerServer();
+        FMLCommonHandler.instance().bus().register(tickHandlerServer);
 
         iChunUtil.channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class);
     }

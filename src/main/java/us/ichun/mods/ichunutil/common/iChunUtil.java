@@ -44,7 +44,6 @@ import java.util.List;
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 
-//TODO easter egg for AFday?
 //TODO check out the new clientSideOnly/serverSideOnly stuff in Forge.
 public class iChunUtil
 {
@@ -152,6 +151,7 @@ public class iChunUtil
                 if(enableCompactPorkchop == 1)
                 {
                     GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.porkchop);
+                    GameRegistry.addShapelessRecipe(new ItemStack(Items.porkchop, 9), blockCompactPorkchop);
                 }
             }
         }
