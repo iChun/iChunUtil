@@ -29,13 +29,13 @@ public class LayerSnout implements LayerRenderer
         parentRenderer = render;
     }
 
-    //func_177093_a(entity, f8, f7, partialTicks, f5, f4, f9, 0.0625F);
+    //func_177093_a(entity, limb stuff, limb stuff, partialTicks, f5, yaw stuff, pitch stuff, 0.0625F);
     public void doRenderLayer(EntityPlayer player, float f, float f1, float renderTick, float f2, float f3, float f4, float f5)
     {
         if(iChunUtil.hasMorphMod)
         {
             EntityLivingBase ent = morph.api.Api.getMorphEntity(player.getCommandSenderName(), true);
-            if(ent != null) //TODO patron maybe?
+            if(ent != null)
             {
                 if(!(ent instanceof EntityPlayer))
                 {

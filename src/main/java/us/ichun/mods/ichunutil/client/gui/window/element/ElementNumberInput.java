@@ -23,10 +23,10 @@ public class ElementNumberInput extends Element
     public int spaceL;
     public int spaceR;
 
-    public int min;
-    public int max;
+    public double min;
+    public double max;
 
-    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, int minn, int maxx, double...args)
+    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, double minn, double maxx, double...args)
     {
         super(window, x, y, w, h, ID, false); //12 for height?
 
@@ -53,7 +53,7 @@ public class ElementNumberInput extends Element
         max = maxx;
     }
 
-    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, int minn, int maxx)
+    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, double minn, double maxx)
     {
         this(window, x, y, w, h, ID, tip, fieldCount, allowDec, minn, maxx, new double[0]); //12 for height?
     }
@@ -117,11 +117,11 @@ public class ElementNumberInput extends Element
                         textFields.get(selectedTextField).setText(Integer.toString(Integer.parseInt(text) + (k > 0 ? 1 : -1)));
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) < min)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(min));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)min));
                         }
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) > max)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(max));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)max));
                         }
                     }
                 }
@@ -203,11 +203,11 @@ public class ElementNumberInput extends Element
                         textFields.get(selectedTextField).setText(Integer.toString(Integer.parseInt(text) + 1));
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) < min)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(min));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)min));
                         }
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) > max)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(max));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)max));
                         }
                     }
                 }
@@ -249,11 +249,11 @@ public class ElementNumberInput extends Element
                         textFields.get(selectedTextField).setText(Integer.toString(Integer.parseInt(text) - 1));
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) < min)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(min));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)min));
                         }
                         if(Integer.parseInt(textFields.get(selectedTextField).getText()) > max)
                         {
-                            textFields.get(selectedTextField).setText(Integer.toString(max));
+                            textFields.get(selectedTextField).setText(Integer.toString((int)max));
                         }
                     }
                 }
