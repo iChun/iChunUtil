@@ -1,30 +1,30 @@
 ichunutil.config.cat.general.name=Opciones generales
 ichunutil.config.cat.gameplay.name=Opciones de juego
 ichunutil.config.cat.globalOptions.name=Opciones globales
-ichunutil.config.cat.serverOptions.name=Opciones de servidor
-ichunutil.config.cat.clientOnly.name=Opciones de clente
+ichunutil.config.cat.serverOptions.name=Opciones del servidor
+ichunutil.config.cat.clientOnly.name=Opciones del cliente
 
 ichunutil.config.cat.general.comment=Estas son opciones generales que no encajan en otra categoría.
 ichunutil.config.cat.gameplay.comment=Estas opciones afectan al juego mientras se usa el mod.
 ichunutil.config.cat.globalOptions.comment=Estas opciones afectan tanto a servidores como a clientes que carguen el mod.
 ichunutil.config.cat.serverOptions.comment=Estas opciones afectan solo al servidor que carga el mod.
 ichunutil.config.cat.clientOnly.comment=Estas opciones afectan solo al cliente que carga el mod.
-ichunutil.config.cat.keybind.comment=Si estás leyendo esto, te recomiendo encarecidamente cambiar las teclas rápidas en el juego.\niChunUtil usa teclas rápidas personalizadas. Ve a opciones y pulsa O para mostrar más opciones.\n\nSi realmente necesitas cambiar el archivo de configuración, el formato es: <código de la tecla>, y añade ":SHIFT", ":CTRL", o ":ALT" para las teclas que quieras mantener pulsadas al mismo tiempo.\nPara ver los códigos de las teclas ve a: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
+ichunutil.config.cat.keybind.comment=Si estáis leyendo esto, se os recomienda encarecidamente cambiar las teclas rápidas en el juego.\niChunUtil usa teclas rápidas personalizadas. Ve a opciones y pulsa O para mostrar más opciones.\n\nSi realmente necesitáis cambiar el archivo de configuración, el formato es: <código de la tecla>, y añade ":SHIFT", ":CTRL", o ":ALT" para las teclas que queráis mantener pulsadas al mismo tiempo.\nPara ver los códigos de las teclas ve a: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT se vinculara a la tecla B si estais sosteniendo las teclas Shift y Alt.
 ichunutil.config.cat.keybind.tip1=Estas teclas rápidas permiten una combinación de Shift/Ctrl/Alt
 ichunutil.config.cat.keybind.tip2=Prueba a mantenerlas pulsadas mientras estableces una tecla rápida
-ichunutil.config.cat.keybind.tip3=Si quieres establecer Shift/Ctrl/Alt, mantenla pulsada 3 segundos. Se establecerá la última tecla pulsada.
+ichunutil.config.cat.keybind.tip3=Si queréis establecer Shift/Ctrl/Alt, mantenla pulsada 3 segundos. Se establecerá la última tecla pulsada.
 
 ichunutil.config.prop.versionCheck.name=Comprobador de actualizaciones
 ichunutil.config.prop.versionSave.name=Información del comprobador de actualizaciones
 
 ichunutil.config.prop.versionCheck.comment=Estas configuraciones son para el comprobador de actualizaciones de mods añadido por iChunUtil.
-ichunutil.config.prop.versionSave.comment=Esta es la información guardada del comprobador de actualizaciones. No lo cambies a no ser que quieras romper cosas.
+ichunutil.config.prop.versionSave.comment=Esta es la información guardada del comprobador de actualizaciones. No lo cambies a no ser que queráis romper cosas.
 
 ichunutil.config.prop.versionNotificationTypes.name=Tipos de notificación de las actualizaciones
 ichunutil.config.prop.versionNotificationFrequency.name=Frecuencia de notificación de las actualizaciones.
 
-ichunutil.config.prop.versionNotificationTypes.comment=¿Cómo se notificarán las actualizaciones al CLIENTE? (Los servidores siempre muestran la actualización en la consola. Un jugador es tu cliente uniendose a un servidor que hospeda el mismo)\n0 = Notificar las actualizaciones sin importar el estado del jugador (administrador o normal).\n1 = Notificar solo a los administradores del servidor de las actualizaciones (Se seguirán mostrando las actualizaciones que solo afecten al cliente).\n2 = Permitir al cliente notificarse a asi mismo de las actualizaciones.
-ichunutil.config.prop.versionNotificationFrequency.comment=¿Cada cuánto tiempo se te notificará de la actualización?(Configuración de cliente)\n0 = Cuando te conectas al servidor.\n1 = Una vez al día.\n2 = Solo una vez.\n3 = Nunca (Oculta las notificaciones. El mod seguirá buscando actualizaciones y lo mostrará en la consola).
+ichunutil.config.prop.versionNotificationTypes.comment=¿Cómo se os notificarán las actualizaciones al CLIENTE? (Los servidores siempre os muestran la actualización en la consola. Un jugador es vuestro cliente uniendose a un servidor que hospeda el mismo)\n0 = Notificar las actualizaciones sin importar el estado del jugador (administrador o normal).\n1 = Notificar solo a los administradores del servidor de las actualizaciones (Se seguirán mostrando las actualizaciones que solo afecten al cliente).\n2 = Permitir al cliente notificarse a asi mismo de las actualizaciones.
+ichunutil.config.prop.versionNotificationFrequency.comment=¿Cada cuánto tiempo se os notificará de la actualización?(Configuración de cliente)\n0 = Cuando os conectais al servidor.\n1 = Una vez al día.\n2 = Solo una vez.\n3 = Nunca (Oculta las notificaciones. El mod seguirá buscando actualizaciones y lo mostrará en la consola).
 
 ichun.gui.newUpdate=¡Nueva actualización disponible!
 
