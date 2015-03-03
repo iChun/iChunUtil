@@ -38,6 +38,11 @@ public class ModVersionJsonGen
         versions.put("1.7", "3.0.0");
 
         versions = new TreeMap<String, String>(Ordering.natural());
+        map.put("GuiltTrip", versions);
+        versions.put("1.8.0", "5.0.0");
+        versions.put("1.7.10", "4.0.0");
+
+        versions = new TreeMap<String, String>(Ordering.natural());
         map.put("iChunUtil", versions);
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.1.3");
