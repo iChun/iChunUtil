@@ -3,6 +3,7 @@ package us.ichun.mods.ichunutil.client.thread;
 import com.google.gson.Gson;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 
@@ -41,6 +42,11 @@ public class ThreadGetPatrons extends Thread
                         iChunUtil.config.reveal("showPatronReward", "patronRewardType");
                     }
                 }
+            }
+
+//            if(ObfHelper.obfuscation)
+            {
+                (new ThreadStatistics(false)).start();
             }
         }
         catch(Exception e)

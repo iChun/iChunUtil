@@ -120,6 +120,18 @@ public class ModVersionChecker
         list.add(info);
     }
 
+    public static ArrayList<String> getListOf_iChunMods()
+    {
+        ArrayList<String> mods = new ArrayList<String>();
+        ArrayList<ModVersionInfo> list = getArrayListForURL(iChunJsonURL);
+        for(ModVersionInfo info : list)
+        {
+            mods.add(info.modName);
+        }
+        Collections.sort(mods);
+        return mods;
+    }
+
     private static ArrayList<ModVersionInfo> getArrayListForURL(String url)
     {
         ArrayList<ModVersionInfo> list = urlsToCheck.get(url);
