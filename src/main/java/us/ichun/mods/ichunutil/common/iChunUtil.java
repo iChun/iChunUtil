@@ -20,6 +20,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
@@ -44,8 +45,6 @@ import java.util.List;
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 
-//TODO check out the new clientSideOnly/serverSideOnly stuff in Forge.
-//TODO update the authors in mcmodinfo to authorList
 public class iChunUtil
 {
     //MC version, bumped up every MC update.
@@ -198,6 +197,8 @@ public class iChunUtil
     @EventHandler
     public void postLoad(FMLPostInitializationEvent event)
     {
+        proxy.postInit();
+
         hasPostLoad = true;
         for(ConfigBase cfg : ConfigHandler.configs)
         {

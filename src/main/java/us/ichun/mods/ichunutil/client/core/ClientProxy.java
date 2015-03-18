@@ -19,6 +19,7 @@ import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.layer.LayerSnout;
 import us.ichun.mods.ichunutil.client.thread.ThreadGetPatrons;
+import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
 import us.ichun.mods.ichunutil.client.voxel.RenderVoxels;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
@@ -76,6 +77,13 @@ public class ClientProxy extends CommonProxy
         renderPlayer.addLayer(new LayerSnout(renderPlayer));
         renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"));
         renderPlayer.addLayer(new LayerSnout(renderPlayer));
+    }
+
+    @Override
+    public void postInit()
+    {
+        super.postInit();
+        ThreadStatistics.checkFirstLaunch();
     }
 
     @Override

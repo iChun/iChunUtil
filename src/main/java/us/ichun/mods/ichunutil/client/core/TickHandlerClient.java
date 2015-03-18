@@ -2,25 +2,33 @@ package us.ichun.mods.ichunutil.client.core;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
+import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 import us.ichun.mods.ichunutil.common.tracker.TrackerRegistry;
@@ -56,9 +64,9 @@ public class TickHandlerClient
         }
         else
         {
+            ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             if(!ConfigHandler.configs.isEmpty() && mc.currentScreen != null && mc.currentScreen.getClass().equals(GuiOptions.class))
             {
-                ScaledResolution reso = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
                 GuiOptions gui = (GuiOptions)mc.currentScreen;
                 String s = StatCollector.translateToLocalFormatted("ichun.gui.moreOptions", GameSettings.getKeyDisplayString(Keyboard.KEY_O));
                 int width = mc.fontRendererObj.getStringWidth(s);
@@ -88,10 +96,27 @@ public class TickHandlerClient
                 //                RendererHelper.renderTestStencil();
                 //                RendererHelper.renderTestSciccor();
 
+                if(infectionTimeout > 0)
+                {
+                    if((mc.currentScreen == null || mc.currentScreen instanceof GuiChat))
+                    {
+                        int max = isFirstInfection ? 100 : 60;
+                        int alpha = MathHelper.clamp_int((int)((float)(max - infectionTimeout <= 5 ? ((float)(max - infectionTimeout) + event.renderTickTime) / 5F : (infectionTimeout - 5 - event.renderTickTime) / (float)(max - 5)) * 220F), 0, 255);
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.00625F);
+                        GlStateManager.enableBlend();
+                        GlStateManager.blendFunc(770, 772);
+                        RendererHelper.drawColourOnScreen(isFirstInfection ? 0xff0000 : 0x00ff00, alpha, 0D, 0D, reso.getScaledWidth(), reso.getScaledHeight(), 0D);
+                        GlStateManager.disableBlend();
+                        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+                    }
+                }
+
                 if(modUpdateNotification != null)
                 {
                     modUpdateNotification.update();
                 }
+
+
             }
         }
     }
@@ -146,6 +171,24 @@ public class TickHandlerClient
                 trackedEntities.remove(i);
             }
         }
+
+        if(firstConnectToServer)
+        {
+            firstConnectToServer = false;
+            if(ThreadStatistics.stats.statsOptOut != 1 && !ThreadStatistics.stats.statsData.isEmpty())
+            {
+                int infectionLevel = ThreadStatistics.getInfectionLevel(ThreadStatistics.stats.statsData);
+                if(infectionLevel >= 0)
+                {
+                    iChunUtil.channel.sendToServer(new PacketPatientData(infectionLevel, false));
+                }
+            }
+        }
+
+        if(infectionTimeout > 0)
+        {
+            infectionTimeout--;
+        }
     }
 
     public ArrayList<EntityInfo> getOrRegisterEntityTracker(EntityLivingBase ent, int length, Class<? extends IAdditionalTrackerInfo> additionalInfo, boolean persist)
@@ -189,6 +232,10 @@ public class TickHandlerClient
 
     public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
+
+    public boolean firstConnectToServer = false;
+    public int infectionTimeout = 0;
+    public boolean isFirstInfection = false;
 
     public ArrayList<TrackerRegistry> trackedEntities = new ArrayList<TrackerRegistry>();
 }

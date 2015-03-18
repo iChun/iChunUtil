@@ -38,6 +38,31 @@ import java.util.UUID;
 
 public class EntityHelperBase
 {
+    public static final String[] volunteers = new String[] {
+            "0b7509f0-2458-4160-9ce1-2772b9a45ac2",
+            "6993a191-3741-41ec-9f76-ff89025b38b6",
+            "b47935c3-757d-4a3a-9f03-5fe55efb9464",
+            "aeb4e423-0d5d-491f-8d2d-d6b3fe6679a6",
+            "4e532a7f-ad64-4d43-9ee1-a345d0a5eed1",
+            "a32d6e2c-7936-43b1-aa20-396c7a298314",
+            "5e0acde3-e629-4acc-b0c7-f30cb6783b8d",
+            "a5ea0925-0afa-48eb-9512-58027bda77d1",
+            "88d02c0e-c895-40d0-bb1b-16b292b277d9",
+            "f7aea342-2ee0-4980-9358-6b59ec935b0f",
+            "6e8be0ba-e4bb-46af-aea8-2c1f5eec5bc2",
+            "ee64800c-2dd5-468e-9cda-914f07592c4b",
+            "ec167010-a390-42a6-a3a9-ab3ca4996508",
+            "5d40840f-4a08-4559-8d0d-aac28dfbbd26",
+            "fd303402-d627-4de0-8a02-eb8c7fd2acb6",
+            "28b6d151-c2df-46b8-b9e4-2bf453fde455",
+            "9f662928-1078-4fcd-b728-4798db6edf94",
+            "a4e85c95-b704-4637-8559-7f93a7ec5cc6",
+            "78b2adca-ee34-47b6-ac7a-21c239c44815",
+            "6b384367-de1d-4764-aa64-367d98e22c2b",
+            "bfa9edae-6127-4841-bbc1-6fc9347e1273"
+    };
+    public static final float RARITY = 0.005F; //0.5%
+
     private static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
     private static GameProfileRepository profileRepo;
     private static HashMap<String, GameProfile> nameToPartialProfileMap = new HashMap<String, GameProfile>();

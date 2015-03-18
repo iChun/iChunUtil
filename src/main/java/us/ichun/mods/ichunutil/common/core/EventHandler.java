@@ -27,6 +27,7 @@ public class EventHandler
         {
             iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
         }
+        iChunUtil.proxy.tickHandlerClient.firstConnectToServer = true;
     }
 
     @SideOnly(Side.CLIENT)

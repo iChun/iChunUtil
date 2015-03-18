@@ -13,6 +13,7 @@ import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
 import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketSession;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
@@ -43,12 +44,16 @@ public class CommonProxy
         tickHandlerServer = new TickHandlerServer();
         FMLCommonHandler.instance().bus().register(tickHandlerServer);
 
-        iChunUtil.channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class);
+        iChunUtil.channel = ChannelHandler.getChannelHandlers("iChunUtil", PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class);
     }
 
     public void init()
     {
         OreDictionary.registerOre("blockCompactRawPorkchop", iChunUtil.blockCompactPorkchop);
+    }
+
+    public void postInit()
+    {
     }
 
     public GameProfileRepository createProfileRepo()

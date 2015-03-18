@@ -38,6 +38,15 @@ ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron r
 ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout
 ichunutil.config.prop.enableCompactPorkchop.comment=Enable the Compact Raw Porkchop block recipe?
 
+ichunutilstats.config.cat.stats.name=Statistics
+ichunutilstats.config.cat.stats.comment=This category are markers for some statistics taken by iChunUtil. You can opt out from this in one of the config properties.
+ichunutilstats.config.prop.statsOptOut.name=Opt Out
+ichunutilstats.config.prop.statsOptOut.comment=Opt out of iChunUtil's stat collection\nNo personal info is taken from you, I'm just curious to know what mods you use.\nBut if you want to opt out, this is the config to change.
+ichunutilstats.config.prop.statsIdentifier.name=Identifier
+ichunutilstats.config.prop.statsIdentifier.comment=Don't change this.
+ichunutilstats.config.prop.statsData.name=Data
+ichunutilstats.config.prop.statsData.comment=Don't change this.
+
 ichun.gui.newUpdate=New Mod Update Available!
 
 ichun.gui.moreOptions=Hit %s or click here to view more options
