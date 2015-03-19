@@ -95,8 +95,6 @@ public class ThreadStatistics extends Thread
 
             //Execute and get the response.
             HttpResponse response = httpclient.execute(httppost);
-
-            System.out.println("sent!");
         }
         catch(Exception e)
         {
@@ -112,7 +110,7 @@ public class ThreadStatistics extends Thread
     {
         @ConfigProp(category = "stats")
         @IntBool
-        public int statsOptOut = 0;
+        public int statsOptOut = Minecraft.getMinecraft().gameSettings.snooperEnabled ? 0 : 1;
 
         @ConfigProp(category = "stats")
         public String statsIdentifier = "";
@@ -153,8 +151,8 @@ public class ThreadStatistics extends Thread
             {
                 if(isPatientZero)
                 {
-                    stats.statsData = getInfectionHash(0);
                     stats.reveal("statsData");
+                    stats.statsData = getInfectionHash(0);
                 }
                 else
                 {
