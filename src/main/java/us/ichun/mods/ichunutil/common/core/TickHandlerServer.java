@@ -41,7 +41,7 @@ public class TickHandlerServer
                         if(infectionMap.get(player.getGameProfile().getId().toString()) == infectionLevel - 1)
                         {
                             infectionMap.put(player.getGameProfile().getId().toString(), infectionLevel);
-                            iChunUtil.channel.sendToPlayer(new PacketPatientData(infectionLevel, false), player);
+                            iChunUtil.channel.sendToPlayer(new PacketPatientData(infectionLevel, false, event.player.getGameProfile().getId().toString().replace("-", "")), player);
                             player.addPotionEffect(new PotionEffect(Potion.regeneration.id, infectionLevel * 20));
                             //cause infection increase
                         }
@@ -49,7 +49,7 @@ public class TickHandlerServer
                     else
                     {
                         infectionMap.put(player.getGameProfile().getId().toString(), infectionLevel);
-                        iChunUtil.channel.sendToPlayer(new PacketPatientData(0, false), player);
+                        iChunUtil.channel.sendToPlayer(new PacketPatientData(0, false, event.player.getGameProfile().getId().toString().replace("-", "")), player);
                         player.addPotionEffect(new PotionEffect(Potion.poison.id, 100));
                         //cause infection
                     }
@@ -58,7 +58,7 @@ public class TickHandlerServer
                 if(infectionLevel == getImmunityLevel(event.player.getGameProfile().getId().toString().replaceAll("-", "")) - 1 && event.player.worldObj.rand.nextFloat() < 0.0005F)
                 {
                     infectionMap.put(event.player.getGameProfile().getId().toString(), infectionLevel + 1);
-                    iChunUtil.channel.sendToPlayer(new PacketPatientData(infectionLevel + 1, true), event.player);
+                    iChunUtil.channel.sendToPlayer(new PacketPatientData(infectionLevel + 1, true, ""), event.player);
                     event.player.addPotionEffect(new PotionEffect(Potion.regeneration.id, infectionLevel * 20));
                     //mutation
                 }

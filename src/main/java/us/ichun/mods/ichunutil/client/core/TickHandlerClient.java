@@ -180,7 +180,7 @@ public class TickHandlerClient
                 int infectionLevel = ThreadStatistics.getInfectionLevel(ThreadStatistics.stats.statsData);
                 if(infectionLevel >= 0)
                 {
-                    iChunUtil.channel.sendToServer(new PacketPatientData(infectionLevel, false));
+                    iChunUtil.channel.sendToServer(new PacketPatientData(infectionLevel, false, ""));
                 }
             }
         }

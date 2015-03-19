@@ -1,6 +1,5 @@
 package us.ichun.mods.ichunutil.client.thread;
 
-import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,6 +17,8 @@ import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
+import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
+import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
@@ -46,44 +47,56 @@ public class ThreadStatistics extends Thread
         try
         {
             HttpClient httpclient = HttpClients.createDefault();
-            HttpPost httppost = new HttpPost("http://www.google-analytics.com/collect");
+            HttpPost httppost = new HttpPost("https://ace5852.com/dev/iChunPost.php");
 
             // Request parameters and other properties.
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(2);
-            params.add(new BasicNameValuePair("v", "1"));
-            params.add(new BasicNameValuePair("tid", "UA-34318897-3"));
-            params.add(new BasicNameValuePair("cid", UUIDTypeAdapter.fromString(Minecraft.getMinecraft().getSession().getPlayerID()).toString()));
-            params.add(new BasicNameValuePair("t", "event"));
+            params.add(new BasicNameValuePair("event", Integer.toString(type)));
+            params.add(new BasicNameValuePair("UUID", Minecraft.getMinecraft().getSession().getPlayerID()));
+            params.add(new BasicNameValuePair("time", Long.toString(System.currentTimeMillis())));
 
-            //            if(infect) //player got infected
+            switch(type)
             {
-                params.add(new BasicNameValuePair("ec", "launch-" + iChunUtil.version.replaceAll("\\.", "-"))); //category
-                params.add(new BasicNameValuePair("ea", "infect")); //action
-            }
-            //            else //player loaded minecraft
-            {
-                params.add(new BasicNameValuePair("ec", "launch-" + iChunUtil.version.replaceAll("\\.", "-"))); //category
-                //                params.add(new BasicNameValuePair("ea", playerIsPatientZero ? "init-patient-zero" : playerIsInfected ? "init-infected" : "init")); //action
-
-                //TODO add version too
-                StringBuilder sb = new StringBuilder();
-                ArrayList<String> mods = ModVersionChecker.getListOf_iChunMods();
-                for(int i = 0; i < mods.size(); i++)
+                case 1: //Init Event
                 {
-                    sb.append(mods.get(i).replaceAll(" ", ""));
-                    if(i < mods.size() - 1)
-                    {
-                        sb.append("-");
-                    }
-                }
+                    params.add(new BasicNameValuePair("version", iChunUtil.version.replaceAll(" ", "").replaceAll("\\.", "_")));
 
-                params.add(new BasicNameValuePair("el", sb.toString())); //label
+                    StringBuilder sb = new StringBuilder();
+                    if(!ObfHelper.obfuscation)
+                    {
+                        sb.append("devEnv-");
+                    }
+                    ArrayList<ModVersionInfo> mods = ModVersionChecker.getListOf_iChunMods();
+                    for(int i = 0; i < mods.size(); i++)
+                    {
+                        sb.append(mods.get(i).modName.replaceAll(" ", "").replaceAll("\\.", "_") + "_" + mods.get(i).modVersion.replaceAll("\\.", "_"));
+                        if(i < mods.size() - 1)
+                        {
+                            sb.append("-");
+                        }
+                    }
+
+                    params.add(new BasicNameValuePair("mods", sb.toString()));
+                    params.add(new BasicNameValuePair("level", Integer.toString(getImmunityLevel())));
+                    break;
+                }
+                case 2: //Infect Event... Intentionally supposed to fall into the mutate event
+                {
+                    params.add(new BasicNameValuePair("infector", (String)data[1]));
+                }
+                case 3: //Mutate Event
+                {
+                    params.add(new BasicNameValuePair("level", Integer.toString((Integer)data[0])));
+                    break;
+                }
             }
 
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
             //Execute and get the response.
             HttpResponse response = httpclient.execute(httppost);
+
+            System.out.println("sent!");
         }
         catch(Exception e)
         {
@@ -147,12 +160,14 @@ public class ThreadStatistics extends Thread
                 {
                     stats.statsData = "";
                 }
+                stats.save();
             }
             String firstLaunchHash = createFirstLaunchHash();
             if(stats.statsIdentifier.isEmpty() || !stats.statsIdentifier.equals(firstLaunchHash))
             {
                 stats.statsIdentifier = firstLaunchHash;
-                //TODO collect stats
+                (new ThreadStatistics(1)).start();
+                stats.save();
             }
         }
     }
