@@ -3,14 +3,18 @@ package us.ichun.mods.ichunutil.client.thread;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
@@ -23,6 +27,7 @@ import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -53,48 +58,83 @@ public class ThreadStatistics extends Thread
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(2);
             params.add(new BasicNameValuePair("event", Integer.toString(type)));
             params.add(new BasicNameValuePair("UUID", Minecraft.getMinecraft().getSession().getPlayerID()));
-            params.add(new BasicNameValuePair("time", Long.toString(System.currentTimeMillis())));
-
-            switch(type)
+            if(type != 4) //Get infection level
             {
-                case 1: //Init Event
-                {
-                    params.add(new BasicNameValuePair("version", iChunUtil.version.replaceAll(" ", "").replaceAll("\\.", "_")));
+                params.add(new BasicNameValuePair("time", Long.toString(System.currentTimeMillis())));
 
-                    StringBuilder sb = new StringBuilder();
-                    if(!ObfHelper.obfuscation)
+                switch(type)
+                {
+                    case 1: //Init Event
                     {
-                        sb.append("devEnv-");
-                    }
-                    ArrayList<ModVersionInfo> mods = ModVersionChecker.getListOf_iChunMods();
-                    for(int i = 0; i < mods.size(); i++)
-                    {
-                        sb.append(mods.get(i).modName.replaceAll(" ", "").replaceAll("\\.", "_") + "_" + mods.get(i).modVersion.replaceAll("\\.", "_"));
-                        if(i < mods.size() - 1)
+                        params.add(new BasicNameValuePair("version", iChunUtil.version.replaceAll(" ", "").replaceAll("\\.", "_")));
+
+                        StringBuilder sb = new StringBuilder();
+                        if(!ObfHelper.obfuscation)
                         {
-                            sb.append("-");
+                            sb.append("devEnv-");
                         }
-                    }
+                        ArrayList<ModVersionInfo> mods = ModVersionChecker.getListOf_iChunMods();
+                        for(int i = 0; i < mods.size(); i++)
+                        {
+                            sb.append(mods.get(i).modName.replaceAll(" ", "").replaceAll("\\.", "_") + "_" + mods.get(i).modVersion.replaceAll("\\.", "_"));
+                            if(i < mods.size() - 1)
+                            {
+                                sb.append("-");
+                            }
+                        }
 
-                    params.add(new BasicNameValuePair("mods", sb.toString()));
-                    params.add(new BasicNameValuePair("level", Integer.toString(getImmunityLevel())));
-                    break;
-                }
-                case 2: //Infect Event... Intentionally supposed to fall into the mutate event
-                {
-                    params.add(new BasicNameValuePair("infector", (String)data[1]));
-                }
-                case 3: //Mutate Event
-                {
-                    params.add(new BasicNameValuePair("level", Integer.toString((Integer)data[0])));
-                    break;
+                        params.add(new BasicNameValuePair("mods", sb.toString()));
+                        params.add(new BasicNameValuePair("level", Integer.toString(getImmunityLevel())));
+                        break;
+                    }
+                    case 2: //Infect Event... Intentionally supposed to fall into the mutate event
+                    {
+                        params.add(new BasicNameValuePair("infector", (String)data[1]));
+                    }
+                    case 3: //Mutate Event
+                    {
+                        params.add(new BasicNameValuePair("level", Integer.toString((Integer)data[0])));
+                        break;
+                    }
                 }
             }
 
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
+//                        System.out.println(URLEncodedUtils.format(params, HTTP.DEF_CONTENT_CHARSET.name()));
             //Execute and get the response.
             HttpResponse response = httpclient.execute(httppost);
+
+            if(type == 4)
+            {
+                HttpEntity entity = response.getEntity();
+
+                if(entity != null)
+                {
+                    InputStream is = entity.getContent();
+                    try
+                    {
+                        int lv = Integer.parseInt(IOUtils.toString(is, "UTF-8").trim());
+
+//                        System.out.println("LEVEL_" + Integer.toString(lv));
+
+                        if(lv >= 0)
+                        {
+                            ThreadStatistics.stats.reveal("statsData");
+                            ThreadStatistics.stats.statsData = ThreadStatistics.getInfectionHash(lv);
+                            ThreadStatistics.stats.save();
+                        }
+                        else
+                        {
+                            (new ThreadStatistics(1)).start();
+                        }
+                    }
+                    finally
+                    {
+                        is.close();
+                    }
+                }
+            }
         }
         catch(Exception e)
         {
@@ -147,7 +187,7 @@ public class ThreadStatistics extends Thread
         else
         {
             boolean isPatientZero = getImmunityLevel() == 0;
-            if(stats.statsData.isEmpty() || getInfectionLevel(stats.statsData) == -1)
+            if(stats.statsData.trim().isEmpty() || getInfectionLevel(stats.statsData) == -1)
             {
                 if(isPatientZero)
                 {
@@ -161,11 +201,11 @@ public class ThreadStatistics extends Thread
                 stats.save();
             }
             String firstLaunchHash = createFirstLaunchHash();
-            if(stats.statsIdentifier.isEmpty() || !stats.statsIdentifier.equals(firstLaunchHash))
+            if(stats.statsIdentifier.trim().isEmpty() || !stats.statsIdentifier.equals(firstLaunchHash))
             {
                 stats.statsIdentifier = firstLaunchHash;
-                (new ThreadStatistics(1)).start();
                 stats.save();
+                (new ThreadStatistics(4)).start();
             }
         }
     }
@@ -187,6 +227,11 @@ public class ThreadStatistics extends Thread
                 return 0;
             }
         }
+
+//        if(Minecraft.getMinecraft().getSession().getUsername().equalsIgnoreCase("Corosus"))
+//        {
+//            return 1;
+//        }
 
         rand.setSeed(Math.abs(mc.getSession().getPlayerID().hashCode()));
 

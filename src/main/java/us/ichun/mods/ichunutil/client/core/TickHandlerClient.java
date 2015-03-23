@@ -145,6 +145,7 @@ public class TickHandlerClient
             {
                 worldTick(Minecraft.getMinecraft(), Minecraft.getMinecraft().theWorld);
             }
+            ticks++;
             //TODO remember to reset world in renderGlobalProxy
         }
     }
@@ -222,6 +223,8 @@ public class TickHandlerClient
     }
 
     public GuiModUpdateNotification modUpdateNotification;
+
+    public int ticks;
 
     public boolean optionsKeyDown;
     public boolean mouseLeftDown;
