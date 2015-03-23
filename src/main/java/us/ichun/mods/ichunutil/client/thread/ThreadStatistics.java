@@ -52,7 +52,7 @@ public class ThreadStatistics extends Thread
         try
         {
             HttpClient httpclient = HttpClients.createDefault();
-            HttpPost httppost = new HttpPost("https://ace5852.com/dev/iChunPost.php");
+            HttpPost httppost = new HttpPost("http://ichun.us/infect/stats.php");
 
             // Request parameters and other properties.
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(2);
