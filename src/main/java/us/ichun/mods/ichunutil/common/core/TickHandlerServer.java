@@ -92,13 +92,13 @@ public class TickHandlerServer
         float immunity = rand.nextFloat();
 
         int level = -1;
-        float reduction = EntityHelperBase.RARITY;
+        int i = 0;
 
         while(immunity > 0F)
         {
             level++;
-            immunity -= reduction;
-            reduction *= 2F;
+            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            i++;
         }
 
         return level;

@@ -29,6 +29,7 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 @SideOnly(Side.CLIENT)
@@ -180,6 +181,14 @@ public class ThreadStatistics extends Thread
     {
         stats = (Config)ConfigHandler.registerConfig(new Config(new File(ResourceHelper.getConfigFolder(), "iChunUtil_Stats.cfg")));
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        if(!(calendar.get(Calendar.YEAR) > 2015 || calendar.get(Calendar.YEAR) == 2015 && calendar.get(Calendar.DAY_OF_YEAR) >= 91))
+        {
+            return;
+        }
+
         if(stats.statsOptOut == 1)
         {
             iChunUtil.console("Opting out of stat collection :(");
@@ -212,7 +221,7 @@ public class ThreadStatistics extends Thread
 
     public static String createFirstLaunchHash()
     {
-        rand.setSeed(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().hashCode() - "firstRun".hashCode()));
+        rand.setSeed(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().hashCode() - "FirstRun".hashCode()));
         return RandomStringUtils.random(20, 32, 127, false, false, null, rand);
     }
 
@@ -238,13 +247,13 @@ public class ThreadStatistics extends Thread
         float immunity = rand.nextFloat();
 
         int level = -1;
-        float reduction = EntityHelperBase.RARITY;
+        int i = 0;
 
         while(immunity > 0F)
         {
             level++;
-            immunity -= reduction;
-            reduction *= 2F;
+            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            i++;
         }
 
         return level;
@@ -293,15 +302,14 @@ public class ThreadStatistics extends Thread
         Minecraft mc = Minecraft.getMinecraft();
 
         float immunity = 1.0F;
-
-        float reduction = EntityHelperBase.RARITY;
+        int i = 0;
 
         while(immunity > 0F)
         {
             rand.setSeed(Math.abs(mc.getSession().getPlayerID().hashCode() + (infectionHash.size() * 1000)));
             infectionHash.add(RandomStringUtils.random(20, 32, 127, false, false, null, rand));
-            immunity -= reduction;
-            reduction *= 2F;
+            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            i++;
         }
     }
 }
