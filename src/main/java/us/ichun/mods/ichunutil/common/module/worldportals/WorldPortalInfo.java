@@ -45,6 +45,8 @@ public class WorldPortalInfo
 
     //TODO windows...? maybe have frustrum boxes outside the frustrum scanzone to check
 
+    //TODO update render distance based on the required distance by the projection, so that no need to grab 10000000000 chunks cause of "far" render.
+
     public void setParent(WorldPortalCarrier te)
     {
         parent = te;

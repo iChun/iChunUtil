@@ -279,6 +279,10 @@ public class ThreadStatistics extends Thread
         {
             generateInfectionHash();
         }
+        if(i >= infectionHash.size())
+        {
+            return "CHEATER";
+        }
         return infectionHash.get(i);
     }
 

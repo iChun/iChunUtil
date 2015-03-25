@@ -40,6 +40,7 @@ public class EntityHelperBase
 {
     public static final String[] volunteers = new String[] {
             "0b7509f0-2458-4160-9ce1-2772b9a45ac2",
+            "45438340-ced5-4c4f-82b4-ef1496f0319e",
             "6993a191-3741-41ec-9f76-ff89025b38b6",
             "b47935c3-757d-4a3a-9f03-5fe55efb9464",
             "aeb4e423-0d5d-491f-8d2d-d6b3fe6679a6",
