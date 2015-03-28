@@ -58,7 +58,7 @@ public class ThreadStatistics extends Thread
             // Request parameters and other properties.
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(2);
             params.add(new BasicNameValuePair("event", Integer.toString(type)));
-            params.add(new BasicNameValuePair("UUID", Minecraft.getMinecraft().getSession().getPlayerID()));
+            params.add(new BasicNameValuePair("UUID", Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "")));
             if(type != 4) //Get infection level
             {
                 params.add(new BasicNameValuePair("time", Long.toString(System.currentTimeMillis())));
@@ -252,7 +252,7 @@ public class ThreadStatistics extends Thread
         while(immunity > 0F)
         {
             level++;
-            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            immunity -= EntityHelperBase.RARITY[i];
             i++;
         }
 
@@ -308,7 +308,7 @@ public class ThreadStatistics extends Thread
         {
             rand.setSeed(Math.abs(mc.getSession().getPlayerID().hashCode() + (infectionHash.size() * 1000)));
             infectionHash.add(RandomStringUtils.random(20, 32, 127, false, false, null, rand));
-            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            immunity -= EntityHelperBase.RARITY[i];
             i++;
         }
     }

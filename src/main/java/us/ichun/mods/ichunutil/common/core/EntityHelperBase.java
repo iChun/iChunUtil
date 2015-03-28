@@ -62,7 +62,7 @@ public class EntityHelperBase
             "6b384367-de1d-4764-aa64-367d98e22c2b",
             "bfa9edae-6127-4841-bbc1-6fc9347e1273"
     };
-    public static final float[] RARITY = new float[] { 1F, 3F, 7.5F, 17F, 27.5F, 23.5F, 11.5F, 5F, 3F, 100F }; //last level is 100% anyways to make sure all of the 1.0F is removed
+    public static final float[] RARITY = new float[] { 0.01F, 0.03F, 0.075F, 0.17F, 0.275F, 0.235F, 0.115F, 0.05F, 0.03F, 10F }; //last level is 1000% anyways to make sure all of the 1.0F is removed
 
     private static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
     private static GameProfileRepository profileRepo;

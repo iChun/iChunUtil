@@ -97,7 +97,7 @@ public class TickHandlerServer
         while(immunity > 0F)
         {
             level++;
-            immunity -= EntityHelperBase.RARITY[i] / 100F;
+            immunity -= EntityHelperBase.RARITY[i];
             i++;
         }
 
