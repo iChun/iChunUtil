@@ -203,7 +203,7 @@ public class AnimationComponent
         if(arg0 instanceof AnimationComponent)
         {
             AnimationComponent comp = (AnimationComponent)arg0;
-            return Integer.compare(startKey, comp.startKey);
+            return ((Integer)startKey).compareTo(comp.startKey);
         }
         return 0;
     }
