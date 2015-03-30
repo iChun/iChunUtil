@@ -162,6 +162,11 @@ public class ElementNumberInput extends Element
                 }
                 selectedTextField = i;
                 textFields.get(selectedTextField).setFocused(true);
+
+                if(id == 1)
+                {
+                    textFields.get(selectedTextField).setText("");
+                }
                 break;
             }
 
@@ -404,6 +409,15 @@ public class ElementNumberInput extends Element
             textFields.get(selectedTextField).setFocused(false);
         }
         selectedTextField = -1;
+
+        for(int i = 0; i < textFields.size(); i++)
+        {
+            if(textFields.get(i).getText().isEmpty() || textFields.get(i).getText().equals("-"))
+            {
+                textFields.get(i).setText("0");
+            }
+        }
+
         resized();
     }
 

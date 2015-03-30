@@ -27,6 +27,7 @@ public abstract class IWorkspace extends GuiScreen
     public Element elementHovered;
     public int hoverTime;
     public boolean hovering;
+    public int tooltipTime = 20;
 
     public Element elementDragged;
     public int elementDragX;
@@ -201,7 +202,7 @@ public abstract class IWorkspace extends GuiScreen
                 elementSelected = elementHovered;
             }
             String tooltip = elementHovered.tooltip();
-            if(hoverTime > 20 && tooltip != null) //1s to draw tooltip
+            if(hoverTime > tooltipTime && tooltip != null) //1s to draw tooltip
             {
                 GlStateManager.translate(0F, 0F, 20F * levels.size());
                 List<String> tips = Splitter.on("\n").splitToList(tooltip);
