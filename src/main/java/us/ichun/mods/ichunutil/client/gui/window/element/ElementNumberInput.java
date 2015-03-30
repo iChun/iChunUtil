@@ -91,45 +91,7 @@ public class ElementNumberInput extends Element
                 selectedTextField = i;
                 textFields.get(selectedTextField).setFocused(true);
 
-                String text = textFields.get(selectedTextField).getText();
-                if(!text.isEmpty())
-                {
-                    if(allowDecimal)
-                    {
-                        String val = String.format(Locale.ENGLISH, "%.2f", Double.parseDouble(text) + (k > 0 ? (GuiScreen.isShiftKeyDown() ? 1D : GuiScreen.isCtrlKeyDown() ? 0.01D : 0.1D) : -(GuiScreen.isShiftKeyDown() ? 1D : GuiScreen.isCtrlKeyDown() ? 0.01D : 0.1D)));
-                        if(val.contains(".") && val.length() > val.indexOf(".") + 4)
-                        {
-                            val = val.substring(0, val.indexOf(".") + 4);
-                        }
-                        textFields.get(selectedTextField).setText(val);
-
-                        if(Double.parseDouble(textFields.get(selectedTextField).getText()) < min)
-                        {
-                            textFields.get(selectedTextField).setText(Double.toString(min));
-                        }
-                        if(Double.parseDouble(textFields.get(selectedTextField).getText()) > max)
-                        {
-                            textFields.get(selectedTextField).setText(Double.toString(max));
-                        }
-                    }
-                    else
-                    {
-                        textFields.get(selectedTextField).setText(Integer.toString(Integer.parseInt(text) + (k > 0 ? 1 : -1)));
-                        if(Integer.parseInt(textFields.get(selectedTextField).getText()) < min)
-                        {
-                            textFields.get(selectedTextField).setText(Integer.toString((int)min));
-                        }
-                        if(Integer.parseInt(textFields.get(selectedTextField).getText()) > max)
-                        {
-                            textFields.get(selectedTextField).setText(Integer.toString((int)max));
-                        }
-                    }
-                }
-                else
-                {
-                    textFields.get(selectedTextField).setText("0");
-                }
-                parent.elementTriggered(this);
+                changeValue(k > 0);
                 break;
             }
         }
@@ -370,6 +332,10 @@ public class ElementNumberInput extends Element
                 }
                 parent.elementTriggered(this);
             }
+            else if(key == Keyboard.KEY_UP || key == Keyboard.KEY_DOWN)
+            {
+                changeValue(key == Keyboard.KEY_UP);
+            }
             String oldText = textFields.get(selectedTextField).getText();
             textFields.get(selectedTextField).textboxKeyTyped(c, key);
             if(!textFields.get(selectedTextField).getText().isEmpty() && !(textFields.get(selectedTextField).getText().startsWith("-") & textFields.get(selectedTextField).getText().length() == 1))
@@ -394,6 +360,49 @@ public class ElementNumberInput extends Element
                 }
             }
         }
+    }
+
+    public void changeValue(boolean increment)
+    {
+        String text = textFields.get(selectedTextField).getText();
+        if(!text.isEmpty())
+        {
+            if(allowDecimal)
+            {
+                String val = String.format(Locale.ENGLISH, "%.2f", Double.parseDouble(text) + (increment ? (GuiScreen.isShiftKeyDown() ? 1D : GuiScreen.isCtrlKeyDown() ? 0.01D : 0.1D) : -(GuiScreen.isShiftKeyDown() ? 1D : GuiScreen.isCtrlKeyDown() ? 0.01D : 0.1D)));
+                if(val.contains(".") && val.length() > val.indexOf(".") + 4)
+                {
+                    val = val.substring(0, val.indexOf(".") + 4);
+                }
+                textFields.get(selectedTextField).setText(val);
+
+                if(Double.parseDouble(textFields.get(selectedTextField).getText()) < min)
+                {
+                    textFields.get(selectedTextField).setText(Double.toString(min));
+                }
+                if(Double.parseDouble(textFields.get(selectedTextField).getText()) > max)
+                {
+                    textFields.get(selectedTextField).setText(Double.toString(max));
+                }
+            }
+            else
+            {
+                textFields.get(selectedTextField).setText(Integer.toString(Integer.parseInt(text) + (increment ? 1 : -1)));
+                if(Integer.parseInt(textFields.get(selectedTextField).getText()) < min)
+                {
+                    textFields.get(selectedTextField).setText(Integer.toString((int)min));
+                }
+                if(Integer.parseInt(textFields.get(selectedTextField).getText()) > max)
+                {
+                    textFields.get(selectedTextField).setText(Integer.toString((int)max));
+                }
+            }
+        }
+        else
+        {
+            textFields.get(selectedTextField).setText("0");
+        }
+        parent.elementTriggered(this);
     }
 
     @Override
