@@ -51,6 +51,10 @@ public class ElementTextInput extends Element
     @Override
     public boolean onClick(int mouseX, int mouseY, int id)
     {
+        if(id == 1)
+        {
+            textField.setText("");
+        }
         if(textField.isFocused())
         {
             textField.mouseClicked(parent.posX + mouseX + 2, parent.posY + mouseY + 2, id);
