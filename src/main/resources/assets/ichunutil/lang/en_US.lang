@@ -64,6 +64,7 @@ element.expand=Expand
 
 element.button.ok=OK
 element.button.cancel=Cancel
+element.button.clear=Clear
 
 window.popup.title=Alert!
 

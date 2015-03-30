@@ -1,6 +1,7 @@
 package us.ichun.mods.ichunutil.common.module.tabula.common.project;
 
 import com.google.gson.Gson;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.model.ModelHelper;
@@ -30,7 +31,7 @@ import java.util.zip.ZipOutputStream;
 public class ProjectInfo
 {
     public static final int IDENTIFIER_LENGTH = 20;
-    public static final int PROJ_VERSION = 2;
+    public static final int PROJ_VERSION = 3;
 
     public transient String identifier;
     public transient File saveFile;
@@ -52,6 +53,7 @@ public class ProjectInfo
     public transient String textureFileMd5;
 
     public transient BufferedImage bufferedTexture;
+    public transient int bufferedTextureId = -1;
 
     public transient boolean destroyed;
 
@@ -62,9 +64,13 @@ public class ProjectInfo
     @SideOnly(Side.CLIENT)
     public transient ModelBaseDummy model;
 
+    public transient ProjectInfo ghostModel;
+
     public String modelName;
     public String authorName;
     public int projVersion; //TODO if projVersion < current version, do file repairs and resave.
+
+    public ArrayList<String> metadata;
 
     public int textureWidth = 64;
     public int textureHeight = 32;
@@ -82,6 +88,7 @@ public class ProjectInfo
     {
         modelName = "";
         authorName = "";
+        metadata = new ArrayList<String>();
         cameraFov = 30F;
         cameraZoom = 1.0F;
         cubeGroups = new ArrayList<CubeGroup>();
@@ -139,6 +146,15 @@ public class ProjectInfo
             model.rotationPoint.destroy();
             model.rotationControls.destroy();
             model.sizeControls.destroy();
+
+            if(bufferedTextureId != -1)
+            {
+                TextureUtil.deleteTexture(bufferedTextureId);
+            }
+        }
+        if(ghostModel != null)
+        {
+            ghostModel.destroy();
         }
     }
 
@@ -494,6 +510,10 @@ public class ProjectInfo
                 {
                     info.opacity = 100D;
                 }
+            }
+            else if(projVersion == 2)
+            {
+                metadata = new ArrayList<String>();
             }
             projVersion++;
         }
