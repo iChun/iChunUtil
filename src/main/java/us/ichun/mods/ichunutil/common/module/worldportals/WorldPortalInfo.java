@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class WorldPortalInfo
 {
     //scanzone is not what its name implies, it's actually a 2 dimensional plane where the illusion/projection would have been rendered.
+    public WorldPortalCarrier parent; //MIGHT BE NULL
 
     public int orientation = 0;// 90 degree increments
     public int face = 0; //0 = face up, 1 = face down, 2 = horizontal
@@ -27,21 +28,15 @@ public class WorldPortalInfo
     public double offsetHeight = 1.0D; //height offset of scanzone
     public double offsetDepth = 0.1D; //depth offset of scanzone
 
-    public boolean active = true;
+    public boolean active = true; //if inactive... don't render the projection or teleport at all
 
-    public boolean project = false;
+    public boolean project = false; //show projection, obviously.
 
     public int teleport = 1; //0 = off, 1 = oneway/twoway, 2 = frustrum, 3 = windowstyle //TODO think about how to do frustrum style teleporting and window style teleporting.
 
-    //Non portal specific configs
-    public WorldPortalInfo pair;
+    public String channelName = "Unnamed";
 
-    public WorldPortalCarrier parent;
-
-    //TODO maybe send the NBT of the pair instead?
-    public boolean refreshPair;
-    public boolean hasPair;
-    public BlockPos pairPos;
+    public WorldPortalInfo link;
 
     //TODO windows...? maybe have frustrum boxes outside the frustrum scanzone to check
 
@@ -54,23 +49,6 @@ public class WorldPortalInfo
 
     public void update() //Tile Entity updating this, World object
     {
-        if(refreshPair)
-        {
-            if(hasPair)
-            {
-                TileEntity te = parent.getWorld().getTileEntity(pairPos);
-                if(te instanceof WorldPortalCarrier)
-                {
-                    WorldPortalCarrier carrier = (WorldPortalCarrier)te;
-                    pair = carrier.getPortalInfo();
-                }
-            }
-            else
-            {
-                pair = null;
-            }
-            refreshPair = false;
-        }
     }
 
     public void transverseTo(WorldPortalInfo otherPortal)
@@ -97,13 +75,15 @@ public class WorldPortalInfo
 
         tag.setInteger("teleport", teleport);
 
-        if(pair != null && pair.parent != null)
-        {
-            tag.setBoolean("hasPair", true);
+        tag.setString("channelName", channelName);
 
-            tag.setInteger("pairX", pair.parent.getPos().getX());
-            tag.setInteger("pairY", pair.parent.getPos().getY());
-            tag.setInteger("pairZ", pair.parent.getPos().getZ());
+        if(link != null)
+        {
+            NBTTagCompound linkTag = new NBTTagCompound();
+
+            link.write(linkTag);
+
+            tag.setTag("linkInfo", linkTag);
         }
     }
 
@@ -125,6 +105,8 @@ public class WorldPortalInfo
 
         teleport = tag.getInteger("teleport");
 
+        channelName = tag.getString("channelName");
+
         if(height < 0.1D)
         {
             height = 0.1D;
@@ -133,20 +115,17 @@ public class WorldPortalInfo
         {
             width = 0.05D;
         }
+
+        if(tag.hasKey("linkInfo"))
+        {
+            link = new WorldPortalInfo();
+            link.read(tag.getCompoundTag("linkInfo"));
+        }
     }
 
     public void read(NBTTagCompound tag)
     {
         readSelfInfo(tag);
-
-        if(tag.getBoolean("hasPair"))
-        {
-            hasPair = true;
-
-            pairPos = new BlockPos(tag.getInteger("pairX"), tag.getInteger("pairY"), tag.getInteger("pairZ"));
-        }
-
-        refreshPair = true;
     }
 
     public AxisAlignedBB getScanZone()
@@ -159,7 +138,7 @@ public class WorldPortalInfo
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if(!(mc.gameSettings.showDebugInfo || active && project && pair == null))
+        if(!(mc.gameSettings.showDebugInfo || active && project && link == null))
         {
             return;
         }
