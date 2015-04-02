@@ -39,7 +39,7 @@ public class TickHandlerServer
             if(infectionMap.containsKey(event.player.getGameProfile().getId().toString()))
             {
                 int infectionLevel = infectionMap.get(event.player.getGameProfile().getId().toString());
-                if(ticks % 13 == 0)
+                if(event.player.ticksExisted % 13 == 0)
                 {
                     List list = event.player.getEntityWorld().getEntitiesWithinAABB(EntityPlayer.class, event.player.getEntityBoundingBox().expand(5D, 5D, 5D));
                     list.remove(event.player);

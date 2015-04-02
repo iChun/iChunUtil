@@ -4,7 +4,6 @@ import com.google.common.collect.Ordering;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,6 +25,10 @@ public class ModVersionJsonGen
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
+
+        versions = new TreeMap<String, String>(Ordering.natural());
+        map.put("Doors", versions);
+        versions.put("1.7.10", "4.0.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Hats", versions);
