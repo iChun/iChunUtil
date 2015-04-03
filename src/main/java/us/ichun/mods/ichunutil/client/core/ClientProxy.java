@@ -24,6 +24,7 @@ import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
 import us.ichun.mods.ichunutil.client.voxel.RenderVoxels;
 import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
+import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
@@ -60,6 +61,8 @@ public class ClientProxy extends CommonProxy
         FMLCommonHandler.instance().bus().register(tickHandlerClient);
 
         (new ThreadGetPatrons()).start();
+
+        EntityHelperBase.injectMinecraftPlayerGameProfile();
     }
 
     @Override

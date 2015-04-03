@@ -69,6 +69,12 @@ public class EntityHelperBase
     private static HashMap<String, GameProfile> nameToPartialProfileMap = new HashMap<String, GameProfile>();
     private static HashMap<String, GameProfile> nameToFullProfileMap = new HashMap<String, GameProfile>();
 
+    @SideOnly(Side.CLIENT)
+    public static void injectMinecraftPlayerGameProfile()
+    {
+        nameToFullProfileMap.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
+    }
+
     public static GameProfile getFullGameProfileFromName(String name)
     {
         if(nameToFullProfileMap.containsKey(name))
