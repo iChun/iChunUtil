@@ -75,6 +75,7 @@ public class ImportTabula extends Importer
 
             if(tampered)
             {
+                info.tampered = true;
                 iChunUtil.console(file.getName() + " is a tampered model file.", true);
             }
 

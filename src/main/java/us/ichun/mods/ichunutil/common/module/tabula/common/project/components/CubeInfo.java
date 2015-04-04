@@ -1,5 +1,6 @@
 package us.ichun.mods.ichunutil.common.module.tabula.common.project.components;
 
+import net.minecraft.client.model.ModelBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelRenderer;
@@ -61,6 +62,39 @@ public class CubeInfo
         if(info.parentIdentifier != null && info.parentIdentifier.equals(identifier))
         {
             info.parentIdentifier = null;
+        }
+    }
+
+    public CubeInfo createModel(ModelBase base)
+    {
+        this.modelCube = new ModelRenderer(base, this.txOffset[0], this.txOffset[1]);
+        this.modelCube.mirror = this.txMirror;
+        this.modelCube.setRotationPoint((float)this.position[0], (float)this.position[1], (float)this.position[2]);
+        this.modelCube.addBox((float)this.offset[0], (float)this.offset[1], (float)this.offset[2], this.dimensions[0], this.dimensions[1], this.dimensions[2], (float)this.mcScale);
+        this.modelCube.rotateAngleX = (float)Math.toRadians(this.rotation[0]);
+        this.modelCube.rotateAngleY = (float)Math.toRadians(this.rotation[1]);
+        this.modelCube.rotateAngleZ = (float)Math.toRadians(this.rotation[2]);
+
+        createChildren(base);
+
+        return this;
+    }
+
+    public void createChildren(ModelBase base)
+    {
+        for(CubeInfo child : getChildren())
+        {
+            child.modelCube = new ModelRenderer(base, child.txOffset[0], child.txOffset[1]);
+            child.modelCube.mirror = child.txMirror;
+            child.modelCube.addBox((float)child.offset[0], (float)child.offset[1], (float)child.offset[2], child.dimensions[0], child.dimensions[1], child.dimensions[2]);
+            child.modelCube.setRotationPoint((float)child.position[0], (float)child.position[1], (float)child.position[2]);
+            child.modelCube.rotateAngleX = (float)Math.toRadians(child.rotation[0]);
+            child.modelCube.rotateAngleY = (float)Math.toRadians(child.rotation[1]);
+            child.modelCube.rotateAngleZ = (float)Math.toRadians(child.rotation[2]);
+
+            this.modelCube.addChild(child.modelCube);
+
+            child.createChildren(base);
         }
     }
 

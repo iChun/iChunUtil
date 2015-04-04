@@ -32,6 +32,7 @@ public class ImportList
             {
                 ProjectInfo projectInfo = importer.createProjectInfo(file);
                 projectInfo.projVersion = importer.getProjectVersion();
+                projectInfo.repair();
                 return projectInfo;
             }
             catch(Exception e)

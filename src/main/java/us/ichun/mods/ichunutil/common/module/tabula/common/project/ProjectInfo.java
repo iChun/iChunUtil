@@ -37,6 +37,7 @@ public class ProjectInfo
     public transient File saveFile;
     public transient String saveFileMd5;
     public transient boolean saved;
+    public transient boolean tampered;
 
     public transient int lastAutosave;
     public transient boolean autosaved;
@@ -121,15 +122,15 @@ public class ProjectInfo
     public void initClient()
     {
         model = new ModelBaseDummy(this);
-        model.textureWidth = textureWidth;
-        model.textureHeight = textureHeight;
+//        model.textureWidth = textureWidth;
+//        model.textureHeight = textureHeight;
         for(int i = 0; i < cubeGroups.size(); i++)
         {
             createGroupCubes(cubeGroups.get(i));
         }
         for(int i = 0 ; i < cubes.size(); i++)
         {
-            model.createModelFromCubeInfo(cubes.get(i));
+            cubes.get(i).createModel(model);
         }
     }
 
@@ -211,7 +212,7 @@ public class ProjectInfo
         }
         for(int i = 0; i < group.cubes.size(); i++)
         {
-            model.createModelFromCubeInfo(group.cubes.get(i));
+            group.cubes.get(i).createModel(model);
         }
     }
 
@@ -498,7 +499,7 @@ public class ProjectInfo
         return (float)Math.max((maxX - minX) / scale[0], Math.max((maxY - minY) / (scale[1] * 2), (maxZ - minZ) / scale[2]));
     }
 
-    public void repair()
+    public ProjectInfo repair()
     {
         while(projVersion < ProjectInfo.PROJ_VERSION)
         {
@@ -517,6 +518,7 @@ public class ProjectInfo
             }
             projVersion++;
         }
+        return this;
     }
 
     public static boolean saveProject(ProjectInfo info, File file)

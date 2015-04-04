@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
 import us.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
@@ -74,7 +75,7 @@ public abstract class ConfigBase
     public void readProperty(Field field, boolean write)
     {
         ConfigProp propInfo = field.getAnnotation(ConfigProp.class);
-        if(propInfo.hidden() && !propsToReveal.contains(field.getName()))
+        if(propInfo.hidden() && !propsToReveal.contains(field.getName()) || propInfo.side().isClient() && FMLCommonHandler.instance().getSide().isServer())
         {
             return;
         }
@@ -328,7 +329,16 @@ public abstract class ConfigBase
         iChunUtil.channel.sendToPlayer(new PacketSession(this), player);
     }
 
+    public void updateSessionToAllPlayers()
+    {
+        iChunUtil.channel.sendToAll(new PacketSession(this));
+    }
+
     public void onReceiveSession()
+    {
+    }
+
+    public void onSessionChange(Field field, Object original)
     {
     }
 

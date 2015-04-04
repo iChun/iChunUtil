@@ -1,5 +1,7 @@
 package us.ichun.mods.ichunutil.common.core.config.annotations;
 
+import net.minecraftforge.fml.relauncher.Side;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,4 +17,5 @@ public @interface ConfigProp
     String category() default "general";
     String comment() default "undefined";
     String nameOverride() default "";
+    Side side() default Side.SERVER;
 }

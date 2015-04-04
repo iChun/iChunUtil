@@ -15,6 +15,13 @@ public class Colour
         b = (clr & 0xff);
     }
 
+    public Colour(int r, int g, int b)
+    {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
     public int getColour()
     {
         return (r << 16) + (g << 8) + (b);

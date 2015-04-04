@@ -167,7 +167,9 @@ public class PacketSession extends AbstractPacket
                         field.setAccessible(true);
                         if(vars.containsKey(field.getName()))
                         {
+                            Object ori = field.get(conf);
                             field.set(conf, vars.get(field.getName()));
+                            conf.onSessionChange(field, ori);
                         }
                     }
                     catch(Exception ignored){}
