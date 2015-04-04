@@ -130,7 +130,7 @@ public class ProjectInfo
         }
         for(int i = 0 ; i < cubes.size(); i++)
         {
-            cubes.get(i).createModel(model);
+            model.cubes.add(cubes.get(i).createModel(model));
         }
     }
 
@@ -212,7 +212,7 @@ public class ProjectInfo
         }
         for(int i = 0; i < group.cubes.size(); i++)
         {
-            group.cubes.get(i).createModel(model);
+            model.cubes.add(group.cubes.get(i).createModel(model));
         }
     }
 

@@ -1,11 +1,9 @@
 package us.ichun.mods.ichunutil.common.module.tabula.client.model;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.ProjectInfo;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.components.CubeGroup;
 import us.ichun.mods.ichunutil.common.module.tabula.common.project.components.CubeInfo;
