@@ -42,6 +42,9 @@ public class WindowTopDockBase extends Window
     }
 
     @Override
+    public boolean canMinimize() { return false; }
+
+    @Override
     public void toggleMinimize()
     {
     }

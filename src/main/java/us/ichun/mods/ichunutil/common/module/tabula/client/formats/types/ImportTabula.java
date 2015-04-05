@@ -151,37 +151,37 @@ public class ImportTabula extends Importer
     private static boolean determineAngleType(TC2Info.Group geometry)
     {
         boolean degrees = false;
-        if(geometry.Shape != null)
-        {
-            for(TC2Info.Shape shape : geometry.Shape)
-            {
-                String[] rot = shape.Rotation.split(",");
-                double rX = Float.parseFloat(rot[0]);
-                double rY = Float.parseFloat(rot[1]);
-                double rZ = Float.parseFloat(rot[2]);
-
-                double pi = Math.PI + 0.01D;
-
-                if(rX < -pi || rX > pi || rY < -pi || rY > pi || rZ < -pi || rZ > pi)
-                {
-                    degrees = true;
-                    break;
-                }
-            }
-
-        }
-        if(geometry.Null != null && !degrees)
-        {
-            for(TC2Info.Null nul : geometry.Null)
-            {
-                boolean degInner = determineAngleType(nul.Children);
-                if(degInner)
-                {
-                    degrees = degInner;
-                    break;
-                }
-            }
-        }
+//        if(geometry.Shape != null)
+//        {
+//            for(TC2Info.Shape shape : geometry.Shape)
+//            {
+//                String[] rot = shape.Rotation.split(",");
+//                double rX = Float.parseFloat(rot[0]);
+//                double rY = Float.parseFloat(rot[1]);
+//                double rZ = Float.parseFloat(rot[2]);
+//
+//                double pi = Math.PI + 0.01D;
+//
+//                if(rX < -pi || rX > pi || rY < -pi || rY > pi || rZ < -pi || rZ > pi)
+//                {
+//                    degrees = true;
+//                    break;
+//                }
+//            }
+//
+//        }
+//        if(geometry.Null != null && !degrees)
+//        {
+//            for(TC2Info.Null nul : geometry.Null)
+//            {
+//                boolean degInner = determineAngleType(nul.Children);
+//                if(degInner)
+//                {
+//                    degrees = degInner;
+//                    break;
+//                }
+//            }
+//        }
         return degrees;
     }
 
