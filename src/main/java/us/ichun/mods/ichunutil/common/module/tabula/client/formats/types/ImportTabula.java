@@ -160,7 +160,7 @@ public class ImportTabula extends Importer
                 double rY = Float.parseFloat(rot[1]);
                 double rZ = Float.parseFloat(rot[2]);
 
-                double pi = Math.PI + 0.00001D;
+                double pi = Math.PI + 0.01D;
 
                 if(rX < -pi || rX > pi || rY < -pi || rY > pi || rZ < -pi || rZ > pi)
                 {
