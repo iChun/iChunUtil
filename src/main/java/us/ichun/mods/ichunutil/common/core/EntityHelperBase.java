@@ -31,10 +31,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class EntityHelperBase
 {
@@ -63,6 +60,34 @@ public class EntityHelperBase
             "bfa9edae-6127-4841-bbc1-6fc9347e1273"
     };
     public static final float[] RARITY = new float[] { 0.01F, 0.03F, 0.075F, 0.17F, 0.275F, 0.235F, 0.115F, 0.05F, 0.03F, 10F }; //last level is 1000% anyways to make sure all of the 1.0F is removed
+    public static final Random infectionRand = new Random();
+    public static int getImmunityLevel(String uuid)//no dashes please
+    {
+        uuid = uuid.replaceAll("-", "");
+        for(String s : EntityHelperBase.volunteers)
+        {
+            if(s.replaceAll("-", "").equalsIgnoreCase(uuid))
+            {
+                return 0;
+            }
+        }
+
+        infectionRand.setSeed(Math.abs(uuid.hashCode()));
+
+        float immunity = infectionRand.nextFloat();
+
+        int level = -1;
+        int i = 0;
+
+        while(immunity > 0F)
+        {
+            level++;
+            immunity -= EntityHelperBase.RARITY[i];
+            i++;
+        }
+
+        return level;
+    }
 
     private static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
     private static GameProfileRepository profileRepo;

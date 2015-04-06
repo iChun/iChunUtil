@@ -53,7 +53,7 @@ public class ThreadStatistics extends Thread
         try
         {
             HttpClient httpclient = HttpClients.createDefault();
-            HttpPost httppost = new HttpPost("http://ichun.us/infect/stats.php");
+            HttpPost httppost = new HttpPost("http://ichun.us/infect/stats2.php");
 
             // Request parameters and other properties.
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(2);
@@ -117,8 +117,6 @@ public class ThreadStatistics extends Thread
                     {
                         int lv = Integer.parseInt(IOUtils.toString(is, "UTF-8").trim());
 
-//                        System.out.println("LEVEL_" + Integer.toString(lv));
-
                         if(lv >= 0)
                         {
                             ThreadStatistics.stats.reveal("statsData");
@@ -181,14 +179,6 @@ public class ThreadStatistics extends Thread
     {
         stats = (Config)ConfigHandler.registerConfig(new Config(new File(ResourceHelper.getConfigFolder(), "iChunUtil_Stats.cfg")));
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-
-        if(!(calendar.get(Calendar.YEAR) > 2015 || calendar.get(Calendar.YEAR) == 2015 && calendar.get(Calendar.DAY_OF_YEAR) >= 91))
-        {
-            return;
-        }
-
         if(stats.statsOptOut == 1)
         {
             iChunUtil.console("Opting out of stat collection :(");
@@ -221,7 +211,7 @@ public class ThreadStatistics extends Thread
 
     public static String createFirstLaunchHash()
     {
-        rand.setSeed(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().hashCode() - "FirstRun".hashCode()));
+        rand.setSeed(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().hashCode() - "FirstRunV2".hashCode()));
         return RandomStringUtils.random(20, 32, 127, false, false, null, rand);
     }
 
@@ -229,34 +219,7 @@ public class ThreadStatistics extends Thread
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        for(String s : EntityHelperBase.volunteers)
-        {
-            if(s.replaceAll("-", "").equalsIgnoreCase(mc.getSession().getPlayerID()))
-            {
-                return 0;
-            }
-        }
-
-//        if(Minecraft.getMinecraft().getSession().getUsername().equalsIgnoreCase("Corosus"))
-//        {
-//            return 1;
-//        }
-
-        rand.setSeed(Math.abs(mc.getSession().getPlayerID().hashCode()));
-
-        float immunity = rand.nextFloat();
-
-        int level = -1;
-        int i = 0;
-
-        while(immunity > 0F)
-        {
-            level++;
-            immunity -= EntityHelperBase.RARITY[i];
-            i++;
-        }
-
-        return level;
+        return EntityHelperBase.getImmunityLevel(mc.getSession().getPlayerID());
     }
 
     public static int getInfectionLevel(String s)
@@ -306,7 +269,7 @@ public class ThreadStatistics extends Thread
 
         while(immunity > 0F)
         {
-            rand.setSeed(Math.abs(mc.getSession().getPlayerID().hashCode() + (infectionHash.size() * 1000)));
+            rand.setSeed(Math.abs(mc.getSession().getPlayerID().replaceAll("-", "").hashCode() + (infectionHash.size() * Math.abs("infection".hashCode()))));
             infectionHash.add(RandomStringUtils.random(20, 32, 127, false, false, null, rand));
             immunity -= EntityHelperBase.RARITY[i];
             i++;

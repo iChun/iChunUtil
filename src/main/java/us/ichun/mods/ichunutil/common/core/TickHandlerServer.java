@@ -11,7 +11,6 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class TickHandlerServer
 {
@@ -46,6 +45,10 @@ public class TickHandlerServer
                     for(int i = 0; i < list.size(); i++)
                     {
                         EntityPlayer player = (EntityPlayer)list.get(i);
+                        if(player.ticksExisted < 100)
+                        {
+                            continue;
+                        }
                         if(infectionMap.containsKey(player.getGameProfile().getId().toString()))
                         {
                             if(infectionMap.get(player.getGameProfile().getId().toString()) == infectionLevel - 1)
@@ -58,7 +61,7 @@ public class TickHandlerServer
                         }
                         else
                         {
-                            infectionMap.put(player.getGameProfile().getId().toString(), infectionLevel);
+                            infectionMap.put(player.getGameProfile().getId().toString(), 0);
                             iChunUtil.channel.sendToPlayer(new PacketPatientData(0, false, event.player.getGameProfile().getId().toString().replace("-", "")), player);
                             player.addPotionEffect(new PotionEffect(Potion.poison.id, 100));
                             //cause infection
@@ -66,7 +69,7 @@ public class TickHandlerServer
                     }
                 }
 
-                if((infectionLevel == getImmunityLevel(event.player.getGameProfile().getId().toString().replaceAll("-", "")) - 1/* || infectionLevel == 0 && event.player.getCommandSenderName().equalsIgnoreCase("Corosus")*/) && event.player.worldObj.rand.nextFloat() < 0.0005F)
+                if((infectionLevel == EntityHelperBase.getImmunityLevel(event.player.getGameProfile().getId().toString().replaceAll("-", "")) - 1) && event.player.worldObj.rand.nextFloat() < 0.0005F)
                 {
                     infectionMap.put(event.player.getGameProfile().getId().toString(), infectionLevel + 1);
                     iChunUtil.channel.sendToPlayer(new PacketPatientData(infectionLevel + 1, true, ""), event.player);
@@ -77,35 +80,7 @@ public class TickHandlerServer
         }
     }
 
-    public int getImmunityLevel(String uuid)//no dashes please
-    {
-        for(String s : EntityHelperBase.volunteers)
-        {
-            if(s.replaceAll("-", "").equalsIgnoreCase(uuid))
-            {
-                return 0;
-            }
-        }
-
-        rand.setSeed(Math.abs(uuid.hashCode()));
-
-        float immunity = rand.nextFloat();
-
-        int level = -1;
-        int i = 0;
-
-        while(immunity > 0F)
-        {
-            level++;
-            immunity -= EntityHelperBase.RARITY[i];
-            i++;
-        }
-
-        return level;
-    }
-
     public int ticks;
 
-    public Random rand = new Random();
     public HashMap<String, Integer> infectionMap = new HashMap<String, Integer>();
 }

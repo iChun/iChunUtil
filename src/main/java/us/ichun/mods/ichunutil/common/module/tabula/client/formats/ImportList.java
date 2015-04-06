@@ -20,7 +20,7 @@ public class ImportList
 
     public static boolean isFileSupported(File file)
     {
-        return compatibleFormats.containsKey(FilenameUtils.getExtension(file.getName()));
+        return !file.isDirectory() && compatibleFormats.containsKey(FilenameUtils.getExtension(file.getName()));
     }
 
     public static ProjectInfo createProjectFromFile(File file)

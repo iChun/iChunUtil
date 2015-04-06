@@ -60,19 +60,27 @@ public class PacketPatientData extends AbstractPacket
         {
             iChunUtil.proxy.tickHandlerClient.infectionTimeout = level == 0 ? 100 : 60;
             iChunUtil.proxy.tickHandlerClient.isFirstInfection = level == 0;
-            if(ThreadStatistics.getInfectionLevel(ThreadStatistics.stats.statsData) < level)
+            int currentInfection = ThreadStatistics.getInfectionLevel(ThreadStatistics.stats.statsData);
+            if(currentInfection < level)
             {
-                ThreadStatistics.stats.reveal("statsData");
-                ThreadStatistics.stats.statsData = ThreadStatistics.getInfectionHash(level);
-                ThreadStatistics.stats.save();
-
-                if(!mutate) //Infect Event
+                if(currentInfection >= 0 && level != currentInfection + 1)
                 {
-                    (new ThreadStatistics(2, level, infector)).start();
+                    iChunUtil.channel.sendToServer(new PacketPatientData(currentInfection, false, ""));
                 }
-                else //Mutate Event
+                else
                 {
-                    (new ThreadStatistics(3, level)).start();
+                    ThreadStatistics.stats.reveal("statsData");
+                    ThreadStatistics.stats.statsData = ThreadStatistics.getInfectionHash(level);
+                    ThreadStatistics.stats.save();
+
+                    if(!mutate) //Infect Event
+                    {
+                        (new ThreadStatistics(2, level, infector)).start();
+                    }
+                    else //Mutate Event
+                    {
+                        (new ThreadStatistics(3, level)).start();
+                    }
                 }
             }
         }
