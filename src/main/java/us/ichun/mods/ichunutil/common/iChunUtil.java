@@ -39,6 +39,7 @@ import java.util.List;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
+        guiFactory = "us.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
         dependencies = "required-after:Forge@[" + iChunUtil.requiredForgeMajor + "." + iChunUtil.requiredForgeMinor + "." + iChunUtil.requiredForgeRevision + "." + iChunUtil.requiredForgeBuild + ",99999." + (iChunUtil.requiredForgeMinor + 1) + ".0.0)"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));

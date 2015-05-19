@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -30,11 +31,15 @@ public class GuiConfigs extends IWorkspace
 
     public int keyBindTimeout;
 
-    public GuiConfigs(int scale, GuiScreen screen)
+    public GuiConfigs(GuiScreen screen)
     {
         VARIABLE_LEVEL = 0;
 
-        oriScale = scale;
+        Minecraft mc = Minecraft.getMinecraft();
+
+        oriScale = mc.gameSettings.guiScale;
+        mc.gameSettings.guiScale = 2;
+
         oriScreen = screen;
 
         windowConfigs = new WindowConfigs(this, 0, 0, 0, 0, 0, 0);
@@ -48,6 +53,13 @@ public class GuiConfigs extends IWorkspace
         {
             config.enterConfigScreen();
         }
+    }
+
+    public GuiConfigs(int scale, GuiScreen screen)
+    {
+        this(screen);
+        oriScale = scale;
+        oriScreen = screen;
     }
 
     @Override
