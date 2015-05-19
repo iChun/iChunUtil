@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
@@ -88,6 +89,10 @@ public class iChunUtil
         @ConfigProp(category = "versionSave", comment = "", nameOverride = "Day Check")
         @IntMinMax(min = 0, max = 35)
         public int dayCheck = 0;
+
+        @ConfigProp(category = "clientOnly", side = Side.CLIENT, changeable = false)
+        @IntBool
+        public int enableStencils = 1;
 
         @ConfigProp(category = "patreon", hidden = true)
         @IntBool

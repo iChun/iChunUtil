@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.layer.LayerSnout;
+import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.client.thread.ThreadGetPatrons;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
@@ -40,6 +41,7 @@ public class ClientProxy extends CommonProxy
     {
         super.preInit();
         ResourceHelper.init();
+        RendererHelper.init();
 
         File file = new File(ResourceHelper.getConfigFolder(), "iChunUtil_KeyBinds.cfg");
         ConfigHandler.configKeybind = new Configuration(file);

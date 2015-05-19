@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +32,14 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class RendererHelper
 {
+    public static void init()
+    {
+        if(iChunUtil.config.enableStencils == 1)
+        {
+            Minecraft.getMinecraft().getFramebuffer().enableStencil();
+        }
+    }
+
     public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
     {
         Minecraft mc = Minecraft.getMinecraft();
