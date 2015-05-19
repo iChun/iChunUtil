@@ -188,6 +188,8 @@ public class iChunUtil
             }
         }
 
+        ObfHelper.detectMCVersion();
+
         proxy.preInit();
 
         ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));

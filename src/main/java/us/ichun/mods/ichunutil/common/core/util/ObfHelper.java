@@ -49,18 +49,6 @@ public class ObfHelper
 
     public static void detectObfuscation()
     {
-        if(iChunUtil.config.ignoreMCVersionCheck == 0)
-        {
-            ArtifactVersion mcVer = new DefaultArtifactVersion(Loader.MC_VERSION);
-
-            ArtifactVersion current = new DefaultArtifactVersion(obfVersion);
-
-            if(mcVer.compareTo(current) != 0)
-            {
-                throw new RuntimeException(StatCollector.translateToLocal("ichunutil.mccheck.error"));
-            }
-        }
-
         obfuscation = true;
         try
         {
@@ -87,6 +75,21 @@ public class ObfHelper
         }
         catch (Exception ignored)
         {
+        }
+    }
+
+    public static void detectMCVersion()
+    {
+        if(iChunUtil.config.ignoreMCVersionCheck == 0)
+        {
+            ArtifactVersion mcVer = new DefaultArtifactVersion(Loader.MC_VERSION);
+
+            ArtifactVersion current = new DefaultArtifactVersion(obfVersion);
+
+            if(mcVer.compareTo(current) != 0)
+            {
+                throw new RuntimeException(StatCollector.translateToLocal("ichunutil.mccheck.error"));
+            }
         }
     }
     
