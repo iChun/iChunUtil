@@ -100,7 +100,7 @@ public abstract class ConfigBase
         String comment = propInfo.comment().equals("undefined") ? StatCollector.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".comment") : StatCollector.translateToLocal(propInfo.comment());
         if(Splitter.on(".").splitToList(comment).size() >= 2 && !comment.contains(" ") && !setup) //localized but no comment?
         {
-            iChunUtil.console("Config property " + field.getName() + " from mod " + getModName() + " may not be localized!", true);
+            iChunUtil.logger.warn("Config property " + field.getName() + " from mod " + getModName() + " may not be localized!");
         }
         String commentLocal = StatCollector.translateToLocal(comment);
         List cms = Splitter.on("\\n").splitToList(commentLocal);

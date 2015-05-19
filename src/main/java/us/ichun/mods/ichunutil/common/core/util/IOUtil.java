@@ -77,7 +77,7 @@ public class IOUtil
             String hex = getHexString(b);
             return hex;
         } catch(Exception e){
-            iChunUtil.console("Failed to generate MD5 checksum for " + file.getName(), true);
+            iChunUtil.logger.warn("Failed to generate MD5 checksum for " + file.getName());
             return null;
         }
     }

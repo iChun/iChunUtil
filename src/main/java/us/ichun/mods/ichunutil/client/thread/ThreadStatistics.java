@@ -181,7 +181,7 @@ public class ThreadStatistics extends Thread
 
         if(stats.statsOptOut == 1)
         {
-            iChunUtil.console("Opting out of stat collection :(");
+            iChunUtil.logger.info("Opting out of stat collection :(");
         }
         else
         {

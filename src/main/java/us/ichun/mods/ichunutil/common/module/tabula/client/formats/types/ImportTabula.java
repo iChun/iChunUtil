@@ -76,7 +76,7 @@ public class ImportTabula extends Importer
             if(tampered)
             {
                 info.tampered = true;
-                iChunUtil.console(file.getName() + " is a tampered model file.", true);
+                iChunUtil.logger.warn(file.getName() + " is a tampered model file.");
             }
 
             return info;
@@ -136,12 +136,12 @@ public class ImportTabula extends Importer
             }
             catch(NumberFormatException e)
             {
-                iChunUtil.console("Error parsing Techne 2 model for Tabula: Invalid number", true);
+                iChunUtil.logger.warn("Error parsing Techne 2 model for Tabula: Invalid number");
                 e.printStackTrace();
             }
             catch(ArrayIndexOutOfBoundsException e)
             {
-                iChunUtil.console("Error parsing Techne 2 model for Tabula: Array too short", true);
+                iChunUtil.logger.warn("Error parsing Techne 2 model for Tabula: Array too short");
             }
         }
 

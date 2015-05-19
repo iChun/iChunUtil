@@ -77,7 +77,7 @@ public class CommonProxy
     public void notifyNewUpdate(String modName, String version)
     {
         versionChecker.put(modName, version);
-        iChunUtil.console("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
+        iChunUtil.logger.info("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
     }
 
     @SideOnly(Side.CLIENT)

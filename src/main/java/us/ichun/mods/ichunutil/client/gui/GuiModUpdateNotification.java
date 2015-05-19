@@ -46,7 +46,7 @@ public class GuiModUpdateNotification extends Gui
 
         if(iChunUtil.config.versionNotificationFrequency == 3)
         {
-            iChunUtil.console("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
+            iChunUtil.logger.info("[NEW UPDATE AVAILABLE] " + modName + " - " + version);
             return;
         }
         else if(iChunUtil.config.versionNotificationFrequency == 2)
@@ -129,7 +129,7 @@ public class GuiModUpdateNotification extends Gui
                     for(int l = 0; l < modUpdates.size(); l++)
                     {
                         String s = modUpdates.get(l);
-                        iChunUtil.console("[NEW UPDATE AVAILABLE] " + s);
+                        iChunUtil.logger.info("[NEW UPDATE AVAILABLE] " + s);
                     }
                     modUpdatesDone.addAll(modUpdates);
                     modUpdates.clear();

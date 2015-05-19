@@ -39,7 +39,7 @@ public class ImportList
             {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Error creating Project for format ").append(FilenameUtils.getExtension(file.getName())).append(" for file ").append(file.getAbsolutePath()).append(" by importer ").append(importer);
-                iChunUtil.console(sb.toString(), true);
+                iChunUtil.logger.warn(sb.toString());
                 return null;
             }
         }

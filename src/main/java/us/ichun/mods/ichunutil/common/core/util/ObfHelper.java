@@ -40,7 +40,7 @@ public class ObfHelper
 
     public static void obfWarning()
     {
-        iChunUtil.console("Forgot to update obfuscation!", true);
+        iChunUtil.logger.warn("Forgot to update obfuscation!");
     }
 
     public static void detectObfuscation()
@@ -57,7 +57,7 @@ public class ObfHelper
             		obfuscation = false;
                     if(!iChunUtil.versionOfMC.equals(obfVersion))
                     {
-                        iChunUtil.console("ObfHelper Strings are not updated!", true);
+                        iChunUtil.logger.warn("ObfHelper Strings are not updated!");
                     }
                     return;
             	}

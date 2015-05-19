@@ -607,7 +607,7 @@ public class TC2Info
         }
         catch(Exception e)
         {
-            iChunUtil.console("Failed to save Techne 2 Model.", true);
+            iChunUtil.logger.warn("Failed to save Techne 2 Model.");
             e.printStackTrace();
             return false;
         }

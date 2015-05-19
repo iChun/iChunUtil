@@ -40,7 +40,7 @@ public class TrackerRegistry
             }
             catch(Exception e)
             {
-                iChunUtil.console("Error creating tracker: " + tracker.getName(), true);
+                iChunUtil.logger.warn("Error creating tracker: " + tracker.getName());
                 e.printStackTrace();
             }
         }
@@ -63,7 +63,7 @@ public class TrackerRegistry
             }
             catch(Exception e)
             {
-                iChunUtil.console("Error creating trackers: " + tracker.getName(), true);
+                iChunUtil.logger.warn("Error creating trackers: " + tracker.getName());
                 e.printStackTrace();
             }
         }

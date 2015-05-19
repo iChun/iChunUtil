@@ -17,11 +17,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
+import us.ichun.mods.ichunutil.common.core.Logger;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
@@ -51,11 +49,11 @@ public class iChunUtil
     public static final int versionMC = 5;
     public static final String versionOfMC = "1.8.0";
 
-    public static final String version = versionMC + ".3.0";
+    public static final String version = versionMC + ".4.0";
 
     private static boolean hasPostLoad = false;
 
-    private static Logger logger = LogManager.getLogger("iChunUtil");
+    public static Logger logger = Logger.createLogger("iChunUtil");
 
     public static PacketChannel channel;
 
@@ -219,16 +217,5 @@ public class iChunUtil
     public static boolean getPostLoad()
     {
         return hasPostLoad;
-    }
-
-    public static void console(String s, boolean warning)
-    {
-        StringBuilder sb = new StringBuilder();
-        logger.log(warning ? Level.WARN : Level.INFO, sb.append("[").append(version).append("] ").append(s).toString());
-    }
-
-    public static void console(String s)
-    {
-        console(s, false);
     }
 }

@@ -36,7 +36,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
             }
             else
             {
-                iChunUtil.console("Channel " + channel + " is reregistering packet types!", true);
+                iChunUtil.logger.warn("Channel " + channel + " is reregistering packet types!");
             }
             addDiscriminator(i, packetTypes[i]);
         }
@@ -128,7 +128,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         catch(Exception e)
         {
-            iChunUtil.console("Error writing to packet for channel: " + channel, true);
+            iChunUtil.logger.warn("Error writing to packet for channel: " + channel);
             e.printStackTrace();
         }
     }
@@ -142,7 +142,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
         }
         catch(Exception e)
         {
-            iChunUtil.console("Error reading from packet for channel: " + channel, true);
+            iChunUtil.logger.warn("Error reading from packet for channel: " + channel);
             e.printStackTrace();
         }
     }

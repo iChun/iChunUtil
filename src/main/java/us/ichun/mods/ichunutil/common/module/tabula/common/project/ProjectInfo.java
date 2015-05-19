@@ -549,7 +549,7 @@ public class ProjectInfo
         }
         catch(Exception e)
         {
-            iChunUtil.console("Failed to save model: " + info.modelName, true);
+            iChunUtil.logger.warn("Failed to save model: " + info.modelName);
             e.printStackTrace();
             return false;
         }
