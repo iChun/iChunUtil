@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -38,12 +39,17 @@ import java.util.List;
 
 @Mod(modid = "iChunUtil", name = "iChunUtil",
         version = iChunUtil.version,
-        dependencies = "required-after:Forge@[1.8-11.14.1.1354,)"
+        dependencies = "required-after:Forge@[" + iChunUtil.requiredForgeMajor + "." + iChunUtil.requiredForgeMinor + "." + iChunUtil.requiredForgeRevision + "." + iChunUtil.requiredForgeBuild + ",99999." + (iChunUtil.requiredForgeMinor + 1) + ".0.0)"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 
 public class iChunUtil
 {
+    public static final int requiredForgeMajor = 11;
+    public static final int requiredForgeMinor = ForgeVersion.minorVersion;
+    public static final int requiredForgeRevision = 1;
+    public static final int requiredForgeBuild = 1354;
+
     //MC version, bumped up every MC update.
     public static final int versionMC = 5;
     public static final String versionOfMC = "1.8.0";
