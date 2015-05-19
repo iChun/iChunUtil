@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod(modid = "iChunUtil", name = "iChunUtil",
+@Mod(modid = iChunUtil.modName, name = iChunUtil.modName,
         version = iChunUtil.version,
         guiFactory = "us.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
         dependencies = "required-after:Forge@[" + iChunUtil.requiredForgeMajor + "." + iChunUtil.requiredForgeMinor + "." + iChunUtil.requiredForgeRevision + "." + iChunUtil.requiredForgeBuild + ",99999." + (iChunUtil.requiredForgeMinor + 1) + ".0.0)"
@@ -51,6 +51,8 @@ public class iChunUtil
     public static final int requiredForgeRevision = 1;
     public static final int requiredForgeBuild = 1354;
 
+    public static final String modName = "iChunUtil";
+
     //MC version, bumped up every MC update.
     public static final int versionMC = 5;
     public static final String versionOfMC = "1.8.0";
@@ -59,7 +61,7 @@ public class iChunUtil
 
     private static boolean hasPostLoad = false;
 
-    public static Logger logger = Logger.createLogger("iChunUtil");
+    public static Logger logger = Logger.createLogger(modName);
 
     public static PacketChannel channel;
 
@@ -70,7 +72,7 @@ public class iChunUtil
     //Server's patron list. Client's is in TrailTicker
     public static ArrayList<PatronInfo> patronList = new ArrayList<PatronInfo>();
 
-    @Instance("iChunUtil")
+    @Instance(iChunUtil.modName)
     public static iChunUtil instance;
 
     @SidedProxy(clientSide = "us.ichun.mods.ichunutil.client.core.ClientProxy", serverSide = "us.ichun.mods.ichunutil.common.core.CommonProxy")
@@ -125,13 +127,13 @@ public class iChunUtil
         @Override
         public String getModId()
         {
-            return "ichunutil";
+            return iChunUtil.modName.toLowerCase();
         }
 
         @Override
         public String getModName()
         {
-            return "iChunUtil";
+            return iChunUtil.modName;
         }
 
         @Override
@@ -199,7 +201,7 @@ public class iChunUtil
 
         proxy.preInit();
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo("iChunUtil", versionOfMC, version, false));
+        ModVersionChecker.register_iChunMod(new ModVersionInfo(modName, versionOfMC, version, false));
     }
 
     @EventHandler
