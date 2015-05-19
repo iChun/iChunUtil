@@ -487,4 +487,10 @@ public abstract class ConfigBase
 
         }
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        return o.getClass() == this.getClass() && ((ConfigBase)o).getModName().equals(getModName());
+    }
 }
