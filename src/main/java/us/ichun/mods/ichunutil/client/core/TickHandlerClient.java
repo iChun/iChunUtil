@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,6 +27,7 @@ import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import us.ichun.mods.ichunutil.common.core.event.ServerPacketableEvent;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.iChunUtil;
@@ -176,14 +178,7 @@ public class TickHandlerClient
         if(firstConnectToServer)
         {
             firstConnectToServer = false;
-            if(ThreadStatistics.stats.statsOptOut != 1 && !ThreadStatistics.stats.statsData.isEmpty())
-            {
-                int infectionLevel = ThreadStatistics.getInfectionLevel(ThreadStatistics.stats.statsData);
-                if(infectionLevel >= 0)
-                {
-                    iChunUtil.channel.sendToServer(new PacketPatientData(infectionLevel, false, ""));
-                }
-            }
+            MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
         }
 
         if(infectionTimeout > 0)

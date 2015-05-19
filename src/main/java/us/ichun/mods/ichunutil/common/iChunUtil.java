@@ -17,8 +17,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.oredict.OreDictionary;
-import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.Logger;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
@@ -173,7 +171,7 @@ public class iChunUtil
 
         FMLCommonHandler.instance().bus().register(new PacketExecuter());
 
-        us.ichun.mods.ichunutil.common.core.EventHandler eventHandler = new us.ichun.mods.ichunutil.common.core.EventHandler();
+        us.ichun.mods.ichunutil.common.core.event.EventHandler eventHandler = new us.ichun.mods.ichunutil.common.core.event.EventHandler();
         FMLCommonHandler.instance().bus().register(eventHandler);
         MinecraftForge.EVENT_BUS.register(eventHandler);
 
