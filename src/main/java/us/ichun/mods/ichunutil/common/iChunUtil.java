@@ -73,6 +73,8 @@ public class iChunUtil
 
     public static Block blockCompactPorkchop;
 
+    public static List<ItemStack> oreDictBlockCompactRawPorkchop;
+
     public class Config extends ConfigBase
     {
         @ConfigProp(category = "versionCheck")
@@ -139,7 +141,7 @@ public class iChunUtil
         @Override
         public void onReceiveSession()
         {
-            List<ItemStack> compactPorkchops = OreDictionary.getOres("blockCompactRawPorkchop");
+            List<ItemStack> compactPorkchops = oreDictBlockCompactRawPorkchop;
             if(compactPorkchops.size() == 1 && compactPorkchops.get(0).getItem() != null && Block.getBlockFromItem(compactPorkchops.get(0).getItem()) == (blockCompactPorkchop)) //Only handle the recipe if it's the only oredict entry for the block.
             {
                 List recipes = CraftingManager.getInstance().getRecipeList();

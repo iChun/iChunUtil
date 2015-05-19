@@ -54,6 +54,7 @@ public class CommonProxy
 
     public void postInit()
     {
+        iChunUtil.oreDictBlockCompactRawPorkchop = OreDictionary.getOres("blockCompactRawPorkchop");
     }
 
     public GameProfileRepository createProfileRepo()
