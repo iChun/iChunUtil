@@ -29,6 +29,7 @@ ichunutil.config.cat.patreon.comment=Patreon related configs.
 ichunutil.config.prop.versionNotificationTypes.name=Update Notification Types
 ichunutil.config.prop.versionNotificationFrequency.name=Update Notification Frequency
 ichunutil.config.prop.enableStencils.name=Enable Stencils?
+ichunutil.config.prop.ignoreMCVersionCheck.name=Ignore the MC version check?
 ichunutil.config.prop.showPatronReward.name=Show Patron Reward
 ichunutil.config.prop.patronRewardType.name=Patron Reward Type
 ichunutil.config.prop.enableCompactPorkchop.name=Allow Compact Raw Porkchop?
@@ -36,6 +37,7 @@ ichunutil.config.prop.enableCompactPorkchop.name=Allow Compact Raw Porkchop?
 ichunutil.config.prop.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status (op or not).\n1 = Notify only server ops of updates (Clientside only mod updates will still show)\n2 = Allow client to notify themselves of updates.
 ichunutil.config.prop.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Once you connect to server\n1 = Once a day\n2 = Only once until newer updates.\n3 = Never (This just hides notifications. The mod will still check for updates and print out to the console).
 ichunutil.config.prop.enableStencils.comment=Set this to 0 if you're crashing when the game launches because you do not have stencils enabled.
+ichunutil.config.prop.ignoreMCVersionCheck.comment=Ignore the MC version check if there is a mismatch
 ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron reward to other players?
 ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout
 ichunutil.config.prop.enableCompactPorkchop.comment=Enable the Compact Raw Porkchop block recipe?
@@ -60,6 +62,8 @@ ichunutil.config.gui.hitKeys=Setting key... Holding SHIFT/CTRL/ALT are optional
 ichunutil.config.gui.setStringArray=Set String Array
 ichunutil.config.gui.setIntArray=Set Integer Array
 ichunutil.config.gui.setNestedIntArray=Set Nested Integer Array
+
+ichunutil.mccheck.error=You are running this version of iChunUtil on the wrong version of Minecraft! This may cause issues. You can disable this check in iChunUtil's config.
 
 element.minimize=Minimize
 element.expand=Expand

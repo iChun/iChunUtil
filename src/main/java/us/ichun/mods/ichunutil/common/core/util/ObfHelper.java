@@ -3,6 +3,10 @@ package us.ichun.mods.ichunutil.common.core.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.versioning.ArtifactVersion;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.Render;
@@ -45,6 +49,18 @@ public class ObfHelper
 
     public static void detectObfuscation()
     {
+        if(iChunUtil.config.ignoreMCVersionCheck == 0)
+        {
+            ArtifactVersion mcVer = new DefaultArtifactVersion(Loader.MC_VERSION);
+
+            ArtifactVersion current = new DefaultArtifactVersion(obfVersion);
+
+            if(mcVer.compareTo(current) != 0)
+            {
+                throw new RuntimeException(StatCollector.translateToLocal("ichunutil.mccheck.error"));
+            }
+        }
+
         obfuscation = true;
         try
         {

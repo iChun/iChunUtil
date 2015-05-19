@@ -249,8 +249,6 @@ public class RendererHelper
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    //TODO "Disabeld StencilBits by default, to prevent issues with intel cards. You must now opt-in to enabeling stencil bits by suppling the -Dforge.forceDisplayStencil=true flag."
-    //TODO find a way to detect/enable stencils in 1.8
     public static void renderTestStencil()
     {
         //Basic stencil test

@@ -102,6 +102,10 @@ public class iChunUtil
         @IntMinMax(min = 1, max = 2)
         public int patronRewardType = 1;
 
+        @ConfigProp
+        @IntBool
+        public int ignoreMCVersionCheck = 0;
+
         @ConfigProp(useSession = true, category = "block")
         @IntBool
         public int enableCompactPorkchop = 1;
