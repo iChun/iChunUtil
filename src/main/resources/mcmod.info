@@ -6,7 +6,7 @@
   "url" : "http://www.ichun.us/",
   "credits" : "",
   "authorList": [
-    "iChun", "Kihira"
+    "iChun"
   ],
   "description": "Shared library mod required by several of iChun's Mods.",
   "logoFile" : "",
@@ -14,7 +14,7 @@
   "parent" : "",
   "screenshots": [
   ],
-  "dependancies": [
+  "dependencies": [
     "Forge"
   ]
 }

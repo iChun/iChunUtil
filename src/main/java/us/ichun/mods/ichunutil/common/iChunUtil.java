@@ -115,7 +115,7 @@ public class iChunUtil
         @IntBool
         public int ignoreMCVersionCheck = 0;
 
-        @ConfigProp(useSession = true, category = "block")
+        @ConfigProp(category = "block", useSession = true)
         @IntBool
         public int enableCompactPorkchop = 1;
 

@@ -37,9 +37,7 @@ public class CommonProxy
     {
         EventCalendar.checkDate();
 
-        iChunUtil.blockCompactPorkchop = (new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop");
-
-        GameRegistry.registerBlock(iChunUtil.blockCompactPorkchop, "compactPorkchop");
+        iChunUtil.blockCompactPorkchop = GameRegistry.registerBlock((new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop"), "compactPorkchop");
 
         tickHandlerServer = new TickHandlerServer();
         FMLCommonHandler.instance().bus().register(tickHandlerServer);
