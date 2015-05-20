@@ -59,9 +59,9 @@ public class iChunUtil
 
     public static final String version = versionMC + ".4.0";
 
-    private static boolean hasPostLoad = false;
+    public static final Logger logger = Logger.createLogger(modName);
 
-    public static Logger logger = Logger.createLogger(modName);
+    private static boolean hasPostLoad = false;
 
     public static PacketChannel channel;
 
