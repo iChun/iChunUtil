@@ -319,7 +319,7 @@ public class ElementPropSetter extends Element
                         minmax[0] = minMax.min();
                         minmax[1] = minMax.max();
 
-                        element = new ElementNumberInput(parent, 0, 0, 40, 12, 0, "", 1, false, minmax[0], minmax[1], obj.field.getInt(conf));
+                        element = new ElementNumberInput(parent, 0, 0, 200, 12, 0, "", 1, false, minmax[0], minmax[1], obj.field.getInt(conf));
                     }
                     else if(obj.field.isAnnotationPresent(IntBool.class))
                     {

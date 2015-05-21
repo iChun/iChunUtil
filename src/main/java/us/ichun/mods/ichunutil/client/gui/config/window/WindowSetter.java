@@ -4,6 +4,7 @@ import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.gui.config.window.element.ElementPropSetter;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
 import us.ichun.mods.ichunutil.client.gui.window.element.Element;
+import us.ichun.mods.ichunutil.client.gui.window.element.ElementNumberInput;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 
 public class WindowSetter extends Window
@@ -31,6 +32,14 @@ public class WindowSetter extends Window
         height = workspace.height - 2;
 
         super.resized();
+
+        for(ElementPropSetter.Tree tree : props.trees)
+        {
+            if(tree.element != null)
+            {
+                tree.element.resized();
+            }
+        }
     }
 
     public void draw(int mouseX, int mouseY) //4 pixel border?

@@ -106,7 +106,8 @@ public class GuiConfigs extends IWorkspace
     {
         if(!needsRestart)
         {
-            windowConfigs.elements.add(new ElementToggle(windowConfigs, width - 16 - 10, height - 22, 16, 16, -100, true, 1, 1, "!", "ichun.config.gui.needsRestart", true));
+            windowConfigs.elements.add(new ElementToggle(windowConfigs, windowConfigs.width - 16 - 10, windowConfigs.height - 22, 16, 16, -100, true, 1, 1, "!", "ichunutil.config.gui.needsRestart", true));
+            windowConfigs.resized();
         }
         needsRestart = true;
     }

@@ -206,7 +206,8 @@ public abstract class IWorkspace extends GuiScreen
             {
                 GlStateManager.translate(0F, 0F, 20F * levels.size());
                 List<String> tips = Splitter.on("\n").splitToList(tooltip);
-                tips = new ArrayList<String>(tips);
+                List<String> tipss = Splitter.on("\\n").splitToList(tooltip);
+                tips = new ArrayList<String>(tipss.size() > tips.size() ? tipss : tips);
                 if(tips.size() == 1)
                 {
                     tips.add(StatCollector.translateToLocal(tips.get(0)));

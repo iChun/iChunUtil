@@ -60,7 +60,7 @@ public class ModVersionJsonGen
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("MobAmputation", versions);
         versions.put("1.8.0", "5.0.0");
-        versions.put("1.7.10", "4.0.0");
+        versions.put("1.7.10", "4.0.1");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
