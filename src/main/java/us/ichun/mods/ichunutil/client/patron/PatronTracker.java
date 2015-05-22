@@ -1,4 +1,4 @@
-package us.ichun.mods.ichunutil.client.voxel;
+package us.ichun.mods.ichunutil.client.patron;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,7 +8,7 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 
-public class TrailTracker
+public class PatronTracker
     implements IAdditionalTrackerInfo
 {
     public boolean canRender;
@@ -29,7 +29,7 @@ public class TrailTracker
             yawChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
 
             canRender = false;
-            for(PatronInfo info1 : iChunUtil.proxy.trailTicker.patronList)
+            for(PatronInfo info1 : iChunUtil.proxy.effectTicker.patronList)
             {
                 if(info1.id.equals(player.getGameProfile().getId().toString()) && info1.type == 1)
                 {

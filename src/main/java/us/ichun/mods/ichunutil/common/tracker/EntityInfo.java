@@ -73,7 +73,7 @@ public class EntityInfo
 
         height = tracked.height;
 
-        lastTick = tracked.getEntityWorld().getWorldTime();
+        lastTick = tracked.ticksExisted;
 
         for(IAdditionalTrackerInfo trackers : additionalInfo)
         {

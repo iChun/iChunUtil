@@ -1,4 +1,4 @@
-package us.ichun.mods.ichunutil.client.voxel;
+package us.ichun.mods.ichunutil.client.patron;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -121,7 +121,7 @@ public class ModelVoxel extends ModelBase
         }
     }
 
-    public void renderPlayer(EntityTrail trail, long time, int seedBase, ArrayList<EntityInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
+    public void renderPlayer(EntityPatronEffect trail, long time, int seedBase, ArrayList<EntityInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
     {
         GlStateManager.pushMatrix();
 
@@ -147,13 +147,13 @@ public class ModelVoxel extends ModelBase
 
             boolean canRender = true;
 
-            TrailTracker info1 = null;
+            PatronTracker info1 = null;
 
             for(IAdditionalTrackerInfo tracker : info.additionalInfo)
             {
-                if(tracker instanceof TrailTracker)
+                if(tracker instanceof PatronTracker)
                 {
-                    info1 = ((TrailTracker)tracker);
+                    info1 = ((PatronTracker)tracker);
                     canRender = info1.canRender;
                     break;
                 }

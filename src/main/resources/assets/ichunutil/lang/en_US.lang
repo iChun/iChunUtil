@@ -39,7 +39,7 @@ ichunutil.config.prop.versionNotificationFrequency.comment=How often will you be
 ichunutil.config.prop.enableStencils.comment=Set this to 0 if you're crashing when the game launches because you do not have stencils enabled.
 ichunutil.config.prop.ignoreMCVersionCheck.comment=Ignore the MC version check if there is a mismatch
 ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron reward to other players?
-ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout
+ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout\n3 = Ghost trails
 ichunutil.config.prop.enableCompactPorkchop.comment=Enable the Compact Raw Porkchop block recipe?
 
 ichunutilstats.config.cat.stats.name=Statistics

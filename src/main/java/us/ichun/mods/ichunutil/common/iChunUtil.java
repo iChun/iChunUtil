@@ -108,7 +108,7 @@ public class iChunUtil
         public int showPatronReward = 1;
 
         @ConfigProp(category = "patreon", hidden = true)
-        @IntMinMax(min = 1, max = 2)
+        @IntMinMax(min = 1, max = 3)
         public int patronRewardType = 1;
 
         @ConfigProp
@@ -141,7 +141,7 @@ public class iChunUtil
         {
             if(field.getName().equals("showPatronReward") || field.getName().equals("patronRewardType"))
             {
-                iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
+                iChunUtil.proxy.effectTicker.tellServerAsPatron = true;
             }
         }
 

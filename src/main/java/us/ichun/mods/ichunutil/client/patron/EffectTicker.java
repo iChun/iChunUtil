@@ -1,23 +1,21 @@
-package us.ichun.mods.ichunutil.client.voxel;
+package us.ichun.mods.ichunutil.client.patron;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
 import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.iChunUtil;
-import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class TrailTicker
+public class EffectTicker
 {
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event)
@@ -26,14 +24,14 @@ public class TrailTicker
         {
             this.renderTick = event.renderTickTime;
 
-            Iterator<Entry<String, EntityTrail>> iterator = streaks.entrySet().iterator();
+            Iterator<Entry<String, EntityPatronEffect>> iterator = streaks.entrySet().iterator();
 
             while(iterator.hasNext())
             {
-                Entry<String, EntityTrail> e = iterator.next();
+                Entry<String, EntityPatronEffect> e = iterator.next();
                 if(e.getValue().parent != null)
                 {
-                    EntityTrail streak = e.getValue();
+                    EntityPatronEffect streak = e.getValue();
                     if(e.getValue().parent.isDead)
                     {
                         streak.setDead();
@@ -60,11 +58,11 @@ public class TrailTicker
                 streaks.clear();
             }
 
-            Iterator<Entry<String, EntityTrail>> ite = streaks.entrySet().iterator();
+            Iterator<Entry<String, EntityPatronEffect>> ite = streaks.entrySet().iterator();
 
             while(ite.hasNext())
             {
-                Entry<String, EntityTrail> e = ite.next();
+                Entry<String, EntityPatronEffect> e = ite.next();
                 if(e.getValue().worldObj.provider.getDimensionId() != world.provider.getDimensionId() || (world.getWorldTime() - e.getValue().lastUpdate) > 10L)
                 {
                     e.getValue().setDead();
@@ -93,26 +91,26 @@ public class TrailTicker
 
             WorldClient world = Minecraft.getMinecraft().theWorld;
 
-            EntityTrail hat = streaks.get(player.getCommandSenderName());
+            EntityPatronEffect hat = streaks.get(player.getCommandSenderName());
             if(hat == null || hat.isDead)
             {
                 if(player.getCommandSenderName().equalsIgnoreCase(Minecraft.getMinecraft().thePlayer.getCommandSenderName()))
                 {
                     //Assume respawn
-                    for(Entry<String, EntityTrail> e : streaks.entrySet())
+                    for(Entry<String, EntityPatronEffect> e : streaks.entrySet())
                     {
                         e.getValue().setDead();
                     }
                 }
 
-                hat = new EntityTrail(world, player);
+                hat = new EntityPatronEffect(world, player);
                 streaks.put(player.getCommandSenderName(), hat);
                 world.spawnEntityInWorld(hat);
             }
         }
     }
 
-    public void updatePos(EntityTrail streak)
+    public void updatePos(EntityPatronEffect streak)
     {
         streak.lastTickPosX = streak.parent.lastTickPosX;
         streak.lastTickPosY = streak.parent.lastTickPosY;
@@ -131,7 +129,7 @@ public class TrailTicker
 
     public WorldClient worldInstance;
 
-    public HashMap<String, EntityTrail> streaks = new HashMap<String, EntityTrail>();
+    public HashMap<String, EntityPatronEffect> streaks = new HashMap<String, EntityPatronEffect>();
 
     public ArrayList<PatronInfo> patronList = new ArrayList<PatronInfo>();
 

@@ -26,12 +26,12 @@ public class PacketPatrons extends AbstractPacket
     @Override
     public void readFrom(ByteBuf buffer, Side side)
     {
-        iChunUtil.proxy.trailTicker.patronList.clear();
+        iChunUtil.proxy.effectTicker.patronList.clear();
         String s = ByteBufUtils.readUTF8String(buffer);
         while(!s.equals("##endPacket"))
         {
             int type = buffer.readInt();
-            iChunUtil.proxy.trailTicker.patronList.add((new PatronInfo(s)).setType(type));
+            iChunUtil.proxy.effectTicker.patronList.add((new PatronInfo(s)).setType(type));
             s = ByteBufUtils.readUTF8String(buffer);
         }
     }

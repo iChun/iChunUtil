@@ -1,17 +1,13 @@
-package us.ichun.mods.ichunutil.client.layer;
+package us.ichun.mods.ichunutil.client.patron;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import us.ichun.mods.ichunutil.client.model.ModelSnout;
-import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.core.util.EventCalendar;
@@ -19,12 +15,12 @@ import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 @SideOnly(Side.CLIENT)
-public class LayerSnout implements LayerRenderer
+public class LayerPatronEffect implements LayerRenderer
 {
     public ModelSnout modelSnout = new ModelSnout();
     public RenderPlayer parentRenderer;
 
-    public LayerSnout(RenderPlayer render)
+    public LayerPatronEffect(RenderPlayer render)
     {
         parentRenderer = render;
     }
@@ -32,29 +28,31 @@ public class LayerSnout implements LayerRenderer
     //func_177093_a(entity, limb stuff, limb stuff, partialTicks, f5, yaw stuff, pitch stuff, 0.0625F);
     public void doRenderLayer(EntityPlayer player, float f, float f1, float renderTick, float f2, float f3, float f4, float f5)
     {
+        EntityPlayer oriPlayer = player;
         if(iChunUtil.hasMorphMod)
         {
             EntityLivingBase ent = morph.api.Api.getMorphEntity(player.getCommandSenderName(), true);
             if(ent != null)
             {
-                if(!(ent instanceof EntityPlayer))
+                if(!(ent instanceof EntityPlayer) || morph.api.Api.morphProgress(player.getCommandSenderName(), true) < 1.0F)
                 {
                     return;
                 }
                 player = (EntityPlayer)ent;
             }
         }
-        boolean render = false;
+        PatronInfo info = null;
 
-        for(PatronInfo info1 : iChunUtil.proxy.trailTicker.patronList)
+        for(PatronInfo info1 : iChunUtil.proxy.effectTicker.patronList)
         {
-            if(info1.id.equals(player.getGameProfile().getId().toString()) && info1.type == 2)
+            if(info1.id.equals(oriPlayer.getGameProfile().getId().toString()))
             {
-                render = true;
+                info = info1;
                 break;
             }
         }
-        if(!player.isInvisible() && (EventCalendar.isAFDay() || render))
+
+        if(!player.isInvisible() && (EventCalendar.isAFDay() || info != null && info.type == 2)) //special casing for pig snout effect
         {
             parentRenderer.bindTexture(ResourceHelper.texPig);
 
@@ -72,6 +70,14 @@ public class LayerSnout implements LayerRenderer
 
             GlStateManager.popMatrix();
         }
+        //render other on-player patron rewards below here
+//        if(info != null)
+//        {
+//            switch(info.type)
+//            {
+//
+//            }
+//        }
     }
 
     public boolean shouldCombineTextures()

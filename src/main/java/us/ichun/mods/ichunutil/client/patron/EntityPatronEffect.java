@@ -1,4 +1,4 @@
-package us.ichun.mods.ichunutil.client.voxel;
+package us.ichun.mods.ichunutil.client.patron;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 @SideOnly(Side.CLIENT)
-public class EntityTrail extends Entity
+public class EntityPatronEffect extends Entity
 {
     public AbstractClientPlayer parent;
 
@@ -17,7 +17,7 @@ public class EntityTrail extends Entity
 
     public ModelVoxel model;
 
-    public EntityTrail(World par1World)
+    public EntityPatronEffect(World par1World)
     {
         super(par1World);
         setSize(0.1F, 0.1F);
@@ -29,7 +29,7 @@ public class EntityTrail extends Entity
         model = new ModelVoxel();
     }
 
-    public EntityTrail(World par1World, AbstractClientPlayer ent)
+    public EntityPatronEffect(World par1World, AbstractClientPlayer ent)
     {
         super(par1World);
         setSize(0.1F, 0.1F);
@@ -46,7 +46,7 @@ public class EntityTrail extends Entity
     public void onUpdate()
     {
         ticksExisted++;
-        if(parent == null || !parent.isEntityAlive() || parent.isChild() || iChunUtil.proxy.trailTicker.streaks.get(parent.getCommandSenderName()) != this)
+        if(parent == null || !parent.isEntityAlive() || parent.isChild() || iChunUtil.proxy.effectTicker.streaks.get(parent.getCommandSenderName()) != this)
         {
             setDead();
             return;

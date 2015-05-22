@@ -28,7 +28,7 @@ public class EventHandler
 
         if(iChunUtil.isPatron)
         {
-            iChunUtil.proxy.trailTicker.tellServerAsPatron = true;
+            iChunUtil.proxy.effectTicker.tellServerAsPatron = true;
         }
         iChunUtil.proxy.tickHandlerClient.firstConnectToServer = true;
     }

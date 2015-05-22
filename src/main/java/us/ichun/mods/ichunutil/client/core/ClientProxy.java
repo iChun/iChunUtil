@@ -17,13 +17,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
-import us.ichun.mods.ichunutil.client.layer.LayerSnout;
+import us.ichun.mods.ichunutil.client.patron.LayerPatronEffect;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.client.thread.ThreadGetPatrons;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
-import us.ichun.mods.ichunutil.client.voxel.EntityTrail;
-import us.ichun.mods.ichunutil.client.voxel.RenderVoxels;
-import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
+import us.ichun.mods.ichunutil.client.patron.EntityPatronEffect;
+import us.ichun.mods.ichunutil.client.patron.RenderPatronEffect;
+import us.ichun.mods.ichunutil.client.patron.EffectTicker;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
@@ -74,14 +74,14 @@ public class ClientProxy extends CommonProxy
 
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
 
-        trailTicker = new TrailTicker();
-        FMLCommonHandler.instance().bus().register(trailTicker);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTrail.class, new RenderVoxels());
+        effectTicker = new EffectTicker();
+        FMLCommonHandler.instance().bus().register(effectTicker);
+        RenderingRegistry.registerEntityRenderingHandler(EntityPatronEffect.class, new RenderPatronEffect());
 
         RenderPlayer renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"));
-        renderPlayer.addLayer(new LayerSnout(renderPlayer));
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
         renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"));
-        renderPlayer.addLayer(new LayerSnout(renderPlayer));
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
     }
 
     @Override

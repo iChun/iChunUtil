@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import us.ichun.mods.ichunutil.client.core.TickHandlerClient;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
-import us.ichun.mods.ichunutil.client.voxel.TrailTicker;
+import us.ichun.mods.ichunutil.client.patron.EffectTicker;
 import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
@@ -29,7 +29,7 @@ public class CommonProxy
 {
     public TickHandlerClient tickHandlerClient;
     public TickHandlerServer tickHandlerServer;
-    public TrailTicker trailTicker;
+    public EffectTicker effectTicker;
     public HashMap<String, String> versionChecker = new HashMap<String, String>();
     public HashMap<String, String> prevVerChecker = new HashMap<String, String>();
 

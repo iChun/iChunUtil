@@ -166,24 +166,26 @@ public class TickHandlerClient
             }
             e.getValue().tick();
         }
-        for(int i = trackedEntities.size() - 1; i >= 0; i--)
-        {
-            TrackerRegistry reg = trackedEntities.get(i);
-            if(!reg.update())
-            {
-                trackedEntities.remove(i);
-            }
-        }
-
         if(firstConnectToServer)
         {
             firstConnectToServer = false;
             MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
         }
-
         if(infectionTimeout > 0)
         {
             infectionTimeout--;
+        }
+
+        if(!mc.isGamePaused())
+        {
+            for(int i = trackedEntities.size() - 1; i >= 0; i--)
+            {
+                TrackerRegistry reg = trackedEntities.get(i);
+                if(!reg.update())
+                {
+                    trackedEntities.remove(i);
+                }
+            }
         }
     }
 
