@@ -7,6 +7,7 @@ import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
+import us.ichun.morph.api.MorphApi;
 
 public class PatronTracker
     implements IAdditionalTrackerInfo
@@ -44,15 +45,15 @@ public class PatronTracker
             }
             if(canRender && iChunUtil.hasMorphMod)
             {
-                if(morph.api.Api.hasMorph(player.getCommandSenderName(), true))
+                if(MorphApi.getApiImpl().hasMorph(player.getCommandSenderName(), true))
                 {
-                    if(morph.api.Api.morphProgress(player.getCommandSenderName(), true) < 1.0F || !(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer))
+                    if(MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), true) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer))
                     {
                         canRender = false;
                     }
-                    if(morph.api.Api.getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer)
+                    if(MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer)
                     {
-                        txLocation = ((AbstractClientPlayer)morph.api.Api.getMorphEntity(player.getCommandSenderName(), true)).getLocationSkin();
+                        txLocation = ((AbstractClientPlayer)MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true)).getLocationSkin();
                     }
                 }
             }
