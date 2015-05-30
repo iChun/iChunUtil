@@ -155,7 +155,10 @@ public class RendererHelper
     private static void renderQuad(WorldRenderer renderer, BakedQuad quad, int color)
     {
         renderer.addVertexData(quad.getVertexData());
-        renderer.putColor4(color);
+        if(quad instanceof net.minecraftforge.client.model.IColoredBakedQuad)
+            net.minecraftforge.client.ForgeHooksClient.putQuadColor(renderer, quad, color);
+        else
+            renderer.putColor4(color);
         putQuadNormal(renderer, quad);
     }
 
