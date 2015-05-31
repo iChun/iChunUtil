@@ -1,5 +1,6 @@
 package us.ichun.mods.ichunutil.common.core.event;
 
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -69,6 +70,15 @@ public class EventHandler
             {
                 conf.sendPlayerSession(event.player);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event)
+    {
+        if(event.world.isRemote)
+        {
+            iChunUtil.proxy.effectTicker.streaks.clear();
         }
     }
 }

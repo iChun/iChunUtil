@@ -3,6 +3,7 @@ package us.ichun.mods.ichunutil.client.patron;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,12 +53,6 @@ public class EffectTicker
         if(event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().theWorld != null)
         {
             WorldClient world = Minecraft.getMinecraft().theWorld;
-            if(worldInstance != world)
-            {
-                worldInstance = world;
-                streaks.clear();
-            }
-
             Iterator<Entry<String, EntityPatronEffect>> ite = streaks.entrySet().iterator();
 
             while(ite.hasNext())
@@ -126,8 +121,6 @@ public class EffectTicker
     }
 
     public float renderTick;
-
-    public WorldClient worldInstance;
 
     public HashMap<String, EntityPatronEffect> streaks = new HashMap<String, EntityPatronEffect>();
 
