@@ -2,18 +2,19 @@ package us.ichun.mods.ichunutil.client.model.itemblock;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelCreeper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
@@ -21,18 +22,18 @@ import net.minecraftforge.client.model.ISmartItemModel;
 import java.util.Collections;
 import java.util.List;
 
-public class ModelRendererWrapper implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel
+public class ModelBaseWrapper implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel
 {
     private static List<BakedQuad> dummyList = Collections.emptyList();
 
     //Cannot be null
-    private final IModelRenderer modelRenderer;
+    private final IModelBase modelBase; //an example of IModelBase can be found here https://gist.github.com/iChun/b6f3696a119365bbd7e4
 
     public boolean disableRender = false;
 
-    public ModelRendererWrapper(IModelRenderer renderer)
+    public ModelBaseWrapper(IModelBase renderer)
     {
-        modelRenderer = renderer;
+        modelBase = renderer;
     }
 
     @Override
@@ -44,13 +45,20 @@ public class ModelRendererWrapper implements IFlexibleBakedModel, ISmartBlockMod
     @Override
     public List<BakedQuad> getGeneralQuads()
     {
-        if(disableRender)
+        if(!disableRender)
         {
             Tessellator tessellator = Tessellator.getInstance();
             tessellator.draw();
 
-            modelRenderer.bindTexture();
-            modelRenderer.renderModel();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.5D, 0.5D, 0.5D);
+            GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+
+            bindTexture(modelBase.getTexture());
+            modelBase.renderModel();
+            rebindTexture();
+
+            GlStateManager.popMatrix();
 
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             worldrenderer.startDrawingQuads();
@@ -86,7 +94,7 @@ public class ModelRendererWrapper implements IFlexibleBakedModel, ISmartBlockMod
     @Override
     public ItemCameraTransforms getItemCameraTransforms()
     {
-        return modelRenderer.getCameraTransforms();
+        return modelBase.getCameraTransforms();
     }
 
     @Override
@@ -98,14 +106,27 @@ public class ModelRendererWrapper implements IFlexibleBakedModel, ISmartBlockMod
     @Override
     public IBakedModel handleBlockState(IBlockState state)
     {
-        modelRenderer.handleBlockState(state);
+        modelBase.handleBlockState(state);
         return this;
     }
 
     @Override
     public IBakedModel handleItemState(ItemStack stack)
     {
-        modelRenderer.handleItemState(stack);
+        modelBase.handleItemState(stack);
         return this;
+    }
+
+    public void bindTexture(ResourceLocation loc)
+    {
+        if(loc != null)
+        {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(loc);
+        }
+    }
+
+    protected void rebindTexture()
+    {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
     }
 }

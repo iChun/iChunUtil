@@ -12,6 +12,8 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
@@ -135,6 +137,16 @@ public class TickHandlerClient
                     reg.entityToTrack = event.player;
                 }
             }
+
+            ItemStack is = event.player.getCurrentEquippedItem();
+            if(is != null && !(event.player == Minecraft.getMinecraft().getRenderViewEntity() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) && isItemBowAnimationLocked(is.getItem()))
+            {
+                if(event.player.getItemInUseCount() <= 0)
+                {
+                    event.player.clearItemInUse();
+                    event.player.setItemInUse(is, Integer.MAX_VALUE);
+                }
+            }
         }
     }
 
@@ -219,6 +231,27 @@ public class TickHandlerClient
         return info;
     }
 
+    //Items registered here can never be allowed to use MC's default use timer.
+    public void registerBowAnimationLockedItem(Class<? extends Item>clz)
+    {
+        if(!bowAnimationLockedItems.contains(clz))
+        {
+            bowAnimationLockedItems.add(clz);
+        }
+    }
+
+    public boolean isItemBowAnimationLocked(Item item)
+    {
+        for(Class<? extends Item> clz : bowAnimationLockedItems)
+        {
+            if(clz.isInstance(item))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public GuiModUpdateNotification modUpdateNotification;
 
     public int ticks;
@@ -238,4 +271,6 @@ public class TickHandlerClient
     public boolean isFirstInfection = false;
 
     public ArrayList<TrackerRegistry> trackedEntities = new ArrayList<TrackerRegistry>();
+
+    public ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<Class<? extends Item>>();
 }
