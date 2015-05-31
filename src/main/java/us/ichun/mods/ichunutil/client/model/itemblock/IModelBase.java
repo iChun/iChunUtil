@@ -10,6 +10,7 @@ public interface IModelBase
 {
     public ResourceLocation getTexture(); //Return resourcelocation to the texture
     public void renderModel(); //To actually transform/scale and render the model
+    public void postRender();
     public ModelBase getModel();
     public ItemCameraTransforms getCameraTransforms();
     public void handleBlockState(IBlockState state);

@@ -22,25 +22,28 @@ public class PerspectiveAwareModelBaseWrapper extends ModelBaseWrapper implement
     @Override
     public Pair<IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
-        perspectiveAwareModelBase.handlePerspective(cameraTransformType);
+        Pair<IBakedModel, Matrix4f> pair = perspectiveAwareModelBase.handlePerspective(cameraTransformType, selfPair);
 
-        switch(cameraTransformType)//this is here since this model is Perspective aware, vanilla transforms aren't used.
+        if(perspectiveAwareModelBase.useVanillaCameraTransform())
         {
-            case FIRST_PERSON:
-                RenderItem.applyVanillaTransform(this.getItemCameraTransforms().firstPerson);
-                break;
-            case GUI:
-                RenderItem.applyVanillaTransform(this.getItemCameraTransforms().gui);
-                break;
-            case HEAD:
-                RenderItem.applyVanillaTransform(this.getItemCameraTransforms().head);
-                break;
-            case THIRD_PERSON:
-                RenderItem.applyVanillaTransform(this.getItemCameraTransforms().thirdPerson);
-                break;
-            default:
-                break;
+            switch(cameraTransformType)//this is here since this model is Perspective aware, vanilla transforms aren't used.
+            {
+                case FIRST_PERSON:
+                    RenderItem.applyVanillaTransform(this.getItemCameraTransforms().firstPerson);
+                    break;
+                case GUI:
+                    RenderItem.applyVanillaTransform(this.getItemCameraTransforms().gui);
+                    break;
+                case HEAD:
+                    RenderItem.applyVanillaTransform(this.getItemCameraTransforms().head);
+                    break;
+                case THIRD_PERSON:
+                    RenderItem.applyVanillaTransform(this.getItemCameraTransforms().thirdPerson);
+                    break;
+                default:
+                    break;
+            }
         }
-        return selfPair;
+        return pair;
     }
 }
