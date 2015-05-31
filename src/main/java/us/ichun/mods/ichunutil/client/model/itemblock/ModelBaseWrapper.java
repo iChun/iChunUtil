@@ -56,6 +56,7 @@ public class ModelBaseWrapper implements IFlexibleBakedModel, ISmartBlockModel, 
 
             bindTexture(modelBase.getTexture());
             modelBase.renderModel();
+            modelBase.postRender();
             rebindTexture();
 
             GlStateManager.popMatrix();
