@@ -22,7 +22,7 @@ public class ElementHoriSlider extends Element
         this(window, x, y, w, ID, igMin, title, "");
     }
 
-    public ElementHoriSlider(Window window, int x, int y, int w, int ID, boolean igMin, String title, String label)
+    public ElementHoriSlider(Window window, int x, int y, int w, int ID, boolean igMin, String title, String lab)
     {
         super(window, x, y, w, 12, ID, igMin);
 
@@ -30,6 +30,7 @@ public class ElementHoriSlider extends Element
         spacerL = x;
         spacerR = parent.width - x - width;
         tooltip = title;
+        label = lab;
     }
 
     @Override
