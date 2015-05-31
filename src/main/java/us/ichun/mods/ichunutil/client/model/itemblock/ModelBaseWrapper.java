@@ -131,3 +131,7 @@ public class ModelBaseWrapper implements IFlexibleBakedModel, ISmartBlockModel, 
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
     }
 }
+//This class was made by iChun. Remember to credit if you "steal" this :(
+
+
+//Heh.
