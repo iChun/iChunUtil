@@ -7,6 +7,7 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import us.ichun.mods.ichunutil.client.gui.Theme;
 import us.ichun.mods.ichunutil.client.gui.window.Window;
+import us.ichun.mods.ichunutil.client.gui.window.WindowTopDockBase;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.util.IOUtil;
@@ -509,7 +510,7 @@ public class ElementListTree extends Element
                             found = true;
                             break;
                         }
-                        if(mouseX >= window.posX && mouseX <= window.posX + window.getWidth() && mouseY >= window.posY && mouseY <= window.posY + window.getHeight())
+                        if(mouseX >= window.posX && mouseX <= window.posX + window.getWidth() && mouseY >= window.posY && mouseY <= window.posY + window.getHeight() && !(window instanceof WindowTopDockBase))
                         {
                             obstructed = true;
                             break;

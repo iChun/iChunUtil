@@ -22,5 +22,7 @@ public class CubeGroup
 
     public boolean hidden = false;
 
+    public ArrayList<String> metadata = new ArrayList<String>();
+
     public String identifier;
 }

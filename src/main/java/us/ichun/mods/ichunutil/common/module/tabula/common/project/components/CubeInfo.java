@@ -38,6 +38,8 @@ public class CubeInfo
 
     public boolean hidden = false;
 
+    public ArrayList<String> metadata = new ArrayList<String>();
+
     private ArrayList<CubeInfo> children = new ArrayList<CubeInfo>();
     public String parentIdentifier;
 

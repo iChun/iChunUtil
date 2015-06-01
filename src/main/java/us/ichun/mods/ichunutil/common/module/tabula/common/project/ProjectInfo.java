@@ -515,6 +515,15 @@ public class ProjectInfo
             else if(projVersion == 2)
             {
                 metadata = new ArrayList<String>();
+                for(CubeGroup group : cubeGroups)
+                {
+                    group.metadata = new ArrayList<String>();
+                }
+                ArrayList<CubeInfo> cubes = getAllCubes();
+                for(CubeInfo info : cubes)
+                {
+                    info.metadata = new ArrayList<String>();
+                }
             }
             projVersion++;
         }
