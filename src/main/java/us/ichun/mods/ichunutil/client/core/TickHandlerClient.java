@@ -1,6 +1,7 @@
 package us.ichun.mods.ichunutil.client.core;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiOptions;
@@ -27,12 +28,8 @@ import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
-import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.event.ServerPacketableEvent;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
-import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 import us.ichun.mods.ichunutil.common.tracker.TrackerRegistry;
@@ -55,6 +52,8 @@ public class TickHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase == TickEvent.Phase.START)
         {
+            renderTick = event.renderTickTime;
+
             if(screenWidth != mc.displayWidth || screenHeight != mc.displayHeight)
             {
                 screenWidth = mc.displayWidth;
@@ -63,6 +62,41 @@ public class TickHandlerClient
                 for(Framebuffer buffer : RendererHelper.frameBuffers)
                 {
                     buffer.createBindFramebuffer(screenWidth, screenHeight);
+                }
+            }
+
+            if(mc.thePlayer != null)
+            {
+                ItemStack currentInv = mc.thePlayer.getCurrentEquippedItem();
+                if(currentInv != null)
+                {
+                    if(isItemSwingProof(currentInv.getItem()))
+                    {
+                        mc.playerController.resetBlockRemoving();
+                        if(prevCurItem == mc.thePlayer.inventory.currentItem)
+                        {
+                            mc.entityRenderer.itemRenderer.equippedProgress = 1.0F;
+                            mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0F;
+                            mc.entityRenderer.itemRenderer.itemToRender = mc.thePlayer.inventory.getCurrentItem();
+                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.thePlayer.inventory.currentItem;
+                            if(!currentItemIsSwingProof)
+                            {
+                                handleSwingProofItemEquip(mc.thePlayer, currentInv);
+                            }
+                        }
+                        mc.thePlayer.isSwingInProgress = false;
+                        mc.thePlayer.swingProgressInt = 0;
+                        mc.thePlayer.swingProgress = 0;
+                    }
+                }
+                currentItemIsSwingProof = currentInv != null && isItemSwingProof(currentInv.getItem());
+                if(prevCurItem != mc.thePlayer.inventory.currentItem)
+                {
+                    if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgress >= 1.0F)
+                    {
+                        prevCurItem = mc.thePlayer.inventory.currentItem;
+                    }
+                    currentItemIsSwingProof = false;
                 }
             }
         }
@@ -231,7 +265,7 @@ public class TickHandlerClient
         return info;
     }
 
-    //Items registered here can never be allowed to use MC's default use timer.
+    //Items registered here can never be allowed to use MC's default "use timer".
     public void registerBowAnimationLockedItem(Class<? extends Item>clz)
     {
         if(!bowAnimationLockedItems.contains(clz))
@@ -252,9 +286,65 @@ public class TickHandlerClient
         return false;
     }
 
+    public void registerSwingProofItem(SwingProofHandler handler)
+    {
+        for(SwingProofHandler handler1 : swingProofItems)
+        {
+            if(handler1.clz.equals(handler.clz))
+            {
+                return;
+            }
+        }
+        swingProofItems.add(handler);
+    }
+
+    public boolean isItemSwingProof(Item item)
+    {
+        for(SwingProofHandler handler1 : swingProofItems)
+        {
+            if(handler1.clz.isInstance(item))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void handleSwingProofItemEquip(EntityPlayerSP player, ItemStack stack)
+    {
+        for(SwingProofHandler handler1 : swingProofItems)
+        {
+            if(handler1.clz.isInstance(stack.getItem()))
+            {
+                if(handler1.hnd != null)
+                {
+                    handler1.hnd.handleEquip(player, stack);
+                }
+                break;
+            }
+        }
+    }
+
+    public static class SwingProofHandler
+    {
+        public final Class<? extends Item> clz;
+        public final IItemEquippedHandler hnd;
+        public SwingProofHandler(Class<? extends Item> clz, IItemEquippedHandler hnd)
+        {
+            this.clz = clz;
+            this.hnd = hnd;
+        }
+
+        public interface IItemEquippedHandler
+        {
+            public void handleEquip(EntityPlayerSP player, ItemStack stack);
+        }
+    }
+
     public GuiModUpdateNotification modUpdateNotification;
 
     public int ticks;
+    public float renderTick;
 
     public boolean optionsKeyDown;
     public boolean mouseLeftDown;
@@ -273,4 +363,8 @@ public class TickHandlerClient
     public ArrayList<TrackerRegistry> trackedEntities = new ArrayList<TrackerRegistry>();
 
     public ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<Class<? extends Item>>();
+
+    public ArrayList<SwingProofHandler> swingProofItems = new ArrayList<SwingProofHandler>();
+    private int prevCurItem;
+    private boolean currentItemIsSwingProof;
 }
