@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream;
 public class ProjectInfo
 {
     public static final int IDENTIFIER_LENGTH = 20;
-    public static final int PROJ_VERSION = 3;
+    public static final int PROJ_VERSION = 4;
 
     public transient String identifier;
     public transient File saveFile;
@@ -515,6 +515,9 @@ public class ProjectInfo
             else if(projVersion == 2)
             {
                 metadata = new ArrayList<String>();
+            }
+            else if(projVersion == 3)
+            {
                 for(CubeGroup group : cubeGroups)
                 {
                     group.metadata = new ArrayList<String>();
