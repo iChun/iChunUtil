@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.lang3.RandomStringUtils;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedFallingBlockHandler;
 import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedFireballHandler;
@@ -14,6 +15,7 @@ import java.util.EnumMap;
 
 public class GrabHandler
 {
+    public String identifier;
     public final EntityLivingBase grabber;
     public final Entity grabbed;
     public float grabDistance;
@@ -22,6 +24,7 @@ public class GrabHandler
 
     public GrabHandler(EntityLivingBase grabber, Entity grabbed, float distance) //3.5F is a nice value for grab distance
     {
+        this.identifier = RandomStringUtils.randomAscii(20);
         this.grabber = grabber;
         this.grabbed = grabbed;
         this.grabDistance = distance;
@@ -50,6 +53,13 @@ public class GrabHandler
         grabbed.onGround = false;
         grabbed.isAirBorne = true;
         grabbed.timeUntilPortal = 5;
+        for(GrabbedEntityHandler handler : entityHandlers)
+        {
+            if(handler.eligible(grabbed))
+            {
+                handler.handle(this);
+            }
+        }
     }
 
     public void transfer(GrabHandler transfer)
@@ -64,7 +74,7 @@ public class GrabHandler
 
     public boolean shouldTerminate()
     {
-        return grabbed.isDead || grabber.isDead || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D; //if the enderman is >5D of grab distance, let go of it.
+        return grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D; //if the enderman is >5D of grab distance, let go of it.
     }
 
     public void terminate()
