@@ -368,7 +368,7 @@ public class EntityHelperBase
 
         double d1 = d;
         MovingObjectPosition mop = rayTrace(ent, d, renderTick);
-        Vec3 vec3d = ent.getPositionEyes(renderTick);
+        Vec3 vec3d = getEntityPositionEyes(ent, renderTick);
 
         if (mop != null)
         {
@@ -440,9 +440,24 @@ public class EntityHelperBase
         return mop;
     }
 
+    public static Vec3 getEntityPositionEyes(Entity ent, float partialTicks)
+    {
+        if (partialTicks == 1.0F)
+        {
+            return new Vec3(ent.posX, ent.posY + (double)ent.getEyeHeight(), ent.posZ);
+        }
+        else
+        {
+            double d0 = ent.prevPosX + (ent.posX - ent.prevPosX) * (double)partialTicks;
+            double d1 = ent.prevPosY + (ent.posY - ent.prevPosY) * (double)partialTicks + (double)ent.getEyeHeight();
+            double d2 = ent.prevPosZ + (ent.posZ - ent.prevPosZ) * (double)partialTicks;
+            return new Vec3(d0, d1, d2);
+        }
+    }
+
     public static MovingObjectPosition rayTrace(EntityLivingBase ent, double distance, float par3)
     {
-        Vec3 var4 = ent.getPositionEyes(par3);
+        Vec3 var4 = getEntityPositionEyes(ent, par3);
         Vec3 var5 = ent.getLook(par3);
         Vec3 var6 = var4.addVector(var5.xCoord * distance, var5.yCoord * distance, var5.zCoord * distance);
         return ent.worldObj.rayTraceBlocks(var4, var6, false, false, true);
@@ -719,7 +734,7 @@ public class EntityHelperBase
         ff = (ff / 0.26F) * -94F - 4F;
         //pitch check = mc.thePlayer.rotationPitch <= ff + 2.5F && mc.thePlayer.rotationPitch >= ff - 2.5F
         boolean pitchCheck = ent.rotationPitch <= ff + 2.5F && ent.rotationPitch >= ff - 2.5F;
-        Vec3 vec3d = ent.getPositionEyes(renderTick);
+        Vec3 vec3d = getEntityPositionEyes(ent, renderTick);
         Vec3 vec3d1 = ent.getLook(renderTick);
         Vec3 vec3d2 = vec3d.addVector(vec3d1.xCoord * 500D, vec3d1.yCoord * 500D, vec3d1.zCoord * 500D);
         boolean mopCheck = rayTrace(ent.worldObj, vec3d, vec3d2, true, false, goThroughTransparentBlocks, 500) == null;

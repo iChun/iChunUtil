@@ -21,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -30,6 +31,7 @@ import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.event.ServerPacketableEvent;
+import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
 import us.ichun.mods.ichunutil.common.tracker.TrackerRegistry;
@@ -232,6 +234,7 @@ public class TickHandlerClient
                     trackedEntities.remove(i);
                 }
             }
+            GrabHandler.tick(Side.CLIENT);
         }
     }
 

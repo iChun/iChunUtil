@@ -3,10 +3,13 @@ package us.ichun.mods.ichunutil.common.core;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
 import us.ichun.mods.ichunutil.common.core.util.EventCalendar;
+import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.HashMap;
@@ -20,6 +23,8 @@ public class TickHandlerServer
         if(event.phase.equals(TickEvent.Phase.END))
         {
             ticks++;
+
+            GrabHandler.tick(Side.SERVER);
         }
     }
 
