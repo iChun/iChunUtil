@@ -16,18 +16,31 @@ import java.util.EnumMap;
 public class GrabHandler
 {
     public String identifier;
-    public final EntityLivingBase grabber;
-    public final Entity grabbed;
+    public EntityLivingBase grabber;
+    public Entity grabbed;
+    public int grabberId;
+    public int grabbedId;
     public float grabDistance;
     public float yawTweak;
     public float pitchTweak;
+    public boolean forceTerminate;
 
     public GrabHandler(EntityLivingBase grabber, Entity grabbed, float distance) //3.5F is a nice value for grab distance
     {
         this.identifier = RandomStringUtils.randomAscii(20);
         this.grabber = grabber;
         this.grabbed = grabbed;
+        this.grabberId = grabber.getEntityId();
+        this.grabbedId = grabbed.getEntityId();
         this.grabDistance = distance;
+    }
+
+    public GrabHandler(String identifier, int grabberId, int grabbedId, float dist)
+    {
+        this.identifier = identifier;
+        this.grabberId = grabberId;
+        this.grabbedId = grabbedId;
+        this.grabDistance = dist;
     }
 
     public void update()
@@ -74,7 +87,7 @@ public class GrabHandler
 
     public boolean shouldTerminate()
     {
-        return grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D; //if the enderman is >5D of grab distance, let go of it.
+        return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D); //if the enderman is >5D of grab distance, let go of it.
     }
 
     public void terminate()
@@ -99,7 +112,7 @@ public class GrabHandler
                 handler.terminate();
                 ents.remove(i);
             }
-            else
+            else if(handler.grabber != null && handler.grabbed != null)
             {
                 handler.update();
             }
@@ -140,6 +153,18 @@ public class GrabHandler
             }
         }
         return handlers;
+    }
+
+    public static boolean hasHandlerType(EntityLivingBase grabber, Side side, Class<? extends GrabHandler> clz)
+    {
+        for(GrabHandler handler : getHandlers(grabber, side))
+        {
+            if(clz.isInstance(handler))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     //entity handlers section

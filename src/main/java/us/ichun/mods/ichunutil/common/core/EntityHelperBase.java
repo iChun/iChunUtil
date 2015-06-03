@@ -361,11 +361,6 @@ public class EntityHelperBase
 
     public static MovingObjectPosition getEntityLook(EntityLivingBase ent, double d, boolean ignoreEntities, float renderTick)
     {
-        if (ent == null)
-        {
-            return null;
-        }
-
         double d1 = d;
         MovingObjectPosition mop = rayTrace(ent, d, renderTick);
         Vec3 vec3d = getEntityPositionEyes(ent, renderTick);

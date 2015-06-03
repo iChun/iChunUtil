@@ -14,6 +14,7 @@ import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
+import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 public class EventHandler
@@ -43,6 +44,7 @@ public class EventHandler
             conf.resetSession();
         }
         iChunUtil.proxy.tickHandlerClient.trackedEntities.clear();
+        GrabHandler.grabbedEntities.get(Side.CLIENT).clear();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

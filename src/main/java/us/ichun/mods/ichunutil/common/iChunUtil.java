@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
@@ -31,6 +32,7 @@ import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionChecker;
 import us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionInfo;
 import us.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -232,6 +234,12 @@ public class iChunUtil
 //                        us.ichun.mods.ichunutil.common.core.EntityHelperBase.getUUIDFromUsernames("pahimar");
         //
 //        us.ichun.mods.ichunutil.common.core.updateChecker.ModVersionJsonGen.generate();
+    }
+
+    @EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event)
+    {
+        GrabHandler.grabbedEntities.get(Side.SERVER).clear();
     }
 
     public static boolean getPostLoad()
