@@ -426,7 +426,7 @@ public class ElementPropSetter extends Element
 
                 parent.workspace.elementSelected = element;
                 parent.workspace.elementSelected.selected();
-                parent.workspace.elementSelected.onClick(mouseX, mouseY, 0);
+                parent.workspace.elementSelected.onClick(mouseX, mouseY - (int)scrollHeight, 0);
 
                 if(clz.equals(KeyBind.class))
                 {
@@ -642,7 +642,7 @@ public class ElementPropSetter extends Element
                 element.posX = x;
                 element.posY = y;
                 element.width = w;
-                element.draw(mouseX, mouseY, realBorder || selected);
+                element.draw(mouseX, mouseY - (int)scrollHeight, realBorder || selected);
             }
             return null;
         }

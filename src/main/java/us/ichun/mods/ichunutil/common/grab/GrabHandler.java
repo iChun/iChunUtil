@@ -197,14 +197,19 @@ public class GrabHandler
 
     public static boolean hasHandlerType(EntityLivingBase grabber, Side side, Class<? extends GrabHandler> clz)
     {
+        return getFirstHandler(grabber, side, clz) != null;
+    }
+
+    public static GrabHandler getFirstHandler(EntityLivingBase grabber, Side side, Class<? extends GrabHandler> clz)
+    {
         for(GrabHandler handler : getHandlers(grabber, side))
         {
             if(clz.isInstance(handler))
             {
-                return true;
+                return handler;
             }
         }
-        return false;
+        return null;
     }
 
     //entity handlers section
