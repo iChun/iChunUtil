@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+@SuppressWarnings("deprecation")
 public interface IModelBase
 {
     public ResourceLocation getTexture(); //Return resourcelocation to the texture

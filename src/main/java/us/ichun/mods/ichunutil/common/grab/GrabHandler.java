@@ -138,21 +138,21 @@ public class GrabHandler
         for(int i = ents.size() - 1; i >= 0; i--)
         {
             GrabHandler handler = ents.get(i);
-            if(handler.shouldTerminate())
+            if(handler.grabber != null && handler.grabbed != null)
             {
-                handler.terminate();
-                ents.remove(i);
-            }
-            else
-            {
-                if(handler.grabber != null && handler.grabbed != null)
+                if(handler.shouldTerminate())
                 {
-                    handler.update();
+                    handler.terminate();
+                    ents.remove(i);
                 }
                 else
                 {
-                    handler.getIDs();
+                    handler.update();
                 }
+            }
+            else
+            {
+                handler.getIDs();
             }
         }
     }
