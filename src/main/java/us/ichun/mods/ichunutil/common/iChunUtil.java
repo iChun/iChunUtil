@@ -120,6 +120,10 @@ public class iChunUtil
         @ConfigProp(category = "block", useSession = true)
         @IntBool
         public int enableCompactPorkchop = 1;
+        
+        @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+        @IntBool
+        public int playStartupSound = 0;
 
         public Config(File file)
         {
