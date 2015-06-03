@@ -1,10 +1,13 @@
 package us.ichun.mods.ichunutil.common.grab;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedFallingBlockHandler;
@@ -24,6 +27,9 @@ public class GrabHandler
     public float yawTweak;
     public float pitchTweak;
     public boolean forceTerminate;
+    public int time;
+
+    //TODO move grabbed stuff through dimensions too
 
     public GrabHandler(EntityLivingBase grabber, Entity grabbed, float distance) //3.5F is a nice value for grab distance
     {
@@ -45,6 +51,8 @@ public class GrabHandler
 
     public void update()
     {
+        time++;
+
         Vec3 pos = EntityHelperBase.getEntityPositionEyes(grabber, 1.0F);
         grabber.rotationYawHead += yawTweak;
         grabber.rotationPitch += pitchTweak;
@@ -90,8 +98,31 @@ public class GrabHandler
         return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D); //if the enderman is >5D of grab distance, let go of it.
     }
 
+    public boolean canSendAcrossDimensions()
+    {
+        return true;
+    }
+
     public void terminate()
     {
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void getIDs()
+    {
+        WorldClient client = Minecraft.getMinecraft().theWorld;
+        if(grabber == null)
+        {
+            Entity ent = client.getEntityByID(grabberId);
+            if(ent instanceof EntityLivingBase)
+            {
+                grabber = (EntityLivingBase)ent;
+            }
+        }
+        if(grabbed == null)
+        {
+            grabbed = client.getEntityByID(grabbedId);
+        }
     }
 
     //grabbed entities and their handlers
@@ -112,9 +143,16 @@ public class GrabHandler
                 handler.terminate();
                 ents.remove(i);
             }
-            else if(handler.grabber != null && handler.grabbed != null)
+            else
             {
-                handler.update();
+                if(handler.grabber != null && handler.grabbed != null)
+                {
+                    handler.update();
+                }
+                else
+                {
+                    handler.getIDs();
+                }
             }
         }
     }
@@ -125,18 +163,20 @@ public class GrabHandler
         ents.add(base);
     }
 
-    public static void release(EntityLivingBase grabber, Side side)
+    public static GrabHandler release(EntityLivingBase grabber, Side side, Class<? extends GrabHandler> clz)
     {
         ArrayList<GrabHandler> ents = grabbedEntities.get(side);
         for(int i = ents.size() - 1; i >= 0; i--)
         {
             GrabHandler handler = ents.get(i);
-            if(handler.grabber == grabber)
+            if(handler.grabber == grabber && clz.isInstance(handler))
             {
                 handler.terminate();
                 ents.remove(i);
+                return handler;
             }
         }
+        return null;
     }
 
     public static ArrayList<GrabHandler> getHandlers(EntityLivingBase grabber, Side side)

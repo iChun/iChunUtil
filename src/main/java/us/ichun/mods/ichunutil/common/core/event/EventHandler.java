@@ -81,6 +81,7 @@ public class EventHandler
         if(event.world.isRemote)
         {
             iChunUtil.proxy.effectTicker.streaks.clear();
+            GrabHandler.grabbedEntities.get(Side.CLIENT).clear();
         }
     }
 }
