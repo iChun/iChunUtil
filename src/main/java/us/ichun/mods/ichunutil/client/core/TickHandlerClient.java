@@ -85,6 +85,15 @@ public class TickHandlerClient
                             {
                                 handleSwingProofItemEquip(mc.thePlayer, currentInv);
                             }
+
+                            if(mc.ingameGUI.remainingHighlightTicks == 0)
+                            {
+                                hasShownItemName = true;
+                            }
+                            if(hasShownItemName)
+                            {
+                                mc.ingameGUI.remainingHighlightTicks = 0;
+                            }
                         }
                         mc.thePlayer.isSwingInProgress = false;
                         mc.thePlayer.swingProgressInt = 0;
@@ -99,6 +108,7 @@ public class TickHandlerClient
                         prevCurItem = mc.thePlayer.inventory.currentItem;
                     }
                     currentItemIsSwingProof = false;
+                    hasShownItemName = false;
                 }
             }
         }
@@ -268,6 +278,11 @@ public class TickHandlerClient
         return info;
     }
 
+    public void nudgeHand(float mag)
+    {
+        Minecraft.getMinecraft().thePlayer.renderArmPitch += mag;
+    }
+
     //Items registered here can never be allowed to use MC's default "use timer".
     public void registerBowAnimationLockedItem(Class<? extends Item>clz)
     {
@@ -341,6 +356,7 @@ public class TickHandlerClient
         public interface IItemEquippedHandler
         {
             public void handleEquip(EntityPlayerSP player, ItemStack stack);
+            public boolean hideName();
         }
     }
 
@@ -370,4 +386,5 @@ public class TickHandlerClient
     public ArrayList<SwingProofHandler> swingProofItems = new ArrayList<SwingProofHandler>();
     private int prevCurItem;
     private boolean currentItemIsSwingProof;
+    private boolean hasShownItemName;
 }
