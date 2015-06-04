@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
+import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedEntityBlockHandler;
 import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedFallingBlockHandler;
 import us.ichun.mods.ichunutil.common.grab.handlers.GrabbedFireballHandler;
 
@@ -28,8 +29,6 @@ public class GrabHandler
     public float pitchTweak;
     public boolean forceTerminate;
     public int time;
-
-    //TODO move grabbed stuff through dimensions too
 
     public GrabHandler(EntityLivingBase grabber, Entity grabbed, float distance) //3.5F is a nice value for grab distance
     {
@@ -95,7 +94,7 @@ public class GrabHandler
 
     public boolean shouldTerminate()
     {
-        return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed instanceof EntityEnderman && grabbed.getDistanceToEntity(grabber) > grabDistance + 5D); //if the enderman is >5D of grab distance, let go of it.
+        return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed.getDistanceToEntity(grabber) > grabDistance + (grabToleranceTillTeleport() * 1.25D)); //if the enderman is >5D of grab distance, let go of it.
     }
 
     public boolean canSendAcrossDimensions()
@@ -212,11 +211,26 @@ public class GrabHandler
         return null;
     }
 
+    public static boolean isGrabbed(Entity grabbed, Side side)
+    {
+        ArrayList<GrabHandler> ents = grabbedEntities.get(side);
+        for(int i = ents.size() - 1; i >= 0; i--)
+        {
+            GrabHandler handler = ents.get(i);
+            if(handler.grabbed == grabbed)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //entity handlers section
 
     private static ArrayList<GrabbedEntityHandler> entityHandlers = new ArrayList<GrabbedEntityHandler>() {{
         add(new GrabbedFireballHandler());
         add(new GrabbedFallingBlockHandler());
+        add(new GrabbedEntityBlockHandler());
     }};
 
     public static interface GrabbedEntityHandler

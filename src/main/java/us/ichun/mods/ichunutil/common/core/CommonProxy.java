@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -13,12 +14,10 @@ import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.patron.EffectTicker;
 import us.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import us.ichun.mods.ichunutil.common.core.network.ChannelHandler;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketSession;
-import us.ichun.mods.ichunutil.common.core.packet.mod.PacketShowPatronReward;
+import us.ichun.mods.ichunutil.common.core.packet.mod.*;
 import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
 import us.ichun.mods.ichunutil.common.core.util.EventCalendar;
+import us.ichun.mods.ichunutil.common.entity.EntityBlock;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.server.MinecraftServer;
@@ -42,7 +41,11 @@ public class CommonProxy
         tickHandlerServer = new TickHandlerServer();
         FMLCommonHandler.instance().bus().register(tickHandlerServer);
 
-        iChunUtil.channel = ChannelHandler.getChannelHandlers(iChunUtil.modName, PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class);
+        iChunUtil.channel = ChannelHandler.getChannelHandlers(iChunUtil.modName, PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class,
+                PacketRequestBlockEntityData.class, PacketBlockEntityData.class
+        );
+
+        EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
     }
 
     public void init()

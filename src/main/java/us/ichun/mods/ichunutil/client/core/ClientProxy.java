@@ -22,12 +22,14 @@ import us.ichun.mods.ichunutil.client.patron.EntityPatronEffect;
 import us.ichun.mods.ichunutil.client.patron.LayerPatronEffect;
 import us.ichun.mods.ichunutil.client.patron.RenderPatronEffect;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
+import us.ichun.mods.ichunutil.client.render.entity.RenderBlock;
 import us.ichun.mods.ichunutil.client.thread.ThreadGetPatrons;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.CommonProxy;
 import us.ichun.mods.ichunutil.common.core.EntityHelperBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import us.ichun.mods.ichunutil.common.entity.EntityBlock;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.io.File;
@@ -77,6 +79,7 @@ public class ClientProxy extends CommonProxy
         effectTicker = new EffectTicker();
         FMLCommonHandler.instance().bus().register(effectTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityPatronEffect.class, new RenderPatronEffect());
+        RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new RenderBlock());
 
         RenderPlayer renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"));
         renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
