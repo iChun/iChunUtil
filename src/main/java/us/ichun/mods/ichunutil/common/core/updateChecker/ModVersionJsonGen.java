@@ -18,12 +18,13 @@ public class ModVersionJsonGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Grinder", versions);
+        versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("BackTools", versions);
-        versions.put("1.8.0", "5.0.0");
+        versions.put("1.8.0", "5.1.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
@@ -40,6 +41,10 @@ public class ModVersionJsonGen
         map.put("HatStand", versions);
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
+
+        versions = new TreeMap<String, String>(Ordering.natural());
+        map.put("GravityGun", versions);
+        versions.put("1.8.0", "5.0.0");
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("GuiltTrip", versions);
@@ -103,16 +108,18 @@ public class ModVersionJsonGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Tabula", versions);
-        versions.put("1.8.0", "5.0.0");
+        versions.put("1.8.0", "5.1.0");
         versions.put("1.7.10", "4.1.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Torched", versions);
+        versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("TrailMix", versions);
+        versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.2");
 
