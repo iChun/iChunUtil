@@ -63,10 +63,10 @@ public class GrabHandler
         float distTolerance = grabToleranceTillTeleport();
         if(distTolerance > 0.0F && grabbed.getDistance(grabPos.xCoord, grabPos.yCoord, grabPos.zCoord) > distTolerance) //if grabber is too far from
         {
-            grabbed.lastTickPosX = grabbed.prevPosX = grabber.posX;
-            grabbed.lastTickPosY = grabbed.prevPosY = grabber.posY;
-            grabbed.lastTickPosZ = grabbed.prevPosZ = grabber.posZ;
-            grabbed.setPosition(grabbed.posX, grabbed.posY, grabbed.posZ);
+            grabbed.lastTickPosX = grabbed.prevPosX = grabbed.posX = grabber.posX;
+            grabbed.lastTickPosY = grabbed.prevPosY = grabbed.posY = grabber.posY;
+            grabbed.lastTickPosZ = grabbed.prevPosZ = grabbed.posZ = grabber.posZ;
+            grabbed.setLocationAndAngles(grabbed.posX, grabbed.posY, grabbed.posZ, grabbed.rotationYaw, grabbed.rotationPitch);
         }
         EntityHelperBase.setVelocity(grabbed, (grabPos.xCoord - grabbed.posX), (grabPos.yCoord - ((grabbed.getEntityBoundingBox().minY + grabbed.getEntityBoundingBox().maxY) / 2D)), (grabPos.zCoord - grabbed.posZ));
         grabbed.fallDistance = -(float)(grabbed.motionY * grabbed.motionY);
@@ -112,10 +112,17 @@ public class GrabHandler
         WorldClient client = Minecraft.getMinecraft().theWorld;
         if(grabber == null)
         {
-            Entity ent = client.getEntityByID(grabberId);
-            if(ent instanceof EntityLivingBase)
+            if(grabberId == -1)
             {
-                grabber = (EntityLivingBase)ent;
+                grabber = Minecraft.getMinecraft().thePlayer;
+            }
+            else
+            {
+                Entity ent = client.getEntityByID(grabberId);
+                if(ent instanceof EntityLivingBase)
+                {
+                    grabber = (EntityLivingBase)ent;
+                }
             }
         }
         if(grabbed == null)
@@ -130,6 +137,8 @@ public class GrabHandler
         put(Side.SERVER, new ArrayList<GrabHandler>());
         put(Side.CLIENT, new ArrayList<GrabHandler>());
     }};
+
+    public static ArrayList<Integer> dimensionalEntities = new ArrayList<Integer>();
 
     public static void tick(Side side)
     {

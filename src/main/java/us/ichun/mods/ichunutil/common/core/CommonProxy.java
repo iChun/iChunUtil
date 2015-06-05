@@ -42,7 +42,7 @@ public class CommonProxy
         FMLCommonHandler.instance().bus().register(tickHandlerServer);
 
         iChunUtil.channel = ChannelHandler.getChannelHandlers(iChunUtil.modName, PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class,
-                PacketRequestBlockEntityData.class, PacketBlockEntityData.class
+                PacketRequestBlockEntityData.class, PacketBlockEntityData.class, PacketNewGrabbedEntityId.class
         );
 
         EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);

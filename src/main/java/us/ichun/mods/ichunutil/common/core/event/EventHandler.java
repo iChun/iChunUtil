@@ -1,5 +1,6 @@
 package us.ichun.mods.ichunutil.common.core.event;
 
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -11,11 +12,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import us.ichun.mods.ichunutil.common.core.packet.mod.PacketNewGrabbedEntityId;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatientData;
 import us.ichun.mods.ichunutil.common.core.packet.mod.PacketPatrons;
 import us.ichun.mods.ichunutil.common.core.updateChecker.PacketModsList;
 import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.iChunUtil;
+
+import java.util.ArrayList;
 
 public class EventHandler
 {
@@ -75,13 +79,74 @@ public class EventHandler
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
+    {
+        ArrayList<GrabHandler> handlers = GrabHandler.getHandlers(event.player, Side.SERVER);
+        for(int i = handlers.size() - 1; i >= 0; i--)
+        {
+            GrabHandler handler = handlers.get(i);
+            if(handler.canSendAcrossDimensions())
+            {
+                GrabHandler.dimensionalEntities.add(handler.grabbed.getEntityId());
+                handler.grabbed.getEntityData().setInteger("Grabbed-ID", handler.grabbed.getEntityId());
+                handler.grabbed.travelToDimension(event.player.dimension);
+                handler.update();
+            }
+            else
+            {
+                handler.terminate();
+                handlers.remove(i);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntitySpawn(EntityJoinWorldEvent event)
+    {
+        if(!event.entity.worldObj.isRemote && event.entity.getEntityData().hasKey("Grabbed-ID"))
+        {
+            Integer x = event.entity.getEntityData().getInteger("Grabbed-ID");
+            if(event.entity.getEntityId() != x)
+            {
+                for(int i = GrabHandler.dimensionalEntities.size() - 1; i >= 0; i--)
+                {
+                    if(GrabHandler.dimensionalEntities.get(i).equals(x))
+                    {
+                        GrabHandler.dimensionalEntities.remove(i);
+                        for(GrabHandler handler : GrabHandler.grabbedEntities.get(Side.SERVER))
+                        {
+                            if(handler.grabbed.getEntityId() == x)
+                            {
+                                handler.grabbed = event.entity;
+                                iChunUtil.channel.sendToAll(new PacketNewGrabbedEntityId(true, x, event.entity.getEntityId()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
         if(event.world.isRemote)
         {
             iChunUtil.proxy.effectTicker.streaks.clear();
-            GrabHandler.grabbedEntities.get(Side.CLIENT).clear();
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event)
+    {
+        if(event.world.isRemote)
+        {
+            for(GrabHandler handler : GrabHandler.grabbedEntities.get(Side.CLIENT))
+            {
+                handler.grabber = null;
+                handler.grabbed = null;
+            }
         }
     }
 }

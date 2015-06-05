@@ -28,6 +28,7 @@ import us.ichun.mods.ichunutil.common.iChunUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class RendererHelper
@@ -166,6 +167,107 @@ public class RendererHelper
     {
         Vec3i vec3i = quad.getFace().getDirectionVec();
         renderer.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
+    }
+
+    public static void renderLighting(double x, double y, double z, int randSeed, int bends, int spread, double heightOfBend, int layerCount, double layerSize, float intensity, int clr)
+    {
+        float r = (clr >> 16 & 0xff) / 255F;
+        float g = (clr >> 8 & 0xff) / 255F;
+        float b = (clr & 0xff) / 255F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        double[] adouble = new double[bends];
+        double[] adouble1 = new double[bends];
+        double d3 = 0.0D;
+        double d4 = 0.0D;
+        Random random = new Random(randSeed);
+
+        for(int i = bends - 1; i >= 0; --i)
+        {
+            adouble[i] = d3;
+            adouble1[i] = d4;
+            d3 += (double)(random.nextInt((spread * 2) + 1) - spread);
+            d4 += (double)(random.nextInt((spread * 2) + 1) - spread);
+        }
+
+        for(int layers = 0; layers < layerCount; ++layers)
+        {
+            Random random1 = new Random(randSeed);
+
+            int k = bends - 1;
+            int l = 0;
+
+            double d5 = 0D;
+            double d6 = 0D;
+
+            for(int i1 = k; i1 >= l; --i1)
+            {
+                double d7 = d5;
+                double d8 = d6;
+
+                d5 += (double)(random1.nextInt((spread * 2) + 1) - spread);
+                d6 += (double)(random1.nextInt((spread * 2) + 1) - spread);
+
+                if(i1 == l)
+                {
+                    d5 = 0D;
+                    d6 = 0D;
+                }
+
+                worldrenderer.startDrawing(5);
+                worldrenderer.setColorRGBA_F(r * intensity, g * intensity, b * intensity, 0.3F);
+                double d9 = 0.1D + (double)layers * layerSize;
+
+                d9 *= (double)i1 * 0.1D + 0.5D;
+
+                double d10 = 0.1D + (double)layers * layerSize;
+
+                d10 *= (double)(i1 - 1) * 0.1D + 0.5D;
+
+                for(int j1 = 0; j1 < 5; ++j1)
+                {
+                    double d11 = x + 0.5D - d9;
+                    double d12 = z + 0.5D - d9;
+
+                    if(j1 == 1 || j1 == 2)
+                    {
+                        d11 += d9 * 2.0D;
+                    }
+
+                    if(j1 == 2 || j1 == 3)
+                    {
+                        d12 += d9 * 2.0D;
+                    }
+
+                    double d13 = x + 0.5D - d10;
+                    double d14 = z + 0.5D - d10;
+
+                    if(j1 == 1 || j1 == 2)
+                    {
+                        d13 += d10 * 2.0D;
+                    }
+
+                    if(j1 == 2 || j1 == 3)
+                    {
+                        d14 += d10 * 2.0D;
+                    }
+
+                    worldrenderer.addVertex(d13 + d5, y + (double)(i1 * heightOfBend), d14 + d6);
+                    worldrenderer.addVertex(d11 + d7, y + (double)((i1 + 1) * heightOfBend), d12 + d8);
+                }
+
+                tessellator.draw();
+            }
+        }
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
     }
 
     public static void setColorFromInt(int color) {

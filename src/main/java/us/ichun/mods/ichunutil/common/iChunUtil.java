@@ -240,6 +240,7 @@ public class iChunUtil
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         GrabHandler.grabbedEntities.get(Side.SERVER).clear();
+        GrabHandler.dimensionalEntities.clear();
     }
 
     public static boolean getPostLoad()
