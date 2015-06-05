@@ -48,8 +48,6 @@ public class RenderBlock extends Render
         {
             return;
         }
-        bindTexture(TextureMap.locationBlocksTexture);
-
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
 
@@ -80,12 +78,15 @@ public class RenderBlock extends Render
                         IBlockState iblockstate = entBlock.blocks[ii][jj][kk];
                         Block block = iblockstate.getBlock();
 
+                        GlStateManager.pushMatrix();
+                        GlStateManager.translate(-ii, -jj, -kk);
+
                         if (iblockstate != world.getBlockState(blockpos) && block.getRenderType() != -1)
                         {
                             if (block.getRenderType() == 3)
                             {
-                                GlStateManager.pushMatrix();
-                                GlStateManager.translate(-ii, -jj, -kk);
+                                bindTexture(TextureMap.locationBlocksTexture);
+
                                 Tessellator tessellator = Tessellator.getInstance();
                                 WorldRenderer worldrenderer = tessellator.getWorldRenderer();
                                 worldrenderer.startDrawingQuads();
@@ -99,7 +100,6 @@ public class RenderBlock extends Render
                                 blockrendererdispatcher.getBlockModelRenderer().renderModel(world, ibakedmodel, iblockstate, blockpos, worldrenderer, false);
                                 worldrenderer.setTranslation(0.0D, 0.0D, 0.0D);
                                 tessellator.draw();
-                                GlStateManager.popMatrix();
                             }
                         }
                         if(entBlock.tileEntityNBTs[ii][jj][kk] != null && block.hasTileEntity(iblockstate))
@@ -126,6 +126,8 @@ public class RenderBlock extends Render
                                 }
                             }
                         }
+
+                        GlStateManager.popMatrix();
                     }
                 }
             }
