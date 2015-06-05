@@ -149,6 +149,48 @@ public class EntityBlock extends Entity
     }
 
     @Override
+    public void setSize(float width, float height)
+    {
+        float f2 = this.width;
+        this.width = width;
+        this.height = height;
+        if(blocks == null)
+        {
+            this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY, this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double)this.width, this.getEntityBoundingBox().minY + (double)this.height, this.getEntityBoundingBox().minZ + (double)this.width));
+        }
+        else
+        {
+            this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY, this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double)(blocks.length - 0.05F), this.getEntityBoundingBox().minY + (double)(blocks[0].length - 0.05F), this.getEntityBoundingBox().minZ + (double)(blocks[0][0].length - 0.05F)));
+        }
+
+        if (this.width > f2 && !this.firstUpdate && !this.worldObj.isRemote)
+        {
+            this.moveEntity((double)(f2 - this.width), 0.0D, (double)(f2 - this.width));
+        }
+    }
+
+    @Override
+    public void setPosition(double x, double y, double z)
+    {
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
+        if(blocks == null)
+        {
+            float f = this.width / 2.0F;
+            float f1 = this.height;
+            this.setEntityBoundingBox(new AxisAlignedBB(x - (double)f, y, z - (double)f, x + (double)f, y + (double)f1, z + (double)f));
+        }
+        else
+        {
+            float fx = (blocks.length - 0.05F) / 2.0F;
+            float f1 = (blocks[0].length - 0.05F);
+            float fz = (blocks[0][0].length - 0.05F) / 2.0F;
+            this.setEntityBoundingBox(new AxisAlignedBB(x - (double)fx, y, z - (double)fz, x + (double)fx, y + (double)f1, z + (double)fz));
+        }
+    }
+
+    @Override
     protected void entityInit()
     {
         dataWatcher.addObject(18, rand.nextFloat() * (2F * maxRotFac) - maxRotFac); //rotFactor Yaw
@@ -212,7 +254,7 @@ public class EntityBlock extends Entity
 
         timeExisting++;
 
-        if(!worldObj.isRemote && posY < -100D)
+        if(!worldObj.isRemote && posY < -500D)
         {
             setDead();
             return;
@@ -239,11 +281,11 @@ public class EntityBlock extends Entity
             rotPitch += getRotFacPitch();
         }
 
-        motionY -= 0.04D;
-
         prevMotionX = motionX;
         prevMotionY = motionY;
         prevMotionZ = motionZ;
+
+        motionY -= 0.06D;
 
         moveEntity(motionX, motionY, motionZ);
 
@@ -313,14 +355,14 @@ public class EntityBlock extends Entity
 
             for(int i = 0; i < blocks.length; i++)
             {
-                for(int j = 0; j < blocks[i].length; j++)
+                for(int j = blocks[i].length - 1; j >= 0; j--)
                 {
                     for(int k = 0; k < blocks[i][j].length; k++)
                     {
                         if(blocks[i][j][k] != null)
                         {
-                            BlockPos pos = new BlockPos(posX - ((width + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - ((width + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
-                            if(!worldObj.setBlockState(pos, blocks[i][j][k]) && canDropItems)
+                            BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
+                            if(!worldObj.setBlockState(pos, blocks[i][j][k], 2) && canDropItems)
                             {
                                 blocks[i][j][k].getBlock().dropBlockAsItem(worldObj, pos, blocks[i][j][k], 0);
 
@@ -344,12 +386,12 @@ public class EntityBlock extends Entity
                                     te.writeToNBT(nbttagcompound);
                                     Iterator iterator = tileEntityNBTs[i][j][k].getKeySet().iterator();
 
-                                    while (iterator.hasNext())
+                                    while(iterator.hasNext())
                                     {
                                         String s = (String)iterator.next();
                                         NBTBase nbtbase = tileEntityNBTs[i][j][k].getTag(s);
 
-                                        if (!s.equals("x") && !s.equals("y") && !s.equals("z"))
+                                        if(!s.equals("x") && !s.equals("y") && !s.equals("z"))
                                         {
                                             nbttagcompound.setTag(s, nbtbase.copy());
                                         }
@@ -363,7 +405,21 @@ public class EntityBlock extends Entity
                     }
                 }
             }
-       }
+            for(int i = 0; i < blocks.length; i++)
+            {
+                for(int j = blocks[i].length - 1; j >= 0; j--)
+                {
+                    for(int k = 0; k < blocks[i][j].length; k++)
+                    {
+                        if(blocks[i][j][k] != null)
+                        {
+                            BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
+                            worldObj.notifyNeighborsRespectDebug(pos, Blocks.air);
+                        }
+                    }
+                }
+            }
+        }
 
         motionX *= 0.95D;
         motionY *= 0.95D;
