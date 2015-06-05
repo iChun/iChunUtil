@@ -579,7 +579,7 @@ public class ElementPropSetter extends Element
                         if(oldVal != val)
                         {
                             ConfigProp propInfo1 = propInfo.field.getAnnotation(ConfigProp.class);
-                            if(!propInfo1.changeable())
+                            if(!propInfo1.changeable() || propInfo1.useSession())
                             {
                                 ((GuiConfigs)parent.workspace).needsRestart();
                             }
@@ -594,7 +594,7 @@ public class ElementPropSetter extends Element
                         if(!newText.equals(oldText))
                         {
                             ConfigProp propInfo1 = propInfo.field.getAnnotation(ConfigProp.class);
-                            if(!propInfo1.changeable())
+                            if(!propInfo1.changeable() || propInfo1.useSession())
                             {
                                 ((GuiConfigs)parent.workspace).needsRestart();
                             }
@@ -612,7 +612,7 @@ public class ElementPropSetter extends Element
                             if(val != clr.getColour())
                             {
                                 ConfigProp propInfo1 = propInfo.field.getAnnotation(ConfigProp.class);
-                                if(!propInfo1.changeable())
+                                if(!propInfo1.changeable() || propInfo1.useSession())
                                 {
                                     ((GuiConfigs)parent.workspace).needsRestart();
                                 }

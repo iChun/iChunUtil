@@ -83,7 +83,7 @@ public class WindowSetKeyBind extends Window
                         KeyBind bind = (KeyBind)prop.field.get(config);
 
                         ConfigProp propInfo = prop.field.getAnnotation(ConfigProp.class);
-                        if(!propInfo.changeable())
+                        if(!propInfo.changeable() || propInfo.useSession())
                         {
                             parent.needsRestart();
                         }

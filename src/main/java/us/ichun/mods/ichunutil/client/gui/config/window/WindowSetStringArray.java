@@ -94,7 +94,7 @@ public class WindowSetStringArray extends Window
                 }
 
                 ConfigProp propInfo = prop.field.getAnnotation(ConfigProp.class);
-                if(!propInfo.changeable())
+                if(!propInfo.changeable() || propInfo.useSession())
                 {
                     parent.needsRestart();
                 }

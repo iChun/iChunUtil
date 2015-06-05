@@ -51,6 +51,7 @@ public class EventHandler
         GrabHandler.grabbedEntities.get(Side.CLIENT).clear();
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onServerPacketable(ServerPacketableEvent event)
     {
