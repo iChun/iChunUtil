@@ -1,49 +1,43 @@
 package us.ichun.mods.ichunutil.common.module.tabula.client.model;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+import org.lwjgl.util.glu.Sphere;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GLAllocation;
 
 public class ModelRotationPoint extends ModelBase
 {
-    public ModelRenderer cube1;
-    public ModelRenderer cube2;
-    public ModelRenderer cube3;
+	private Sphere sphere = new Sphere();
+	private int sphereID;
+	
+	public ModelRotationPoint()
+	{
+		this(0.05F, 32, 32);
+	}
 
-    public ModelRotationPoint()
-    {
-        float size = 1;
-        cube1 = new ModelRenderer(this, 0, 0);
-        cube1.addBox(-(size / 2), -(size / 2), -(size / 2), (int)size, (int)size, (int)size);
-        cube1.rotateAngleX = (float)Math.toRadians(45F);
-        cube2 = new ModelRenderer(this, 0, 0);
-        cube2.addBox(-(size / 2), -(size / 2), -(size / 2), (int)size, (int)size, (int)size);
-        cube2.rotateAngleY = (float)Math.toRadians(45F);
-        cube3 = new ModelRenderer(this, 0, 0);
-        cube3.addBox(-(size / 2), -(size / 2), -(size / 2), (int)size, (int)size, (int)size);
-        cube3.rotateAngleZ = (float)Math.toRadians(45F);
-    }
+	public ModelRotationPoint(float radius, int slices, int stacks)
+	{
+		this.sphere.setDrawStyle(GLU.GLU_FILL);
+		this.sphere.setNormals(GLU.GLU_SMOOTH);
+		this.sphere.setOrientation(GLU.GLU_OUTSIDE);
+		this.sphereID = GL11.glGenLists(1);
+		GL11.glNewList(this.sphereID, GL11.GL_COMPILE);
+		GL11.glTranslatef( -radius, -radius, -radius);
+		// GlStateManager.bindTexture(Color.CYAN.getRGB());
+		this.sphere.draw(radius, 32, 32);
+		GL11.glEndList();
+	}
 
-    public void render(float f5)
-    {
-        cube1.render(f5);
-        cube2.render(f5);
-        cube3.render(f5);
-    }
+	public void destroy()
+	{
+		GL11.glDeleteLists(this.sphereID, 1);
+	}
 
-    public void destroy()
-    {
-        if(cube1.compiled)
-        {
-            GLAllocation.deleteDisplayLists(cube1.displayList);
-        }
-        if(cube2.compiled)
-        {
-            GLAllocation.deleteDisplayLists(cube2.displayList);
-        }
-        if(cube3.compiled)
-        {
-            GLAllocation.deleteDisplayLists(cube3.displayList);
-        }
-    }
+	public void render(float f5)
+	{
+		GL11.glPushMatrix();
+		GL11.glTranslatef(f5, f5, f5);
+		GL11.glCallList(this.sphereID);
+		GL11.glPopMatrix();
+	}
 }
