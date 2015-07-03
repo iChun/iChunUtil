@@ -9,32 +9,32 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelRotationPoint extends ModelBase
 {
-	private Sphere sphere = new Sphere();
 	private int sphereID;
-	
+
 	public ModelRotationPoint()
 	{
 		this(0.05F, 32, 32);
 	}
-
+	
 	public ModelRotationPoint(float radius, int slices, int stacks)
 	{
-		this.sphere.setDrawStyle(GLU.GLU_FILL);
-		this.sphere.setNormals(GLU.GLU_SMOOTH);
-		this.sphere.setOrientation(GLU.GLU_OUTSIDE);
+		Sphere sphere = new Sphere();
+		sphere.setDrawStyle(GLU.GLU_FILL);
+		sphere.setNormals(GLU.GLU_SMOOTH);
+		sphere.setOrientation(GLU.GLU_OUTSIDE);
 		this.sphereID = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(this.sphereID, GL11.GL_COMPILE);
 		GlStateManager.translate( -radius, -radius, -radius);
 		// GlStateManager.bindTexture(Color.CYAN.getRGB());
-		this.sphere.draw(radius, 32, 32);
+		sphere.draw(radius, 32, 32);
 		GL11.glEndList();
 	}
-
+	
 	public void destroy()
 	{
 		GLAllocation.deleteDisplayLists(this.sphereID);
 	}
-
+	
 	public void render(float f5)
 	{
 		GlStateManager.pushMatrix();
