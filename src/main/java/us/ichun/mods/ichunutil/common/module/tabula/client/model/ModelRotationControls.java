@@ -2,6 +2,8 @@ package us.ichun.mods.ichunutil.common.module.tabula.client.model;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * ModelRotationControls - Distjubo (re-)Created using his brain 4.1.0 (You may
@@ -10,7 +12,7 @@ import net.minecraft.client.model.ModelBase;
 public class ModelRotationControls extends ModelBase
 {
 	private int torusID;
-
+	
 	public ModelRotationControls()
 	{
 		// TODO are those really the numbers we want to have?
@@ -18,7 +20,7 @@ public class ModelRotationControls extends ModelBase
 		// more rings
 		this(0.5F, 0.05F, 32, 4);
 	}
-	
+
 	/**
 	 * Generates a new model for a torus (donut-shape).
 	 *
@@ -33,10 +35,10 @@ public class ModelRotationControls extends ModelBase
 	 */
 	private ModelRotationControls(float R, float r, int N, int n)
 	{
-		this.torusID = GL11.glGenLists(1);
+		this.torusID = GLAllocation.generateDisplayLists(1);
 		// Create that donut!
 		GL11.glNewList(this.torusID, GL11.GL_COMPILE);
-		GL11.glTranslatef( -r, -r, -r);
+		GlStateManager.translate( -r, -r, -r);
 		float rr = 1.5f*r;
 		double dv = 2*Math.PI/n;
 		double dw = 2*Math.PI/N;
@@ -58,17 +60,18 @@ public class ModelRotationControls extends ModelBase
 		}
 		GL11.glEndList();
 	}
-	
+
 	public void destroy()
 	{
-		GL11.glDeleteLists(this.torusID, 1);
+		GLAllocation.deleteDisplayLists(this.torusID);
 	}
-	
+
 	public void render(float f5)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef(f5, f5, f5);
-		GL11.glCallList(this.torusID);
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(f5, f5, f5);
+		// Call the list instead of rendering it every single time
+		GlStateManager.callList(this.torusID);
+		GlStateManager.popMatrix();
 	}
 }
