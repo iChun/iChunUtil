@@ -1,6 +1,8 @@
 package us.ichun.mods.ichunutil.common.core.config.types;
 
-import scala.Int;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Colour
 {
@@ -53,5 +55,17 @@ public class Colour
         r = (clr >> 16 & 0xff);
         g = (clr >> 8 & 0xff);
         b = (clr & 0xff);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setColourToCurrent()
+    {
+        setColourToCurrent(255);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setColourToCurrent(int alpha)
+    {
+        GlStateManager.color((float)r / 255F, (float)g / 255F, (float)b / 255F, (float)alpha / 255F);
     }
 }

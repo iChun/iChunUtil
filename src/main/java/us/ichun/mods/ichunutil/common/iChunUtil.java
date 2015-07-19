@@ -59,7 +59,7 @@ public class iChunUtil
     public static final int versionMC = 5;
     public static final String versionOfMC = "1.8.0";
 
-    public static final String version = versionMC + ".4.0";
+    public static final String version = versionMC + ".5.0";
 
     public static final Logger logger = Logger.createLogger(modName);
 
