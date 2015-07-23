@@ -210,7 +210,7 @@ public class ElementPropSetter extends Element
             {
                 if(tree.element != null)
                 {
-                    tree.element.mouseScroll(mouseX, mouseY, k);
+                    tree.element.mouseScroll(mouseX, mouseY - scrollHeight, k);
                     saveTimeout = 10;
                 }
                 reacted = true;
@@ -324,6 +324,10 @@ public class ElementPropSetter extends Element
                     else if(obj.field.isAnnotationPresent(IntBool.class))
                     {
                         element = new ElementToggle(parent, 0, 0, 0, 12, 0, false, 0, 0, "gui.yes", null, obj.field.getInt(conf) == 1);
+                    }
+                    else
+                    {
+                        element = new ElementNumberInput(parent, 0, 0, 200, 12, 0, "", 1, false, minmax[0], minmax[1], obj.field.getInt(conf));
                     }
                 }
                 else if(clz.equals(Colour.class))
