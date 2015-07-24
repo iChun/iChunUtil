@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
+import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -1016,5 +1017,28 @@ public class EntityHelperBase
         NBTTagCompound persistentTag = getPlayerPersistentData(player).getCompoundTag(name);
         getPlayerPersistentData(player).setTag(name, persistentTag);
         return persistentTag;
+    }
+
+    public static float healthScale;
+    public static int statusBarTime;
+    public static String bossName;
+    public static boolean hasColorModifier;
+
+    @SideOnly(Side.CLIENT)
+    public static void storeBossStatus()
+    {
+        healthScale = BossStatus.healthScale;
+        statusBarTime = BossStatus.statusBarTime;
+        bossName = BossStatus.bossName;
+        hasColorModifier = BossStatus.hasColorModifier;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void restoreBossStatus()
+    {
+        BossStatus.healthScale = healthScale;
+        BossStatus.statusBarTime = statusBarTime;
+        BossStatus.bossName = bossName;
+        BossStatus.hasColorModifier = hasColorModifier;
     }
 }

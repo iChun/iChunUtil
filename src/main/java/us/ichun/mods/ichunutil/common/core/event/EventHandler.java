@@ -1,5 +1,7 @@
 package us.ichun.mods.ichunutil.common.core.event;
 
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -23,6 +25,17 @@ import java.util.ArrayList;
 
 public class EventHandler
 {
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post event)
+    {
+        if(!iChunUtil.hasShownFirstGui)
+        {
+            iChunUtil.hasShownFirstGui = true;
+            MinecraftForge.EVENT_BUS.post(new RendererSafeCompatibilityEvent());
+        }
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onClientConnection(FMLNetworkEvent.ClientConnectedToServerEvent event)

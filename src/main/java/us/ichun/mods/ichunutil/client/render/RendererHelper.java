@@ -322,6 +322,139 @@ public class RendererHelper
         GlStateManager.enableTexture2D();
     }
 
+    public static void drawGradientOnScreen(int downLeft, int downRight, int upLeft, int upRight, double posX, double posY, double width, double height, double zLevel)
+    {
+        if(width <= 0 || height <= 0)
+        {
+            return;
+        }
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.startDrawingQuads();
+
+        int alpha = (downLeft >> 24 & 0xff);
+        int r = (downLeft >> 16 & 0xff);
+        int g = (downLeft >> 8 & 0xff);
+        int b = (downLeft & 0xff);
+        worldrenderer.setColorRGBA(r, g, b, alpha);
+        worldrenderer.addVertex(posX		  , posY + height	, zLevel);
+
+        alpha = (downRight >> 24 & 0xff);
+        r = (downRight >> 16 & 0xff);
+        g = (downRight >> 8 & 0xff);
+        b = (downRight & 0xff);
+        worldrenderer.setColorRGBA(r, g, b, alpha);
+        worldrenderer.addVertex(posX + width, posY + height	, zLevel);
+
+        alpha = (upRight >> 24 & 0xff);
+        r = (upRight >> 16 & 0xff);
+        g = (upRight >> 8 & 0xff);
+        b = (upRight & 0xff);
+        worldrenderer.setColorRGBA(r, g, b, alpha);
+        worldrenderer.addVertex(posX + width, posY			, zLevel);
+
+        alpha = (upLeft >> 24 & 0xff);
+        r = (upLeft >> 16 & 0xff);
+        g = (upLeft >> 8 & 0xff);
+        b = (upLeft & 0xff);
+        worldrenderer.setColorRGBA(r, g, b, alpha);
+        worldrenderer.addVertex(posX		  , posY			, zLevel);
+
+        tessellator.draw();
+
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+    }
+
+    public static void drawHueStripOnScreen(int alpha, double posX, double posY, double width, double height, double zLevel)
+    {
+        if(width <= 0 || height <= 0)
+        {
+            return;
+        }
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
+        double sHeight = height / 6D;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(255, 0, 255, alpha);
+        worldrenderer.addVertex(posX, posY + sHeight, zLevel);
+        worldrenderer.addVertex(posX + width, posY + sHeight, zLevel);
+        worldrenderer.setColorRGBA(255, 0, 0, alpha);
+        worldrenderer.addVertex(posX + width, posY, zLevel);
+        worldrenderer.addVertex(posX, posY, zLevel);
+        tessellator.draw();
+
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(0, 0, 255, alpha);
+        worldrenderer.addVertex(posX, posY + (sHeight * 2D), zLevel);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 2D), zLevel);
+        worldrenderer.setColorRGBA(255, 0, 255, alpha);
+        worldrenderer.addVertex(posX + width, posY + sHeight , zLevel);
+        worldrenderer.addVertex(posX, posY + sHeight , zLevel);
+        tessellator.draw();
+
+
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(0, 255, 255, alpha);
+        worldrenderer.addVertex(posX, posY + (sHeight * 3D), zLevel);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 3D), zLevel);
+        worldrenderer.setColorRGBA(0, 0, 255, alpha);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 2D) , zLevel);
+        worldrenderer.addVertex(posX, posY + (sHeight * 2D) , zLevel);
+        tessellator.draw();
+
+
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(0, 255, 0, alpha);
+        worldrenderer.addVertex(posX, posY + (sHeight * 4D), zLevel);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 4D), zLevel);
+        worldrenderer.setColorRGBA(0, 255, 255, alpha);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 3D) , zLevel);
+        worldrenderer.addVertex(posX, posY + (sHeight * 3D) , zLevel);
+        tessellator.draw();
+
+
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(255, 255, 0, alpha);
+        worldrenderer.addVertex(posX, posY + (sHeight * 5D), zLevel);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 5D), zLevel);
+        worldrenderer.setColorRGBA(0, 255, 0, alpha);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 4D) , zLevel);
+        worldrenderer.addVertex(posX, posY + (sHeight * 4D) , zLevel);
+        tessellator.draw();
+
+
+        worldrenderer.startDrawingQuads();
+        worldrenderer.setColorRGBA(255, 0, 0, alpha);
+        worldrenderer.addVertex(posX, posY + (sHeight * 6D), zLevel);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 6D), zLevel);
+        worldrenderer.setColorRGBA(255, 255, 0, alpha);
+        worldrenderer.addVertex(posX + width, posY + (sHeight * 5D) , zLevel);
+        worldrenderer.addVertex(posX, posY + (sHeight * 5D) , zLevel);
+        tessellator.draw();
+
+
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+    }
+
     public static void startGlScissor(int x, int y, int width, int height)//From top left corner, like how Minecraft guis are. Don't forget to call endGlScissor after rendering
     {
         Minecraft mc = Minecraft.getMinecraft();

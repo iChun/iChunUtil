@@ -64,6 +64,7 @@ public class iChunUtil
     public static final Logger logger = Logger.createLogger(modName);
 
     private static boolean hasPostLoad = false;
+    public static boolean hasShownFirstGui = false;
 
     public static PacketChannel channel;
 

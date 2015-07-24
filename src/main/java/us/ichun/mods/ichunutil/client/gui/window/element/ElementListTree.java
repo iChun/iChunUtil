@@ -276,6 +276,10 @@ public class ElementListTree extends Element
         {
             selectedIdentifier = ((String)obj);
         }
+        else if(obj instanceof IIdentifiable)
+        {
+            selectedIdentifier = ((IIdentifiable)obj).getIdentifier();
+        }
     }
 
     public void rightClickElement(Object obj)
