@@ -13,7 +13,9 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
+import us.ichun.mods.ichunutil.common.core.event.RenderAtPlayerEvent;
 import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
@@ -45,9 +47,13 @@ public class RenderPatronEffect extends Render
     {
         EntityPatronEffect sd = (EntityPatronEffect)entity;
 
-        if(sd.parent.getCommandSenderName().equals(Minecraft.getMinecraft().getRenderViewEntity().getCommandSenderName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+        if(sd.parent.getCommandSenderName().equals(Minecraft.getMinecraft().getRenderViewEntity().getCommandSenderName()))
         {
-            return;
+            MinecraftForge.EVENT_BUS.post(new RenderAtPlayerEvent(d, d1, d2, f1));
+            if(Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+            {
+                return;
+            }
         }
 
         GlStateManager.pushMatrix();
