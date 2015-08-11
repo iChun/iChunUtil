@@ -75,7 +75,7 @@ public class ModVersionJsonGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Morph", versions);
-        versions.put("1.7.10", "0.9.1");
+        versions.put("1.7.10", "0.9.2");
         versions.put("1.7", "0.8.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
