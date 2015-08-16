@@ -39,6 +39,7 @@ public abstract class ConfigBase
     public HashMap<Field, Object> session = new HashMap<Field, Object>();
     public HashMap<Field, Object> configScreen = new HashMap<Field, Object>();
 
+    //TODO remove the bloody unhide param. It's annoying af.
     public ConfigBase(File file, String... unhide)
     {
         config = new Configuration(file);

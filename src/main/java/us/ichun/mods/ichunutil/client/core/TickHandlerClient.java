@@ -220,7 +220,7 @@ public class TickHandlerClient
         {
             if(e.getValue().keyIndex != e.getKey().getKeyCode())
             {
-                e.setValue(new KeyBind(e.getKey().getKeyCode(), false, false, false, false));
+                e.setValue(new KeyBind(e.getKey().getKeyCode()));
             }
             e.getValue().tick();
         }

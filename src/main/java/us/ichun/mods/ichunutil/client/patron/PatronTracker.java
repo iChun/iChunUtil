@@ -3,11 +3,12 @@ package us.ichun.mods.ichunutil.client.patron;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
 import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 import us.ichun.mods.ichunutil.common.tracker.EntityInfo;
 import us.ichun.mods.ichunutil.common.tracker.IAdditionalTrackerInfo;
-import us.ichun.morph.api.MorphApi;
+import me.ichun.mods.morph.api.MorphApi;
 
 public class PatronTracker
     implements IAdditionalTrackerInfo
@@ -45,15 +46,15 @@ public class PatronTracker
             }
             if(canRender && iChunUtil.hasMorphMod)
             {
-                if(MorphApi.getApiImpl().hasMorph(player.getCommandSenderName(), true))
+                if(MorphApi.getApiImpl().hasMorph(player.getCommandSenderName(), Side.CLIENT))
                 {
-                    if(MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), true) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer))
+                    if(MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getCommandSenderName(), Side.CLIENT) instanceof AbstractClientPlayer))
                     {
                         canRender = false;
                     }
-                    if(MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true) instanceof AbstractClientPlayer)
+                    if(MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getCommandSenderName(), Side.CLIENT) instanceof AbstractClientPlayer)
                     {
-                        txLocation = ((AbstractClientPlayer)MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true)).getLocationSkin();
+                        txLocation = ((AbstractClientPlayer)MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getCommandSenderName(), Side.CLIENT)).getLocationSkin();
                     }
                 }
             }

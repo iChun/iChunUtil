@@ -36,6 +36,11 @@ public class KeyBind
         ignoreHold = ignoreHolding;
     }
 
+    public KeyBind(int index)
+    {
+        this(index, false, false, false, false);
+    }
+
     public void tick()
     {
         if(canPulse)

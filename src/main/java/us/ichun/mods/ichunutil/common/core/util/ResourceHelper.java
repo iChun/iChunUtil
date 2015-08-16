@@ -15,6 +15,7 @@ public class ResourceHelper
     public static final ResourceLocation texGlint = new ResourceLocation("textures/misc/enchanted_item_glint.png");
     public static final ResourceLocation texBeaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
     public static final ResourceLocation texEnderCrystal = new ResourceLocation("textures/entity/endercrystal/endercrystal.png");
+    public static final ResourceLocation texGuiInventory = new ResourceLocation("textures/gui/container/inventory.png");
 
     private static File fileAssets;
     private static File fileMods;

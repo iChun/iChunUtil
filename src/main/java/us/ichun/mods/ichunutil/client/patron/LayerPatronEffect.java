@@ -13,7 +13,7 @@ import us.ichun.mods.ichunutil.common.core.patron.PatronInfo;
 import us.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import us.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import us.ichun.mods.ichunutil.common.iChunUtil;
-import us.ichun.morph.api.MorphApi;
+import me.ichun.mods.morph.api.MorphApi;
 
 @SideOnly(Side.CLIENT)
 public class LayerPatronEffect implements LayerRenderer
@@ -32,10 +32,10 @@ public class LayerPatronEffect implements LayerRenderer
         EntityPlayer oriPlayer = player;
         if(iChunUtil.hasMorphMod)
         {
-            EntityLivingBase ent = MorphApi.getApiImpl().getMorphEntity(player.getCommandSenderName(), true);
+            EntityLivingBase ent = MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getCommandSenderName(), Side.CLIENT);
             if(ent != null)
             {
-                if(!(ent instanceof EntityPlayer) || MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), true) < 1.0F)
+                if(!(ent instanceof EntityPlayer) || MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), Side.CLIENT) < 1.0F)
                 {
                     return;
                 }
