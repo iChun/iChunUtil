@@ -1,5 +1,6 @@
 package us.ichun.mods.ichunutil.common.core.network;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,7 +11,7 @@ public class PacketExecuter
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START)
+        if(event.phase == TickEvent.Phase.END)
         {
             for(PacketChannel channel : PacketChannel.registeredChannels)
             {
@@ -31,7 +32,7 @@ public class PacketExecuter
     @SubscribeEvent
     public void onClientRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.START)
+        if(event.phase == TickEvent.Phase.END)
         {
             for(PacketChannel channel : PacketChannel.registeredChannels)
             {
@@ -40,7 +41,7 @@ public class PacketExecuter
                     for(int i = 0; i< channel.queuedPackets.get(Side.CLIENT).size(); i++)
                     {
                         AbstractPacket packet = channel.queuedPackets.get(Side.CLIENT).get(i);
-                        packet.execute(Side.CLIENT, packet.playerClient);
+                        packet.execute(Side.CLIENT, Minecraft.getMinecraft().thePlayer);
                     }
                     channel.queuedPackets.get(Side.CLIENT).clear();
                 }

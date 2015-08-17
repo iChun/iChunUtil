@@ -101,10 +101,7 @@ public class ChannelHandler extends FMLIndexedMessageToMessageCodec<AbstractPack
                 {
                     msg.playerServer = player;
                 }
-                else
-                {
-                    msg.playerClient = player;
-                }
+                //No need to set the client player. The MC player will be sent by default. This is done to fix an issue with joining a server that sends a packet on login, but for some reason the player isn't set when the packet is received.
                 synchronized(channel.queuedPackets)
                 {
                     channel.queuedPackets.get(side).add(msg);

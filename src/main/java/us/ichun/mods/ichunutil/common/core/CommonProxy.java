@@ -41,7 +41,7 @@ public class CommonProxy
         tickHandlerServer = new TickHandlerServer();
         FMLCommonHandler.instance().bus().register(tickHandlerServer);
 
-        iChunUtil.channel = ChannelHandler.getChannelHandlers(iChunUtil.modName, PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class,
+        iChunUtil.channel = ChannelHandler.getChannelHandlers(iChunUtil.MOD_NAME, PacketModsList.class, PacketPatrons.class, PacketShowPatronReward.class, PacketSession.class, PacketPatientData.class,
                 PacketRequestBlockEntityData.class, PacketBlockEntityData.class, PacketNewGrabbedEntityId.class
         );
 

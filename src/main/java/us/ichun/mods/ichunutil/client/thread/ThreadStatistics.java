@@ -67,7 +67,7 @@ public class ThreadStatistics extends Thread
                 {
                     case 1: //Init Event
                     {
-                        params.add(new BasicNameValuePair("version", iChunUtil.version.replaceAll(" ", "").replaceAll("\\.", "_")));
+                        params.add(new BasicNameValuePair("version", iChunUtil.VERSION.replaceAll(" ", "").replaceAll("\\.", "_")));
 
                         StringBuilder sb = new StringBuilder();
                         if(!ObfHelper.obfuscation)

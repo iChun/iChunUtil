@@ -1,5 +1,10 @@
 package us.ichun.mods.ichunutil.common.core.event;
 
+import me.ichun.mods.morph.client.model.ModelHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -11,6 +16,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import us.ichun.mods.ichunutil.client.patron.LayerPatronEffect;
 import us.ichun.mods.ichunutil.client.thread.ThreadStatistics;
 import us.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import us.ichun.mods.ichunutil.common.core.config.ConfigHandler;
@@ -22,6 +28,7 @@ import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class EventHandler
 {
@@ -34,6 +41,16 @@ public class EventHandler
             iChunUtil.hasShownFirstGui = true;
             MinecraftForge.EVENT_BUS.post(new RendererSafeCompatibilityEvent());
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
+    {
+        RenderPlayer renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"));
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
+        renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"));
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
     }
 
     @SideOnly(Side.CLIENT)

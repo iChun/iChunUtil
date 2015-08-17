@@ -6,7 +6,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public abstract class AbstractPacket
 {
-    protected EntityPlayer playerClient;
     protected EntityPlayer playerServer;
 
     /**

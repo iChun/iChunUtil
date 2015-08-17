@@ -39,8 +39,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod(modid = iChunUtil.modName, name = iChunUtil.modName,
-        version = iChunUtil.version,
+@Mod(modid = iChunUtil.MOD_NAME, name = iChunUtil.MOD_NAME,
+        version = iChunUtil.VERSION,
         guiFactory = "us.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
         dependencies = "required-after:Forge@[" + iChunUtil.requiredForgeMajor + "." + iChunUtil.requiredForgeMinor + "." + iChunUtil.requiredForgeRevision + "." + iChunUtil.requiredForgeBuild + ",99999." + (iChunUtil.requiredForgeMinor + 1) + ".0.0)"
 )
@@ -53,15 +53,14 @@ public class iChunUtil
     public static final int requiredForgeRevision = 1;
     public static final int requiredForgeBuild = 1354;
 
-    public static final String modName = "iChunUtil";
-
     //MC version, bumped up every MC update.
     public static final int versionMC = 5;
-    public static final String versionOfMC = "1.8.0";
+    public static final String versionOfMC = "1.8.0"; //TODO change the final stuff to all caps.
 
-    public static final String version = versionMC + ".5.0";
+    public static final String MOD_NAME = "iChunUtil";
+    public static final String VERSION = versionMC + ".5.0";
 
-    public static final Logger logger = Logger.createLogger(modName);
+    public static final Logger logger = Logger.createLogger(MOD_NAME);
 
     private static boolean hasPostLoad = false;
     public static boolean hasShownFirstGui = false;
@@ -75,7 +74,7 @@ public class iChunUtil
     //Server's patron list. Client's is in TrailTicker
     public static ArrayList<PatronInfo> patronList = new ArrayList<PatronInfo>();
 
-    @Instance(iChunUtil.modName)
+    @Instance(MOD_NAME)
     public static iChunUtil instance;
 
     @SidedProxy(clientSide = "us.ichun.mods.ichunutil.client.core.ClientProxy", serverSide = "us.ichun.mods.ichunutil.common.core.CommonProxy")
@@ -130,13 +129,13 @@ public class iChunUtil
         @Override
         public String getModId()
         {
-            return iChunUtil.modName.toLowerCase();
+            return iChunUtil.MOD_NAME.toLowerCase();
         }
 
         @Override
         public String getModName()
         {
-            return iChunUtil.modName;
+            return iChunUtil.MOD_NAME;
         }
 
         @Override
@@ -204,7 +203,7 @@ public class iChunUtil
 
         proxy.preInit();
 
-        ModVersionChecker.register_iChunMod(new ModVersionInfo(modName, versionOfMC, version, false));
+        ModVersionChecker.register_iChunMod(new ModVersionInfo(MOD_NAME, versionOfMC, VERSION, false));
     }
 
     @EventHandler

@@ -53,7 +53,7 @@ public class ModVersionJsonGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("iChunUtil", versions);
-        versions.put("1.8.0", iChunUtil.version);
+        versions.put("1.8.0", iChunUtil.VERSION);
         versions.put("1.7.10", "4.2.2");
         versions.put("1.7", "3.3.0");
 

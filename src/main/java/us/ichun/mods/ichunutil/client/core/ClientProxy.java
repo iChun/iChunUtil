@@ -5,7 +5,6 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
@@ -19,7 +18,6 @@ import us.ichun.mods.ichunutil.client.gui.GuiModUpdateNotification;
 import us.ichun.mods.ichunutil.client.keybind.KeyBind;
 import us.ichun.mods.ichunutil.client.patron.EffectTicker;
 import us.ichun.mods.ichunutil.client.patron.EntityPatronEffect;
-import us.ichun.mods.ichunutil.client.patron.LayerPatronEffect;
 import us.ichun.mods.ichunutil.client.patron.RenderPatronEffect;
 import us.ichun.mods.ichunutil.client.render.RendererHelper;
 import us.ichun.mods.ichunutil.client.render.entity.RenderBlock;
@@ -80,11 +78,6 @@ public class ClientProxy extends CommonProxy
         FMLCommonHandler.instance().bus().register(effectTicker);
         RenderingRegistry.registerEntityRenderingHandler(EntityPatronEffect.class, new RenderPatronEffect());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new RenderBlock());
-
-        RenderPlayer renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("default"));
-        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
-        renderPlayer = ((RenderPlayer)Minecraft.getMinecraft().getRenderManager().skinMap.get("slim"));
-        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
     }
 
     @Override
