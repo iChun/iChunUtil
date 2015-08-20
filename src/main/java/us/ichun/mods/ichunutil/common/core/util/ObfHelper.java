@@ -23,8 +23,10 @@ public class ObfHelper
 
     private static final String obfVersion = "1.8.0";
 
-    public static final String[] mainModel = new String[] { "field_77045_g", "mainModel" };
-    public static final String[] gameProfile = new String[] { "field_146106_i", "gameProfile" };
+    public static final String[] mainModel = new String[] { "field_77045_g", "mainModel" }; //RendererLivingEntity
+    public static final String[] gameProfile = new String[] { "field_146106_i", "gameProfile" }; //EntityPlayer
+    public static final String[] resourceDomain = new String[] { "field_110626_a", "resourceDomain"}; //ResourceLocation
+    public static final String[] resourcePath = new String[] { "field_110625_b", "resourcePath"}; //ResourceLocation
 
     //EntityLivingBase
     public static final String getHurtSoundObf = "func_70621_aR";

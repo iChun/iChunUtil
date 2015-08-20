@@ -33,7 +33,7 @@ public class LayerPatronEffect implements LayerRenderer
         if(iChunUtil.hasMorphMod)
         {
             EntityLivingBase ent = MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getCommandSenderName(), Side.CLIENT);
-            if(ent != null)
+            if(ent != null) //is morphed
             {
                 if(!(ent instanceof EntityPlayer) || MorphApi.getApiImpl().morphProgress(player.getCommandSenderName(), Side.CLIENT) < 1.0F)
                 {

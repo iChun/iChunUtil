@@ -32,7 +32,7 @@ public class PacketExecuter
     @SubscribeEvent
     public void onClientRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END)
+        if(event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().thePlayer != null)
         {
             for(PacketChannel channel : PacketChannel.registeredChannels)
             {
