@@ -212,6 +212,7 @@ public class TickHandlerClient
 
     public void worldTick(Minecraft mc, WorldClient world)
     {
+        hasScreen = mc.currentScreen != null;
         for(KeyBind bind : keyBindList)
         {
             bind.tick();
@@ -364,6 +365,7 @@ public class TickHandlerClient
 
     public int ticks;
     public float renderTick;
+    public boolean hasScreen;
 
     public boolean optionsKeyDown;
     public boolean mouseLeftDown;
