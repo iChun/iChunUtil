@@ -299,10 +299,10 @@ public class EntityHelperBase
 
                         if (targetEntity instanceof EntityLivingBase)
                         {
-                            EnchantmentHelper.func_151384_a((EntityLivingBase)targetEntity, attacker);
+                            EnchantmentHelper.applyThornEnchantments((EntityLivingBase)targetEntity, attacker);
                         }
 
-                        EnchantmentHelper.func_151385_b(attacker, targetEntity);
+                        EnchantmentHelper.applyArthropodEnchantments(attacker, targetEntity);
                         ItemStack itemstack = attacker.getHeldItem();
                         Object object = targetEntity;
 
