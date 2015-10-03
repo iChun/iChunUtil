@@ -68,16 +68,7 @@ public class RenderPatronEffect extends Render
             }
         }
 
-        PatronInfo info = null;
-        for(PatronInfo info1 : iChunUtil.proxy.effectTicker.patronList)
-        {
-            if(info1.id.equals(sd.parent.getGameProfile().getId().toString()))
-            {
-                info = info1;
-                break;
-            }
-        }
-
+        PatronInfo info = EntityPatronEffect.getPatronInfo(sd.parent);
         if(info != null)
         {
             switch(info.type)

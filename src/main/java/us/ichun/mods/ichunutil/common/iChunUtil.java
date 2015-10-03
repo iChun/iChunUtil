@@ -110,7 +110,7 @@ public class iChunUtil
         public int showPatronReward = 1;
 
         @ConfigProp(category = "patreon", hidden = true)
-        @IntMinMax(min = 1, max = 3)
+        @IntMinMax(min = 1, max = 5)
         public int patronRewardType = 1;
 
         @ConfigProp
