@@ -1,10 +1,7 @@
 package us.ichun.mods.ichunutil.common.core.event;
 
-import me.ichun.mods.morph.client.model.ModelHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -28,7 +25,6 @@ import us.ichun.mods.ichunutil.common.grab.GrabHandler;
 import us.ichun.mods.ichunutil.common.iChunUtil;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class EventHandler
 {
