@@ -193,6 +193,14 @@ public class TickHandlerClient
                     event.player.setItemInUse(is, Integer.MAX_VALUE);
                 }
             }
+            if(event.player == Minecraft.getMinecraft().getRenderViewEntity() && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && lastThirdPersonView != 0)
+            {
+                event.player.clearItemInUse();
+            }
+            if(event.player == Minecraft.getMinecraft().getRenderViewEntity())
+            {
+                lastThirdPersonView = Minecraft.getMinecraft().gameSettings.thirdPersonView;
+            }
         }
     }
 
@@ -384,6 +392,7 @@ public class TickHandlerClient
     public ArrayList<TrackerRegistry> trackedEntities = new ArrayList<TrackerRegistry>();
 
     public ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<Class<? extends Item>>();
+    public int lastThirdPersonView;
 
     public ArrayList<SwingProofHandler> swingProofItems = new ArrayList<SwingProofHandler>();
     private int prevCurItem;

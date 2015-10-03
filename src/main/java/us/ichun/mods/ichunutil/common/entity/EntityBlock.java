@@ -546,7 +546,7 @@ public class EntityBlock extends Entity
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox()
+    public AxisAlignedBB getCollisionBoundingBox()
     {
         return getEntityBoundingBox();
     }
