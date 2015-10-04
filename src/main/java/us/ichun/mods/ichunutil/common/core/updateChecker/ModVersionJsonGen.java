@@ -29,6 +29,14 @@ public class ModVersionJsonGen
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
+        map.put("BeeBarker", versions);
+        versions.put("1.8.0", "5.0.1");
+
+        versions = new TreeMap<String, String>(Ordering.natural());
+        map.put("Blocksteps", versions);
+        versions.put("1.8.0", "5.0.0");
+
+        versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Doors", versions);
         versions.put("1.7.10", "4.0.1");
 
