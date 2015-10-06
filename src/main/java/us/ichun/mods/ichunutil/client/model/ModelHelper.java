@@ -222,7 +222,7 @@ public class ModelHelper
                     for(Field f : fields)
                     {
                         f.setAccessible(true);
-                        if(f.getType() == ModelRenderer.class)
+                        if(f.getType() == ModelRenderer.class || ModelRenderer.class.isAssignableFrom(f.getType()))
                         {
                             ModelRenderer rend = (ModelRenderer)f.get(parent);
                             if(rend != null)
@@ -239,7 +239,7 @@ public class ModelHelper
                                 list.put(name, rend); // Add normal parent fields
                             }
                         }
-                        else if(f.getType() == ModelRenderer[].class)
+                        else if(f.getType() == ModelRenderer[].class || ModelRenderer[].class.isAssignableFrom(f.getType()))
                         {
                             ModelRenderer[] rend = (ModelRenderer[])f.get(parent);
                             if(rend != null)
