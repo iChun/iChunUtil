@@ -58,7 +58,7 @@ public class iChunUtil
     public static final String versionOfMC = "1.8.0"; //TODO change the final stuff to all caps.
 
     public static final String MOD_NAME = "iChunUtil";
-    public static final String VERSION = versionMC + ".5.0";
+    public static final String VERSION = versionMC + ".6.0";
 
     public static final Logger logger = Logger.createLogger(MOD_NAME);
 

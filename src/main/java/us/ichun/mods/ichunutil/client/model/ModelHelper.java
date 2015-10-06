@@ -68,7 +68,7 @@ public class ModelHelper
             }
             for(ModelRenderer cube : modelListCopy)
             {
-                list.add(buildCopy(cube, base, 0, true));
+                list.add(buildCopy(cube, base, 0, true, false));
             }
             return list;
         }
@@ -79,8 +79,8 @@ public class ModelHelper
 
             for(int i = 0; i < modelList.size(); i++)
             {
-                ModelRenderer cube = (ModelRenderer)modelList.get(i);
-                list.add(buildCopy(cube, base, 0, true));
+                ModelRenderer cube = modelList.get(i);
+                list.add(buildCopy(cube, base, 0, true, false));
             }
 
             return list;
@@ -141,7 +141,7 @@ public class ModelHelper
     }
 
     //Recreate a copy of a ModelRenderer. hasFullModelBox will put the boxes in the original spot. False will randomly put it attached to a random Model location based off the original
-    public static ModelRenderer buildCopy(ModelRenderer original, ModelBase copyBase, int depth, boolean hasFullModelBox) //exactDupes no longer exist cause the modelbox is reconstructed almost completely without using the original model textures.
+    public static ModelRenderer buildCopy(ModelRenderer original, ModelBase copyBase, int depth, boolean hasFullModelBox, boolean isEmpty) //exactDupes no longer exist cause the modelbox is reconstructed almost completely without using the original model textures.
     {
         int txOffsetX = original.textureOffsetX;
         int txOffsetY = original.textureOffsetY;
@@ -159,6 +159,10 @@ public class ModelHelper
             cubeCopy.textureOffsetX = info.txOffset[0];
             cubeCopy.textureOffsetY = info.txOffset[1];
 
+            if(isEmpty)
+            {
+                info.offset[0] = info.offset[1] = info.offset[2] = info.dimensions[0] = info.dimensions[1] = info.dimensions[2] = 0;
+            }
             if(hasFullModelBox)
             {
                 cubeCopy.addBox((float)info.offset[0], (float)info.offset[1], (float)info.offset[2], info.dimensions[0], info.dimensions[1], info.dimensions[2], (float)info.mcScale);
@@ -182,7 +186,7 @@ public class ModelHelper
             for(int i = 0; i < original.childModels.size(); i++)
             {
                 ModelRenderer child = (ModelRenderer)original.childModels.get(i);
-                cubeCopy.addChild(buildCopy(child, copyBase, depth + 1, hasFullModelBox));
+                cubeCopy.addChild(buildCopy(child, copyBase, depth + 1, hasFullModelBox, isEmpty));
             }
         }
 
@@ -200,7 +204,7 @@ public class ModelHelper
         return new ArrayList<ModelRenderer>(getModelCubesWithNames(parent).values());
     }
 
-    //Gets the parent ModelRenderers in a ModelBase with their field names.
+    //Gets the parent ModelRenderers in a ModelBase with their field names. No children are in this list.
     public static HashMap<String, ModelRenderer> getModelCubesWithNames(ModelBase parent)
     {
         HashMap<String, ModelRenderer> list = new HashMap<String, ModelRenderer>();
@@ -220,22 +224,19 @@ public class ModelHelper
                         f.setAccessible(true);
                         if(f.getType() == ModelRenderer.class)
                         {
-                            if(clz == ModelBiped.class && !(f.getName().equalsIgnoreCase("bipedCloak") || f.getName().equalsIgnoreCase("k") || f.getName().equalsIgnoreCase("field_78122_k")) || clz != ModelBiped.class)
+                            ModelRenderer rend = (ModelRenderer)f.get(parent);
+                            if(rend != null)
                             {
-                                ModelRenderer rend = (ModelRenderer)f.get(parent);
-                                if(rend != null)
+                                String name = f.getName();
+                                if(rend.boxName != null)
                                 {
-                                    String name = f.getName();
-                                    if(rend.boxName != null)
+                                    name = rend.boxName;
+                                    while(list.containsKey(name))
                                     {
-                                        name = rend.boxName;
-                                        while(list.containsKey(name))
-                                        {
-                                            name = name + "_";
-                                        }
+                                        name = name + "_";
                                     }
-                                    list.put(name, rend); // Add normal parent fields
                                 }
+                                list.put(name, rend); // Add normal parent fields
                             }
                         }
                         else if(f.getType() == ModelRenderer[].class)
@@ -494,6 +495,20 @@ public class ModelHelper
         return false;
     }
 
+    public static int getModelHeight(ModelRenderer model)
+    {
+        int height = 0;//Y1 lower than Y2
+        for(int i = 0; i < model.cubeList.size(); i++)
+        {
+            ModelBox box = (ModelBox)model.cubeList.get(i);
+            if((int)Math.abs(box.posY2 - box.posY1) > height)
+            {
+                height = (int)Math.abs(box.posY2 - box.posY1);
+            }
+        }
+        return height;
+    }
+
     //Gets the model cubes from the entity living.
     public static ArrayList<ModelRenderer> getModelCubes(Entity entity)
     {
@@ -511,8 +526,9 @@ public class ModelHelper
         return map;
     }
 
-    public static ModelRenderer getPotentialArm(ModelBase parent)
+    public static ModelRenderer[] getPotentialArms(ModelBase parent) //array of arms, 0 = right, 1 = left.
     {
+        ModelRenderer[] arms = new ModelRenderer[2];
         if(parent != null)
         {
             Class clz = parent.getClass();
@@ -535,18 +551,25 @@ public class ModelHelper
 
                 shin.addChild(hoof);
 
-                armMappings.put(ModelHorse.class, leg);
+                ModelRenderer[] legs = new ModelRenderer[] { leg, leg };
 
-                return leg;
+                armMappings.put(ModelHorse.class, legs);
+
+                return legs;
+            }
+            else if(clz == ModelPlayer.class)
+            {
+                arms[0] = ((ModelPlayer)parent).bipedRightArm;
+                arms[1] = ((ModelPlayer)parent).bipedLeftArm;
+
+                armMappings.put(ModelPlayer.class, arms);
+
+                return arms;
             }
             else
             {
                 while(clz != ModelBase.class && ModelBase.class.isAssignableFrom(clz))
                 {
-                    if(armMappings.containsKey(clz))
-                    {
-                        return armMappings.get(clz);
-                    }
                     try
                     {
                         Field[] fields = clz.getDeclaredFields();
@@ -555,30 +578,54 @@ public class ModelHelper
                             f.setAccessible(true);
                             if(f.getType() == ModelRenderer.class)
                             {
-                                if(     clz == ModelBiped.class &&      (f.getName().equalsIgnoreCase("field_78112_f") || f.getName().equalsIgnoreCase("bipedRightArm")         || f.getName().equalsIgnoreCase("f")) ||
+                                //right arm
+                                if(     clz == ModelBiped.class &&      (f.getName().equalsIgnoreCase("field_178723_h")|| f.getName().equalsIgnoreCase("bipedRightArm")         || f.getName().equalsIgnoreCase("h")) ||
                                         clz == ModelQuadruped.class &&  (f.getName().equalsIgnoreCase("field_78147_e") || f.getName().equalsIgnoreCase("leg3")                  || f.getName().equalsIgnoreCase("e")) ||
                                         clz == ModelCreeper.class &&    (f.getName().equalsIgnoreCase("field_78129_f") || f.getName().equalsIgnoreCase("leg3")                  || f.getName().equalsIgnoreCase("f")) ||
                                         clz == ModelIronGolem.class &&  (f.getName().equalsIgnoreCase("field_78177_c") || f.getName().equalsIgnoreCase("ironGolemRightArm")     || f.getName().equalsIgnoreCase("c")) ||
                                         clz == ModelSpider.class &&     (f.getName().equalsIgnoreCase("field_78210_j") || f.getName().equalsIgnoreCase("spiderLeg7")            || f.getName().equalsIgnoreCase("j")) ||
                                         clz == ModelWolf.class &&       (f.getName().equalsIgnoreCase("field_78182_e") || f.getName().equalsIgnoreCase("wolfLeg3")              || f.getName().equalsIgnoreCase("e")) ||
                                         clz == ModelOcelot.class &&     (f.getName().equalsIgnoreCase("field_78157_d") || f.getName().equalsIgnoreCase("ocelotFrontRightLeg")   || f.getName().equalsIgnoreCase("d")) ||
-                                        clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class &&
+                                        clz == ModelRabbit.class &&     (f.getName().equalsIgnoreCase("field_178693_g")|| f.getName().equalsIgnoreCase("rabbitRightArm")        || f.getName().equalsIgnoreCase("g")) ||
+                                        clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class && clz != ModelRabbit.class &&
                                                 f.getName().toLowerCase().contains("right") && (f.getName().toLowerCase().contains("arm") || f.getName().toLowerCase().contains("hand")))
                                 {
                                     ModelRenderer arm = (ModelRenderer)f.get(parent);
-                                    if(arm != null)
+                                    if(arm != null && arms[0] == null)
                                     {
-                                        armMappings.put(clz, arm);
+                                        arms[0] = arm;
 
-                                        return arm;
+                                        armMappings.put(parent.getClass(), arms);
+                                    }
+                                }
+
+                                //left arm
+                                if(     clz == ModelBiped.class &&      (f.getName().equalsIgnoreCase("field_178724_i")|| f.getName().equalsIgnoreCase("bipedLeftArm")         || f.getName().equalsIgnoreCase("i")) ||
+                                        clz == ModelQuadruped.class &&  (f.getName().equalsIgnoreCase("field_78144_f") || f.getName().equalsIgnoreCase("leg4")                  || f.getName().equalsIgnoreCase("f")) ||
+                                        clz == ModelCreeper.class &&    (f.getName().equalsIgnoreCase("field_78130_g") || f.getName().equalsIgnoreCase("leg4")                  || f.getName().equalsIgnoreCase("g")) ||
+                                        clz == ModelIronGolem.class &&  (f.getName().equalsIgnoreCase("field_78174_d") || f.getName().equalsIgnoreCase("ironGolemLeftArm")      || f.getName().equalsIgnoreCase("d")) ||
+                                        clz == ModelSpider.class &&     (f.getName().equalsIgnoreCase("field_78211_k") || f.getName().equalsIgnoreCase("spiderLeg8")            || f.getName().equalsIgnoreCase("k")) ||
+                                        clz == ModelWolf.class &&       (f.getName().equalsIgnoreCase("field_78179_f") || f.getName().equalsIgnoreCase("wolfLeg4")              || f.getName().equalsIgnoreCase("f")) ||
+                                        clz == ModelOcelot.class &&     (f.getName().equalsIgnoreCase("field_78160_c") || f.getName().equalsIgnoreCase("ocelotFrontLeftLeg")    || f.getName().equalsIgnoreCase("c")) ||
+                                        clz == ModelRabbit.class &&     (f.getName().equalsIgnoreCase("field_178692_f")|| f.getName().equalsIgnoreCase("rabbitLeftArm")         || f.getName().equalsIgnoreCase("f")) ||
+                                        clz != ModelBiped.class && clz != ModelQuadruped.class && clz != ModelCreeper.class && clz != ModelIronGolem.class && clz != ModelSpider.class && clz != ModelWolf.class && clz != ModelOcelot.class && clz != ModelRabbit.class &&
+                                                f.getName().toLowerCase().contains("left") && (f.getName().toLowerCase().contains("arm") || f.getName().toLowerCase().contains("hand")))
+                                {
+                                    ModelRenderer arm = (ModelRenderer)f.get(parent);
+                                    if(arm != null && arms[1] == null)
+                                    {
+                                        arms[1] = arm;
+
+                                        armMappings.put(parent.getClass(), arms);
                                     }
                                 }
                             }
                             else if(f.getType() == ModelRenderer[].class && clz == ModelSquid.class && (f.getName().equalsIgnoreCase("squidTentacles") || f.getName().equalsIgnoreCase("b") || f.getName().equalsIgnoreCase("field_78201_b")))
                             {
                                 ModelRenderer arm = ((ModelRenderer[])f.get(parent))[0];
-                                armMappings.put(ModelSquid.class, arm);
-                                return arm;
+                                arms[0] = arms[1] = arm;
+                                armMappings.put(ModelSquid.class, arms);
+                                return arms;
                             }
                         }
                         clz = clz.getSuperclass();
@@ -588,11 +635,12 @@ public class ModelHelper
                         throw new UnableToAccessFieldException(new String[0], e);
                     }
                 }
+                return arms;
             }
         }
-        return null;
+        return arms;
     }
 
-    public static HashMap<Class<? extends ModelBase>, ModelRenderer> armMappings = new HashMap<Class<? extends ModelBase>, ModelRenderer>();
+    public static HashMap<Class<? extends ModelBase>, ModelRenderer[]> armMappings = new HashMap<Class<? extends ModelBase>, ModelRenderer[]>();
     public static HashMap<Class<? extends Render>, ArrayList<ModelRenderer>> classToModelRendererMap = new HashMap<Class<? extends Render>, ArrayList<ModelRenderer>>();
 }
