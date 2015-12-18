@@ -26,7 +26,7 @@ public class ModelRotationPoint extends ModelBase
 		GL11.glNewList(this.sphereID, GL11.GL_COMPILE);
 		GlStateManager.translate( -radius, -radius, -radius);
 		// GlStateManager.bindTexture(Color.CYAN.getRGB());
-		sphere.draw(radius, 32, 32);
+		sphere.draw(radius, slices, stacks);
 		GL11.glEndList();
 	}
 	
