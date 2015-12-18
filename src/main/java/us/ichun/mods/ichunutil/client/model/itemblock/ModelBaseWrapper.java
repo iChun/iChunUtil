@@ -48,7 +48,8 @@ public class ModelBaseWrapper implements IFlexibleBakedModel, ISmartBlockModel, 
         if(!disableRender)
         {
             Tessellator tessellator = Tessellator.getInstance();
-            tessellator.draw();
+            if (tessellator.getWorldRenderer().isDrawing)
+                tessellator.draw();
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.5D, 0.5D, 0.5D);
