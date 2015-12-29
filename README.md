@@ -1,4 +1,4 @@
-If you have an error with protected/private access etc, you need to put /src/main/resources/META-INF/iChunUtil_AT.cfg into Forge's src folder (same folder structure) and rerun setupDecompWorkspace. Make sure the Forge setup finds the AT config or you're doing it wrong.
+If you have an error with protected/private access etc, you need to put /src/main/resources/META-INF/iChunUtil_at.cfg into Forge's src folder (same folder structure) and rerun setupDecompWorkspace. Make sure the Forge setup finds the AT config or you're doing it wrong.
 
 How to set up this and another mod of mine to be compiled:
 1. Clone this repository.
