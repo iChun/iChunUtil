@@ -1,8 +1,10 @@
 package me.ichun.mods.ichunutil.common;
 
 
+import me.ichun.mods.ichunutil.client.core.event.EventHandlerClient;
 import me.ichun.mods.ichunutil.common.core.Logger;
 import me.ichun.mods.ichunutil.common.core.ProxyCommon;
+import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Mod;
@@ -42,7 +44,9 @@ public class iChunUtil
 
     //Mod stuffs
 
-    public static boolean hasShownFirstGui;
+    public static EventHandlerServer eventHandlerServer;
+    public static EventHandlerClient eventHandlerClient;
+
     private static boolean hasPostInit;
 
     @Mod.EventHandler
