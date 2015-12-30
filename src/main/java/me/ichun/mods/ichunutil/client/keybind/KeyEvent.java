@@ -5,11 +5,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class KeyEvent extends Event
 {
     public final KeyBind keyBind;
-    public final boolean isPulse;
 
-    public KeyEvent(KeyBind keyBind, boolean pulse)
+    public KeyEvent(KeyBind keyBind)
     {
         this.keyBind = keyBind;
-        this.isPulse = pulse;
     }
 }

@@ -34,6 +34,9 @@ public class EventHandlerClient
     public int ticks;
     public float renderTick;
 
+    public int screenWidth;
+    public int screenHeight;
+
     public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
 
@@ -42,6 +45,14 @@ public class EventHandlerClient
 
     public boolean eulaDrawEulaNotice = !iChunUtil.config.eulaAcknowledged.equals(RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode())))))));
     public WindowAnnoy eulaWindow = new WindowAnnoy();
+    //End Module Stuff
+
+    public EventHandlerClient()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        screenWidth = mc.displayWidth;
+        screenHeight = mc.displayHeight;
+    }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
@@ -67,7 +78,20 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
 
         renderTick = event.renderTickTime;
-        if(event.phase == TickEvent.Phase.END)
+        if(event.phase == TickEvent.Phase.START)
+        {
+            if(screenWidth != mc.displayWidth || screenHeight != mc.displayHeight)
+            {
+                screenWidth = mc.displayWidth;
+                screenHeight = mc.displayHeight;
+
+                for(Framebuffer buffer : RendererHelper.frameBuffers)
+                {
+                    buffer.createBindFramebuffer(screenWidth, screenHeight);
+                }
+            }
+        }
+        else
         {
             if(eulaDrawEulaNotice)
             {

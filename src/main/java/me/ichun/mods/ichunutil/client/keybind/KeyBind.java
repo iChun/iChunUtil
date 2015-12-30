@@ -44,7 +44,7 @@ public class KeyBind
         pressed = checkPressed();
         if(pressed != flag)
         {
-            triggerEvent(false);
+            triggerEvent();
         }
     }
 
@@ -61,9 +61,9 @@ public class KeyBind
         return isPressed(keyIndex);
     }
 
-    public void triggerEvent(boolean pulse)
+    public void triggerEvent()
     {
-        MinecraftForge.EVENT_BUS.post(new KeyEvent(this, pulse));
+        MinecraftForge.EVENT_BUS.post(new KeyEvent(this));
     }
 
     public KeyBind setIsMinecraftBind()
