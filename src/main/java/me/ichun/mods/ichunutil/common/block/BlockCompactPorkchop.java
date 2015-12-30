@@ -51,11 +51,10 @@ public class BlockCompactPorkchop extends Block
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List list)
     {
-        //TODO this
-//        if(iChunUtil.config.enableCompactPorkchop == 1)
-//        {
-//            list.add(new ItemStack(itemIn, 1, 0));
-//        }
+        if(iChunUtil.config.enableCompactPorkchop == 1)
+        {
+            list.add(new ItemStack(itemIn, 1, 0));
+        }
     }
 
     //For ObfHelper use to check

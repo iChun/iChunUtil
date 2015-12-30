@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.8.8";
+    private static final String OBF_VERSION = "1.8.9";
 
     private static boolean isObfuscated;
 
@@ -18,13 +18,6 @@ public class ObfHelper
 
     public static void detectObfuscation()
     {
-        if(!iChunUtil.VERSION_OF_MC.equals(OBF_VERSION))
-        {
-            iChunUtil.LOGGER.warn("ObfHelper strings are not updated!");
-            throw new RuntimeException("Bad iChun! Update obfuscation strings!");
-        }
-
-
         isObfuscated = true;
         try
         {
@@ -35,6 +28,11 @@ public class ObfHelper
                 if(f.getName().equalsIgnoreCase("block"))
                 {
                     isObfuscated = false;
+                    if(!iChunUtil.VERSION_OF_MC.equals(OBF_VERSION))
+                    {
+                        iChunUtil.LOGGER.warn("ObfHelper strings are not updated!");
+                        throw new RuntimeException("Bad iChun! Update obfuscation strings!");
+                    }
                     return;
                 }
             }
