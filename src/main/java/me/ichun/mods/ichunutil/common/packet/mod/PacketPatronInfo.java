@@ -49,7 +49,7 @@ public class PacketPatronInfo extends AbstractPacket
             iChunUtil.eventHandlerServer.patrons.remove(info);
         }
         iChunUtil.eventHandlerServer.patrons.add(info);
-        iChunUtil.channel.sendToAllExcept(new PacketPatrons(info), player);
+        iChunUtil.channel.sendToAll(new PacketPatrons(info));
         return null;
     }
 
