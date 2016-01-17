@@ -50,7 +50,7 @@ public class PacketPatronInfo extends AbstractPacket
         }
         iChunUtil.eventHandlerServer.patrons.add(info);
         iChunUtil.channel.sendToAllExcept(new PacketPatrons(info), player);
-        return new PacketPatrons(null);//Reply to the player the list of Patrons;
+        return null;
     }
 
     @Override

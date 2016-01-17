@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.core.event;
 
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.module.eula.WindowAnnoy;
+import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
@@ -14,8 +15,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -25,6 +28,8 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.input.Mouse;
 
@@ -65,6 +70,16 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         screenWidth = mc.displayWidth;
         screenHeight = mc.displayHeight;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
+    {
+        RenderPlayer renderPlayer = Minecraft.getMinecraft().getRenderManager().skinMap.get("default");
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
+        renderPlayer = Minecraft.getMinecraft().getRenderManager().skinMap.get("slim");
+        renderPlayer.addLayer(new LayerPatronEffect(renderPlayer));
     }
 
     @SubscribeEvent
@@ -206,5 +221,17 @@ public class EventHandlerClient
             hasShownFirstGui = true;
             MinecraftForge.EVENT_BUS.post(new RendererSafeCompatibilityEvent());
         }
+    }
+
+    public PatronInfo getPatronInfo(EntityPlayer player)
+    {
+        for(PatronInfo info : patrons)
+        {
+            if(info.id.equalsIgnoreCase(player.getGameProfile().getId().toString().replaceAll("-", "")))
+            {
+                return info;
+            }
+        }
+        return null;
     }
 }
