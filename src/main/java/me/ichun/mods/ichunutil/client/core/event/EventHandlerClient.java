@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.core.event;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.module.eula.WindowAnnoy;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -26,6 +27,7 @@ import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class EventHandlerClient
@@ -57,24 +59,6 @@ public class EventHandlerClient
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-        if(event.phase.equals(TickEvent.Phase.END))
-        {
-            if(mc.theWorld != null)
-            {
-                if(connectingToServer)
-                {
-                    connectingToServer = false;
-                    MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
-                }
-            }
-            ticks++;
-        }
-    }
-
-    @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
@@ -92,6 +76,8 @@ public class EventHandlerClient
                     buffer.createBindFramebuffer(screenWidth, screenHeight);
                 }
             }
+
+            ItemRenderingHelper.handlePreRender(mc);
         }
         else
         {
@@ -114,6 +100,47 @@ public class EventHandlerClient
                     eulaWindow.onClick(i - eulaWindow.posX, j - eulaWindow.posY, 0);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        if(event.phase.equals(TickEvent.Phase.END))
+        {
+            if(mc.theWorld != null)
+            {
+                if(connectingToServer)
+                {
+                    connectingToServer = false;
+                    MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
+                }
+                for(KeyBind bind : keyBindList)
+                {
+                    bind.tick();
+                }
+                for(Map.Entry<KeyBinding, KeyBind> e : mcKeyBindList.entrySet())
+                {
+                    if(e.getValue().keyIndex != e.getKey().getKeyCode())
+                    {
+                        e.setValue(new KeyBind(e.getKey().getKeyCode()));
+                    }
+                    e.getValue().tick();
+                }
+            }
+            ticks++;
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isClient() && event.phase == TickEvent.Phase.END)
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+
+            ItemRenderingHelper.handlePlayerTick(mc, event.player);
         }
     }
 
