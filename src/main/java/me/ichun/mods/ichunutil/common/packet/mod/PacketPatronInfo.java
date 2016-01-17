@@ -10,7 +10,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketPatronInfo extends AbstractPacket
 {
-
     public String playerId;
     public int patronRewardType;
     public boolean showPatronReward;

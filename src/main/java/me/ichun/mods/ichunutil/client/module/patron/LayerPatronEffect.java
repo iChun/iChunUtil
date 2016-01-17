@@ -34,7 +34,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
 
         if(!player.isInvisible()) //special casing for pig snout effect
         {
-            if(EventCalendar.isAFDay() || info != null && info.effectType == 2) //render Pig Snout
+            if(EventCalendar.isAFDay() || info != null && info.showEffect && info.effectType == 2) //render Pig Snout
             {
                 parentRenderer.bindTexture(ResourceHelper.texPig);
 
@@ -52,7 +52,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
 
                 GlStateManager.popMatrix();
             }
-            if(info != null)
+            if(info != null && info.showEffect)
             {
                 switch(info.effectType)
                 {

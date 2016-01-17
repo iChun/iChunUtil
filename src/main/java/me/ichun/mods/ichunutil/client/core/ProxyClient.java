@@ -2,8 +2,10 @@ package me.ichun.mods.ichunutil.client.core;
 
 import com.google.common.base.Splitter;
 import me.ichun.mods.ichunutil.client.core.event.EventHandlerClient;
+import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.client.render.entity.RenderLatchedRenderer;
 import me.ichun.mods.ichunutil.common.core.ProxyCommon;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
@@ -16,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -51,6 +54,8 @@ public class ProxyClient extends ProxyCommon
 
         iChunUtil.eventHandlerClient = new EventHandlerClient();
         MinecraftForge.EVENT_BUS.register(iChunUtil.eventHandlerClient);
+
+        RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new EntityLatchedRenderer(null));
     }
 
     @Override

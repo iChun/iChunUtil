@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -71,6 +72,7 @@ public class iChunUtil
     public static List<ItemStack> oreDictBlockCompactRawPorkchop;
 
     private static boolean hasPostInit;
+    private static boolean hasMorphMod;
 
     public static boolean userIsPatron;
 
@@ -187,6 +189,7 @@ public class iChunUtil
     public void onPostInit(FMLPostInitializationEvent event)
     {
         hasPostInit = true;
+        hasMorphMod = Loader.isModLoaded("Morph");
 
         proxy.postInit();
     }
@@ -197,8 +200,13 @@ public class iChunUtil
         eventHandlerServer.shuttingDownServer();
     }
 
-    public boolean hasPostInit()
+    public static boolean hasPostInit()
     {
         return hasPostInit;
+    }
+
+    public static boolean hasMorphMod()
+    {
+        return hasMorphMod;
     }
 }
