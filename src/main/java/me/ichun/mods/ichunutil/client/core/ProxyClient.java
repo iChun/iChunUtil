@@ -69,6 +69,12 @@ public class ProxyClient extends ProxyCommon
     }
 
     @Override
+    public String getPlayerId()
+    {
+        return Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "");
+    }
+
+    @Override
     public void nudgeHand(float mag)
     {
         Minecraft.getMinecraft().thePlayer.renderArmPitch += mag;

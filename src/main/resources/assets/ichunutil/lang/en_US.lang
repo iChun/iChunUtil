@@ -20,11 +20,9 @@ ichunutil.config.cat.keybind.tip3=If you want to bind Shift/Ctrl/Alt, hold them 
 
 ichunutil.config.cat.versionCheck.name=Update Checker
 ichunutil.config.cat.versionSave.name=Update Checker Save
-ichunutil.config.cat.patreon.name=Patreon
 
 ichunutil.config.cat.versionCheck.comment=These configs are for the mod version update checker added by iChunUtil.
 ichunutil.config.cat.versionSave.comment=These are save info for the update checker. Don't change these unless you want to break stuff.
-ichunutil.config.cat.patreon.comment=Patreon related configs.
 
 ichunutil.config.prop.versionNotificationTypes.name=Update Notification Types
 ichunutil.config.prop.versionNotificationFrequency.name=Update Notification Frequency
@@ -40,13 +38,15 @@ ichunutil.config.prop.ignoreMCVersionCheck.comment=Ignore the MC version check i
 ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron reward to other players?
 ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout\n3 = Ghost trails\n4 = Bee buzzing around your head (tribute to Bee Barker)\n5 = Fire trails with exaggerated sprint 
 
-ichunutil.config.cat.module.compressedPorkchop.name=Compressed Porkchop Block
+ichunutil.config.cat.module.compactPorkchop.name=Compact Porkchop Block
 ichunutil.config.cat.module.ding.name=Ding
 ichunutil.config.cat.module.eula.name=EULA
+ichunutil.config.cat.module.patreon.name=Patreon
 
-ichunutil.config.cat.module.compressedPorkchop.comment=Configs for the compressed porkchop block module in iChunUtil.
+ichunutil.config.cat.module.compactPorkchop.comment=Configs for the compact porkchop block module in iChunUtil.
 ichunutil.config.cat.module.ding.comment=Configs for the ding module in iChunUtil - It plays a sound when Minecraft has completed loading.
 ichunutil.config.cat.module.eula.comment=EULA settings.
+ichunutil.config.cat.module.patreon.comment=Patreon related configs.
 
 ichunutil.config.prop.enableCompactPorkchop.name=Allow Compact Raw Porkchop?
 ichunutil.config.prop.dingEnabled.name=Enable Ding?

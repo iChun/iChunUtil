@@ -6,9 +6,13 @@ import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketPatronInfo;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketSession;
+import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.StatCollector;
@@ -30,12 +34,14 @@ public class ProxyCommon
 
         iChunUtil.blockCompactPorkchop = GameRegistry.registerBlock((new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop"), "compactPorkchop");
 
-        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class);
+        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class);
     }
 
     public void init()
     {
         OreDictionary.registerOre("blockCompactRawPorkchop", iChunUtil.blockCompactPorkchop);
+
+        (new ThreadGetResources(FMLCommonHandler.instance().getSide())).start();
     }
 
     public void postInit()
@@ -54,6 +60,11 @@ public class ProxyCommon
             iChunUtil.LOGGER.info(StatCollector.translateToLocal("ichunutil.eula.messageServer"));
             iChunUtil.LOGGER.info("=============================================================");
         }
+    }
+
+    public String getPlayerId()
+    {
+        return EntityHelper.uuidExample.toString().replaceAll("-", "");
     }
 
     public void nudgeHand(float mag)

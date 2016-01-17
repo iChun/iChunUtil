@@ -287,7 +287,7 @@ public abstract class ConfigBase
                 return;
             }
             PropInfo propInfo1 = new PropInfo(!propInfo.nameOverride().isEmpty() ? propInfo.nameOverride() : StatCollector.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".name"), comment, field);
-            if(!setup && !fields.contains(propInfo1))
+            if(!fields.contains(propInfo1))
             {
                 fields.add(propInfo1);
             }

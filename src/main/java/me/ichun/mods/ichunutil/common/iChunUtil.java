@@ -28,6 +28,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Mod(modid = iChunUtil.MOD_NAME, name = iChunUtil.MOD_NAME,
@@ -80,10 +81,12 @@ public class iChunUtil
         public int enableStencils = 1;
 
         //Modules
-        @ConfigProp(category = "block", useSession = true, module = "compressedPorkchop")
+        //Compact Porkchop module
+        @ConfigProp(category = "block", useSession = true, module = "compactPorkchop")
         @IntBool
         public int enableCompactPorkchop = 1;
 
+        //Ding module
         @ConfigProp(side = Side.CLIENT, module = "ding")
         @IntBool
         public int dingEnabled = 1;
@@ -95,8 +98,18 @@ public class iChunUtil
         @IntMinMax(min = -5000, max = 5000)
         public int dingSoundPitch = 100;
 
+        //EULA module
         @ConfigProp(module = "eula")
         public String eulaAcknowledged = "";
+
+        //Patreon module
+        @ConfigProp(side = Side.CLIENT, module = "patreon", hidden = true)
+        @IntBool
+        public int showPatronReward = 1;
+
+        @ConfigProp(side = Side.CLIENT, module = "patreon", hidden = true)
+        @IntMinMax(min = 1, max = 5)
+        public int patronRewardType = 1;
 
         //End Modules
 
@@ -143,6 +156,15 @@ public class iChunUtil
                 }
             }
         }
+
+        @Override
+        public void onConfigChange(Field field, Object original) //Nested int array and keybind original is the new var, no ori cause lazy
+        {
+            if(field.getName().equals("showPatronReward") || field.getName().equals("patronRewardType"))
+            {
+                iChunUtil.eventHandlerClient.patronUpdateServerAsPatron = true;
+            }
+        }
     }
 
     @Mod.EventHandler
@@ -172,6 +194,7 @@ public class iChunUtil
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event)
     {
+        eventHandlerServer.shuttingDownServer();
     }
 
     public boolean hasPostInit()

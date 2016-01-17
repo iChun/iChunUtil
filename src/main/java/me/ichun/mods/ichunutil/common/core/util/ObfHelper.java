@@ -47,4 +47,9 @@ public class ObfHelper
         {
         }
     }
+
+    public static boolean obfuscated()
+    {
+        return isObfuscated;
+    }
 }

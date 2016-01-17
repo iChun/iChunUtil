@@ -131,19 +131,12 @@ public class PacketChannel
                 PacketHandlerWrapper handlerClient = new PacketHandlerWrapper(Side.CLIENT, packetClass);
                 channelClient.pipeline().addAfter(typeClient, generateName(channelClient.pipeline(), handlerClient), handlerClient);
             }
-            else if(side.isServer())
-            {
-                FMLEmbeddedChannel channelServer = channels.get(Side.SERVER);
-                String typeServer = channelServer.findChannelHandlerNameForType(AbstractPacketCodec.class);
-                PacketHandlerWrapper handlerServer = new PacketHandlerWrapper(Side.SERVER, packetClass);
-                channelServer.pipeline().addAfter(typeServer, generateName(channelServer.pipeline(), handlerServer), handlerServer);
-            }
             else
             {
-                FMLEmbeddedChannel channelClient = channels.get(Side.CLIENT);
-                String typeClient = channelClient.findChannelHandlerNameForType(AbstractPacketCodec.class);
-                PacketHandlerWrapper handlerClient = new PacketHandlerWrapper(Side.CLIENT, packetClass);
-                channelClient.pipeline().addAfter(typeClient, generateName(channelClient.pipeline(), handlerClient), handlerClient);
+                FMLEmbeddedChannel channel = channels.get(side);
+                String type = channel.findChannelHandlerNameForType(AbstractPacketCodec.class);
+                PacketHandlerWrapper handler = new PacketHandlerWrapper(side, packetClass);
+                channel.pipeline().addAfter(type, generateName(channel.pipeline(), handler), handler);
             }
         }
         catch (Exception e)

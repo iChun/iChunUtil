@@ -6,7 +6,10 @@ import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketPatronInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -45,10 +48,16 @@ public class EventHandlerClient
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
 
     //Module stuff
+    //Ding module
     public boolean dingPlayedSound;
 
-    public boolean eulaDrawEulaNotice = !iChunUtil.config.eulaAcknowledged.equals(RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode())))))));
+    //EULA module
+    public boolean eulaDrawEulaNotice = !iChunUtil.config.eulaAcknowledged.equals(RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode()))))))) && !ObfHelper.obfuscated();
     public WindowAnnoy eulaWindow = new WindowAnnoy();
+
+    //Patron module
+    public boolean patronUpdateServerAsPatron;
+    public ArrayList<PatronInfo> patrons = new ArrayList<PatronInfo>();
     //End Module Stuff
 
     public EventHandlerClient()
@@ -116,6 +125,11 @@ public class EventHandlerClient
                     connectingToServer = false;
                     MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
                 }
+                if(patronUpdateServerAsPatron)
+                {
+                    patronUpdateServerAsPatron = false;
+                    iChunUtil.channel.sendToServer(new PacketPatronInfo(iChunUtil.proxy.getPlayerId(), iChunUtil.config.patronRewardType, iChunUtil.config.showPatronReward == 1));
+                }
                 for(KeyBind bind : keyBindList)
                 {
                     bind.tick();
@@ -149,6 +163,11 @@ public class EventHandlerClient
     {
         connectingToServer = true;
 
+        if(iChunUtil.userIsPatron)
+        {
+            patronUpdateServerAsPatron = true;
+        }
+
         for(ConfigBase conf : ConfigHandler.configs)
         {
             conf.storeSession();
@@ -158,6 +177,8 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
+        patrons.clear();
+
         for(ConfigBase conf : ConfigHandler.configs)
         {
             conf.resetSession();

@@ -23,14 +23,14 @@ public abstract class AbstractPacket
     public abstract AbstractPacket execute(Side side, EntityPlayer player);
 
     /**
+     * @return The side that will be receiving the packet, null for both sides.
+     */
+    public abstract Side receivingSide();
+
+    /**
      * By default all packets are only executed on the next main server/client render tick to prevent CME issues.
      * If your packet is thread-safe you can return false for this.
      * @return is packet executed on the main ticking thread.
      */
     public boolean requiresMainThread(){ return true; };
-
-    /**
-     * @return The side that will be receiving the packet, null for both sides.
-     */
-    public Side receivingSide() { return null; }
 }
