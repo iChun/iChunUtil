@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.common.core.event;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
+import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 
 public class EventHandlerServer
 {
+    public int ticks;
+
     public ArrayList<PatronInfo> patrons = new ArrayList<PatronInfo>();
     public EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
 
@@ -24,6 +27,23 @@ public class EventHandlerServer
         if(event.phase == TickEvent.Phase.END)
         {
             entityTrackerRegistry.tick();
+
+            ticks++;
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.side.isServer() && event.phase == TickEvent.Phase.END)
+        {
+            if(EventCalendar.isAFDay())
+            {
+                if(event.player.isPlayerSleeping() && event.player.getRNG().nextFloat() < 0.025F || event.player.getRNG().nextFloat() < 0.005F)
+                {
+                    event.player.getEntityWorld().playSoundAtEntity(event.player, "mob.pig.say", event.player.isPlayerSleeping() ? 0.2F : 1.0F, (event.player.getRNG().nextFloat() - event.player.getRNG().nextFloat()) * 0.2F + 1.0F);
+                }
+            }
         }
     }
 
