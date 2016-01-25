@@ -29,6 +29,7 @@ public class GrabHandler
     public boolean forceTerminate;
     public int time;
 
+    //TODO handler entities travelling through dimensions if they're holding something in the new forge.
     public GrabHandler(EntityLivingBase grabber, Entity grabbed, float distance) //3.5F is a nice value for grab distance
     {
         this.identifier = RandomStringUtils.randomAscii(20);
