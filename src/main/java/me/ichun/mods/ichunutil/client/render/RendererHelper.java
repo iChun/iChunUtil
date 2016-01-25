@@ -520,7 +520,7 @@ public class RendererHelper
 
     public static ArrayList<Framebuffer> frameBuffers = new ArrayList<Framebuffer>();
 
-    public static Framebuffer createFrameBuffer(String modId, boolean useDepth)
+    public static Framebuffer createFrameBuffer(boolean useDepth)
     {
         Framebuffer render = new Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, useDepth);
         frameBuffers.add(render);

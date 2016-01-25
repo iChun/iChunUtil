@@ -4,15 +4,19 @@ import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
+import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketNewGrabbedEntityId;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,8 @@ public class EventHandlerServer
         if(event.phase == TickEvent.Phase.END)
         {
             entityTrackerRegistry.tick();
+
+            GrabHandler.tick(Side.SERVER);
 
             ticks++;
         }
@@ -64,14 +70,66 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
+    {
+        ArrayList<GrabHandler> handlers = GrabHandler.getHandlers(event.player, Side.SERVER);
+        for(int i = handlers.size() - 1; i >= 0; i--)
+        {
+            GrabHandler handler = handlers.get(i);
+            if(handler.canSendAcrossDimensions())
+            {
+                GrabHandler.dimensionalEntities.add(handler.grabbed.getEntityId());
+                handler.grabbed.getEntityData().setInteger("Grabbed-ID", handler.grabbed.getEntityId());
+                handler.grabbed.travelToDimension(event.player.dimension);
+                handler.update();
+            }
+            else
+            {
+                handler.terminate();
+                handlers.remove(i);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
     {
         patrons.remove(new PatronInfo(event.player.getGameProfile().getId().toString().replaceAll("-", ""), 1, false)); //Removes the player from the patron list if the player is one.
+    }
+
+    @SubscribeEvent
+    public void onEntitySpawn(EntityJoinWorldEvent event)
+    {
+        if(!event.entity.worldObj.isRemote && event.entity.getEntityData().hasKey("Grabbed-ID"))
+        {
+            Integer x = event.entity.getEntityData().getInteger("Grabbed-ID");
+            if(event.entity.getEntityId() != x)
+            {
+                for(int i = GrabHandler.dimensionalEntities.size() - 1; i >= 0; i--)
+                {
+                    if(GrabHandler.dimensionalEntities.get(i).equals(x))
+                    {
+                        GrabHandler.dimensionalEntities.remove(i);
+                        for(GrabHandler handler : GrabHandler.grabbedEntities.get(Side.SERVER))
+                        {
+                            if(handler.grabbed.getEntityId() == x)
+                            {
+                                handler.grabbed = event.entity;
+                                iChunUtil.channel.sendToAll(new PacketNewGrabbedEntityId(true, x, event.entity.getEntityId()));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void shuttingDownServer()
     {
         patrons.clear();
         entityTrackerRegistry.trackerEntries.clear();
+
+        GrabHandler.grabbedEntities.get(Side.SERVER).clear();
+        GrabHandler.dimensionalEntities.clear();
     }
 }

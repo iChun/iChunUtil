@@ -8,17 +8,16 @@ import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
+import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.packet.mod.PacketPatronInfo;
-import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
-import me.ichun.mods.ichunutil.common.packet.mod.PacketSession;
-import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
+import me.ichun.mods.ichunutil.common.packet.mod.*;
 import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,7 +34,9 @@ public class ProxyCommon
 
         iChunUtil.blockCompactPorkchop = GameRegistry.registerBlock((new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop"), "compactPorkchop");
 
-        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class, PacketUserShouldShowUpdates.class);
+        EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
+
+        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class, PacketUserShouldShowUpdates.class, PacketBlockEntityData.class, PacketNewGrabbedEntityId.class, PacketRequestBlockEntityData.class);
     }
 
     public void init()

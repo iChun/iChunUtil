@@ -14,6 +14,7 @@ import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatronInfo;
@@ -45,6 +46,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -218,6 +220,8 @@ public class EventHandlerClient
                 if(!mc.isGamePaused())
                 {
                     entityTrackerRegistry.tick();
+
+                    GrabHandler.tick(Side.CLIENT);
                 }
             }
             ticks++;
@@ -258,6 +262,8 @@ public class EventHandlerClient
         entityTrackerRegistry.trackerEntries.clear();
         latchedRendererEntities.clear();
 
+        GrabHandler.grabbedEntities.get(Side.CLIENT).clear();
+
         for(ConfigBase conf : ConfigHandler.configs)
         {
             conf.resetSession();
@@ -284,6 +290,19 @@ public class EventHandlerClient
         {
             hasShownFirstGui = true;
             MinecraftForge.EVENT_BUS.post(new RendererSafeCompatibilityEvent());
+        }
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event)
+    {
+        if(event.world.isRemote)
+        {
+            for(GrabHandler handler : GrabHandler.grabbedEntities.get(Side.CLIENT))
+            {
+                handler.grabber = null;
+                handler.grabbed = null;
+            }
         }
     }
 

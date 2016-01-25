@@ -7,6 +7,7 @@ import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -63,6 +64,38 @@ public class EntityHelper
         }
 
         return oriRot + var4;
+    }
+
+    public static Vec3 getEntityPositionEyes(Entity ent, float partialTicks)
+    {
+        if (partialTicks == 1.0F)
+        {
+            return new Vec3(ent.posX, ent.posY + (double)ent.getEyeHeight(), ent.posZ);
+        }
+        else
+        {
+            double d0 = ent.prevPosX + (ent.posX - ent.prevPosX) * (double)partialTicks;
+            double d1 = ent.prevPosY + (ent.posY - ent.prevPosY) * (double)partialTicks + (double)ent.getEyeHeight();
+            double d2 = ent.prevPosZ + (ent.posZ - ent.prevPosZ) * (double)partialTicks;
+            return new Vec3(d0, d1, d2);
+        }
+    }
+
+    public static float interpolateRotation(float prevRotation, float nextRotation, float partialTick)
+    {
+        float f3;
+
+        for (f3 = nextRotation - prevRotation; f3 < -180.0F; f3 += 360.0F)
+        {
+            ;
+        }
+
+        while (f3 >= 180.0F)
+        {
+            f3 -= 360.0F;
+        }
+
+        return prevRotation + partialTick * f3;
     }
 
     public static float interpolateValues(float prevVal, float nextVal, float partialTick)

@@ -10,6 +10,7 @@ import me.ichun.mods.ichunutil.common.core.ProxyCommon;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -56,6 +57,7 @@ public class ProxyClient extends ProxyCommon
         MinecraftForge.EVENT_BUS.register(iChunUtil.eventHandlerClient);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new EntityLatchedRenderer(null));
+        RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new EntityBlock(null));
     }
 
     @Override
