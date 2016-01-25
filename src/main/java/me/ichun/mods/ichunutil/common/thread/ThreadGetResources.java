@@ -2,12 +2,14 @@ package me.ichun.mods.ichunutil.common.thread;
 
 import com.google.gson.Gson;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Map;
 
 public class ThreadGetResources extends Thread
 {
@@ -52,6 +54,17 @@ public class ThreadGetResources extends Thread
                 iChunUtil.LOGGER.warn("Error retrieving iChunUtil patron list.");
                 e.printStackTrace();
             }
+        }
+        try
+        {
+            Gson gson = new Gson();
+            Reader fileIn = new InputStreamReader(new URL(versionList).openStream());
+            UpdateChecker.processModsList(gson.fromJson(fileIn, Map.class));
+        }
+        catch(Exception e)
+        {
+            iChunUtil.LOGGER.warn("Error retrieving mods versions list.");
+            e.printStackTrace();
         }
     }
 }

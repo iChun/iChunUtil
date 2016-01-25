@@ -7,6 +7,8 @@ import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -58,6 +60,7 @@ public class EventHandlerServer
             }
         }
         iChunUtil.channel.sendTo(new PacketPatrons(null), event.player);
+        iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && MinecraftServer.getServer().getConfigurationManager().canSendCommands(event.player.getGameProfile()))), event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

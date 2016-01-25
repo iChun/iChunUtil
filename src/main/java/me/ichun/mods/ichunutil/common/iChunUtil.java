@@ -12,6 +12,8 @@ import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
+import me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -21,10 +23,7 @@ import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -35,7 +34,8 @@ import java.util.List;
 @Mod(modid = iChunUtil.MOD_NAME, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)"
+        dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
@@ -43,7 +43,8 @@ public class iChunUtil
     //Stuff to bump every update
     public static final String VERSION_OF_MC = "1.8.9";
     public static final int VERSION_MAJOR = 6;
-    public static final String VERSION = VERSION_MAJOR + ".0.0";
+    public static final int VERSION_MINOR = 0;
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
 
@@ -113,6 +114,19 @@ public class iChunUtil
         @IntMinMax(min = 1, max = 5)
         public int patronRewardType = 1;
 
+        //Update checker module
+        @ConfigProp(module = "versionCheck")
+        @IntMinMax(min = 0, max = 2)
+        public int versionNotificationTypes = 0;
+
+        @ConfigProp(side = Side.CLIENT, module = "versionCheck")
+        @IntMinMax(min = 0, max = 2)
+        public int versionNotificationFrequency = 2;
+
+        @ConfigProp(side = Side.CLIENT, module = "versionCheck")
+        @IntMinMax(min = 0, max = 35)
+        public int versionSave = 0;
+
         //End Modules
 
         public Config(File file)
@@ -177,6 +191,8 @@ public class iChunUtil
         config = (Config)ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
 
         proxy.preInit();
+
+        UpdateChecker.registerMod(new UpdateChecker.ModVersionInfo(MOD_NAME, iChunUtil.VERSION_OF_MC, VERSION, false));
     }
 
     @Mod.EventHandler
@@ -192,6 +208,14 @@ public class iChunUtil
         hasMorphMod = Loader.isModLoaded("Morph");
 
         proxy.postInit();
+
+//        UpdateVersionGen.generate();
+    }
+
+    @Mod.EventHandler
+    public void onServerStarted(FMLServerStartedEvent event)
+    {
+        UpdateChecker.serverStarted();
     }
 
     @Mod.EventHandler

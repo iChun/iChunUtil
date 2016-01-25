@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.module.eula.WindowAnnoy;
 import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.client.module.patron.ModelVoxel;
 import me.ichun.mods.ichunutil.client.module.patron.PatronTracker;
+import me.ichun.mods.ichunutil.client.module.update.GuiUpdateNotifier;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.client.render.entity.RenderLatchedRenderer;
 import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
@@ -179,6 +180,7 @@ public class EventHandlerClient
                     eulaWindow.onClick(i - eulaWindow.posX, j - eulaWindow.posY, 0);
                 }
             }
+            GuiUpdateNotifier.update();
         }
     }
 

@@ -12,6 +12,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketSession;
+import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
 import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
@@ -34,7 +35,7 @@ public class ProxyCommon
 
         iChunUtil.blockCompactPorkchop = GameRegistry.registerBlock((new BlockCompactPorkchop()).setCreativeTab(CreativeTabs.tabBlock).setHardness(0.8F).setUnlocalizedName("ichunutil.block.compactporkchop"), "compactPorkchop");
 
-        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class);
+        iChunUtil.channel = new PacketChannel(iChunUtil.MOD_NAME, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class, PacketUserShouldShowUpdates.class);
     }
 
     public void init()
