@@ -127,48 +127,4 @@ public class ObfHelper
         }
         return DefaultPlayerSkin.getDefaultSkinLegacy();
     }
-
-    public static <T extends EntityLivingBase> String getHurtSound(T ent, Class clz)
-    {
-        try
-        {
-            Method m = clz.getDeclaredMethod(ObfHelper.isObfuscated ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf);
-            m.setAccessible(true);
-            return (String)m.invoke(ent);
-        }
-        catch(NoSuchMethodException e)
-        {
-            if(clz != EntityLivingBase.class)
-            {
-                return getHurtSound(ent, clz.getSuperclass());
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return "game.neutral.hurt";
-    }
-
-    public static <T extends EntityLivingBase> String getDeathSound(T ent, Class clz)
-    {
-        try
-        {
-            Method m = clz.getDeclaredMethod(ObfHelper.isObfuscated ? ObfHelper.getDeathSoundObf : ObfHelper.getDeathSoundDeobf);
-            m.setAccessible(true);
-            return (String)m.invoke(ent);
-        }
-        catch(NoSuchMethodException e)
-        {
-            if(clz != EntityLivingBase.class)
-            {
-                return getDeathSound(ent, clz.getSuperclass());
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return "game.neutral.die";
-    }
 }
