@@ -60,11 +60,15 @@ public class GrabHandler
         Vec3 grabPos = new Vec3(pos.xCoord + (look.xCoord * grabDistance), pos.yCoord + (look.yCoord * grabDistance), pos.zCoord + (look.zCoord * grabDistance));
 
         float distTolerance = grabToleranceTillTeleport();
-        if(distTolerance > 0.0F && grabbed.getDistance(grabPos.xCoord, grabPos.yCoord, grabPos.zCoord) > distTolerance) //if grabber is too far from
+        if(distTolerance > 0.0F && grabbed.getDistance(grabPos.xCoord, grabPos.yCoord, grabPos.zCoord) > distTolerance) //if grabbed is too far from the grabbed position, teleport to grabber and move to grabbed position?
         {
             grabbed.lastTickPosX = grabbed.prevPosX = grabbed.posX = grabber.posX;
             grabbed.lastTickPosY = grabbed.prevPosY = grabbed.posY = grabber.posY;
             grabbed.lastTickPosZ = grabbed.prevPosZ = grabbed.posZ = grabber.posZ;
+            grabbed.setLocationAndAngles(grabbed.posX, grabbed.posY, grabbed.posZ, grabbed.rotationYaw, grabbed.rotationPitch);
+
+            EntityHelper.setVelocity(grabbed, (grabPos.xCoord - grabbed.posX), (grabPos.yCoord - ((grabbed.getEntityBoundingBox().minY + grabbed.getEntityBoundingBox().maxY) / 2D)), (grabPos.zCoord - grabbed.posZ));
+            grabbed.moveEntity(grabbed.motionX, grabbed.motionY, grabbed.motionZ);
             grabbed.setLocationAndAngles(grabbed.posX, grabbed.posY, grabbed.posZ, grabbed.rotationYaw, grabbed.rotationPitch);
         }
         EntityHelper.setVelocity(grabbed, (grabPos.xCoord - grabbed.posX), (grabPos.yCoord - ((grabbed.getEntityBoundingBox().minY + grabbed.getEntityBoundingBox().maxY) / 2D)), (grabPos.zCoord - grabbed.posZ));
@@ -241,10 +245,10 @@ public class GrabHandler
         add(new GrabbedEntityBlockHandler());
     }};
 
-    public static interface GrabbedEntityHandler
+    public interface GrabbedEntityHandler
     {
-        public boolean eligible(Entity grabbed);
-        public void handle(GrabHandler grabHandler);
+        boolean eligible(Entity grabbed);
+        void handle(GrabHandler grabHandler);
     }
 
     public static void registerEntityHandler(GrabbedEntityHandler handler)
