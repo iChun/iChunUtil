@@ -22,7 +22,8 @@ public class RendererHelper
 
     public static void init()
     {
-        if(iChunUtil.config.enableStencils == 1)
+        canUseStencils = Minecraft.getMinecraft().getFramebuffer().isStencilEnabled();
+        if(iChunUtil.config.enableStencils == 1 && !canUseStencils)
         {
             canUseStencils = Minecraft.getMinecraft().getFramebuffer().enableStencil();
         }
