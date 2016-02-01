@@ -481,9 +481,13 @@ public class RendererHelper
 
     public static ArrayList<Framebuffer> frameBuffers = new ArrayList<Framebuffer>();
 
-    public static Framebuffer createFrameBuffer(boolean useDepth)
+    public static Framebuffer createFrameBuffer(boolean useDepth, boolean useStencil)
     {
         Framebuffer render = new Framebuffer(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, useDepth);
+        if(useStencil && canUseStencils())
+        {
+            render.enableStencil();
+        }
         frameBuffers.add(render);
         return render;
     }
