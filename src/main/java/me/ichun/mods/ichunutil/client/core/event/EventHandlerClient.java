@@ -87,9 +87,6 @@ public class EventHandlerClient
     public ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<EntityLatchedRenderer>();
 
     //Module stuff
-    //Ding module
-    public boolean dingPlayedSound;
-
     //EULA module
     public boolean eulaDrawEulaNotice = !iChunUtil.config.eulaAcknowledged.equals(RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode()))))))) && !ObfHelper.obfuscated();
     public WindowAnnoy eulaWindow = new WindowAnnoy();
@@ -270,19 +267,6 @@ public class EventHandlerClient
         for(ConfigBase conf : ConfigHandler.configs)
         {
             conf.resetSession();
-        }
-    }
-
-    @SubscribeEvent
-    public void onGuiOpen(GuiOpenEvent event)
-    {
-        if(event.gui instanceof GuiMainMenu && !dingPlayedSound)
-        {
-            dingPlayedSound = true;
-            if(iChunUtil.config.dingEnabled == 1 && !Loader.isModLoaded("Ding"))
-            {
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation(iChunUtil.config.dingSoundName), (iChunUtil.config.dingSoundPitch / 100F)));
-            }
         }
     }
 
@@ -583,7 +567,7 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onGuiActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event)
     {
-        if(!ObfHelper.obfuscated() && (event.gui.getClass() == GuiIngameMenu.class && event.button.id == 12 || event.gui.getClass() == GuiMainMenu.class && event.button.id == 6) && !GuiScreen.isShiftKeyDown())
+        if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && (event.gui.getClass() == GuiIngameMenu.class && event.button.id == 12 || event.gui.getClass() == GuiMainMenu.class && event.button.id == 6) && !GuiScreen.isShiftKeyDown())
         {
             event.setCanceled(true);
 

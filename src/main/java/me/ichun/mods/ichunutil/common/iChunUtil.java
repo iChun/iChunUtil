@@ -89,18 +89,6 @@ public class iChunUtil
         @IntBool
         public int enableCompactPorkchop = 1;
 
-        //Ding module
-        @ConfigProp(side = Side.CLIENT, module = "ding")
-        @IntBool
-        public int dingEnabled = 1;
-
-        @ConfigProp(side = Side.CLIENT, module = "ding")
-        public String dingSoundName = "random.orb";
-
-        @ConfigProp(side = Side.CLIENT, module = "ding")
-        @IntMinMax(min = -5000, max = 5000)
-        public int dingSoundPitch = 100;
-
         //EULA module
         @ConfigProp(module = "eula")
         public String eulaAcknowledged = "";

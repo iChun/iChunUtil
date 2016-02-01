@@ -27,30 +27,22 @@ ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron r
 ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout\n3 = Ghost trails\n4 = Bee buzzing around your head (tribute to Bee Barker)\n5 = Fire trails with exaggerated sprint 
 
 ichunutil.config.cat.module.compactPorkchop.name=Compact Porkchop Block
-ichunutil.config.cat.module.ding.name=Ding
 ichunutil.config.cat.module.eula.name=EULA
 ichunutil.config.cat.module.patreon.name=Patreon
 ichunutil.config.cat.module.versionCheck.name=Update Checker
 
 ichunutil.config.cat.module.compactPorkchop.comment=Configs for the compact porkchop block module in iChunUtil.
-ichunutil.config.cat.module.ding.comment=Configs for the ding module in iChunUtil - It plays a sound when Minecraft has completed loading.
 ichunutil.config.cat.module.eula.comment=EULA settings.
 ichunutil.config.cat.module.patreon.comment=Patreon related configs.
 ichunutil.config.cat.module.versionCheck.comment=These configs are for the mod version update checker for iChun's mods.
 
 ichunutil.config.prop.enableCompactPorkchop.name=Allow Compact Raw Porkchop?
-ichunutil.config.prop.dingEnabled.name=Enable Ding?
-ichunutil.config.prop.dingSoundName.name=Ding Sound Name
-ichunutil.config.prop.dingSoundPitch.name=Ding Sound Pitch
 ichunutil.config.prop.eulaAcknowledged.name=EULA acknowledged
 ichunutil.config.prop.versionNotificationTypes.name=Update Notification Types
 ichunutil.config.prop.versionNotificationFrequency.name=Update Notification Frequency
 ichunutil.config.prop.versionSave.name=Update Notification Save
 
 ichunutil.config.prop.enableCompactPorkchop.comment=Enable the Compact Raw Porkchop block recipe?
-ichunutil.config.prop.dingEnabled.comment=Plays a sound when Minecraft is completely loaded.\nAutomatically disables if the standalone Ding mod is installed.
-ichunutil.config.prop.dingSoundName.comment=Minecraft name of sound file to play\nEG: "gui.button.press" or "random.orb"\n\n" + "This can also be a mod sound if the mod is installed.\nEG: modname:modsound.boing
-ichunutil.config.prop.dingSoundPitch.comment=Pitch of the sound to play.\nDefault/normal pitch is 100.
 ichunutil.config.prop.eulaAcknowledged.comment=String to say that you've acknowledged the EULA\nIf this config is for a server, set it to true.
 ichunutil.config.prop.versionNotificationTypes.comment=How will the CLIENT be notified of updates? (Servers will always have the update printed to the console. Singleplayer is yourself joining a self hosted server)\n0 = Notify of updates regardless of player status.\n1 = Notify only command senders of updates (Clientside only mod updates will still show)\n2 = Do not notify
 ichunutil.config.prop.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Never (This just hides notifications. The mod will still check for updates and print out to the console)\n1 = Once you connect to server\n2 = Once a day
