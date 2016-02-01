@@ -282,9 +282,9 @@ public class RendererHelper
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
         worldrenderer.pos(posX, posY + height, zLevel).tex(0.0D, 1.0D).endVertex();
-        worldrenderer.pos(posX + width, posY + height, zLevel).tex(1.0D, 1.0D).endVertex();;
-        worldrenderer.pos(posX + width, posY, zLevel).tex(1.0D, 0.0D).endVertex();;
-        worldrenderer.pos(posX, posY, zLevel).tex(0.0D, 0.0D).endVertex();;
+        worldrenderer.pos(posX + width, posY + height, zLevel).tex(1.0D, 1.0D).endVertex();
+        worldrenderer.pos(posX + width, posY, zLevel).tex(1.0D, 0.0D).endVertex();
+        worldrenderer.pos(posX, posY, zLevel).tex(0.0D, 0.0D).endVertex();
         tessellator.draw();
     }
 
@@ -371,55 +371,23 @@ public class RendererHelper
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         double sHeight = height / 6D;
-
+        int[][] colourArray = new int[][] { { 255, 0, 0 }, { 255, 0, 255 }, { 0, 0, 255 }, { 0, 255, 255 }, { 0, 255, 0 }, { 255, 255, 0 }, { 255, 0, 0 } };
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + sHeight, zLevel).color(255, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + sHeight, zLevel).color(255, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY, zLevel).color(255, 0, 0, alpha).endVertex();
-        worldrenderer.pos(posX, posY, zLevel).color(255, 0, 0, alpha).endVertex();
-        tessellator.draw();
 
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + (sHeight * 2D), zLevel).color(0, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 2D), zLevel).color(0, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + sHeight , zLevel).color(255, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX, posY + sHeight , zLevel).color(255, 0, 255, alpha).endVertex();
-        tessellator.draw();
-
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + (sHeight * 3D), zLevel).color(0, 255, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 3D), zLevel).color(0, 255, 255, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 2D), zLevel).color(0, 0, 255, alpha).endVertex();
-        worldrenderer.pos(posX, posY + (sHeight * 2D), zLevel).color(0, 0, 255, alpha).endVertex();
-        tessellator.draw();
-
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + (sHeight * 4D), zLevel).color(0, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 4D), zLevel).color(0, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 3D), zLevel).color(0, 255, 255, alpha).endVertex();
-        worldrenderer.pos(posX, posY + (sHeight * 3D), zLevel).color(0, 255, 255, alpha).endVertex();
-        tessellator.draw();
-
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + (sHeight * 5D), zLevel).color(255, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 5D), zLevel).color(255, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 4D) , zLevel).color(0, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX, posY + (sHeight * 4D) , zLevel).color(0, 255, 0, alpha).endVertex();
-        tessellator.draw();
-
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos(posX, posY + (sHeight * 6D), zLevel).color(255, 0, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 6D), zLevel).color(255, 0, 0, alpha).endVertex();
-        worldrenderer.pos(posX + width, posY + (sHeight * 5D) , zLevel).color(255, 255, 0, alpha).endVertex();
-        worldrenderer.pos(posX, posY + (sHeight * 5D) , zLevel).color(255, 255, 0, alpha).endVertex();
-        tessellator.draw();
-
+        for(int i = 0; i < 6; i++)
+        {
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            worldrenderer.pos(posX, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
+            worldrenderer.pos(posX + width, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
+            worldrenderer.pos(posX + width, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
+            worldrenderer.pos(posX, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
+            tessellator.draw();
+        }
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
