@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.core.event;
 
 import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
+import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.module.eula.WindowAnnoy;
 import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
@@ -24,7 +25,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -574,5 +577,17 @@ public class EventHandlerClient
             }
         }
         return info;
+    }
+
+    //I'm lazy okay?
+    @SubscribeEvent
+    public void onGuiActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event)
+    {
+        if(!ObfHelper.obfuscated() && (event.gui.getClass() == GuiIngameMenu.class && event.button.id == 12 || event.gui.getClass() == GuiMainMenu.class && event.button.id == 6) && !GuiScreen.isShiftKeyDown())
+        {
+            event.setCanceled(true);
+
+            Minecraft.getMinecraft().displayGuiScreen(new GuiConfigs(Minecraft.getMinecraft().currentScreen));
+        }
     }
 }
