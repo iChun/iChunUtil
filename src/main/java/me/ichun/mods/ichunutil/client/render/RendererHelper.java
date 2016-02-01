@@ -1,44 +1,36 @@
 package me.ichun.mods.ichunutil.client.render;
 
-import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class RendererHelper
 {
+    private static boolean canUseStencils;
+
     public static void init()
     {
         if(iChunUtil.config.enableStencils == 1)
         {
-            Minecraft.getMinecraft().getFramebuffer().enableStencil();
+            canUseStencils = Minecraft.getMinecraft().getFramebuffer().enableStencil();
         }
+    }
+
+    public static boolean canUseStencils()
+    {
+        return canUseStencils;
     }
 
 //    public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
