@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -50,6 +51,7 @@ public class EntityBlock extends Entity
 
     public IBlockState[][][] blocks;
     public NBTTagCompound[][][] tileEntityNBTs;
+    public TileEntityMobSpawner[][][] mobSpawners;
 
     @SideOnly(Side.CLIENT)
     public TileEntity[][][] renderingTileEntities;
@@ -112,6 +114,7 @@ public class EntityBlock extends Entity
 
         blocks = new IBlockState[countX][countY][countZ];
         tileEntityNBTs = new NBTTagCompound[countX][countY][countZ];
+        mobSpawners = new TileEntityMobSpawner[countX][countY][countZ];
         for(BlockPos pos : poses)
         {
             IBlockState state = world.getBlockState(pos);
@@ -129,6 +132,13 @@ public class EntityBlock extends Entity
                     te.writeToNBT(tileEntityNBTs[highX - pos.getX()][highY - pos.getY()][highZ - pos.getZ()]);
 
                     te.invalidate();
+
+                    TileEntity te1 = state.getBlock().createTileEntity(world, state);
+                    if(te instanceof TileEntityMobSpawner && te1 instanceof TileEntityMobSpawner)
+                    {
+                        te1.readFromNBT(tileEntityNBTs[highX - pos.getX()][highY - pos.getY()][highZ - pos.getZ()]);
+                        mobSpawners[highX - pos.getX()][highY - pos.getY()][highZ - pos.getZ()] = (TileEntityMobSpawner)te1;
+                    }
                 }
             }
 
@@ -340,6 +350,28 @@ public class EntityBlock extends Entity
 
                 setRotFacYaw(rand.nextFloat() * (2F * maxRotFac) - maxRotFac);
                 setRotFacPitch(rand.nextFloat() * (2F * maxRotFac) - maxRotFac);
+            }
+        }
+        else if(!worldObj.isRemote)
+        {
+            for(int i = 0; i < mobSpawners.length; i++)
+            {
+                for(int j = mobSpawners[i].length - 1; j >= 0; j--)
+                {
+                    for(int k = 0; k < mobSpawners[i][j].length; k++)
+                    {
+                        if(mobSpawners[i][j][k] != null)
+                        {
+                            BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
+                            TileEntityMobSpawner spawner = mobSpawners[i][j][k];
+                            spawner.setWorldObj(worldObj);
+                            spawner.setPos(pos);
+                            //Update the spawner twice to double spawn rate.
+                            spawner.update();
+                            spawner.update();
+                        }
+                    }
+                }
             }
         }
 
