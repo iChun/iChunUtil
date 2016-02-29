@@ -75,6 +75,7 @@ public class EventHandlerClient
 
     public int ticks;
     public float renderTick;
+    public boolean hasScreen;
 
     public int screenWidth;
     public int screenHeight;
@@ -216,6 +217,7 @@ public class EventHandlerClient
                     }
                     e.getValue().tick();
                 }
+                hasScreen = mc.currentScreen != null;
 
                 if(!mc.isGamePaused())
                 {
