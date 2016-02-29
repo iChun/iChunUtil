@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 public class ThreadGetResources extends Thread
@@ -49,6 +50,10 @@ public class ThreadGetResources extends Thread
                     }
                 }
             }
+            catch(UnknownHostException e)
+            {
+                iChunUtil.LOGGER.warn("Error retrieving iChunUtil patron list: UnknownHostException. Is your internet connection working?");
+            }
             catch(Exception e)
             {
                 iChunUtil.LOGGER.warn("Error retrieving iChunUtil patron list.");
@@ -60,6 +65,10 @@ public class ThreadGetResources extends Thread
             Gson gson = new Gson();
             Reader fileIn = new InputStreamReader(new URL(versionList).openStream());
             UpdateChecker.processModsList(gson.fromJson(fileIn, Map.class));
+        }
+        catch(UnknownHostException e)
+        {
+            iChunUtil.LOGGER.warn("Error retrieving mods versions list: UnknownHostException. Is your internet connection working?");
         }
         catch(Exception e)
         {

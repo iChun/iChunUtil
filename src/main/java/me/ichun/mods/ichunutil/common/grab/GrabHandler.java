@@ -181,7 +181,7 @@ public class GrabHandler
         for(int i = ents.size() - 1; i >= 0; i--)
         {
             GrabHandler handler = ents.get(i);
-            if(handler.grabber == grabber && clz.isInstance(handler))
+            if(handler.grabber == grabber && (clz == null || clz.isInstance(handler)))
             {
                 handler.terminate();
                 ents.remove(i);
@@ -216,7 +216,7 @@ public class GrabHandler
     {
         for(GrabHandler handler : getHandlers(grabber, side))
         {
-            if(clz.isInstance(handler))
+            if((clz == null || clz.isInstance(handler)))
             {
                 return handler;
             }
