@@ -13,8 +13,10 @@ import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
@@ -79,6 +81,39 @@ public class ProxyClient extends ProxyCommon
     public String getPlayerId()
     {
         return Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "");
+    }
+
+    @Override
+    public void adjustRotation(Entity ent, float yawChange, float pitchChange)
+    {
+        float prevYaw = 0.0F;
+        float yaw = 0.0F;
+        float prevPitch = 0.0F;
+        float pitch = 0.0F;
+
+        if (ent instanceof EntityPlayerSP)
+        {
+            EntityPlayerSP player = (EntityPlayerSP)ent;
+            prevYaw = player.prevRotationYaw - player.prevRenderArmYaw;
+            yaw = player.rotationYaw - player.renderArmYaw;
+            prevPitch = player.prevRotationPitch - player.prevRenderArmPitch;
+            pitch = player.rotationPitch - player.renderArmPitch;
+        }
+
+        super.adjustRotation(ent, yawChange, pitchChange);
+
+        if (ent instanceof EntityPlayerSP)
+        {
+            EntityPlayerSP player = (EntityPlayerSP)ent;
+            player.prevRenderArmYaw = player.prevRotationYaw;
+            player.renderArmYaw = player.rotationYaw;
+            player.prevRenderArmPitch = player.prevRotationPitch;
+            player.renderArmPitch = player.rotationPitch;
+            player.prevRenderArmYaw -= prevYaw;
+            player.renderArmYaw -= yaw;
+            player.prevRenderArmPitch -= prevPitch;
+            player.renderArmPitch -= pitch;
+        }
     }
 
     @Override

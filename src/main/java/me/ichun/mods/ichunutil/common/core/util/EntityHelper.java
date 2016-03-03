@@ -448,6 +448,55 @@ public class EntityHelper
         }
     }
 
+    public static void addPosition(Entity living, double offset, boolean subtract, int axis)
+    {
+        if (axis == 0) //X axis
+        {
+            if (subtract)
+            {
+                living.lastTickPosX -= offset;
+                living.prevPosX -= offset;
+                living.posX -= offset;
+            }
+            else
+            {
+                living.lastTickPosX += offset;
+                living.prevPosX += offset;
+                living.posX += offset;
+            }
+        }
+        else if (axis == 1) //Y axis
+        {
+            if (subtract)
+            {
+                living.lastTickPosY -= offset;
+                living.prevPosY -= offset;
+                living.posY -= offset;
+            }
+            else
+            {
+                living.lastTickPosY += offset;
+                living.prevPosY += offset;
+                living.posY += offset;
+            }
+        }
+        else if (axis == 2) //Z axis
+        {
+            if (subtract)
+            {
+                living.lastTickPosZ -= offset;
+                living.prevPosZ -= offset;
+                living.posZ -= offset;
+            }
+            else
+            {
+                living.lastTickPosZ += offset;
+                living.prevPosZ += offset;
+                living.posZ += offset;
+            }
+        }
+    }
+
     public boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
     {
         int i = MathHelper.floor_double(aabb.minX);

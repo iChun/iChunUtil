@@ -14,6 +14,7 @@ import me.ichun.mods.ichunutil.common.packet.mod.*;
 import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -71,6 +72,23 @@ public class ProxyCommon
 
     public void nudgeHand(float mag)
     {
+    }
+
+    public void adjustRotation(Entity entity, float yawChange, float pitchChange)
+    {
+        entity.prevRotationYaw += yawChange;
+        entity.rotationYaw += yawChange;
+        entity.prevRotationPitch += pitchChange;
+        entity.rotationPitch += pitchChange;
+        entity.prevRotationYaw = entity.prevRotationYaw % 360F;
+        entity.rotationYaw = entity.rotationYaw % 360F;
+
+        for (; entity.prevRotationYaw < 0F; entity.prevRotationYaw += 360F) {}
+
+        for (; entity.rotationYaw < 0F; entity.rotationYaw += 360F) {}
+
+        entity.prevRotationPitch = entity.prevRotationPitch % 90.05F;
+        entity.rotationPitch = entity.rotationPitch % 90.05F;
     }
 
     @SideOnly(Side.CLIENT)
