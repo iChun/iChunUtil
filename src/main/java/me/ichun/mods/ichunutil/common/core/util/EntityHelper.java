@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.common.core.util;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.mojang.authlib.GameProfile;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -474,6 +475,40 @@ public class EntityHelper
         }
     }
 
+    public static void relocateEntity(EnumFacing.Axis axis, Entity ent, double degree, double originX, double originY, double originZ, double destX, double destY, double destZ)
+    {
+        double rads = Math.toRadians(degree);
+        if(axis == EnumFacing.Axis.Y)
+        {
+            double oriX = ent.posX - originX;
+            double oriZ = ent.posZ - originZ;
+
+            double moX = ent.motionX;
+            double moZ = ent.motionZ;
+
+            //position offset
+            double x1 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            double z1 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
+
+            addPosition(ent, (destX - originX) + x1, false, 0);
+            addPosition(ent, (destY - originY), false, 1);
+            addPosition(ent, (destZ - originZ) + z1, false, 2);
+
+            //motion offset
+            double x2 =  moX * Math.cos(rads) + moZ * Math.sin(rads);
+            double z2 = -moX * Math.sin(rads) + moZ * Math.cos(rads);
+
+            ent.motionX = x2;
+            ent.motionZ = z2;
+
+            //rotation offset
+            Vec3 look = ent.getLook(1F);
+            double x3 =  look.xCoord * Math.cos(rads) + look.zCoord * Math.sin(rads);
+            double z3 = -look.xCoord * Math.sin(rads) + look.zCoord * Math.cos(rads);
+            float newYaw = (float)(MathHelper.atan2(x3, z3) * 180.0D / Math.PI) - ent.rotationYaw;
+            iChunUtil.proxy.adjustRotation(ent, -newYaw, 0F);
+        }
+    }
 
     public static AxisAlignedBB rotateAABB(EnumFacing.Axis axis, AxisAlignedBB aabb, double degree, double originX, double originY, double originZ)
     {
