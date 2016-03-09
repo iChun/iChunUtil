@@ -450,51 +450,83 @@ public class EntityHelper
 
     public static void addPosition(Entity living, double offset, boolean subtract, int axis)
     {
+        if(subtract)
+        {
+            offset = -offset;
+        }
         if (axis == 0) //X axis
         {
-            if (subtract)
-            {
-                living.lastTickPosX -= offset;
-                living.prevPosX -= offset;
-                living.posX -= offset;
-            }
-            else
-            {
-                living.lastTickPosX += offset;
-                living.prevPosX += offset;
-                living.posX += offset;
-            }
+            living.lastTickPosX += offset;
+            living.prevPosX += offset;
+            living.posX += offset;
         }
         else if (axis == 1) //Y axis
         {
-            if (subtract)
-            {
-                living.lastTickPosY -= offset;
-                living.prevPosY -= offset;
-                living.posY -= offset;
-            }
-            else
-            {
-                living.lastTickPosY += offset;
-                living.prevPosY += offset;
-                living.posY += offset;
-            }
+            living.lastTickPosY += offset;
+            living.prevPosY += offset;
+            living.posY += offset;
         }
         else if (axis == 2) //Z axis
         {
-            if (subtract)
-            {
-                living.lastTickPosZ -= offset;
-                living.prevPosZ -= offset;
-                living.posZ -= offset;
-            }
-            else
-            {
-                living.lastTickPosZ += offset;
-                living.prevPosZ += offset;
-                living.posZ += offset;
-            }
+            living.lastTickPosZ += offset;
+            living.prevPosZ += offset;
+            living.posZ += offset;
         }
+    }
+
+
+    public static AxisAlignedBB rotateAABB(EnumFacing.Axis axis, AxisAlignedBB aabb, double degree, double originX, double originY, double originZ)
+    {
+        double rads = Math.toRadians(degree);
+        if(axis == EnumFacing.Axis.X)
+        {
+            double oriZ = aabb.minZ - originZ;
+            double oriY = aabb.minY - originY;
+
+            double z1 =  oriZ * Math.cos(rads) + oriY * Math.sin(rads);
+            double y1 = -oriZ * Math.sin(rads) + oriY * Math.cos(rads);
+
+            oriZ = aabb.maxZ - originZ;
+            oriY = aabb.maxY - originY;
+
+            double z2 =  oriZ * Math.cos(rads) + oriY * Math.sin(rads);
+            double y2 = -oriZ * Math.sin(rads) + oriY * Math.cos(rads);
+
+            return new AxisAlignedBB(aabb.minX, Math.min(y1, y2) + originY, Math.min(z1, z2) + originZ, aabb.maxX, Math.max(y1, y2) + originY, Math.max(z1, z2) + originZ);
+        }
+        else if(axis == EnumFacing.Axis.Y)
+        {
+            double oriX = aabb.minX - originX;
+            double oriZ = aabb.minZ - originZ;
+
+            double x1 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            double z1 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
+
+            oriX = aabb.maxX - originX;
+            oriZ = aabb.maxZ - originZ;
+
+            double x2 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            double z2 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
+
+            return new AxisAlignedBB(Math.min(x1, x2) + originX, aabb.minY, Math.min(z1, z2) + originZ, Math.max(x1, x2) + originX, aabb.maxY, Math.max(z1, z2) + originZ);
+        }
+        else if(axis == EnumFacing.Axis.Z)
+        {
+            double oriX = aabb.minX - originX;
+            double oriY = aabb.minY - originY;
+
+            double x1 =  oriX * Math.cos(rads) + oriY * Math.sin(rads);
+            double y1 = -oriX * Math.sin(rads) + oriY * Math.cos(rads);
+
+            oriX = aabb.maxX - originX;
+            oriY = aabb.maxY - originY;
+
+            double x2 =  oriX * Math.cos(rads) + oriY * Math.sin(rads);
+            double y2 = -oriX * Math.sin(rads) + oriY * Math.cos(rads);
+
+            return new AxisAlignedBB(Math.min(x1, x2) + originX, Math.min(y1, y2) + originY, aabb.minZ, Math.max(x1, x2) + originX, Math.max(y1, y2) + originY, aabb.maxZ);
+        }
+        return aabb;
     }
 
     public boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
