@@ -2,7 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.config.window;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
@@ -44,7 +44,7 @@ public class WindowSetKeyBind extends Window
     {
         super.draw(mouseX, mouseY);
 
-        workspace.getFontRenderer().drawString(StatCollector.translateToLocal(message), posX + (width - workspace.getFontRenderer().getStringWidth(StatCollector.translateToLocal(message))) / 2, posY + (height - 12 - 9) / 2, Theme.getAsHex(workspace.currentTheme.font), false);
+        workspace.getFontRenderer().drawString(I18n.translateToLocal(message), posX + (width - workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(message))) / 2, posY + (height - 12 - 9) / 2, Theme.getAsHex(workspace.currentTheme.font), false);
 
         if(!releasedMouse)
         {

@@ -6,9 +6,9 @@ import me.ichun.mods.ichunutil.client.gui.window.WindowTopDockBase;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.IOUtil;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Mouse;
 
 import java.io.File;
@@ -362,7 +362,7 @@ public class ElementListTree extends Element
                 else if(attachedObject instanceof IListable)
                 {
                     IListable info = (IListable)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.localizable() ? StatCollector.translateToLocal(info.getName()) : info.getName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.localizable() ? I18n.translateToLocal(info.getName()) : info.getName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
 
                 boolean found = false;

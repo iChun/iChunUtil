@@ -15,10 +15,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -29,8 +32,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class EntityBlock extends Entity
-        implements IRenderFactory
+        implements IRenderFactory<EntityBlock>
 {
+    private static final DataParameter<Float> ROT_YAW = EntityDataManager.<Float>createKey(EntityBlock.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> ROT_PITCH = EntityDataManager.<Float>createKey(EntityBlock.class, DataSerializers.FLOAT);
+    private static final DataParameter<Boolean> CAN_ROTATE = EntityDataManager.<Boolean>createKey(EntityBlock.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.<Integer>createKey(EntityBlock.class, DataSerializers.VARINT);
+    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.<BlockPos>createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
+
     public float rotYaw;
     public float rotPitch;
     public float prevRotYaw;
@@ -64,7 +73,6 @@ public class EntityBlock extends Entity
         setSize(0.95F, 0.95F);
 
         preventEntitySpawning = true;
-        renderDistanceWeight = 20D;
         isImmuneToFire = true;
         canDropItems = true;
     }
@@ -152,6 +160,8 @@ public class EntityBlock extends Entity
 
         setSize();
         setLocationAndAngles(lowX + (countX / 2F), lowY + 0.025D, lowZ + (countZ / 2F), 0F, 0F);
+
+        getDataManager().set(ORIGIN, new BlockPos(lowX, lowY, lowZ));
     }
 
     public void setSize()
@@ -180,6 +190,21 @@ public class EntityBlock extends Entity
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 20.0D; // * 20D is the new renderDistanceWeight
+
+        if (Double.isNaN(d0))
+        {
+            d0 = 1.0D;
+        }
+
+        d0 = d0 * 64.0D * getRenderDistanceWeight();
+        return distance < d0 * d0;
+    }
+
     @Override
     public void setPosition(double x, double y, double z)
     {
@@ -204,50 +229,56 @@ public class EntityBlock extends Entity
     @Override
     protected void entityInit()
     {
-        dataWatcher.addObject(18, rand.nextFloat() * (2F * maxRotFac) - maxRotFac); //rotFactor Yaw
-        dataWatcher.addObject(19, rand.nextFloat() * (2F * maxRotFac) - maxRotFac); //rotFactor Pitch
-        dataWatcher.addObject(20, (byte)1); //canRotate
-        dataWatcher.addObject(21, 0); //behaviour
+        getDataManager().register(ROT_YAW, rand.nextFloat() * (2F * maxRotFac) - maxRotFac); //rotFactor Yaw
+        getDataManager().register(ROT_PITCH, rand.nextFloat() * (2F * maxRotFac) - maxRotFac); //rotFactor Pitch
+        getDataManager().register(CAN_ROTATE, true); //canRotate
+        getDataManager().register(BEHAVIOUR, 0); //behaviour
+        getDataManager().register(ORIGIN, BlockPos.ORIGIN); //behaviour
     }
 
     public void setRotFacYaw(float f)
     {
-        dataWatcher.updateObject(18, f);
+        getDataManager().set(ROT_YAW, f);
     }
 
     public float getRotFacYaw()
     {
-        return dataWatcher.getWatchableObjectFloat(18);
+        return getDataManager().get(ROT_YAW);
     }
 
     public void setRotFacPitch(float f)
     {
-        dataWatcher.updateObject(19, f);
+        getDataManager().set(ROT_PITCH, f);
     }
 
     public float getRotFacPitch()
     {
-        return dataWatcher.getWatchableObjectFloat(19);
+        return getDataManager().get(ROT_PITCH);
     }
 
     public void setCanRotate(boolean flag)
     {
-        dataWatcher.updateObject(20, (byte)(flag ? 1 : 0));
+        getDataManager().set(CAN_ROTATE, flag);
     }
 
     public boolean getCanRotate()
     {
-        return dataWatcher.getWatchableObjectByte(20) == 1;
+        return getDataManager().get(CAN_ROTATE);
     }
 
     public void setBehaviour(int i)
     {
-        dataWatcher.updateObject(21, i);
+        getDataManager().set(BEHAVIOUR, 1);
     }
 
     public int getBehaviour()
     {
-        return dataWatcher.getWatchableObjectInt(21);
+        return getDataManager().get(BEHAVIOUR);
+    }
+
+    public BlockPos getOrigin()
+    {
+        return getDataManager().get(ORIGIN);
     }
 
     @Override

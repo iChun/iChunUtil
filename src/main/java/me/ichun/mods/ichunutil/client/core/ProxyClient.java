@@ -14,11 +14,11 @@ import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -41,7 +41,7 @@ public class ProxyClient extends ProxyCommon
         ConfigHandler.configKeybind = new Configuration(file);
         ConfigHandler.configKeybind.load();
 
-        List cms = Splitter.on("\\n").splitToList(StatCollector.translateToLocal("ichunutil.config.cat.keybind.comment"));
+        List cms = Splitter.on("\\n").splitToList(I18n.translateToLocal("ichunutil.config.cat.keybind.comment"));
         String cm = "";
         for(int ll = 0; ll < cms.size(); ll++)
         {

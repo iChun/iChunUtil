@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.common;
 
-
 import me.ichun.mods.ichunutil.client.core.event.EventHandlerClient;
 import me.ichun.mods.ichunutil.common.core.Logger;
 import me.ichun.mods.ichunutil.common.core.ProxyCommon;
@@ -41,16 +40,16 @@ import java.util.List;
 public class iChunUtil
 {
     //Stuff to bump every update
-    public static final String VERSION_OF_MC = "1.8.9";
-    public static final int VERSION_MAJOR = 6;
+    public static final String VERSION_OF_MC = "1.9.0";
+    public static final int VERSION_MAJOR = 7;
     public static final int VERSION_MINOR = 0;
     public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
 
-    public static final int REQ_FORGE_MAJOR = 11;
+    public static final int REQ_FORGE_MAJOR = 12;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;
-    public static final int REQ_FORGE_REVISION = 1;
+    public static final int REQ_FORGE_REVISION = 0;
     public static final int REQ_FORGE_BUILD = 1764;
 
     public static final Logger LOGGER = Logger.createLogger(MOD_NAME);

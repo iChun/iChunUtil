@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
@@ -54,7 +54,7 @@ public class ElementButton extends Element
         }
         if(!(this instanceof ElementButtonTextured))
         {
-            parent.workspace.getFontRenderer().drawString(StatCollector.translateToLocal(text), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(StatCollector.translateToLocal(text)) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
+            parent.workspace.getFontRenderer().drawString(I18n.translateToLocal(text), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(text)) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
         }
     }
 

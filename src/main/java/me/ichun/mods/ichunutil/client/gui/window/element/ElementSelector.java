@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
 import com.google.common.collect.Ordering;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;

@@ -10,7 +10,11 @@ import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketNewGrabbedEntityId;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -49,7 +53,7 @@ public class EventHandlerServer
             {
                 if(event.player.isPlayerSleeping() && event.player.getRNG().nextFloat() < 0.025F || event.player.getRNG().nextFloat() < 0.005F)
                 {
-                    event.player.getEntityWorld().playSoundAtEntity(event.player, "mob.pig.say", event.player.isPlayerSleeping() ? 0.2F : 1.0F, (event.player.getRNG().nextFloat() - event.player.getRNG().nextFloat()) * 0.2F + 1.0F);
+                    event.player.getEntityWorld().playSound(null, event.player.posX, event.player.posY + event.player.getEyeHeight(), event.player.posZ, SoundEvents.entity_pig_ambient, SoundCategory.PLAYERS, event.player.isPlayerSleeping() ? 0.2F : 1.0F, (event.player.getRNG().nextFloat() - event.player.getRNG().nextFloat()) * 0.2F + 1.0F);
                 }
             }
         }
@@ -66,7 +70,7 @@ public class EventHandlerServer
             }
         }
         iChunUtil.channel.sendTo(new PacketPatrons(null), event.player);
-        iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && MinecraftServer.getServer().getConfigurationManager().canSendCommands(event.player.getGameProfile()))), event.player);
+        iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && ((EntityPlayerMP)event.player).mcServer.getPlayerList().canSendCommands(event.player.getGameProfile()))), event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -80,7 +84,7 @@ public class EventHandlerServer
             {
                 GrabHandler.dimensionalEntities.add(handler.grabbed.getEntityId());
                 handler.grabbed.getEntityData().setInteger("Grabbed-ID", handler.grabbed.getEntityId());
-                handler.grabbed.travelToDimension(event.player.dimension);
+                handler.grabbed.changeDimension(event.player.dimension);
                 handler.update();
             }
             else

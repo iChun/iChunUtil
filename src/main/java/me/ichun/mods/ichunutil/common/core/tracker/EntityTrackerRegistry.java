@@ -184,7 +184,7 @@ public class EntityTrackerRegistry
 
             renderYawOffset = tracked.renderYawOffset;
             rotationYawHead = tracked.rotationYawHead;
-            rotationPitch = tracked.rotationPitch;
+            rotationPitch = tracked.getTicksElytraFlying() > 4 ? (float)Math.toDegrees(-((float)Math.PI / 4F)) : tracked.rotationPitch;
 
             limbSwing = tracked.limbSwing;
             limbSwingAmount = tracked.limbSwingAmount;

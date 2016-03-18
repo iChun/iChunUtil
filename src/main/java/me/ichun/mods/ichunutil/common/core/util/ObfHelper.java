@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.common.core.util;
 import me.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.8.9";
+    private static final String OBF_VERSION = "1.9.0";
 
     private static boolean isObfuscated;
 
@@ -25,11 +25,11 @@ public class ObfHelper
     public static final String[] resourcePath = new String[] { "field_110625_b", "resourcePath" }; //ResourceLocation
 
     //EntityLivingBase
-    public static final String getHurtSoundObf = "func_70621_aR";
+    public static final String getHurtSoundObf = "func_184601_bQ";
     public static final String getHurtSoundDeobf = "getHurtSound";
 
     //EntityLivingBase
-    public static final String getDeathSoundObf = "func_70673_aS";
+    public static final String getDeathSoundObf = "func_188593_c";
     public static final String getDeathSoundDeobf = "getDeathSound";
 
     //RenderLivingEntity
@@ -84,7 +84,7 @@ public class ObfHelper
     }
 
     @SideOnly(Side.CLIENT)
-    public static <T extends RendererLivingEntity<V>, V extends EntityLivingBase> void invokePreRenderCallback(T rend, Class clz, V ent, float rendTick)
+    public static <T extends RenderLivingBase<V>, V extends EntityLivingBase> void invokePreRenderCallback(T rend, Class clz, V ent, float rendTick)
     {
         try
         {
@@ -94,7 +94,7 @@ public class ObfHelper
         }
         catch(NoSuchMethodException e)
         {
-            if(clz != RendererLivingEntity.class)
+            if(clz != RenderLivingBase.class)
             {
                 invokePreRenderCallback(rend, clz.getSuperclass(), ent, rendTick);
             }

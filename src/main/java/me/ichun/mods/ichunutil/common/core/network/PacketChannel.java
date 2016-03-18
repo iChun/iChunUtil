@@ -160,9 +160,9 @@ public class PacketChannel
 
     public void sendToAllExcept(AbstractPacket packet, EntityPlayer player)
     {
-        for(int i = 0; i < FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.size(); i++)
+        for(int i = 0; i < FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().size(); i++)
         {
-            EntityPlayerMP player1 = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList.get(i);
+            EntityPlayerMP player1 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().get(i);
             if(player.getName().equalsIgnoreCase(player1.getName()))
             {
                 continue;

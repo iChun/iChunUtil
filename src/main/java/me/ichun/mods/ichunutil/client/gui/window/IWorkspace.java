@@ -1,17 +1,17 @@
 package me.ichun.mods.ichunutil.client.gui.window;
 
 import com.google.common.base.Splitter;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.StatCollector;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.element.Element;
 import me.ichun.mods.ichunutil.client.gui.window.element.ElementWindow;
 import me.ichun.mods.ichunutil.client.gui.window.element.ITextInput;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.text.translation.I18n;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,7 +210,7 @@ public abstract class IWorkspace extends GuiScreen
                 tips = new ArrayList<String>(tipss.size() > tips.size() ? tipss : tips);
                 if(tips.size() == 1)
                 {
-                    tips.add(StatCollector.translateToLocal(tips.get(0)));
+                    tips.add(I18n.translateToLocal(tips.get(0)));
                     tips.remove(0);
                 }
                 int xOffset = 5;

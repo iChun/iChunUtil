@@ -1,11 +1,12 @@
 package me.ichun.mods.ichunutil.client.module.patron;
 
+import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -121,7 +122,7 @@ public class ModelVoxel extends ModelBase
         }
     }
 
-    public void renderPlayer(Entity trail, long time, int seedBase, ArrayList<EntityTrackerRegistry.EntityInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
+    public void renderPlayer(EntityLatchedRenderer trail, long time, int seedBase, ArrayList<EntityTrackerRegistry.EntityInfo> loc, double pX, double pY, double pZ, float f5, float renderTick, int[] skins)
     {
         GlStateManager.pushMatrix();
 

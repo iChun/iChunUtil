@@ -7,7 +7,7 @@ import me.ichun.mods.ichunutil.client.gui.window.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.window.element.ElementTextWrapper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.Random;
@@ -29,7 +29,7 @@ public class WindowAnnoy extends Window
             }
         }, 0, 0, 300, 90, 300, 90, "window.popup.title", true);
 
-        elements.add(new ElementTextWrapper(this, 10, 15, width - 20, height - 30, 0, true, false, StatCollector.translateToLocal("ichunutil.eula.message")));
+        elements.add(new ElementTextWrapper(this, 10, 15, width - 20, height - 30, 0, true, false, I18n.translateToLocal("ichunutil.eula.message")));
 
         elements.add(new ElementButton(this, width - 50, height - 25, 40, 16, 3, false, 1, 1, "element.button.ok"));
     }

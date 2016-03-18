@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,13 +52,13 @@ public class GrabHandler
     {
         time++;
 
-        Vec3 pos = EntityHelper.getEntityPositionEyes(grabber, 1.0F);
+        Vec3d pos = EntityHelper.getEntityPositionEyes(grabber, 1.0F);
         grabber.rotationYawHead += yawTweak;
         grabber.rotationPitch += pitchTweak;
-        Vec3 look = grabber.getLookVec(); //this is getLook(1.0F);
+        Vec3d look = grabber.getLookVec(); //this is getLook(1.0F);
         grabber.rotationYawHead -= yawTweak;
         grabber.rotationPitch -= pitchTweak;
-        Vec3 grabPos = new Vec3(pos.xCoord + (look.xCoord * grabDistance), pos.yCoord + (look.yCoord * grabDistance), pos.zCoord + (look.zCoord * grabDistance));
+        Vec3d grabPos = new Vec3d(pos.xCoord + (look.xCoord * grabDistance), pos.yCoord + (look.yCoord * grabDistance), pos.zCoord + (look.zCoord * grabDistance));
 
         float distTolerance = grabToleranceTillTeleport();
         if(distTolerance > 0.0F && grabbed.getDistance(grabPos.xCoord, grabPos.yCoord, grabPos.zCoord) > distTolerance) //if grabbed is too far from the grabbed position, teleport to grabber and move to grabbed position?
@@ -98,7 +98,7 @@ public class GrabHandler
 
     public boolean shouldTerminate()
     {
-        return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.ridingEntity || grabbed.dimension != grabber.dimension || grabbed.getDistanceToEntity(grabber) > grabDistance + (grabToleranceTillTeleport() * 1.25D)); //if the enderman is >5D of grab distance, let go of it.
+        return forceTerminate || grabber != null && grabbed != null && (grabbed.isDead || !grabber.isEntityAlive() || grabbed == grabber.getRidingEntity() || grabbed.dimension != grabber.dimension || grabbed.getDistanceToEntity(grabber) > grabDistance + (grabToleranceTillTeleport() * 1.25D)); //if the enderman is >5D of grab distance, let go of it.
     }
 
     public boolean canSendAcrossDimensions()

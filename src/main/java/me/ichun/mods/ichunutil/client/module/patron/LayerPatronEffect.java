@@ -46,7 +46,14 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
                 }
 
                 GlStateManager.rotate(EntityHelper.interpolateValues(player.prevRotationYawHead, player.rotationYawHead, renderTick) - EntityHelper.interpolateValues(player.prevRenderYawOffset, player.renderYawOffset, renderTick), 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(EntityHelper.interpolateValues(player.prevRotationPitch, player.rotationPitch, renderTick), 1.0F, 0.0F, 0.0F);
+                if(player.getTicksElytraFlying() > 4)
+                {
+                    GlStateManager.rotate((float)Math.toDegrees(-((float)Math.PI / 4F)), 1.0F, 0.0F, 0.0F);
+                }
+                else
+                {
+                    GlStateManager.rotate(EntityHelper.interpolateValues(player.prevRotationPitch, player.rotationPitch, renderTick), 1.0F, 0.0F, 0.0F);
+                }
 
                 modelSnout.render(0.0625F);
 
@@ -69,7 +76,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
 
                         float sinProg1 = (float)Math.sin(Math.toRadians((player.ticksExisted / 30F) * 360F));
                         float sinProg2 = (float)Math.sin(Math.toRadians((player.ticksExisted / 20F) * 360F));
-                        float pitchOffset = Math.abs(EntityHelper.interpolateValues(player.prevRotationPitch, player.rotationPitch, renderTick)) / 90F;
+                        float pitchOffset = (player.getTicksElytraFlying() > 4 ? 60F : Math.abs(EntityHelper.interpolateValues(player.prevRotationPitch, player.rotationPitch, renderTick))) / 90F;
 
                         GlStateManager.rotate(((player.ticksExisted + renderTick) / 40F) * 360F, 0F, 1F, 0F);
 

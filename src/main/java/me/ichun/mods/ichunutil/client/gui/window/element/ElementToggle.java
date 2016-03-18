@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
-import net.minecraft.util.StatCollector;
-import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import net.minecraft.util.text.translation.I18n;
+import org.lwjgl.input.Mouse;
 
 public class ElementToggle extends Element
 {
@@ -63,7 +63,7 @@ public class ElementToggle extends Element
                 RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementButtonBackgroundInactive[0], parent.workspace.currentTheme.elementButtonBackgroundInactive[1], parent.workspace.currentTheme.elementButtonBackgroundInactive[2], 255, getPosX() + 1, getPosY() + 1, width - 2, height - 2, 0);
             }
         }
-        parent.workspace.getFontRenderer().drawString(StatCollector.translateToLocal(text), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(StatCollector.translateToLocal(text)) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(!toggledState ? parent.workspace.currentTheme.elementButtonToggleHover : parent.workspace.currentTheme.font), false);
+        parent.workspace.getFontRenderer().drawString(I18n.translateToLocal(text), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(text)) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(!toggledState ? parent.workspace.currentTheme.elementButtonToggleHover : parent.workspace.currentTheme.font), false);
     }
 
     @Override

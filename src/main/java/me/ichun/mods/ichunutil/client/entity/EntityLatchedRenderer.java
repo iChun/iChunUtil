@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class EntityLatchedRenderer extends Entity
-    implements IRenderFactory
+    implements IRenderFactory<EntityLatchedRenderer>
 {
     public Entity latchedEnt;
 
@@ -30,7 +30,6 @@ public class EntityLatchedRenderer extends Entity
             setSize(0.1F, 0.1F);
             lastUpdate = par1World.getWorldTime();
             ignoreFrustumCheck = true;
-            renderDistanceWeight = 10D;
         }
     }
 
@@ -42,7 +41,21 @@ public class EntityLatchedRenderer extends Entity
         setLocationAndAngles(latchedEnt.posX, latchedEnt.posY, latchedEnt.posZ, latchedEnt.rotationYaw, latchedEnt.rotationPitch);
         lastUpdate = par1World.getWorldTime();
         ignoreFrustumCheck = true;
-        renderDistanceWeight = 10D;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 10.0D; // * 10D is the new renderDistanceWeight
+
+        if (Double.isNaN(d0))
+        {
+            d0 = 1.0D;
+        }
+
+        d0 = d0 * 64.0D * getRenderDistanceWeight();
+        return distance < d0 * d0;
     }
 
     public void updatePos()

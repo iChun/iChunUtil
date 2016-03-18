@@ -23,7 +23,6 @@ import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -41,16 +40,16 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -224,6 +223,11 @@ public class EventHandlerClient
                     entityTrackerRegistry.tick();
 
                     GrabHandler.tick(Side.CLIENT);
+
+                    if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && mc.thePlayer.isElytraFlying() && mc.gameSettings.keyBindJump.isKeyDown())
+                    {
+                        mc.thePlayer.motionY += 0.05F;
+                    }
                 }
             }
             ticks++;
@@ -324,8 +328,7 @@ public class EventHandlerClient
                     int k = MathHelper.floor_double(parent.posZ);
                     BlockPos blockpos = new BlockPos(i, j, k);
                     IBlockState iblockstate = event.ent.worldObj.getBlockState(blockpos);
-                    Block block = iblockstate.getBlock();
-                    if(block.getRenderType() != -1)
+                    if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                     {
                         if(parent.isSprinting())
                         {
@@ -339,6 +342,15 @@ public class EventHandlerClient
                             double d0 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
                             double d2 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
                             event.ent.worldObj.spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0, parent.posY + 0.1F, parent.posZ + d2, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
+                        }
+                    }
+                    if(parent.isElytraFlying())
+                    {
+                        for(int kk = 0; kk < 5; kk++)
+                        {
+                            double d0 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
+                            double d2 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
+                            event.ent.worldObj.spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0 - parent.motionX * 1.5D, parent.posY + 0.1F - parent.motionY * 1.5D, parent.posZ + d2 - parent.motionZ * 1.5D, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
                         }
                     }
                 }
@@ -453,6 +465,11 @@ public class EventHandlerClient
                                     }
                                 }
                             }
+                            //hacky fix for elytra flying.
+                            if(parent.getTicksElytraFlying() > 4)
+                            {
+                                GlStateManager.translate(0F, -0.8F, 0F);
+                            }
 
                             patronModelVoxel.renderPlayer(event.ent, 0, parent.hashCode(), loc, event.x, event.y, event.z, 0.0625F, event.f1, patronRestitchedSkinsId.get(rl));
 
@@ -492,6 +509,25 @@ public class EventHandlerClient
                                     GlStateManager.translate(entInfo.posX - tX + event.x, entInfo.posY - tY + event.y, entInfo.posZ - tZ + event.z);
 
                                     GlStateManager.rotate(entInfo.renderYawOffset, 0.0F, -1.0F, 0.0F);
+
+                                    //elytra rotation
+                                    if(parent.getTicksElytraFlying() > 4)
+                                    {
+                                        float f = (float)parent.getTicksElytraFlying() + event.f1;
+                                        float f1 = MathHelper.clamp_float(f * f / 100.0F, 0.0F, 1.0F);
+                                        GlStateManager.rotate(f1 * (-90.0F - parent.rotationPitch), -1.0F, 0.0F, 0.0F);
+                                        Vec3d vec3d = parent.getLook(event.f1);
+                                        double d0 = parent.motionX * parent.motionX + parent.motionZ * parent.motionZ;
+                                        double d1 = vec3d.xCoord * vec3d.xCoord + vec3d.zCoord * vec3d.zCoord;
+
+                                        if(d0 > 0.0D && d1 > 0.0D)
+                                        {
+                                            double d2 = (parent.motionX * vec3d.xCoord + parent.motionZ * vec3d.zCoord) / (Math.sqrt(d0) * Math.sqrt(d1));
+                                            double d3 = parent.motionX * vec3d.zCoord - parent.motionZ * vec3d.xCoord;
+                                            GlStateManager.rotate((float)(Math.signum(d3) * Math.acos(d2)) * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
+                                        }
+                                    }
+                                    //end elytra rotation
 
                                     float scalee = 0.9375F;
                                     GlStateManager.scale(scalee, -scalee, -scalee);

@@ -15,7 +15,7 @@ import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -59,8 +59,8 @@ public class ProxyCommon
         if(FMLCommonHandler.instance().getSide().isServer() && !iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true"))
         {
             iChunUtil.LOGGER.info("=============================================================");
-            iChunUtil.LOGGER.info(StatCollector.translateToLocal("ichunutil.eula.message"));
-            iChunUtil.LOGGER.info(StatCollector.translateToLocal("ichunutil.eula.messageServer"));
+            iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.message"));
+            iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.messageServer"));
             iChunUtil.LOGGER.info("=============================================================");
         }
     }

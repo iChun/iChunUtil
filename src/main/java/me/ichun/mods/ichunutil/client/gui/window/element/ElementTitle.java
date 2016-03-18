@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
-import net.minecraft.util.StatCollector;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
+import net.minecraft.util.text.translation.I18n;
 
 public class ElementTitle extends Element
 {
@@ -27,7 +27,7 @@ public class ElementTitle extends Element
     @Override
     public String tooltip()
     {
-        String titleToRender = StatCollector.translateToLocal(parent.titleLocale);
+        String titleToRender = I18n.translateToLocal(parent.titleLocale);
         if(parent.workspace.getFontRenderer().getStringWidth(titleToRender) > parent.getWidth() - (parent.BORDER_SIZE * 2) - parent.workspace.getFontRenderer().getStringWidth("  _"))
         {
             return parent.titleLocale;

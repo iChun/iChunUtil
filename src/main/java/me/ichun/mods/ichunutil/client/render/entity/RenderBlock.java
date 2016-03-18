@@ -8,23 +8,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("deprecation")
 public class RenderBlock extends Render<EntityBlock>
 {
     public ArrayList<Class<? extends TileEntity>> classesNotToRender = new ArrayList<Class<? extends TileEntity>>();
@@ -64,6 +64,7 @@ public class RenderBlock extends Render<EntityBlock>
         GlStateManager.disableLighting();
 
         BlockPos blockpos = new BlockPos(entBlock);
+        BlockPos blockposMaxY = new BlockPos(entBlock.posX, entBlock.getEntityBoundingBox().maxY, entBlock.posZ);
         World world = entBlock.worldObj;
 
         for(int ii = 0; ii < entBlock.blocks.length; ii++)
@@ -80,24 +81,37 @@ public class RenderBlock extends Render<EntityBlock>
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(-ii, -jj, -kk);
 
-                        if (iblockstate != world.getBlockState(blockpos) && block.getRenderType() != -1)
+                        if (iblockstate.getRenderType() == EnumBlockRenderType.MODEL)
                         {
-                            if (block.getRenderType() == 3)
+                            if (iblockstate != world.getBlockState(blockpos) && iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                             {
-                                bindTexture(TextureMap.locationBlocksTexture);
-
+                                this.bindTexture(TextureMap.locationBlocksTexture);
+                                GlStateManager.pushMatrix();
+                                GlStateManager.disableLighting();
                                 Tessellator tessellator = Tessellator.getInstance();
-                                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                                worldrenderer.begin(7, DefaultVertexFormats.BLOCK);
-                                int i = blockpos.getX();
-                                int j = blockpos.getY();
-                                int k = blockpos.getZ();
-                                worldrenderer.setTranslation((double)((float)(-i) - 0.5F), (double)(-j), (double)((float)(-k) - 0.5F));
+                                VertexBuffer vertexbuffer = tessellator.getBuffer();
+
+                                if (this.renderOutlines)
+                                {
+                                    GlStateManager.enableColorMaterial();
+                                    GlStateManager.enableOutlineMode(this.getTeamColor(entBlock));
+                                }
+
+                                vertexbuffer.begin(7, DefaultVertexFormats.BLOCK);
+                                GlStateManager.translate((float)(x - (double)blockposMaxY.getX() - 0.5D), (float)(y - (double)blockposMaxY.getY()), (float)(z - (double)blockposMaxY.getZ() - 0.5D));
                                 BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-                                IBakedModel ibakedmodel = blockrendererdispatcher.getModelFromBlockState(iblockstate, world, (BlockPos)null);
-                                blockrendererdispatcher.getBlockModelRenderer().renderModel(world, ibakedmodel, iblockstate, blockpos, worldrenderer, false);
-                                worldrenderer.setTranslation(0.0D, 0.0D, 0.0D);
+                                blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(iblockstate), iblockstate, blockposMaxY, vertexbuffer, false, MathHelper.getPositionRandom(entBlock.getOrigin().add(ii, jj, kk)));
                                 tessellator.draw();
+
+                                if (this.renderOutlines)
+                                {
+                                    GlStateManager.disableOutlineMode();
+                                    GlStateManager.disableColorMaterial();
+                                }
+
+                                GlStateManager.enableLighting();
+                                GlStateManager.popMatrix();
+                                super.doRender(entBlock, x, y, z, entityYaw, partialTicks);
                             }
                         }
                         if(entBlock.tileEntityNBTs[ii][jj][kk] != null && block.hasTileEntity(iblockstate))

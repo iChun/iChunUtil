@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 import java.util.ArrayList;
 
@@ -36,11 +37,12 @@ public class ItemRenderingHelper
         }
     }
 
+    //TODO this only takes note of the main hand, not the off hand as well... WHAT DO
     public static void handlePreRender(Minecraft mc)
     {
         if(mc.thePlayer != null)
         {
-            ItemStack currentInv = mc.thePlayer.getCurrentEquippedItem();
+            ItemStack currentInv = mc.thePlayer.getHeldItemMainhand();
             if(currentInv != null)
             {
                 if(isItemSwingProof(currentInv.getItem()))
@@ -48,10 +50,9 @@ public class ItemRenderingHelper
                     mc.playerController.resetBlockRemoving();
                     if(prevCurItem == mc.thePlayer.inventory.currentItem)
                     {
-                        mc.entityRenderer.itemRenderer.equippedProgress = 1.0F;
-                        mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0F;
-                        mc.entityRenderer.itemRenderer.itemToRender = mc.thePlayer.inventory.getCurrentItem();
-                        mc.entityRenderer.itemRenderer.equippedItemSlot = mc.thePlayer.inventory.currentItem;
+                        mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1.0F;
+                        mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand = 1.0F;
+                        mc.entityRenderer.itemRenderer.itemStackMainHand = mc.thePlayer.getHeldItemMainhand();
                         if(!currentItemIsSwingProof)
                         {
                             handleSwingProofItemEquip(mc.thePlayer, currentInv);
@@ -74,7 +75,7 @@ public class ItemRenderingHelper
             currentItemIsSwingProof = currentInv != null && isItemSwingProof(currentInv.getItem());
             if(prevCurItem != mc.thePlayer.inventory.currentItem)
             {
-                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgress >= 1.0F)
+                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F)
                 {
                     prevCurItem = mc.thePlayer.inventory.currentItem;
                 }
@@ -86,18 +87,18 @@ public class ItemRenderingHelper
 
     public static void handlePlayerTick(Minecraft mc, EntityPlayer player)
     {
-        ItemStack is = player.getCurrentEquippedItem();
+        ItemStack is = player.getHeldItemMainhand();
         if(is != null && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && ItemRenderingHelper.isItemBowAnimationLocked(is.getItem()))
         {
             if(player.getItemInUseCount() <= 0)
             {
-                player.clearItemInUse();
-                player.setItemInUse(is, Integer.MAX_VALUE);
+                player.resetActiveHand();
+                player.setActiveHand(EnumHand.MAIN_HAND);
             }
         }
         if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && lastThirdPersonView != 0)
         {
-            player.clearItemInUse();
+            player.resetActiveHand();
         }
         if(player == mc.getRenderViewEntity())
         {
@@ -105,7 +106,7 @@ public class ItemRenderingHelper
         }
     }
 
-    //Items registered here can never be allowed to use MC's default "use timer".
+    //Items registered here can never be allowed to use MC's default "use timer". Their use timer (getMaxItemUseDuration) must be set to Integer.MAX_VALUE.
     public static void registerBowAnimationLockedItem(Class<? extends Item>clz)
     {
         if(!bowAnimationLockedItems.contains(clz))

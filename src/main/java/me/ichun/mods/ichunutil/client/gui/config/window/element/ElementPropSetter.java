@@ -1,9 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.config.window.element;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.util.MathHelper;
-import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowSetIntArray;
@@ -21,6 +17,10 @@ import me.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import me.ichun.mods.ichunutil.common.core.config.types.Colour;
 import me.ichun.mods.ichunutil.common.core.config.types.NestedIntArray;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.util.math.MathHelper;
+import org.lwjgl.input.Mouse;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

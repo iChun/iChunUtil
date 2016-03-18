@@ -2,25 +2,31 @@ package me.ichun.mods.ichunutil.common.core.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.boss.BossStatus;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.*;
+import net.minecraft.world.BossInfoLerping;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class EntityHelper
 {
@@ -34,37 +40,43 @@ public class EntityHelper
         nameToFullProfileMap.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
     }
 
-    public static float healthScale;
-    public static int statusBarTime;
-    public static String bossName;
-    public static boolean hasColorModifier;
+    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.<UUID, BossInfoLerping>newLinkedHashMap();
 
     @SideOnly(Side.CLIENT)
     public static void storeBossStatus()
     {
-        healthScale = BossStatus.healthScale;
-        statusBarTime = BossStatus.statusBarTime;
-        bossName = BossStatus.bossName;
-        hasColorModifier = BossStatus.hasColorModifier;
+        BOSS_INFO_STORE.clear();
+        Iterator<Map.Entry<UUID, BossInfoLerping>> ite = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Map.Entry<UUID, BossInfoLerping> e = ite.next();
+            BOSS_INFO_STORE.put(e.getKey(), e.getValue());
+            ite.remove();
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public static void restoreBossStatus()
     {
-        BossStatus.healthScale = healthScale;
-        BossStatus.statusBarTime = statusBarTime;
-        BossStatus.bossName = bossName;
-        BossStatus.hasColorModifier = hasColorModifier;
+        Map<UUID, BossInfoLerping> bossMap = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos;
+        Iterator<Map.Entry<UUID, BossInfoLerping>> ite = BOSS_INFO_STORE.entrySet().iterator();
+        while(ite.hasNext())
+        {
+            Map.Entry<UUID, BossInfoLerping> e = ite.next();
+            bossMap.put(e.getKey(), e.getValue());
+            ite.remove();
+        }
+        BOSS_INFO_STORE.clear();
     }
 
-
-    public static <T extends EntityLivingBase> String getHurtSound(T ent, Class clz)
+    //TODO update this
+    public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
     {
         try
         {
             Method m = clz.getDeclaredMethod(ObfHelper.obfuscated() ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf);
             m.setAccessible(true);
-            return (String)m.invoke(ent);
+            return (SoundEvent)m.invoke(ent);
         }
         catch(NoSuchMethodException e)
         {
@@ -77,16 +89,17 @@ public class EntityHelper
         {
             e.printStackTrace();
         }
-        return "game.neutral.hurt";
+        return SoundEvents.entity_generic_hurt;
     }
 
-    public static <T extends EntityLivingBase> String getDeathSound(T ent, Class clz)
+    //TODO update this
+    public static <T extends EntityLivingBase> SoundEvent getDeathSound(T ent, Class clz)
     {
         try
         {
             Method m = clz.getDeclaredMethod(ObfHelper.obfuscated() ? ObfHelper.getDeathSoundObf : ObfHelper.getDeathSoundDeobf);
             m.setAccessible(true);
-            return (String)m.invoke(ent);
+            return (SoundEvent)m.invoke(ent);
         }
         catch(NoSuchMethodException e)
         {
@@ -99,7 +112,7 @@ public class EntityHelper
         {
             e.printStackTrace();
         }
-        return "game.neutral.die";
+        return SoundEvents.entity_generic_death;
     }
 
     public static float updateRotation(float oriRot, float intendedRot, float maxChange)
@@ -137,18 +150,18 @@ public class EntityHelper
         facer.rotationYaw = updateRotation(facer.rotationYaw, f2, maxYaw);
     }
 
-    public static Vec3 getEntityPositionEyes(Entity ent, float partialTicks)
+    public static Vec3d getEntityPositionEyes(Entity ent, float partialTicks)
     {
         if (partialTicks == 1.0F)
         {
-            return new Vec3(ent.posX, ent.posY + (double)ent.getEyeHeight(), ent.posZ);
+            return new Vec3d(ent.posX, ent.posY + (double)ent.getEyeHeight(), ent.posZ);
         }
         else
         {
             double d0 = ent.prevPosX + (ent.posX - ent.prevPosX) * (double)partialTicks;
             double d1 = ent.prevPosY + (ent.posY - ent.prevPosY) * (double)partialTicks + (double)ent.getEyeHeight();
             double d2 = ent.prevPosZ + (ent.posZ - ent.prevPosZ) * (double)partialTicks;
-            return new Vec3(d0, d1, d2);
+            return new Vec3d(d0, d1, d2);
         }
     }
 
@@ -181,23 +194,23 @@ public class EntityHelper
         entity.motionZ = d2;
     }
 
-    public static MovingObjectPosition getEntityLook(Entity ent, double d)
+    public static RayTraceResult getEntityLook(Entity ent, double d)
     {
         return getEntityLook(ent, d, false);
     }
 
-    public static MovingObjectPosition getEntityLook(Entity ent, double d, boolean ignoreEntities) //goes through liquid
+    public static RayTraceResult getEntityLook(Entity ent, double d, boolean ignoreEntities) //goes through liquid
     {
         return getEntityLook(ent, d, ignoreEntities, false, true, 1.0F);
     }
 
-    public static MovingObjectPosition getEntityLook(Entity ent, double d, boolean ignoreEntities, boolean ignoreTransparentBlocks, boolean ignoreLiquid, float renderTick)
+    public static RayTraceResult getEntityLook(Entity ent, double d, boolean ignoreEntities, boolean ignoreTransparentBlocks, boolean ignoreLiquid, float renderTick)
     {
-        Vec3 vec3 = getEntityPositionEyes(ent, renderTick);
-        Vec3 vec31 = ent.getLook(renderTick);
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * d, vec31.yCoord * d, vec31.zCoord * d);
+        Vec3d vec3 = getEntityPositionEyes(ent, renderTick);
+        Vec3d vec31 = ent.getLook(renderTick);
+        Vec3d vec32 = vec3.addVector(vec31.xCoord * d, vec31.yCoord * d, vec31.zCoord * d);
 
-        MovingObjectPosition rayTrace = rayTraceBlocks(ent.worldObj, d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
+        RayTraceResult rayTrace = rayTraceBlocks(ent.worldObj, d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
 
         if(!ignoreEntities)
         {
@@ -208,7 +221,7 @@ public class EntityHelper
             }
 
             Entity entityTrace = null;
-            Vec3 vec33 = null;
+            Vec3d vec33 = null;
             float f = 1.0F;
             List<Entity> list = ent.worldObj.getEntitiesInAABBexcluding(ent, ent.getEntityBoundingBox().addCoord(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist).expand((double)f, (double)f, (double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
             {
@@ -224,7 +237,7 @@ public class EntityHelper
                 Entity entity1 = (Entity)list.get(j);
                 float f1 = entity1.getCollisionBorderSize();
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f1, (double)f1, (double)f1);
-                MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
                 if (axisalignedbb.isVecInside(vec3))
                 {
@@ -241,7 +254,7 @@ public class EntityHelper
 
                     if (d3 < d2 || d2 == 0.0D)
                     {
-                        if (entity1 == ent.ridingEntity && !ent.canRiderInteract())
+                        if (entity1 == ent.getRidingEntity() && !ent.canRiderInteract())
                         {
                             if (d2 == 0.0D)
                             {
@@ -261,7 +274,7 @@ public class EntityHelper
 
             if (entityTrace != null && (d2 < dist || rayTrace == null))
             {
-                rayTrace = new MovingObjectPosition(entityTrace, vec33);
+                rayTrace = new RayTraceResult(entityTrace, vec33);
             }
 
         }
@@ -269,7 +282,7 @@ public class EntityHelper
         return rayTrace;
     }
 
-    public static MovingObjectPosition rayTraceBlocks(World world, double dist, Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean ignoreTransparentBlocks, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
+    public static RayTraceResult rayTraceBlocks(World world, double dist, Vec3d vec31, Vec3d vec32, boolean stopOnLiquid, boolean ignoreTransparentBlocks, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
     {
         if (!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
         {
@@ -285,9 +298,9 @@ public class EntityHelper
                 IBlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
 
-                if ((!ignoreBlockWithoutBoundingBox || block.getCollisionBoundingBox(world, blockpos, iblockstate) != null) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block)))
+                if ((!ignoreBlockWithoutBoundingBox || iblockstate.getSelectedBoundingBox(world, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block, iblockstate, world, blockpos)))
                 {
-                    MovingObjectPosition movingobjectposition = block.collisionRayTrace(world, blockpos, vec31, vec32);
+                    RayTraceResult movingobjectposition =iblockstate.collisionRayTrace(world, blockpos, vec31, vec32);
 
                     if (movingobjectposition != null)
                     {
@@ -295,7 +308,7 @@ public class EntityHelper
                     }
                 }
 
-                MovingObjectPosition movingobjectposition2 = null;
+                RayTraceResult movingobjectposition2 = null;
                 int k1 = (int)Math.ceil(dist + 1);
 
                 while (k1-- >= 0)
@@ -398,17 +411,17 @@ public class EntityHelper
                     if (d3 < d4 && d3 < d5)
                     {
                         enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
-                        vec31 = new Vec3(d0, vec31.yCoord + d7 * d3, vec31.zCoord + d8 * d3);
+                        vec31 = new Vec3d(d0, vec31.yCoord + d7 * d3, vec31.zCoord + d8 * d3);
                     }
                     else if (d4 < d5)
                     {
                         enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
-                        vec31 = new Vec3(vec31.xCoord + d6 * d4, d1, vec31.zCoord + d8 * d4);
+                        vec31 = new Vec3d(vec31.xCoord + d6 * d4, d1, vec31.zCoord + d8 * d4);
                     }
                     else
                     {
                         enumfacing = k > j1 ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                        vec31 = new Vec3(vec31.xCoord + d6 * d5, vec31.yCoord + d7 * d5, d2);
+                        vec31 = new Vec3d(vec31.xCoord + d6 * d5, vec31.yCoord + d7 * d5, d2);
                     }
 
                     l = MathHelper.floor_double(vec31.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
@@ -418,11 +431,11 @@ public class EntityHelper
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if ((!ignoreBlockWithoutBoundingBox || block1.getCollisionBoundingBox(world, blockpos, iblockstate1) != null) && !(ignoreTransparentBlocks && isTransparent(block)))
+                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.portal || iblockstate1.getSelectedBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
                     {
                         if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
                         {
-                            MovingObjectPosition movingobjectposition1 = block1.collisionRayTrace(world, blockpos, vec31, vec32);
+                            RayTraceResult movingobjectposition1 = iblockstate1.collisionRayTrace(world, blockpos, vec31, vec32);
 
                             if (movingobjectposition1 != null)
                             {
@@ -431,7 +444,7 @@ public class EntityHelper
                         }
                         else
                         {
-                            movingobjectposition2 = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec31, enumfacing, blockpos);
+                            movingobjectposition2 = new RayTraceResult(RayTraceResult.Type.MISS, vec31, enumfacing, blockpos);
                         }
                     }
                 }
@@ -481,25 +494,25 @@ public class EntityHelper
         if(axis == EnumFacing.Axis.Y)
         {
             //position offset
-//            double oriX = ent.posX - originX;
-//            double oriZ = ent.posZ - originZ;
-//
-//            double x1 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
-//            double z1 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
-//
-//            addPosition(ent, (destX - originX) + x1, false, 0);
-//            addPosition(ent, (destY - originY), false, 1);
-//            addPosition(ent, (destZ - originZ) + z1, false, 2);
+            //            double oriX = ent.posX - originX;
+            //            double oriZ = ent.posZ - originZ;
+            //
+            //            double x1 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            //            double z1 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
+            //
+            //            addPosition(ent, (destX - originX) + x1, false, 0);
+            //            addPosition(ent, (destY - originY), false, 1);
+            //            addPosition(ent, (destZ - originZ) + z1, false, 2);
 
-//            //motion offset
-//            double moX = ent.motionX;
-//            double moZ = ent.motionZ;
-//
-//            double x2 =  moX * Math.cos(rads) + moZ * Math.sin(rads);
-//            double z2 = -moX * Math.sin(rads) + moZ * Math.cos(rads);
-//
-//            ent.motionX = x2;
-//            ent.motionZ = z2;
+            //            //motion offset
+            //            double moX = ent.motionX;
+            //            double moZ = ent.motionZ;
+            //
+            //            double x2 =  moX * Math.cos(rads) + moZ * Math.sin(rads);
+            //            double z2 = -moX * Math.sin(rads) + moZ * Math.cos(rads);
+            //
+            //            ent.motionX = x2;
+            //            ent.motionZ = z2;
 
             //rotation offset
             iChunUtil.proxy.adjustRotation(ent, (float)-degree, 0F);
@@ -578,13 +591,25 @@ public class EntityHelper
                 for (int i2 = k; i2 <= j1; ++i2)
                 {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
+                    IBlockState iblockstate = ent.worldObj.getBlockState(blockpos);
                     Block block = ent.worldObj.getBlockState(blockpos).getBlock();
 
-                    if (!block.isAir(ent.worldObj, new BlockPos(k1, l1, i2)))
+                    if (!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.fire)
                     {
-                        if (block.canEntityDestroy(ent.worldObj, new BlockPos(k1, l1, i2), ent) && ent.worldObj.getGameRules().getBoolean("mobGriefing"))
+                        if (!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
                         {
-                            flag1 = (ent.worldObj.isRemote || (ent.worldObj.setBlockToAir(new BlockPos(k1, l1, i2)) || flag1));
+                            flag = true;
+                        }
+                        else if (block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
+                        {
+                            if (block != Blocks.command_block && block != Blocks.repeating_command_block && block != Blocks.chain_command_block && block != Blocks.iron_bars && block != Blocks.end_gateway)
+                            {
+                                flag1 = ent.worldObj.setBlockToAir(blockpos) || flag1;
+                            }
+                            else
+                            {
+                                flag = true;
+                            }
                         }
                         else
                         {
@@ -620,8 +645,8 @@ public class EntityHelper
         return persistentTag;
     }
 
-    public static boolean isTransparent(Block block)
+    public static boolean isTransparent(Block block, IBlockState state, World world, BlockPos pos)
     {
-        return block.getLightOpacity() != 0xff;
+        return block.getLightOpacity(state, world, pos) != 0xff;
     }
 }
