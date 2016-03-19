@@ -18,10 +18,12 @@ public class ResourceHelper
     public static final ResourceLocation texEnderCrystal = new ResourceLocation("textures/entity/endercrystal/endercrystal.png");
     public static final ResourceLocation texGuiInventory = new ResourceLocation("textures/gui/container/inventory.png");
 
+    //These are CLIENT ONLY
     private static File fileAssets;
     private static File fileMods;
     private static File fileConfig;
 
+    @SideOnly(Side.CLIENT)
     public static void init()
     {
         fileAssets = new File(Minecraft.getMinecraft().mcDataDir, "assets");
@@ -33,16 +35,19 @@ public class ResourceHelper
      * To be honest, this is actually mostly unnecessary because most "assets" for mods are in the mod's zips.
      * @return /assets/ folder.
      */
+    @SideOnly(Side.CLIENT)
     public static File getAssetsFolder()
     {
         return fileAssets;
     }
 
+    @SideOnly(Side.CLIENT)
     public static File getModsFolder()
     {
         return fileMods;
     }
 
+    @SideOnly(Side.CLIENT)
     public static File getConfigFolder()
     {
         return fileConfig;
