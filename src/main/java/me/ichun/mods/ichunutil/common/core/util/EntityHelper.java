@@ -298,13 +298,13 @@ public class EntityHelper
                 IBlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
 
-                if ((!ignoreBlockWithoutBoundingBox || iblockstate.getSelectedBoundingBox(world, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block, iblockstate, world, blockpos)))
+                if ((!ignoreBlockWithoutBoundingBox || iblockstate.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block, iblockstate, world, blockpos)))
                 {
-                    RayTraceResult movingobjectposition =iblockstate.collisionRayTrace(world, blockpos, vec31, vec32);
+                    RayTraceResult mop =iblockstate.collisionRayTrace(world, blockpos, vec31, vec32);
 
-                    if (movingobjectposition != null)
+                    if (mop != null)
                     {
-                        return movingobjectposition;
+                        return mop;
                     }
                 }
 
@@ -431,7 +431,7 @@ public class EntityHelper
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.portal || iblockstate1.getSelectedBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
+                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.portal || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
                     {
                         if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
                         {
