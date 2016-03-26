@@ -10,10 +10,8 @@ import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketNewGrabbedEntityId;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -104,10 +102,10 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(!event.entity.worldObj.isRemote && event.entity.getEntityData().hasKey("Grabbed-ID"))
+        if(!event.getEntity().worldObj.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
         {
-            Integer x = event.entity.getEntityData().getInteger("Grabbed-ID");
-            if(event.entity.getEntityId() != x)
+            Integer x = event.getEntity().getEntityData().getInteger("Grabbed-ID");
+            if(event.getEntity().getEntityId() != x)
             {
                 for(int i = GrabHandler.dimensionalEntities.size() - 1; i >= 0; i--)
                 {
@@ -118,8 +116,8 @@ public class EventHandlerServer
                         {
                             if(handler.grabbed.getEntityId() == x)
                             {
-                                handler.grabbed = event.entity;
-                                iChunUtil.channel.sendToAll(new PacketNewGrabbedEntityId(true, x, event.entity.getEntityId()));
+                                handler.grabbed = event.getEntity();
+                                iChunUtil.channel.sendToAll(new PacketNewGrabbedEntityId(true, x, event.getEntity().getEntityId()));
                             }
                         }
                     }

@@ -289,7 +289,7 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event)
     {
-        if(event.world.isRemote)
+        if(event.getWorld().isRemote)
         {
             for(GrabHandler handler : GrabHandler.grabbedEntities.get(Side.CLIENT))
             {
@@ -302,10 +302,10 @@ public class EventHandlerClient
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer)
+        if(event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityPlayer)
         {
-            EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.entity.worldObj, event.entity);
-            event.entity.worldObj.spawnEntityInWorld(latchedRenderer);
+            EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.getEntity().worldObj, event.getEntity());
+            event.getEntity().worldObj.spawnEntityInWorld(latchedRenderer);
             latchedRendererEntities.add(latchedRenderer);
         }
     }
@@ -605,7 +605,7 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onGuiActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre event)
     {
-        if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && (event.gui.getClass() == GuiIngameMenu.class && event.button.id == 12 || event.gui.getClass() == GuiMainMenu.class && event.button.id == 6) && !GuiScreen.isShiftKeyDown())
+        if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && (event.getGui().getClass() == GuiIngameMenu.class && event.getButton().id == 12 || event.getGui().getClass() == GuiMainMenu.class && event.getButton().id == 6) && !GuiScreen.isShiftKeyDown())
         {
             event.setCanceled(true);
 

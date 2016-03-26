@@ -117,7 +117,7 @@ public class EntityHelper
 
     public static float updateRotation(float oriRot, float intendedRot, float maxChange)
     {
-        float var4 = MathHelper.wrapAngleTo180_float(intendedRot - oriRot);
+        float var4 = MathHelper.wrapDegrees(intendedRot - oriRot);
 
         if (var4 > maxChange)
         {

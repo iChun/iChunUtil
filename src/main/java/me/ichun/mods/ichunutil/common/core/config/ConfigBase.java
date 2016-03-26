@@ -162,7 +162,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), field.getInt(this)).set(field.getInt(this));
-                    config.get(category, field.getName(), field.getInt(this)).comment = comment;
+                    config.get(category, field.getName(), field.getInt(this)).setComment(comment);
                 }
                 else
                 {
@@ -182,7 +182,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), (int[])field.get(this)).set((int[])field.get(this));
-                    config.get(category, field.getName(), (int[])field.get(this)).comment = comment;
+                    config.get(category, field.getName(), (int[])field.get(this)).setComment(comment);
                 }
                 else
                 {
@@ -207,7 +207,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), nestedIntArray.serialize()).set(nestedIntArray.serialize());
-                    config.get(category, field.getName(), nestedIntArray.serialize()).comment = comment;
+                    config.get(category, field.getName(), nestedIntArray.serialize()).setComment(comment);
                 }
                 else
                 {
@@ -220,7 +220,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), clr.serialize()).set(clr.serialize());
-                    config.get(category, field.getName(), clr.serialize()).comment = comment;
+                    config.get(category, field.getName(), clr.serialize()).setComment(comment);
                 }
                 else
                 {
@@ -232,7 +232,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), (String)field.get(this)).set((String)field.get(this));
-                    config.get(category, field.getName(), (String)field.get(this)).comment = comment;
+                    config.get(category, field.getName(), (String)field.get(this)).setComment(comment);
                 }
                 else
                 {
@@ -252,7 +252,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     config.get(category, field.getName(), (String[])field.get(this)).set((String[])field.get(this));
-                    config.get(category, field.getName(), (String[])field.get(this)).comment = comment;
+                    config.get(category, field.getName(), (String[])field.get(this)).setComment(comment);
                 }
                 else
                 {
@@ -273,7 +273,7 @@ public abstract class ConfigBase
                 if(write)
                 {
                     ConfigHandler.configKeybind.get("keybinds", getModId().toLowerCase() + "." + field.getName(), bind.serialize()).set(bind.serialize());
-                    ConfigHandler.configKeybind.get("keybinds", getModId().toLowerCase() + "." + field.getName(), bind.serialize()).comment = comment;
+                    ConfigHandler.configKeybind.get("keybinds", getModId().toLowerCase() + "." + field.getName(), bind.serialize()).setComment(comment);
                 }
                 else
                 {
