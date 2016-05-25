@@ -264,9 +264,9 @@ public class ModelBaseDummy extends ModelBase
                     float scale = 0.75F;
                     GlStateManager.scale(scale, scale, scale);
                     GlStateManager.rotate(90F, 1.0F, 0.0F, 0.0F);
-                    GlStateManager.rotate(90F, 0.0F, 0.0F, 1.0F);
+                    GlStateManager.rotate(90F, 0.0F, 1.0F, 0.0F);
                     rotationControls.render(f5);
-                    GlStateManager.rotate(90F, 0.0F, 0.0F, -1.0F);
+                    GlStateManager.rotate(90F, 0.0F, -1.0F, 0.0F);
                     rotationControls.render(f5);
                     GlStateManager.rotate(90F, -1.0F, 0.0F, 0.0F);
                     rotationControls.render(f5);
