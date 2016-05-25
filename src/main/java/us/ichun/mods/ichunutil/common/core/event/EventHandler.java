@@ -176,4 +176,16 @@ public class EventHandler
             }
         }
     }
+    
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent event)
+    {
+        if((iChunUtil.config.playStartupSound == 1) && (event.gui instanceof GuiMainMenu))
+        {
+            // Game started
+            SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+            handler.playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+        }
+    }
 }
