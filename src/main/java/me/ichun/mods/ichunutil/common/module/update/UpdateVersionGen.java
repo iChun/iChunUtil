@@ -63,7 +63,7 @@ public class UpdateVersionGen
         map.put("iChunUtil", versions);
         versions.put("1.8.9", iChunUtil.VERSION);
         versions.put("1.8.0", "5.5.0");
-        versions.put("1.7.10", "4.2.2");
+        versions.put("1.7.10", "4.2.3");
         versions.put("1.7", "3.3.0");
 
         versions = new TreeMap<String, String>(Ordering.natural());
@@ -84,7 +84,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Morph", versions);
-        versions.put("1.7.10", "0.9.2");
+        versions.put("1.7.10", "0.9.3");
         versions.put("1.7", "0.8.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
@@ -112,7 +112,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<String, String>(Ordering.natural());
         map.put("Sync", versions);
-        versions.put("1.7.10", "4.0.0");
+        versions.put("1.7.10", "4.0.1");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<String, String>(Ordering.natural());
