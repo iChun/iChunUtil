@@ -36,7 +36,7 @@ ichunutil.config.prop.versionNotificationFrequency.comment=Как часто В�
 ichunutil.config.prop.showPatronReward.comment=Вы хотите показать свою награду Patron другим игрокам?
 ichunutil.config.prop.enableCompactPorkchop.comment=Включить рецепт компактной сырой свиной отбивной?
 
-ichun.gui.newUpdate=Доступна новая версия модификации!
+ichunutil.gui.newUpdate=Доступна новая версия модификации!
 
 ichun.gui.moreOptions=Нажмите %s или нажмите сюда, чтобы увидеть доп. настройки
 

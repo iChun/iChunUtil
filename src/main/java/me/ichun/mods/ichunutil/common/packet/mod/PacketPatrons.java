@@ -38,7 +38,7 @@ public class PacketPatrons extends AbstractPacket
     @Override
     public void readFrom(ByteBuf buf)
     {
-        patrons = new ArrayList<PatronInfo>();
+        patrons = new ArrayList<>();
         String s = ByteBufUtils.readUTF8String(buf);
         while(!s.equals("##endPacket"))
         {

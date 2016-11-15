@@ -25,7 +25,7 @@ public class ElementKeyBindHook extends Element
     @Override
     public void keyInput(char c, int i)
     {
-        if((i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.isRunningOnMac ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU))
+        if((i == Keyboard.KEY_LSHIFT || i == Keyboard.KEY_RSHIFT || (Minecraft.IS_RUNNING_ON_MAC ? (i == 219 || i == 220) : (i == 29 || i == 157)) || i == Keyboard.KEY_LMENU || i == Keyboard.KEY_RMENU))
         {
             if(bind.lastKeyHeld != i)
             {

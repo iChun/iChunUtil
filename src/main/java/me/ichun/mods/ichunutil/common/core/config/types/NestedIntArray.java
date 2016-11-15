@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 public class NestedIntArray
 {
-    public TreeMap<Integer, ArrayList<Integer>> values = new TreeMap<Integer, ArrayList<Integer>>();
+    public TreeMap<Integer, ArrayList<Integer>> values = new TreeMap<>();
 
     public NestedIntArray(TreeMap<Integer, ArrayList<Integer>> vals)
     {
@@ -55,12 +55,12 @@ public class NestedIntArray
                             int val = Integer.parseInt(split1[0]);
                             if(val <= max && val >= min)
                             {
-                                values.put(val, new ArrayList<Integer>());
+                                values.put(val, new ArrayList<>());
                             }
                         }
                         else
                         {
-                            ArrayList<Integer> ints = new ArrayList<Integer>();
+                            ArrayList<Integer> ints = new ArrayList<>();
                             for(int i = 1; i < split1.length; i++)
                             {
                                 try

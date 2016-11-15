@@ -38,7 +38,7 @@ ichunutil.config.prop.showPatronReward.comment=¿Queréis mostrar tru recompensa
 ichunutil.config.prop.patronRewardType.comment=¿Que tipo de recompensa de patron quieres ver?\n1 = Voxel aura\n2 = Pig snout
 ichunutil.config.prop.enableCompactPorkchop.comment=¿Permitir la creación del bloque de Carne de cerdo cruda compacta?
 
-ichun.gui.newUpdate=¡Nueva actualización disponible!
+ichunutil.gui.newUpdate=¡Nueva actualización disponible!
 
 ichun.gui.moreOptions=Presiona %s o presiona aquí para ver mas opciones
 

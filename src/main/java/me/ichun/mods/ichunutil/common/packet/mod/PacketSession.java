@@ -99,7 +99,7 @@ public class PacketSession extends AbstractPacket
     public void readFrom(ByteBuf buffer)
     {
         modId = ByteBufUtils.readUTF8String(buffer);
-        vars = new HashMap<String, Object>();
+        vars = new HashMap<>();
 
         String var = ByteBufUtils.readUTF8String(buffer);
         while(!var.equals("##endPacket"))

@@ -50,7 +50,7 @@ public abstract class IWorkspace extends GuiScreen
 
     public Theme currentTheme = Theme.copyInstance();
 
-    public ArrayList<ArrayList<Window>> levels = new ArrayList<ArrayList<Window>>();
+    public ArrayList<ArrayList<Window>> levels = new ArrayList<>();
 
     public abstract boolean canClickOnElement(Window window, Element element);
 

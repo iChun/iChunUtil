@@ -34,11 +34,11 @@ import java.util.Iterator;
 public class EntityBlock extends Entity
         implements IRenderFactory<EntityBlock>
 {
-    private static final DataParameter<Float> ROT_YAW = EntityDataManager.<Float>createKey(EntityBlock.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> ROT_PITCH = EntityDataManager.<Float>createKey(EntityBlock.class, DataSerializers.FLOAT);
-    private static final DataParameter<Boolean> CAN_ROTATE = EntityDataManager.<Boolean>createKey(EntityBlock.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.<Integer>createKey(EntityBlock.class, DataSerializers.VARINT);
-    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.<BlockPos>createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
+    private static final DataParameter<Float> ROT_YAW = EntityDataManager.createKey(EntityBlock.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> ROT_PITCH = EntityDataManager.createKey(EntityBlock.class, DataSerializers.FLOAT);
+    private static final DataParameter<Boolean> CAN_ROTATE = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.createKey(EntityBlock.class, DataSerializers.VARINT);
+    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
 
     public float rotYaw;
     public float rotPitch;
@@ -127,7 +127,7 @@ public class EntityBlock extends Entity
         {
             IBlockState state = world.getBlockState(pos);
 
-            if(state.getBlock() != Blocks.air)
+            if(state.getBlock() != Blocks.AIR)
             {
                 blocks[highX - pos.getX()][highY - pos.getY()][highZ - pos.getZ()] = state;
 
@@ -150,7 +150,7 @@ public class EntityBlock extends Entity
                 }
             }
 
-            world.setBlockState(pos, Blocks.dirt.getDefaultState(), 2);
+            world.setBlockState(pos, Blocks.DIRT.getDefaultState(), 2);
         }
 
         for(BlockPos pos : poses)
@@ -471,7 +471,7 @@ public class EntityBlock extends Entity
                         if(blocks[i][j][k] != null)
                         {
                             BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
-                            worldObj.notifyNeighborsRespectDebug(pos, Blocks.air);
+                            worldObj.notifyNeighborsRespectDebug(pos, Blocks.AIR);
                         }
                     }
                 }

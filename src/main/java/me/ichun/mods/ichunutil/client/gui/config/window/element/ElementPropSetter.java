@@ -34,7 +34,7 @@ public class ElementPropSetter extends Element
 
     public double sliderProg = 0.0D;
 
-    public ArrayList<Tree> trees = new ArrayList<Tree>();
+    public ArrayList<Tree> trees = new ArrayList<>();
 
     public Tree treeClicked;
     public int clickTimeout;

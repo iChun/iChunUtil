@@ -19,6 +19,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -37,7 +38,7 @@ public class ProxyClient extends ProxyCommon
         ResourceHelper.init();
         RendererHelper.init();
 
-        File file = new File(ResourceHelper.getConfigFolder(), "iChunUtil_KeyBinds.cfg");
+        File file = new File(ResourceHelper.getConfigFolder(), "ichunutil_keybinds.cfg");
         ConfigHandler.configKeybind = new Configuration(file);
         ConfigHandler.configKeybind.load();
 
@@ -68,13 +69,17 @@ public class ProxyClient extends ProxyCommon
         super.init();
 
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
+//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
     }
 
     @Override
     public void postInit()
     {
         super.postInit();
-        ConfigHandler.configKeybind.save();
+        if(ConfigHandler.configKeybind.hasChanged())
+        {
+            ConfigHandler.configKeybind.save();
+        }
     }
 
     @Override

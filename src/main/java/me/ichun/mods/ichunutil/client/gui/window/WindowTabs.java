@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class WindowTabs extends Window
 {
-    public ArrayList<ElementWindow> tabs = new ArrayList<ElementWindow>();
+    public ArrayList<ElementWindow> tabs = new ArrayList<>();
     public int selectedTab;
 
     public WindowTabs(IWorkspace parent, Window original)

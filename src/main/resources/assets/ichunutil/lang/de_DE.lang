@@ -31,7 +31,7 @@ ichunutil.config.prop.versionNotificationTypes.comment=Wie wird der CLIENT über
 ichunutil.config.prop.versionNotificationFrequency.comment=Wie oft wirst du über ein Update benachrichtigt?(Client-Konfiguration)\n0 = Einmal beim Betreten des Servers\n1 = Einmal pro Tag\n2 = Nur einmal pro Update.\n3 = Nie (Die Benachrichtigungen werden nur versteckt. Es wird weiterhin nach Updates gesucht und in der Konsole angezeigt).
 ichunutil.config.prop.showPatronReward.comment=Willst du deine Patron Belohnung anderen Spielern zeigen?
 
-ichun.gui.newUpdate=Neues Mod-Update verfügbar!
+ichunutil.gui.newUpdate=Neues Mod-Update verfügbar!
 
 element.minimize=Minimieren
 element.expand=Erweitern

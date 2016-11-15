@@ -47,7 +47,7 @@ ichunutilstats.config.prop.statsIdentifier.comment=Ne touchez pas à ça !
 ichunutilstats.config.prop.statsData.name=Données
 ichunutilstats.config.prop.statsData.comment=Ne touchez pas à ça !
 
-ichun.gui.newUpdate=Une nouvelle mise à jour du mod est disponible !
+ichunutil.gui.newUpdate=Une nouvelle mise à jour du mod est disponible !
 
 ichun.gui.moreOptions=Tapez %s ou cliquez ici pour voir plus d'options
 

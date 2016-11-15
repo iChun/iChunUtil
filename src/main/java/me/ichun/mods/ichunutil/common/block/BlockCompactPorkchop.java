@@ -8,6 +8,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,8 +19,8 @@ public class BlockCompactPorkchop extends Block
 {
     public BlockCompactPorkchop()
     {
-        super(Material.cake);
-        this.blockSoundType = new SoundType(0.8F, 1.0F, SoundEvents.entity_pig_ambient, SoundEvents.entity_pig_ambient, SoundEvents.entity_pig_ambient, SoundEvents.entity_pig_ambient, SoundEvents.entity_pig_ambient)
+        super(Material.CAKE);
+        this.blockSoundType = new SoundType(0.8F, 1.0F, SoundEvents.ENTITY_PIG_AMBIENT, SoundEvents.ENTITY_PIG_AMBIENT, SoundEvents.ENTITY_PIG_AMBIENT, SoundEvents.ENTITY_PIG_AMBIENT, SoundEvents.ENTITY_PIG_AMBIENT)
         {
             public Random rand = new Random();
 
@@ -29,6 +30,11 @@ public class BlockCompactPorkchop extends Block
                 return (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F;
             }
         };
+        setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+        setHardness(0.8F);
+
+        setRegistryName(new ResourceLocation("ichunutil", "compactPorkchop"));
+        setUnlocalizedName("ichunutil.block.compactporkchop");
     }
 
     @Override

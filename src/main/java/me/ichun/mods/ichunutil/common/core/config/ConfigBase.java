@@ -30,16 +30,16 @@ public abstract class ConfigBase
 
     private boolean setup;
 
-    public TreeMap<CategoryInfo, ArrayList<PropInfo>> categories = new TreeMap<CategoryInfo, ArrayList<ConfigBase.PropInfo>>(Ordering.natural());
+    public TreeMap<CategoryInfo, ArrayList<PropInfo>> categories = new TreeMap<>(Ordering.natural());
 
-    public HashMap<Field, Object> session = new HashMap<Field, Object>();
-    public HashMap<Field, Object> configScreen = new HashMap<Field, Object>();
+    public HashMap<Field, Object> session = new HashMap<>();
+    public HashMap<Field, Object> configScreen = new HashMap<>();
 
-    public ArrayList<Field> requiresRestart = new ArrayList<Field>();
-    public ArrayList<Field> sessionProp = new ArrayList<Field>();
+    public ArrayList<Field> requiresRestart = new ArrayList<>();
+    public ArrayList<Field> sessionProp = new ArrayList<>();
 
     //This stores the list of properties to reveal/unhide in the config screen/file
-    public ArrayList<String> propsToReveal = new ArrayList<String>();
+    public ArrayList<String> propsToReveal = new ArrayList<>();
 
     public ConfigBase(File file)
     {

@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public class ItemRenderingHelper
 {
-    public static ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<Class<? extends Item>>();
+    public static ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<>();
     public static int lastThirdPersonView;
 
-    public static ArrayList<SwingProofHandler> swingProofItems = new ArrayList<SwingProofHandler>();
+    public static ArrayList<SwingProofHandler> swingProofItems = new ArrayList<>();
 
     private static int prevCurItem;
     private static boolean currentItemIsSwingProof;

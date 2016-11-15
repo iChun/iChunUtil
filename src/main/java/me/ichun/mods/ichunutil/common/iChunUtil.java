@@ -30,31 +30,33 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
-@Mod(modid = iChunUtil.MOD_NAME, name = iChunUtil.MOD_NAME,
+@Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
         dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
-        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)"
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
+        acceptedMinecraftVersions = "[1.9.4,1.10.2]"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
 {
     //Stuff to bump every update
-    public static final String VERSION_OF_MC = "1.9.0";
-    public static final int VERSION_MAJOR = 7;
+    public static final String VERSION_OF_MC = "1.10.2";
+    public static final int VERSION_MAJOR = 6;
     public static final int VERSION_MINOR = 0;
     public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
+    public static final String MOD_ID = "ichunutil";
 
     public static final int REQ_FORGE_MAJOR = 12;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;
-    public static final int REQ_FORGE_REVISION = 0;
-    public static final int REQ_FORGE_BUILD = 1811;
+    public static final int REQ_FORGE_REVISION = 2;
+    public static final int REQ_FORGE_BUILD = 2125;
 
-    public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
+    public static final Logger LOGGER = Logger.createLogger(MOD_ID);
 
-    @Mod.Instance(MOD_NAME)
+    @Mod.Instance(MOD_ID)
     public static iChunUtil instance;
 
     @SidedProxy(clientSide = "me.ichun.mods.ichunutil.client.core.ProxyClient", serverSide = "me.ichun.mods.ichunutil.common.core.ProxyCommon")
@@ -124,7 +126,7 @@ public class iChunUtil
         @Override
         public String getModId()
         {
-            return iChunUtil.MOD_NAME.toLowerCase();
+            return iChunUtil.MOD_ID;
         }
 
         @Override
@@ -154,8 +156,8 @@ public class iChunUtil
 
                 if(enableCompactPorkchop == 1)
                 {
-                    GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.porkchop);
-                    GameRegistry.addShapelessRecipe(new ItemStack(Items.porkchop, 9), blockCompactPorkchop);
+                    GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.PORKCHOP);
+                    GameRegistry.addShapelessRecipe(new ItemStack(Items.PORKCHOP, 9), blockCompactPorkchop);
                 }
             }
         }

@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class UpdateChecker
 {
-    private static ArrayList<ModVersionInfo> registeredMods = new ArrayList<ModVersionInfo>();
-    private static ArrayList<ModVersionInfo> modsWithUpdates = new ArrayList<ModVersionInfo>();
+    private static ArrayList<ModVersionInfo> registeredMods = new ArrayList<>();
+    private static ArrayList<ModVersionInfo> modsWithUpdates = new ArrayList<>();
 
     private static boolean updatesChecked;
     private static boolean requireLogging;

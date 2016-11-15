@@ -27,4 +27,4 @@ ichunutil.config.prop.versionNotificationFrequency.name=Fréquence de notificati
 ichunutil.config.prop.versionNotificationTypes.comment=Comment le CLIENT sera averti des mises à jour ? (Les serveurs auront toujours cette notification affichée dans la console. En solo, vous rejoignez un serveur auto-hébergé)\n0 = Avertir des mises à jour peu importe le statut du joueur (admin ou pas).\n1 = Avertir seulement les admins des mises à jour (Les mises à jour de mods client seul s'afficheront quand même)\n2 = Autoriser les notifications par le client.
 ichunutil.config.prop.versionNotificationFrequency.comment=Quand serez vous averti des mises à jour ? (Configuration client)\n0 = Dès que vous vous connectez au serveur\n1 = Une fois par jour\n2 = Une seule fois jusqu'à la prochaine mise à jour.\n3 = Jamais (Cela cache juste les notifications. Le mod continuera tout de même à vérifier les mises à jour et à les afficher dans la console).
 
-ichun.gui.newUpdate=Nouvelle version du mod disponible !
+ichunutil.gui.newUpdate=Nouvelle version du mod disponible !

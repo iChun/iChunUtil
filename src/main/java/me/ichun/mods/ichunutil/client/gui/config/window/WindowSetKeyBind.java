@@ -56,7 +56,7 @@ public class WindowSetKeyBind extends Window
             {
                 if(Mouse.isButtonDown(i))
                 {
-                    if(Minecraft.isRunningOnMac && i == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)))
+                    if(Minecraft.IS_RUNNING_ON_MAC && i == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157)))
                     {
                         i = 1;
                     }
@@ -124,7 +124,7 @@ public class WindowSetKeyBind extends Window
                 {
                     sb.append(":SHIFT");
                 }
-                if(GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)))
+                if(GuiScreen.isCtrlKeyDown() && !(Minecraft.IS_RUNNING_ON_MAC ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)))
                 {
                     sb.append(":CTRL");
                 }
@@ -137,7 +137,7 @@ public class WindowSetKeyBind extends Window
                 {
                     KeyBind bind = (KeyBind)prop.field.get(config);
 
-                    KeyBind newKey = iChunUtil.proxy.registerKeyBind(new KeyBind(lastKeyHeld, GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT), GuiScreen.isCtrlKeyDown() && !(Minecraft.isRunningOnMac ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184) && !(lastKeyHeld == 56 || lastKeyHeld == 184), bind.ignoreHold), bind);
+                    KeyBind newKey = iChunUtil.proxy.registerKeyBind(new KeyBind(lastKeyHeld, GuiScreen.isShiftKeyDown() && !(lastKeyHeld == Keyboard.KEY_LSHIFT || lastKeyHeld == Keyboard.KEY_RSHIFT), GuiScreen.isCtrlKeyDown() && !(Minecraft.IS_RUNNING_ON_MAC ? (lastKeyHeld == 219 || lastKeyHeld == 220) : (lastKeyHeld == 29 || lastKeyHeld == 157)), Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184) && !(lastKeyHeld == 56 || lastKeyHeld == 184), bind.ignoreHold), bind);
                     prop.field.set(config, newKey);
                     config.onConfigChange(prop.field, newKey);
 

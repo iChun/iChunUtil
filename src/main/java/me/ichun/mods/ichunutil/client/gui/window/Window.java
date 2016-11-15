@@ -37,7 +37,7 @@ public class Window
 
     public boolean isTab;
 
-    public ArrayList<Element> elements = new ArrayList<Element>();
+    public ArrayList<Element> elements = new ArrayList<>();
 
     public static final int BORDER_SIZE = 3;
 

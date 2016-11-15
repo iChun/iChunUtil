@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public class ConfigHandler
 {
-    public static ArrayList<ConfigBase> configs = new ArrayList<ConfigBase>();
+    public static ArrayList<ConfigBase> configs = new ArrayList<>();
 
     public static Configuration configKeybind;
 

@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.9.0";
+    private static final String OBF_VERSION = "1.10.2";
 
     private static boolean isObfuscated;
 
@@ -61,7 +61,7 @@ public class ObfHelper
                     if(!iChunUtil.VERSION_OF_MC.equals(OBF_VERSION))
                     {
                         iChunUtil.LOGGER.warn("ObfHelper strings are not updated!");
-                        throw new RuntimeException("Bad iChun! Update obfuscation strings!");
+                        throw new RuntimeException("Bad iChun! Update obfuscation strings!"); //this doesn't seem to crash the game o_O
                     }
                     return;
                 }

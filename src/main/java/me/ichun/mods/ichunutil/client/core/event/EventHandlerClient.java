@@ -24,10 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -46,6 +43,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -79,12 +77,12 @@ public class EventHandlerClient
     public int screenWidth;
     public int screenHeight;
 
-    public ArrayList<KeyBind> keyBindList = new ArrayList<KeyBind>();
-    public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<KeyBinding, KeyBind>();
+    public ArrayList<KeyBind> keyBindList = new ArrayList<>();
+    public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<>();
 
     public EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
 
-    public ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<EntityLatchedRenderer>();
+    public ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<>();
 
     //Module stuff
     //EULA module
@@ -93,10 +91,10 @@ public class EventHandlerClient
 
     //Patron module
     public boolean patronUpdateServerAsPatron;
-    public ArrayList<PatronInfo> patrons = new ArrayList<PatronInfo>();
+    public ArrayList<PatronInfo> patrons = new ArrayList<>();
 
-    public HashMap<ResourceLocation, BufferedImage[]> patronRestitchedSkins = new HashMap<ResourceLocation, BufferedImage[]>();
-    public HashMap<ResourceLocation, int[]> patronRestitchedSkinsId = new HashMap<ResourceLocation, int[]>();
+    public HashMap<ResourceLocation, BufferedImage[]> patronRestitchedSkins = new HashMap<>();
+    public HashMap<ResourceLocation, int[]> patronRestitchedSkinsId = new HashMap<>();
     public ModelVoxel patronModelVoxel = new ModelVoxel();
     //End Module Stuff
 
@@ -163,9 +161,9 @@ public class EventHandlerClient
         }
         else
         {
+            ScaledResolution reso = new ScaledResolution(mc);
             if(eulaDrawEulaNotice)
             {
-                ScaledResolution reso = new ScaledResolution(mc);
                 int i = Mouse.getX() * reso.getScaledWidth() / mc.displayWidth;
                 int j = reso.getScaledHeight() - Mouse.getY() * reso.getScaledHeight() / mc.displayHeight - 1;
 
@@ -183,6 +181,17 @@ public class EventHandlerClient
                 }
             }
             GuiUpdateNotifier.update();
+
+            if(mc.currentScreen instanceof GuiControls && !keyBindList.isEmpty())
+            {
+                String s = I18n.translateToLocal("ichunutil.config.controls.moreKeys");
+                int width = Math.round(mc.fontRendererObj.getStringWidth(s) / 2F);
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(reso.getScaledWidth() - width - 2, (reso.getScaledHeight() - (mc.fontRendererObj.FONT_HEIGHT / 2D) - 2), 0);
+                GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                mc.fontRendererObj.drawString(s, 0, 0, 0xffffff, true);
+                GlStateManager.popMatrix();
+            }
         }
     }
 

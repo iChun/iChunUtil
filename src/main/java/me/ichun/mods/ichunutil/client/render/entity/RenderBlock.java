@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class RenderBlock extends Render<EntityBlock>
 {
-    public ArrayList<Class<? extends TileEntity>> classesNotToRender = new ArrayList<Class<? extends TileEntity>>();
+    public ArrayList<Class<? extends TileEntity>> classesNotToRender = new ArrayList<>();
 
     public RenderBlock(RenderManager renderManager)
     {
@@ -37,7 +37,7 @@ public class RenderBlock extends Render<EntityBlock>
     @Override
     protected ResourceLocation getEntityTexture(EntityBlock entity)
     {
-        return TextureMap.locationBlocksTexture;
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class RenderBlock extends Render<EntityBlock>
                         {
                             if (iblockstate != world.getBlockState(blockpos) && iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                             {
-                                this.bindTexture(TextureMap.locationBlocksTexture);
+                                this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                                 GlStateManager.pushMatrix();
                                 GlStateManager.disableLighting();
                                 Tessellator tessellator = Tessellator.getInstance();

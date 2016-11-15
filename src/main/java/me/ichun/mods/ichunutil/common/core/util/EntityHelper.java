@@ -32,7 +32,7 @@ public class EntityHelper
 {
     public static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
 
-    private static HashMap<String, GameProfile> nameToFullProfileMap = new HashMap<String, GameProfile>();
+    private static HashMap<String, GameProfile> nameToFullProfileMap = new HashMap<>();
 
     @SideOnly(Side.CLIENT)
     public static void injectMinecraftPlayerGameProfile()
@@ -40,7 +40,7 @@ public class EntityHelper
         nameToFullProfileMap.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
     }
 
-    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.<UUID, BossInfoLerping>newLinkedHashMap();
+    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.newLinkedHashMap();
 
     @SideOnly(Side.CLIENT)
     public static void storeBossStatus()
@@ -89,7 +89,7 @@ public class EntityHelper
         {
             e.printStackTrace();
         }
-        return SoundEvents.entity_generic_hurt;
+        return SoundEvents.ENTITY_GENERIC_HURT;
     }
 
     //TODO update this
@@ -112,7 +112,7 @@ public class EntityHelper
         {
             e.printStackTrace();
         }
-        return SoundEvents.entity_generic_death;
+        return SoundEvents.ENTITY_GENERIC_DEATH;
     }
 
     public static float updateRotation(float oriRot, float intendedRot, float maxChange)
@@ -431,7 +431,7 @@ public class EntityHelper
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.portal || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
+                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
                     {
                         if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
                         {
@@ -594,7 +594,7 @@ public class EntityHelper
                     IBlockState iblockstate = ent.worldObj.getBlockState(blockpos);
                     Block block = ent.worldObj.getBlockState(blockpos).getBlock();
 
-                    if (!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.fire)
+                    if (!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
                     {
                         if (!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
                         {
@@ -602,7 +602,7 @@ public class EntityHelper
                         }
                         else if (block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
                         {
-                            if (block != Blocks.command_block && block != Blocks.repeating_command_block && block != Blocks.chain_command_block && block != Blocks.iron_bars && block != Blocks.end_gateway)
+                            if (block != Blocks.COMMAND_BLOCK && block != Blocks.REPEATING_COMMAND_BLOCK && block != Blocks.CHAIN_COMMAND_BLOCK && block != Blocks.IRON_BARS && block != Blocks.END_GATEWAY)
                             {
                                 flag1 = ent.worldObj.setBlockToAir(blockpos) || flag1;
                             }

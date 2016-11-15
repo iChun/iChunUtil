@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class EntityTrackerRegistry
 {
-    public ArrayList<Entry> trackerEntries = new ArrayList<Entry>();
+    public ArrayList<Entry> trackerEntries = new ArrayList<>();
 
     public void tick()
     {
@@ -151,7 +151,7 @@ public class EntityTrackerRegistry
 
         public long lastTick;
 
-        public ArrayList<IAdditionalTrackerInfo> additionalInfo = new ArrayList<IAdditionalTrackerInfo>();
+        public ArrayList<IAdditionalTrackerInfo> additionalInfo = new ArrayList<>();
 
         public EntityInfo(EntityLivingBase ent)
         {

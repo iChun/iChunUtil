@@ -26,7 +26,7 @@ public class EventHandlerServer
 {
     public int ticks;
 
-    public ArrayList<PatronInfo> patrons = new ArrayList<PatronInfo>();
+    public ArrayList<PatronInfo> patrons = new ArrayList<>();
     public EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
 
     @SubscribeEvent
@@ -51,7 +51,7 @@ public class EventHandlerServer
             {
                 if(event.player.isPlayerSleeping() && event.player.getRNG().nextFloat() < 0.025F || event.player.getRNG().nextFloat() < 0.005F)
                 {
-                    event.player.getEntityWorld().playSound(null, event.player.posX, event.player.posY + event.player.getEyeHeight(), event.player.posZ, SoundEvents.entity_pig_ambient, SoundCategory.PLAYERS, event.player.isPlayerSleeping() ? 0.2F : 1.0F, (event.player.getRNG().nextFloat() - event.player.getRNG().nextFloat()) * 0.2F + 1.0F);
+                    event.player.getEntityWorld().playSound(null, event.player.posX, event.player.posY + event.player.getEyeHeight(), event.player.posZ, SoundEvents.ENTITY_PIG_AMBIENT, SoundCategory.PLAYERS, event.player.isPlayerSleeping() ? 0.2F : 1.0F, (event.player.getRNG().nextFloat() - event.player.getRNG().nextFloat()) * 0.2F + 1.0F);
                 }
             }
         }

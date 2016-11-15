@@ -14,7 +14,8 @@ public class Logger
 
     public void log(Level logLevel, Object msg)
     {
-        FMLLog.log(modId, logLevel, "[%s] " + String.valueOf(msg), modId);
+//        FMLLog.log(modId, logLevel, "[%s] " + String.valueOf(msg), modId);
+        FMLLog.log(modId, logLevel, "%s", msg);
     }
 
     public void warn(Object msg)

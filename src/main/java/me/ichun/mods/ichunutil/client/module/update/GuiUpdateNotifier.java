@@ -116,7 +116,7 @@ public class GuiUpdateNotifier extends Gui
                 GlStateManager.disableLighting();
                 this.drawTexturedModalRect(i, j, 96, 202, 160, 32);
 
-                this.mc.fontRendererObj.drawString(I18n.translateToLocal("ichun.gui.newUpdate"), i + 10, j + 7, -256);
+                this.mc.fontRendererObj.drawString(I18n.translateToLocal("ichunutil.gui.newUpdate"), i + 10, j + 7, -256);
                 this.mc.fontRendererObj.drawString(info.modName + " - " + info.modVersionNew, i + 15, j + 18, -1);
 
                 RenderHelper.enableGUIStandardItemLighting();

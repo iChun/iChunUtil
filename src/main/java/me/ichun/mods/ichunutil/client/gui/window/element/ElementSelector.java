@@ -12,7 +12,7 @@ public class ElementSelector extends Element
 {
     public String tooltip;
 
-    public TreeMap<String, Object> choices = new TreeMap<String, Object>(Ordering.natural());
+    public TreeMap<String, Object> choices = new TreeMap<>(Ordering.natural());
 
     public String selected;
 

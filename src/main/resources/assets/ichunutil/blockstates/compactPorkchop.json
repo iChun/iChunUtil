@@ -1,5 +1,13 @@
 {
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "ichunutil:blocks/pigblock"
+        },
+        "model": "cube_all"
+    },
     "variants": {
-        "normal": { "model": "ichunutil:compactPorkchop" }
+        "normal": [{}],
+        "inventory": [{}]
     }
 }

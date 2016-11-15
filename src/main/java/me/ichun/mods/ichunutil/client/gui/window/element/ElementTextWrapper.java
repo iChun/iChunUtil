@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ElementTextWrapper extends Element
 {
-    public ArrayList<String> text = new ArrayList<String>();
+    public ArrayList<String> text = new ArrayList<>();
 
     public double sliderProg;
 
