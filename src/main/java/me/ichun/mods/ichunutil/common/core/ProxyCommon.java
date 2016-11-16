@@ -33,8 +33,7 @@ public class ProxyCommon
         iChunUtil.eventHandlerServer = new EventHandlerServer();
         MinecraftForge.EVENT_BUS.register(iChunUtil.eventHandlerServer);
 
-        iChunUtil.blockCompactPorkchop = new BlockCompactPorkchop();
-        GameRegistry.register(iChunUtil.blockCompactPorkchop);
+        iChunUtil.blockCompactPorkchop = GameRegistry.register(new BlockCompactPorkchop());
         GameRegistry.register(new ItemBlock(iChunUtil.blockCompactPorkchop).setRegistryName(iChunUtil.blockCompactPorkchop.getRegistryName()));
 
         EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);

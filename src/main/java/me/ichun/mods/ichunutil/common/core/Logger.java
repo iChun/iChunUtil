@@ -5,17 +5,17 @@ import org.apache.logging.log4j.Level;
 
 public class Logger
 {
-    public final String modId;
+    public final String modName;
 
     private Logger(String id)
     {
-        this.modId = id;
+        this.modName = id;
     }
 
     public void log(Level logLevel, Object msg)
     {
-//        FMLLog.log(modId, logLevel, "[%s] " + String.valueOf(msg), modId);
-        FMLLog.log(modId, logLevel, "%s", msg);
+//        FMLLog.log(modName, logLevel, "[%s] " + String.valueOf(msg), modName);
+        FMLLog.log(modName, logLevel, "%s", msg);
     }
 
     public void warn(Object msg)

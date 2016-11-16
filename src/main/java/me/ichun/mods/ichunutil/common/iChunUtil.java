@@ -54,7 +54,7 @@ public class iChunUtil
     public static final int REQ_FORGE_REVISION = 2;
     public static final int REQ_FORGE_BUILD = 2125;
 
-    public static final Logger LOGGER = Logger.createLogger(MOD_ID);
+    public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
 
     @Mod.Instance(MOD_ID)
     public static iChunUtil instance;
