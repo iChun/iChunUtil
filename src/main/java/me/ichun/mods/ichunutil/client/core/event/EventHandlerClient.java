@@ -139,22 +139,21 @@ public class EventHandlerClient
             for(int i = latchedRendererEntities.size() - 1; i >= 0; i--)
             {
                 EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
-                if(latchedRenderer.latchedEnt != null && (mc.theWorld.getWorldTime() - latchedRenderer.lastUpdate) > 10L)
+                if(latchedRenderer.latchedEnt != null && !latchedRenderer.latchedEnt.isDead) //latched ent exists and is alive and well
                 {
-                    latchedRenderer.setLocationAndAngles(latchedRenderer.latchedEnt.posX, latchedRenderer.latchedEnt.posY, latchedRenderer.latchedEnt.posZ, latchedRenderer.latchedEnt.rotationYaw, latchedRenderer.latchedEnt.rotationPitch);
-                    latchedRenderer.relocationTries++;
-                    if(latchedRenderer.relocationTries > 5)
+                    if(latchedRenderer.isDead || (mc.theWorld.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher is died/stopped updating, kill it replace with new one.
                     {
                         latchedRenderer.setDead();
+                        latchedRendererEntities.remove(i);
 
                         EntityLatchedRenderer newLatchedRenderer = new EntityLatchedRenderer(latchedRenderer.latchedEnt.worldObj, latchedRenderer.latchedEnt);
                         latchedRenderer.latchedEnt.worldObj.spawnEntityInWorld(newLatchedRenderer);
                         latchedRendererEntities.add(newLatchedRenderer);
                     }
-                }
-                if(latchedRenderer.latchedEnt != null && !latchedRenderer.latchedEnt.isDead && !latchedRenderer.isDead)
-                {
-                    latchedRenderer.updatePos();
+                    else
+                    {
+                        latchedRenderer.updatePos();
+                    }
                 }
                 else
                 {

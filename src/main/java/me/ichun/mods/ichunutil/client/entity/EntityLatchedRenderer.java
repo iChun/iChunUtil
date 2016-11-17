@@ -20,8 +20,6 @@ public class EntityLatchedRenderer extends Entity
 
     public long lastUpdate;
 
-    public int relocationTries;
-
     public EntityLatchedRenderer(World par1World)
     {
         super(par1World);
@@ -95,14 +93,12 @@ public class EntityLatchedRenderer extends Entity
     @Override
     public void onUpdate()
     {
-        ticksExisted++;
-        if(latchedEnt == null || !latchedEnt.isEntityAlive())
+        if(latchedEnt == null)
         {
-            setDead();
             return;
         }
 
-        relocationTries = 0;
+        ticksExisted++;
 
         MinecraftForge.EVENT_BUS.post(new EntityLatchedRendererUpdateEvent(this));
 
