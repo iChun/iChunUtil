@@ -80,9 +80,9 @@ public class EventHandlerClient
     public ArrayList<KeyBind> keyBindList = new ArrayList<>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<>();
 
-    public EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
+    protected EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
 
-    public ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<>();
+    protected ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<>();
 
     //Module stuff
     //EULA module
@@ -146,6 +146,10 @@ public class EventHandlerClient
                     if(latchedRenderer.relocationTries > 5)
                     {
                         latchedRenderer.setDead();
+
+                        EntityLatchedRenderer newLatchedRenderer = new EntityLatchedRenderer(latchedRenderer.latchedEnt.worldObj, latchedRenderer.latchedEnt);
+                        latchedRenderer.latchedEnt.worldObj.spawnEntityInWorld(newLatchedRenderer);
+                        latchedRendererEntities.add(newLatchedRenderer);
                     }
                 }
                 if(latchedRenderer.latchedEnt != null && !latchedRenderer.latchedEnt.isDead && !latchedRenderer.isDead)
@@ -154,7 +158,7 @@ public class EventHandlerClient
                 }
                 else
                 {
-                    latchedRenderer.setDead();;
+                    latchedRenderer.setDead();
                     latchedRendererEntities.remove(i);
                 }
             }
@@ -398,6 +402,7 @@ public class EventHandlerClient
                 PatronInfo info = getPatronInfo(parent);
                 if(info != null && info.showEffect)
                 {
+                    event.ent.setIgnoreFrustumCheck();
                     switch(info.effectType)
                     {
                         case 1:
@@ -480,7 +485,7 @@ public class EventHandlerClient
                                 GlStateManager.translate(0F, -0.8F, 0F);
                             }
 
-                            patronModelVoxel.renderPlayer(event.ent, 0, parent.hashCode(), loc, event.x, event.y, event.z, 0.0625F, event.f1, patronRestitchedSkinsId.get(rl));
+                            patronModelVoxel.renderPlayer(event.ent, 0, parent.hashCode(), loc, event.x, event.y, event.z, 0.0625F, event.partialTick, patronRestitchedSkinsId.get(rl));
 
                             break;
                         }
@@ -492,7 +497,7 @@ public class EventHandlerClient
                                 RenderPlayer renderPlayer = (RenderPlayer)render;
                                 ModelBase biped = renderPlayer.mainModel;
 
-                                int ii = parent.getBrightnessForRender(event.f1);
+                                int ii = parent.getBrightnessForRender(event.partialTick);
                                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(ii % 65536) / 1.0F, (float)(ii / 65536) / 1.0F);
 
                                 GlStateManager.enableBlend();
@@ -512,9 +517,9 @@ public class EventHandlerClient
 
                                     GlStateManager.pushMatrix();
 
-                                    double tX = event.ent.prevPosX + (event.ent.posX - event.ent.prevPosX) * event.f1;
-                                    double tY = event.ent.prevPosY + (event.ent.posY - event.ent.prevPosY) * event.f1;
-                                    double tZ = event.ent.prevPosZ + (event.ent.posZ - event.ent.prevPosZ) * event.f1;
+                                    double tX = event.ent.prevPosX + (event.ent.posX - event.ent.prevPosX) * event.partialTick;
+                                    double tY = event.ent.prevPosY + (event.ent.posY - event.ent.prevPosY) * event.partialTick;
+                                    double tZ = event.ent.prevPosZ + (event.ent.posZ - event.ent.prevPosZ) * event.partialTick;
                                     GlStateManager.translate(entInfo.posX - tX + event.x, entInfo.posY - tY + event.y, entInfo.posZ - tZ + event.z);
 
                                     GlStateManager.rotate(entInfo.renderYawOffset, 0.0F, -1.0F, 0.0F);
@@ -522,10 +527,10 @@ public class EventHandlerClient
                                     //elytra rotation
                                     if(parent.getTicksElytraFlying() > 4)
                                     {
-                                        float f = (float)parent.getTicksElytraFlying() + event.f1;
+                                        float f = (float)parent.getTicksElytraFlying() + event.partialTick;
                                         float f1 = MathHelper.clamp_float(f * f / 100.0F, 0.0F, 1.0F);
                                         GlStateManager.rotate(f1 * (-90.0F - parent.rotationPitch), -1.0F, 0.0F, 0.0F);
-                                        Vec3d vec3d = parent.getLook(event.f1);
+                                        Vec3d vec3d = parent.getLook(event.partialTick);
                                         double d0 = parent.motionX * parent.motionX + parent.motionZ * parent.motionZ;
                                         double d1 = vec3d.xCoord * vec3d.xCoord + vec3d.zCoord * vec3d.zCoord;
 
@@ -543,7 +548,7 @@ public class EventHandlerClient
 
                                     GlStateManager.translate(0.0F, -1.5F, 0.0F);
 
-                                    float alpha = 1.0F - MathHelper.clamp_float(((i - 1) + event.f1) / 5F, 0.0F, 1.0F);//1.0F - MathHelper.clamp_float(((float)(loc.size() - 2 - i) + f1) / (float)((loc.size() - 2) > 5 ? 5 : loc.size() - 2), 0.0F, 1.0F);
+                                    float alpha = 1.0F - MathHelper.clamp_float(((i - 1) + event.partialTick) / 5F, 0.0F, 1.0F);//1.0F - MathHelper.clamp_float(((float)(loc.size() - 2 - i) + partialTick) / (float)((loc.size() - 2) > 5 ? 5 : loc.size() - 2), 0.0F, 1.0F);
 
                                     GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
 
@@ -560,7 +565,7 @@ public class EventHandlerClient
                                         f7 = 1.0F;
                                     }
 
-                                    float f4 = (float)parent.ticksExisted - i + event.f1;
+                                    float f4 = (float)parent.ticksExisted - i + event.partialTick;
 
                                     float f5 = entInfo.rotationPitch;
 
@@ -608,6 +613,11 @@ public class EventHandlerClient
             }
         }
         return info;
+    }
+
+    public EntityTrackerRegistry getEntityTrackerRegistry()
+    {
+        return entityTrackerRegistry;
     }
 
     //I'm lazy okay?

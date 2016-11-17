@@ -12,10 +12,15 @@ public class Logger
         this.modName = id;
     }
 
+    public void log(Level logLevel, String format, Object...msg)
+    {
+        //        FMLLog.log(modName, logLevel, "[%s] " + String.valueOf(msg), modName);
+        FMLLog.log(modName, logLevel, format, msg);
+    }
+
     public void log(Level logLevel, Object msg)
     {
-//        FMLLog.log(modName, logLevel, "[%s] " + String.valueOf(msg), modName);
-        FMLLog.log(modName, logLevel, "%s", msg);
+        log(logLevel, "%s", msg);
     }
 
     public void warn(Object msg)

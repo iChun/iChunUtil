@@ -29,33 +29,49 @@ public class EntityLatchedRenderer extends Entity
         {
             setSize(0.1F, 0.1F);
             lastUpdate = par1World.getWorldTime();
-            ignoreFrustumCheck = true;
         }
     }
 
     public EntityLatchedRenderer(World par1World, Entity ent)
     {
         super(par1World);
-        setSize(0.1F, 0.1F);
+        setSize(ent.width * 0.75F, ent.height * 0.75F);
         latchedEnt = ent;
         setLocationAndAngles(latchedEnt.posX, latchedEnt.posY, latchedEnt.posZ, latchedEnt.rotationYaw, latchedEnt.rotationPitch);
         lastUpdate = par1World.getWorldTime();
+    }
+
+    public EntityLatchedRenderer setIgnoreFrustumCheck()
+    {
         ignoreFrustumCheck = true;
+        return this;
+    }
+
+    public EntityLatchedRenderer setRenderSize(float width, float height) //use this for hats eg
+    {
+        if(!ignoreFrustumCheck)
+        {
+            if(width > this.width && height > this.height)
+            {
+                setSize(width, height);
+            }
+            else if(width > this.width)
+            {
+                setSize(width, this.height);
+            }
+            else if(height > this.height)
+            {
+                setSize(this.width, height);
+            }
+        }
+        return this;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public boolean isInRangeToRenderDist(double distance)
     {
-        double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 10.0D; // * 10D is the new renderDistanceWeight
-
-        if (Double.isNaN(d0))
-        {
-            d0 = 1.0D;
-        }
-
-        d0 = d0 * 64.0D * getRenderDistanceWeight();
-        return distance < d0 * d0;
+        return latchedEnt.isInRangeToRenderDist(distance);
     }
 
     public void updatePos()
@@ -102,13 +118,7 @@ public class EntityLatchedRenderer extends Entity
     @Override
     public int getBrightnessForRender(float par1)
     {
-        return super.getBrightnessForRender(par1);
-    }
-
-    @Override
-    public void setDead()
-    {
-        super.setDead();
+        return latchedEnt.getBrightnessForRender(par1);
     }
 
     @Override

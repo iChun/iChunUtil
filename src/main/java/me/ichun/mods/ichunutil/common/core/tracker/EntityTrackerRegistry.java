@@ -54,8 +54,8 @@ public class EntityTrackerRegistry
         {
             this.entityToTrack = entityToTrack;
             this.maxTrack = 20;
-            this.additionalInfo = new ArrayList<Class<? extends IAdditionalTrackerInfo>>();
-            this.trackedInfo = new ArrayList<EntityInfo>();
+            this.additionalInfo = new ArrayList<>();
+            this.trackedInfo = new ArrayList<>();
         }
 
         public Entry setMaxTrack(int max)
@@ -146,6 +146,7 @@ public class EntityTrackerRegistry
         public boolean sleeping;
         public boolean sprinting;
         public boolean invisible;
+        public boolean elytraFlying;
 
         public float height;
 
@@ -164,13 +165,13 @@ public class EntityTrackerRegistry
             return this;
         }
 
-        public IAdditionalTrackerInfo getTracker(Class<? extends IAdditionalTrackerInfo> clz)
+        public <T extends IAdditionalTrackerInfo> T getTracker(Class<T> clz)
         {
             for(IAdditionalTrackerInfo tracker : additionalInfo)
             {
                 if(tracker.getClass().equals(clz))
                 {
-                    return tracker;
+                    return (T)tracker;
                 }
             }
             return null;
@@ -193,6 +194,7 @@ public class EntityTrackerRegistry
             sleeping = tracked.isPlayerSleeping();
             sprinting = tracked.isSprinting();
             invisible = tracked.isInvisible();
+            elytraFlying = tracked.getTicksElytraFlying() > 4;
 
             height = tracked.height;
 

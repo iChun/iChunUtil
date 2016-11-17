@@ -145,21 +145,15 @@ public class ModelVoxel extends ModelBase
                 continue;
             }
 
-            boolean canRender = true;
+            boolean canRender = false;
 
-            PatronTracker info1 = null;
-
-            for(EntityTrackerRegistry.IAdditionalTrackerInfo tracker : info.additionalInfo)
+            PatronTracker info1 = info.getTracker(PatronTracker.class);
+            if(info1 != null)
             {
-                if(tracker instanceof PatronTracker)
-                {
-                    info1 = ((PatronTracker)tracker);
-                    canRender = info1.canRender;
-                    break;
-                }
+                canRender = info1.canRender;
             }
 
-            if(!canRender || info1 == null)
+            if(!canRender)
             {
                 continue;
             }

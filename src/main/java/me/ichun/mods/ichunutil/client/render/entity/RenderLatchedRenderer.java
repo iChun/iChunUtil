@@ -33,17 +33,17 @@ public class RenderLatchedRenderer extends Render<EntityLatchedRenderer>
         public final double x;
         public final double y;
         public final double z;
-        public final float f;
-        public final float f1;
+        public final float yaw;
+        public final float partialTick;
 
-        public RenderLatchedRendererEvent(EntityLatchedRenderer ent, double x, double y, double z, float f, float f1)
+        public RenderLatchedRendererEvent(EntityLatchedRenderer ent, double x, double y, double z, float yaw, float partialTick)
         {
             this.ent = ent;
             this.x = x;
             this.y = y;
             this.z = z;
-            this.f = f;
-            this.f1 = f1;
+            this.yaw = yaw;
+            this.partialTick = partialTick;
         }
     }
 }
