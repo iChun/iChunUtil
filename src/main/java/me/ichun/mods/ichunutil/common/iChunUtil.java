@@ -52,7 +52,7 @@ public class iChunUtil
     public static final int REQ_FORGE_MAJOR = 12;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;
     public static final int REQ_FORGE_REVISION = 2;
-    public static final int REQ_FORGE_BUILD = 2125;
+    public static final int REQ_FORGE_BUILD = 2151;
 
     public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
 
