@@ -1,13 +1,10 @@
 package me.ichun.mods.ichunutil.common.entity;
 
-import me.ichun.mods.ichunutil.client.render.entity.RenderBlock;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketRequestBlockEntityData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -23,7 +20,6 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class EntityBlock extends Entity
-        implements IRenderFactory<EntityBlock>
 {
     private static final DataParameter<Float> ROT_YAW = EntityDataManager.createKey(EntityBlock.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> ROT_PITCH = EntityDataManager.createKey(EntityBlock.class, DataSerializers.FLOAT);
@@ -679,12 +674,4 @@ public class EntityBlock extends Entity
     {
         return false;
     }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public Render<EntityBlock> createRenderFor(RenderManager manager)
-    {
-        return new RenderBlock(manager);
-    }
-
 }

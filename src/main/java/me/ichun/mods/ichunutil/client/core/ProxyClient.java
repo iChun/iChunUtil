@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.core.event.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.client.render.entity.RenderBlock;
 import me.ichun.mods.ichunutil.client.render.entity.RenderLatchedRenderer;
 import me.ichun.mods.ichunutil.common.core.ProxyCommon;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
@@ -19,7 +20,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -59,8 +59,8 @@ public class ProxyClient extends ProxyCommon
         iChunUtil.eventHandlerClient = new EventHandlerClient();
         MinecraftForge.EVENT_BUS.register(iChunUtil.eventHandlerClient);
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new EntityLatchedRenderer(null));
-        RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new EntityBlock(null));
+        RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new RenderLatchedRenderer.RenderFactory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new RenderBlock.RenderFactory());
     }
 
     @Override

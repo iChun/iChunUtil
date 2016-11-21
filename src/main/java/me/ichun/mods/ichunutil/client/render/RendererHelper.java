@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.render;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -32,6 +33,11 @@ public class RendererHelper
     public static boolean canUseStencils()
     {
         return canUseStencils;
+    }
+
+    public static void spawnParticle(Particle particle)
+    {
+        Minecraft.getMinecraft().effectRenderer.addEffect(particle);
     }
 
     //    public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)

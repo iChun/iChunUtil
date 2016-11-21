@@ -11,7 +11,7 @@ public class ConfigHandler
 
     public static Configuration configKeybind;
 
-    public static ConfigBase registerConfig(ConfigBase config)
+    public static <T extends ConfigBase> T registerConfig(T config)
     {
         if(!configs.contains(config))
         {

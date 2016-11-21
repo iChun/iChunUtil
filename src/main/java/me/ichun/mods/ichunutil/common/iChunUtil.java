@@ -177,7 +177,7 @@ public class iChunUtil
     {
         ObfHelper.detectObfuscation();
 
-        config = (Config)ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
+        config = ConfigHandler.registerConfig(new Config(event.getSuggestedConfigurationFile()));
 
         proxy.preInit();
 

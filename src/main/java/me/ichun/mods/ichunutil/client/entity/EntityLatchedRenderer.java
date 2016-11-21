@@ -1,20 +1,15 @@
 package me.ichun.mods.ichunutil.client.entity;
 
-import me.ichun.mods.ichunutil.client.render.entity.RenderLatchedRenderer;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class EntityLatchedRenderer extends Entity
-    implements IRenderFactory<EntityLatchedRenderer>
 {
     public Entity latchedEnt;
 
@@ -136,12 +131,6 @@ public class EntityLatchedRenderer extends Entity
     @Override
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
-    }
-
-    @Override
-    public Render<EntityLatchedRenderer> createRenderFor(RenderManager manager)
-    {
-        return new RenderLatchedRenderer(manager);
     }
 
     public class EntityLatchedRendererUpdateEvent extends EntityEvent

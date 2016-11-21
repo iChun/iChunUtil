@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class RenderLatchedRenderer extends Render<EntityLatchedRenderer>
@@ -44,6 +45,15 @@ public class RenderLatchedRenderer extends Render<EntityLatchedRenderer>
             this.z = z;
             this.yaw = yaw;
             this.partialTick = partialTick;
+        }
+    }
+
+    public static class RenderFactory implements IRenderFactory<EntityLatchedRenderer>
+    {
+        @Override
+        public Render<EntityLatchedRenderer> createRenderFor(RenderManager manager)
+        {
+            return new RenderLatchedRenderer(manager);
         }
     }
 }

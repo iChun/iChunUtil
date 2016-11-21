@@ -28,7 +28,6 @@ public class ModelVoxel extends ModelBase
         modelLimb = new ModelRenderer[12 * 4 * 4];
         modelLimbMirrored = new ModelRenderer[12 * 4 * 4];
 
-
         int sizeX = 8;
         int sizeY = 8;
         int sizeZ = 8;

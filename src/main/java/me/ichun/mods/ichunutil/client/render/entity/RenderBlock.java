@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 import java.util.ArrayList;
 
@@ -123,7 +124,7 @@ public class RenderBlock extends Render<EntityBlock>
                             if(entBlock.renderingTileEntities[ii][jj][kk] == null)
                             {
                                 TileEntity te = block.createTileEntity(entBlock.worldObj, iblockstate);
-                                te.readFromNBT((NBTTagCompound)entBlock.tileEntityNBTs[ii][jj][kk].copy());
+                                te.readFromNBT(entBlock.tileEntityNBTs[ii][jj][kk].copy());
                                 entBlock.renderingTileEntities[ii][jj][kk] = te;
                             }
                             if(!classesNotToRender.contains(entBlock.renderingTileEntities[ii][jj][kk].getClass()))
@@ -146,5 +147,14 @@ public class RenderBlock extends Render<EntityBlock>
         }
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
+    }
+
+    public static class RenderFactory implements IRenderFactory<EntityBlock>
+    {
+        @Override
+        public Render<EntityBlock> createRenderFor(RenderManager manager)
+        {
+            return new RenderBlock(manager);
+        }
     }
 }
