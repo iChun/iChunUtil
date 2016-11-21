@@ -1,9 +1,9 @@
 [
 {
-  "modid" : "iChunUtil",
+  "modid" : "ichunutil",
   "name" : "iChunUtil",
   "version" : "${version}",
-  "url" : "http://www.ichun.us/",
+  "url" : "http://ichun.me/mods/ichunutil/",
   "credits" : "",
   "authorList": [
     "iChun"
