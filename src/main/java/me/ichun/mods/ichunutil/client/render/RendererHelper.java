@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.render;
 
+import me.ichun.mods.ichunutil.client.render.world.RenderGlobalProxy;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -485,7 +486,7 @@ public class RendererHelper
         RendererHelper.endGlScissor();
     }
 
-    public static ArrayList<Framebuffer> frameBuffers = new ArrayList<Framebuffer>();
+    public static ArrayList<Framebuffer> frameBuffers = new ArrayList<>();
 
     public static Framebuffer createFrameBuffer(boolean useDepth, boolean useStencil)
     {
@@ -505,5 +506,33 @@ public class RendererHelper
             buffer.deleteFramebuffer();
         }
         frameBuffers.remove(buffer);
+    }
+
+    //Proxies are pooled to prevent constant regeneration of render sky/stars etc. Pooling probably not required by many of my mods but it's nice to have.
+    public static ArrayList<RenderGlobalProxy> renderGlobalProxies = new ArrayList<>();
+
+    public static RenderGlobalProxy requestRenderGlobalProxy()
+    {
+        RenderGlobalProxy proxy = null;
+        for(RenderGlobalProxy pooledProxy : renderGlobalProxies)
+        {
+            if(pooledProxy.released)
+            {
+                proxy = pooledProxy;
+                proxy.released = false;
+                break;
+            }
+        }
+        if(proxy == null)
+        {
+            proxy = new RenderGlobalProxy(Minecraft.getMinecraft());
+            renderGlobalProxies.add(proxy);
+        }
+        return proxy;
+    }
+
+    public static void releaseRenderGlobalProxy(RenderGlobalProxy proxy)
+    {
+        proxy.released = true;
     }
 }

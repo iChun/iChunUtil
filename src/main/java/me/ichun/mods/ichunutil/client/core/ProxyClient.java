@@ -1,6 +1,10 @@
 package me.ichun.mods.ichunutil.client.core;
 
 import com.google.common.base.Splitter;
+import com.mojang.authlib.AuthenticationService;
+import com.mojang.authlib.GameProfileRepository;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import me.ichun.mods.ichunutil.client.core.event.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
@@ -19,15 +23,21 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
+import java.net.Proxy;
 import java.util.List;
+import java.util.UUID;
 
 public class ProxyClient extends ProxyCommon
 {
@@ -86,6 +96,15 @@ public class ProxyClient extends ProxyCommon
     public String getPlayerId()
     {
         return Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "");
+    }
+
+    @Override
+    public void setGameProfileLookupService()
+    {
+        YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Minecraft.getMinecraft().getProxy(), UUID.randomUUID().toString());
+        EntityHelper.sessionService = yggdrasilauthenticationservice.createMinecraftSessionService();
+        GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
+        EntityHelper.profileCache = new PlayerProfileCache(gameprofilerepository, new File(Minecraft.getMinecraft().mcDataDir, MinecraftServer.USER_CACHE_FILE.getName()));
     }
 
     @Override

@@ -2,8 +2,11 @@ package me.ichun.mods.ichunutil.common.core.util;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.properties.Property;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -32,12 +36,47 @@ public class EntityHelper
 {
     public static final UUID uuidExample = UUID.fromString("DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFD00D");
 
-    private static HashMap<String, GameProfile> nameToFullProfileMap = new HashMap<>();
+    //Game Profile lookup service
+    public static HashMap<String, GameProfile> gameProfileCache = new HashMap<>();
+    public static PlayerProfileCache profileCache;
+    public static MinecraftSessionService sessionService;
 
     @SideOnly(Side.CLIENT)
     public static void injectMinecraftPlayerGameProfile()
     {
-        nameToFullProfileMap.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
+        gameProfileCache.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
+    }
+
+    public static GameProfile getGameProfile(String playerName)
+    {
+        if(gameProfileCache.containsKey(playerName))
+        {
+            return gameProfileCache.get(playerName);
+        }
+
+        if(profileCache == null || sessionService == null)
+        {
+            iChunUtil.proxy.setGameProfileLookupService();
+        }
+
+        GameProfile gameprofile = profileCache.getGameProfileForUsername(playerName);
+
+        if (gameprofile == null)
+        {
+            return new GameProfile(null, playerName);
+        }
+        else
+        {
+            Property property = Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
+
+            if (property == null)
+            {
+                gameprofile = sessionService.fillProfileProperties(gameprofile, true);
+                gameProfileCache.put(playerName, gameprofile);
+            }
+
+            return gameprofile;
+        }
     }
 
     public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.newLinkedHashMap();

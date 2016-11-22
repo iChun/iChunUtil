@@ -11,9 +11,11 @@ import me.ichun.mods.ichunutil.client.module.update.GuiUpdateNotifier;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.client.render.entity.RenderLatchedRenderer;
 import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
+import me.ichun.mods.ichunutil.client.render.world.RenderGlobalProxy;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -26,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
@@ -84,6 +87,8 @@ public class EventHandlerClient
 
     protected ArrayList<EntityLatchedRenderer> latchedRendererEntities = new ArrayList<>();
 
+    protected WorldClient renderGlobalWorldInstance;
+
     //Module stuff
     //EULA module
     public boolean eulaDrawEulaNotice = !iChunUtil.config.eulaAcknowledged.equals(RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode()))))))) && !ObfHelper.obfuscated();
@@ -131,6 +136,16 @@ public class EventHandlerClient
                 for(Framebuffer buffer : RendererHelper.frameBuffers)
                 {
                     buffer.createBindFramebuffer(screenWidth, screenHeight);
+                }
+            }
+
+            if(renderGlobalWorldInstance != mc.renderGlobal.theWorld) //Assume world has changed, eg changing dimension or loading an MC world.
+            {
+                renderGlobalWorldInstance = mc.renderGlobal.theWorld;
+
+                for(RenderGlobalProxy proxy : RendererHelper.renderGlobalProxies)
+                {
+                    proxy.setWorldAndLoadRenderers(renderGlobalWorldInstance);
                 }
             }
 
@@ -286,6 +301,9 @@ public class EventHandlerClient
         {
             conf.resetSession();
         }
+
+        EntityHelper.profileCache = null;
+        EntityHelper.sessionService = null;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
