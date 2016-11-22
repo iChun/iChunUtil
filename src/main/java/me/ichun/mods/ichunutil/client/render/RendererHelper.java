@@ -528,11 +528,16 @@ public class RendererHelper
             proxy = new RenderGlobalProxy(Minecraft.getMinecraft());
             renderGlobalProxies.add(proxy);
         }
+        if(iChunUtil.eventHandlerClient.getRenderGlobalWorldInstance() != null)
+        {
+            proxy.setWorldAndLoadRenderers(iChunUtil.eventHandlerClient.getRenderGlobalWorldInstance());
+        }
         return proxy;
     }
 
     public static void releaseRenderGlobalProxy(RenderGlobalProxy proxy)
     {
         proxy.released = true;
+        proxy.setWorldAndLoadRenderers(null);
     }
 }

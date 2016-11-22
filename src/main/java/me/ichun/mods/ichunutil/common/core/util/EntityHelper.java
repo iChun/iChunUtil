@@ -79,7 +79,7 @@ public class EntityHelper
         }
     }
 
-    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.newLinkedHashMap();
+    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.newLinkedHashMap(); //These aren't even really necessary anymore, Clientside boss data doesn't store boss info and stuff like that, server does tracking.
 
     @SideOnly(Side.CLIENT)
     public static void storeBossStatus()

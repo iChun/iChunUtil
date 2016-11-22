@@ -145,7 +145,10 @@ public class EventHandlerClient
 
                 for(RenderGlobalProxy proxy : RendererHelper.renderGlobalProxies)
                 {
-                    proxy.setWorldAndLoadRenderers(renderGlobalWorldInstance);
+                    if(!proxy.released)
+                    {
+                        proxy.setWorldAndLoadRenderers(renderGlobalWorldInstance);
+                    }
                 }
             }
 
@@ -156,7 +159,7 @@ public class EventHandlerClient
                 EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
                 if(latchedRenderer.latchedEnt != null && !latchedRenderer.latchedEnt.isDead) //latched ent exists and is alive and well
                 {
-                    if(latchedRenderer.isDead || (mc.theWorld.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher is died/stopped updating, kill it replace with new one.
+                    if(latchedRenderer.isDead || (latchedRenderer.worldObj.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher died/stopped updating, kill it replace with new one.
                     {
                         latchedRenderer.setDead();
                         latchedRendererEntities.remove(i);
@@ -635,6 +638,11 @@ public class EventHandlerClient
     public EntityTrackerRegistry getEntityTrackerRegistry()
     {
         return entityTrackerRegistry;
+    }
+
+    public WorldClient getRenderGlobalWorldInstance()
+    {
+        return renderGlobalWorldInstance;
     }
 
     //I'm lazy okay?
