@@ -78,7 +78,7 @@ public class EntityBlock extends Entity
     @Nullable
     public static EntityBlock createEntityBlock(World world, ArrayList<BlockPos> poses)
     {
-        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) ? null : new EntityBlock(world, poses);
+        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) || poses.isEmpty() ? null : new EntityBlock(world, poses);
     }
 
     private EntityBlock(World world, ArrayList<BlockPos> poses)

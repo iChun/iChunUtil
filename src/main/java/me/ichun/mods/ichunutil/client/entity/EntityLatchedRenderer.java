@@ -15,14 +15,15 @@ public class EntityLatchedRenderer extends Entity
 
     public long lastUpdate;
 
+    public int maxDeathPersistTime;
+    public int currentDeathPersistTime;
+
     public EntityLatchedRenderer(World par1World)
     {
         super(par1World);
-        if(par1World != null)
-        {
-            setSize(0.1F, 0.1F);
-            lastUpdate = par1World.getWorldTime();
-        }
+        setSize(0.1F, 0.1F);
+        lastUpdate = par1World.getWorldTime();
+        maxDeathPersistTime = currentDeathPersistTime = 0;
     }
 
     public EntityLatchedRenderer(World par1World, Entity ent)
@@ -60,6 +61,12 @@ public class EntityLatchedRenderer extends Entity
         return this;
     }
 
+    public EntityLatchedRenderer setDeathPersistTime(int ticks)
+    {
+        maxDeathPersistTime = ticks;
+        return this;
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public boolean isInRangeToRenderDist(double distance)
@@ -71,17 +78,27 @@ public class EntityLatchedRenderer extends Entity
     {
         if(latchedEnt != null)
         {
-            this.lastTickPosX = this.latchedEnt.lastTickPosX;
-            this.lastTickPosY = this.latchedEnt.lastTickPosY;
-            this.lastTickPosZ = this.latchedEnt.lastTickPosZ;
+            if(latchedEnt.isEntityAlive())
+            {
+                this.lastTickPosX = this.latchedEnt.lastTickPosX;
+                this.lastTickPosY = this.latchedEnt.lastTickPosY;
+                this.lastTickPosZ = this.latchedEnt.lastTickPosZ;
 
-            this.prevPosX = this.latchedEnt.prevPosX;
-            this.prevPosY = this.latchedEnt.prevPosY;
-            this.prevPosZ = this.latchedEnt.prevPosZ;
+                this.prevPosX = this.latchedEnt.prevPosX;
+                this.prevPosY = this.latchedEnt.prevPosY;
+                this.prevPosZ = this.latchedEnt.prevPosZ;
 
-            this.posX = this.latchedEnt.posX;
-            this.posY = this.latchedEnt.posY;
-            this.posZ = this.latchedEnt.posZ;
+                this.posX = this.latchedEnt.posX;
+                this.posY = this.latchedEnt.posY;
+                this.posZ = this.latchedEnt.posZ;
+            }
+            else
+            {
+                this.lastTickPosX = this.prevPosX = this.posX = this.latchedEnt.posX;
+                this.lastTickPosY = this.prevPosY = this.posY = this.latchedEnt.posY;
+                this.lastTickPosZ = this.prevPosZ = this.posZ = this.latchedEnt.posZ;
+            }
+            this.setPosition(posX, posY, posZ);
         }
     }
 
@@ -94,6 +111,16 @@ public class EntityLatchedRenderer extends Entity
         }
 
         ticksExisted++;
+
+        if(!latchedEnt.isEntityAlive())
+        {
+            currentDeathPersistTime++;
+            if(currentDeathPersistTime > maxDeathPersistTime)
+            {
+                setDead();
+                return;
+            }
+        }
 
         MinecraftForge.EVENT_BUS.post(new EntityLatchedRendererUpdateEvent(this));
 

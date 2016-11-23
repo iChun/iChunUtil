@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.core.event;
 import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
+import me.ichun.mods.ichunutil.client.model.ModelAngelPeriphs;
 import me.ichun.mods.ichunutil.client.module.eula.WindowAnnoy;
 import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.client.module.patron.ModelVoxel;
@@ -16,7 +17,9 @@ import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
+import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
@@ -29,6 +32,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelZombie;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -40,6 +44,8 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.ZombieType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumBlockRenderType;
@@ -85,6 +91,11 @@ public class EventHandlerClient
 
     public boolean mouseLeftDown;
 
+    public boolean angelZombies = Minecraft.getMinecraft().getSession().getUsername().equalsIgnoreCase("Kleetho") || EventCalendar.isHalloween() || EventCalendar.isChristmas() || EventCalendar.isValentinesDay();
+    public ModelZombie modelZombie;
+    public ModelAngelPeriphs modelAngelPeriphs;
+    public ResourceLocation texModelAngel = new ResourceLocation("ichunutil", "textures/model/modelangel.png");
+
     public ArrayList<KeyBind> keyBindList = new ArrayList<>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<>();
 
@@ -129,7 +140,6 @@ public class EventHandlerClient
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
         Minecraft mc = Minecraft.getMinecraft();
-
         renderTick = event.renderTickTime;
         if(event.phase == TickEvent.Phase.START)
         {
@@ -159,10 +169,10 @@ public class EventHandlerClient
 
             ItemRenderingHelper.handlePreRender(mc);
 
-            for(int i = latchedRendererEntities.size() - 1; i >= 0; i--)
+            for(int i = latchedRendererEntities.size() - 1; i >= 0; i--) //Check the latched renderers
             {
                 EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
-                if(latchedRenderer.latchedEnt != null && !latchedRenderer.latchedEnt.isDead) //latched ent exists and is alive and well
+                if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
                 {
                     if(latchedRenderer.isDead || (latchedRenderer.worldObj.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher died/stopped updating, kill it replace with new one.
                     {
@@ -172,6 +182,8 @@ public class EventHandlerClient
                         EntityLatchedRenderer newLatchedRenderer = new EntityLatchedRenderer(latchedRenderer.latchedEnt.worldObj, latchedRenderer.latchedEnt);
                         latchedRenderer.latchedEnt.worldObj.spawnEntityInWorld(newLatchedRenderer);
                         latchedRendererEntities.add(newLatchedRenderer);
+                        newLatchedRenderer.maxDeathPersistTime = latchedRenderer.maxDeathPersistTime;
+                        newLatchedRenderer.currentDeathPersistTime = latchedRenderer.currentDeathPersistTime;
                     }
                     else
                     {
@@ -351,11 +363,16 @@ public class EventHandlerClient
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityPlayer)
+        if(event.getEntity().worldObj.isRemote && (event.getEntity() instanceof EntityPlayer || event.getEntity() instanceof EntityZombie && angelZombies && ((EntityZombie)event.getEntity()).getZombieType() == ZombieType.NORMAL))
         {
             EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.getEntity().worldObj, event.getEntity());
             event.getEntity().worldObj.spawnEntityInWorld(latchedRenderer);
             latchedRendererEntities.add(latchedRenderer);
+            if(event.getEntity() instanceof EntityZombie)
+            {
+                latchedRenderer.setDeathPersistTime(110);
+                latchedRenderer.setRenderSize(4F, 10F);
+            }
         }
     }
 
@@ -618,6 +635,95 @@ public class EventHandlerClient
                         }
                     }
                 }
+                GlStateManager.popMatrix();
+            }
+        }
+        else if(event.ent.latchedEnt instanceof EntityZombie)
+        {
+            if(modelZombie == null)
+            {
+                modelZombie = new ModelZombie();
+                modelZombie.isChild = false;
+            }
+            if(modelAngelPeriphs == null)
+            {
+                modelAngelPeriphs = new ModelAngelPeriphs();
+            }
+            EntityZombie zombie = (EntityZombie)event.ent.latchedEnt;
+            if(!zombie.isSneaking() && !zombie.isChild() && zombie.getZombieType() == ZombieType.NORMAL)
+            {
+                Minecraft mc = Minecraft.getMinecraft();
+
+                GlStateManager.pushMatrix();
+
+                GlStateManager.translate(event.x, event.y, event.z);
+
+                boolean alive = zombie.isEntityAlive();
+
+                float renderYaw = alive ? EntityHelper.interpolateRotation(zombie.prevRenderYawOffset, zombie.renderYawOffset, event.partialTick) : zombie.renderYawOffset;
+
+                GlStateManager.rotate(renderYaw, 0.0F, -1.0F, 0.0F);
+
+                GlStateManager.scale(1F, -1F, -1F);
+
+                GlStateManager.translate(0.0F, -1.5F, 0.0F);
+
+                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569F);
+
+                GlStateManager.depthMask(true);
+                GlStateManager.disableCull();
+
+                float progress = MathHelper.clamp_float((event.ent.currentDeathPersistTime - 40 + event.partialTick) / 60F, 0F, 1F);
+                float progressSin = alive ? 0F : (float)Math.sin(Math.toRadians(90F * progress)) ;
+
+                float pitch = (float)Math.toRadians(alive ? EntityHelper.interpolateRotation(zombie.prevRotationPitch, zombie.rotationPitch, event.partialTick) : -45F * progress);
+                float yaw = alive ? (float)Math.toRadians(EntityHelper.interpolateRotation(zombie.prevRotationYawHead, zombie.rotationYawHead, event.partialTick) - renderYaw) : 0F;
+
+                GlStateManager.enableBlend();
+
+                if(!alive)
+                {
+                    GlStateManager.translate(0F, -0.5F - 1.5F * progress, 0F);
+
+                    GlStateManager.color(1F, 1F, 1F, 0.5F * (float)Math.sin(Math.toRadians(MathHelper.clamp_float(progress * 1.2F, 0F, 1F) * 180F)));
+
+                    mc.getTextureManager().bindTexture(ResourceHelper.texZombie);
+                    modelZombie.isChild = false;
+                    modelZombie.bipedHead.rotateAngleX = pitch;
+                    modelZombie.bipedRightArm.rotateAngleX = 0F;
+                    modelZombie.bipedLeftArm.rotateAngleX = 0F;
+                    modelZombie.bipedHead.render(0.0625F);
+                    modelZombie.bipedBody.render(0.0625F);
+                    modelZombie.bipedRightArm.render(0.0625F);
+                    modelZombie.bipedLeftArm.render(0.0625F);
+                    modelZombie.bipedRightLeg.render(0.0625F);
+                    modelZombie.bipedLeftLeg.render(0.0625F);
+                }
+                else
+                {
+                    progressSin += (zombie.prevLimbSwingAmount + (zombie.limbSwingAmount - zombie.prevLimbSwingAmount) * event.partialTick) * 0.5F;
+                }
+
+                mc.getTextureManager().bindTexture(texModelAngel);
+                modelAngelPeriphs.haloInner.rotateAngleX = modelAngelPeriphs.haloOuter.rotateAngleX = pitch;
+                modelAngelPeriphs.haloInner.rotateAngleY = modelAngelPeriphs.haloOuter.rotateAngleY = yaw;
+                modelAngelPeriphs.setRotations(zombie, progressSin);
+
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+                modelAngelPeriphs.renderHalo(0.0625F);
+
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                modelAngelPeriphs.renderWing(0.0625F);
+                GlStateManager.scale(-1F, 1F, 1F);
+                modelAngelPeriphs.renderWing(0.0625F);
+
+                GlStateManager.enableCull();
+                GlStateManager.depthMask(false);
+
+                GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+
+                GlStateManager.color(1F, 1F, 1F, 1F);
+
                 GlStateManager.popMatrix();
             }
         }
