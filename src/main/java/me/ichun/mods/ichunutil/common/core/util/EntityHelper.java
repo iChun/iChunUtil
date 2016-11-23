@@ -41,10 +41,17 @@ public class EntityHelper
     public static PlayerProfileCache profileCache;
     public static MinecraftSessionService sessionService;
 
+    private static GameProfile dummyProfile = new GameProfile(uuidExample, "ForgeDev");
+
     @SideOnly(Side.CLIENT)
     public static void injectMinecraftPlayerGameProfile()
     {
         gameProfileCache.put(Minecraft.getMinecraft().getSession().getUsername(), Minecraft.getMinecraft().getSession().getProfile());
+    }
+
+    public static GameProfile getDummyGameProfile()
+    {
+        return dummyProfile;
     }
 
     public static GameProfile getGameProfile(String playerName)

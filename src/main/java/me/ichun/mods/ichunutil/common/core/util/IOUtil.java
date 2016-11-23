@@ -11,6 +11,8 @@ import java.util.zip.GZIPOutputStream;
 
 public class IOUtil
 {
+    public static final int IDENTIFIER_LENGTH = 20; //Typical string length for an identifier.
+
     public static boolean areBufferedImagesEqual(BufferedImage img1, BufferedImage img2)
     {
         if(img1 == null && img2 == null)
