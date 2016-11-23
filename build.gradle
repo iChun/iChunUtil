@@ -67,5 +67,14 @@ task deobfJar(type: Jar) {
     }
 }
 
+// api jar
+task apiJar(type: Jar) {
+    from sourceSets.main.java
+    include "me/ichun/mods/ichunutil/api/**"
+    from sourceSets.main.output
+    include "me/ichun/mods/ichunutil/api/**"
+    classifier = 'api'
+}
+
 // make sure all of these happen when we run build
-build.dependsOn sourceJar, deobfJar
+build.dependsOn sourceJar, deobfJar, apiJar
