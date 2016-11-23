@@ -25,6 +25,7 @@ import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.model.ModelBase;
@@ -40,6 +41,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -51,6 +53,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -79,6 +82,8 @@ public class EventHandlerClient
 
     public int screenWidth;
     public int screenHeight;
+
+    public boolean mouseLeftDown;
 
     public ArrayList<KeyBind> keyBindList = new ArrayList<>();
     public HashMap<KeyBinding, KeyBind> mcKeyBindList = new HashMap<>();
@@ -212,6 +217,17 @@ public class EventHandlerClient
                 GlStateManager.scale(0.5F, 0.5F, 0.5F);
                 mc.fontRendererObj.drawString(s, 0, 0, 0xffffff, true);
                 GlStateManager.popMatrix();
+
+                int i = Mouse.getX() * reso.getScaledWidth() / mc.displayWidth;
+                int j = reso.getScaledHeight() - Mouse.getY() * reso.getScaledHeight() / mc.displayHeight - 1;
+
+                if(!mouseLeftDown && Mouse.isButtonDown(0) && i >= (reso.getScaledWidth() - width - 2) && i <= reso.getScaledWidth() && j >= (reso.getScaledHeight() - mc.fontRendererObj.FONT_HEIGHT - 2) && j <= reso.getScaledHeight())
+                {
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    FMLClientHandler.instance().showGuiScreen(new GuiConfigs(mc.currentScreen));
+                }
+
+                mouseLeftDown = Mouse.isButtonDown(0);
             }
         }
     }

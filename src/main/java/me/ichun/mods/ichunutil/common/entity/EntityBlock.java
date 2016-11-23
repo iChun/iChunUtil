@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common.entity;
 
+import me.ichun.mods.ichunutil.api.event.BlockPickupEvent;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketRequestBlockEntityData;
@@ -20,6 +21,7 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -72,7 +74,12 @@ public class EntityBlock extends Entity
         canDropItems = true;
     }
 
-    public EntityBlock(World world, ArrayList<BlockPos> poses)
+    public static EntityBlock createEntityBlock(World world, ArrayList<BlockPos> poses)
+    {
+        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) ? null : new EntityBlock(world, poses);
+    }
+
+    private EntityBlock(World world, ArrayList<BlockPos> poses)
     {
         this(world);
         int lowX = Integer.MAX_VALUE;
