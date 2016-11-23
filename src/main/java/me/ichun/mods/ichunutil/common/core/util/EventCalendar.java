@@ -5,6 +5,7 @@ import java.util.Calendar;
 public class EventCalendar
 {
     private static boolean isNewYear; //1/1
+    private static boolean isValentinesDay; //14/2
     private static boolean isPgBirthday; //9/3
     private static boolean isAFDay; //1/4
     private static boolean isHalloween; //31/10
@@ -28,6 +29,13 @@ public class EventCalendar
                     isNewYear = true;
                 }
                 break;
+            }
+            case 2:
+            {
+                if(day == 14)
+                {
+                    isValentinesDay = true;
+                }
             }
             case 3:
             {
@@ -67,6 +75,11 @@ public class EventCalendar
     public static boolean isNewYear()
     {
         return isNewYear;
+    }
+
+    public static boolean isValentinesDay()
+    {
+        return isValentinesDay;
     }
 
     public static boolean isPgBirthday()
