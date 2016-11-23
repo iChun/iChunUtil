@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -74,6 +75,7 @@ public class EntityBlock extends Entity
         canDropItems = true;
     }
 
+    @Nullable
     public static EntityBlock createEntityBlock(World world, ArrayList<BlockPos> poses)
     {
         return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) ? null : new EntityBlock(world, poses);
