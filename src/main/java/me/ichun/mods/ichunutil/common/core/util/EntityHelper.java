@@ -115,7 +115,6 @@ public class EntityHelper
         BOSS_INFO_STORE.clear();
     }
 
-    //TODO update this
     public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
     {
         try
@@ -138,7 +137,6 @@ public class EntityHelper
         return SoundEvents.ENTITY_GENERIC_HURT;
     }
 
-    //TODO update this
     public static <T extends EntityLivingBase> SoundEvent getDeathSound(T ent, Class clz)
     {
         try

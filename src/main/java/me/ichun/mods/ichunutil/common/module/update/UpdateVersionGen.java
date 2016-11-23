@@ -18,6 +18,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Grinder", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
@@ -56,12 +57,13 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("GuiltTrip", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("iChunUtil", versions);
-        versions.put("1.8.9", iChunUtil.VERSION);
+        versions.put("1.10.2", iChunUtil.VERSION);
         versions.put("1.8.0", "5.5.0");
         versions.put("1.7.10", "4.2.3");
         versions.put("1.7", "3.3.0");
@@ -73,12 +75,14 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("MobAmputation", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.1");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("MobDismemberment", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
@@ -89,6 +93,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("PiP", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.4");
 
@@ -106,6 +111,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Streak", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.1");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
