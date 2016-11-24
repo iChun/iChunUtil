@@ -119,7 +119,7 @@ public class ModelAngelPeriphs extends ModelBase {
         this.wingSpineLeft1.render(f5);
     }
 
-    public void setRotations(EntityZombie zombie, float progress)
+    public void setRotations(float progress)
     {
         this.setRotateAngle(wingSpineLeft1, 0.5918411493512771F, 0.27314402793711257F, 0.0F);
         this.setRotateAngle(wingSpineLeft2, 0.6829473363053812F - (0.22759093446F * progress), 0.8196066167365371F, 0.0F);

@@ -7,15 +7,19 @@ import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PatronTracker
-    implements EntityTrackerRegistry.IAdditionalTrackerInfo
+        implements EntityTrackerRegistry.IAdditionalTrackerInfo
 {
     public boolean canRender;
 
     public float pitchChange;
     public float yawChange;
+
+    public float elytraX;
+    public float elytraZ;
 
     public ResourceLocation txLocation;
 
@@ -30,9 +34,9 @@ public class PatronTracker
             yawChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
 
             canRender = false;
-            for(PatronInfo info1 : iChunUtil.eventHandlerClient.patrons)
+            for(PatronInfo info1 : PatronEffectRenderer.patrons)
             {
-                if(info1.id.equals(player.getGameProfile().getId().toString().replaceAll("-", "")) && info1.effectType == 1)
+                if(info1.id.equals(player.getGameProfile().getId().toString().replaceAll("-", "")) && info1.effectType == PatronEffectRenderer.EnumEffect.VOXEL.getId())
                 {
                     canRender = true;
                     break;
@@ -57,6 +61,34 @@ public class PatronTracker
                     }
                 }
             }
+
+            float f = 0.2617994F;
+            float f1 = -0.2617994F;
+
+            if (player.isElytraFlying())
+            {
+                float f4 = 1.0F;
+
+                double motionX = player.posX - player.prevPosX;
+                double motionY = player.posY - player.prevPosY;
+                double motionZ = player.posZ - player.prevPosZ;
+                if (motionY < 0.0D)
+                {
+                    Vec3d vec3d = (new Vec3d(motionX, motionY, motionZ)).normalize();
+                    f4 = 1.0F - (float)Math.pow(-vec3d.yCoord, 1.5D);
+                }
+
+                f = f4 * 0.34906584F + (1.0F - f4) * f;
+                f1 = f4 * -((float)Math.PI / 2F) + (1.0F - f4) * f1;
+            }
+            else if (player.isSneaking())
+            {
+                f = ((float)Math.PI * 2F / 9F);
+                f1 = -((float)Math.PI / 4F);
+            }
+
+            elytraX = f;
+            elytraZ = f1;
         }
     }
 }

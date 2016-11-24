@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.packet.mod;
 
 import io.netty.buffer.ByteBuf;
+import me.ichun.mods.ichunutil.client.module.patron.PatronEffectRenderer;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
@@ -54,11 +55,11 @@ public class PacketPatrons extends AbstractPacket
     {
         for(PatronInfo info : patrons)
         {
-            if(iChunUtil.eventHandlerClient.patrons.contains(info))
+            if(PatronEffectRenderer.patrons.contains(info))
             {
-                iChunUtil.eventHandlerClient.patrons.remove(info);
+                PatronEffectRenderer.patrons.remove(info);
             }
-            iChunUtil.eventHandlerClient.patrons.add(info);
+            PatronEffectRenderer.patrons.add(info);
         }
         return null;
     }

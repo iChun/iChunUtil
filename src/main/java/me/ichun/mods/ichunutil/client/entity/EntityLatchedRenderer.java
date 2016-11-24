@@ -63,7 +63,10 @@ public class EntityLatchedRenderer extends Entity
 
     public EntityLatchedRenderer setDeathPersistTime(int ticks)
     {
-        maxDeathPersistTime = ticks;
+        if(ticks > maxDeathPersistTime)
+        {
+            maxDeathPersistTime = ticks;
+        }
         return this;
     }
 

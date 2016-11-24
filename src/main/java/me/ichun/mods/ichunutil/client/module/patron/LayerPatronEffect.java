@@ -30,11 +30,11 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
     //func_177093_a(entity, limb stuff, limb stuff, partialTicks, f5, yaw stuff, pitch stuff, 0.0625F);
     public void doRenderLayer(EntityPlayer player, float f, float f1, float renderTick, float f2, float f3, float f4, float f5)
     {
-        PatronInfo info = iChunUtil.eventHandlerClient.getPatronInfo(player);
+        PatronInfo info = PatronEffectRenderer.getPatronInfo(player);
 
         if(!player.isInvisible()) //special casing for pig snout effect
         {
-            if(EventCalendar.isAFDay() || info != null && info.showEffect && info.effectType == 2) //render Pig Snout
+            if(EventCalendar.isAFDay() || info != null && info.showEffect && info.effectType == PatronEffectRenderer.EnumEffect.PIG_SNOUT.getId())
             {
                 parentRenderer.bindTexture(ResourceHelper.texPig);
 
@@ -61,9 +61,10 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
             }
             if(info != null && info.showEffect)
             {
-                switch(info.effectType)
+                PatronEffectRenderer.EnumEffect effect = PatronEffectRenderer.EnumEffect.getById(info.effectType);
+                switch(effect)
                 {
-                    case 4: //render BEE
+                    case BEE:
                     {
                         parentRenderer.bindTexture(texBee);
 
@@ -82,7 +83,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
 
                         GlStateManager.translate(0.4F + (pitchOffset * 0.25F) + (sinProg1 * 0.05F), -0.25F + (pitchOffset * 0.15F) + (sinProg2 * 0.05F), 0F);
 
-                        modelBee.render(null, 0F, 0F, 0F, 0F, 0F, 0.0625F);
+                        modelBee.render(0.0625F);
 
                         GlStateManager.popMatrix();
 

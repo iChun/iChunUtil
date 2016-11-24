@@ -24,7 +24,7 @@ ichunutil.config.prop.patronRewardType.name=Patron Reward Type
 
 ichunutil.config.prop.enableStencils.comment=Set this to 0 if you're crashing when the game launches because you do not have stencils enabled.
 ichunutil.config.prop.showPatronReward.comment=Do you want to show your patron reward to other players?
-ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout\n3 = Ghost trails\n4 = Bee buzzing around your head (tribute to Bee Barker)\n5 = Fire trails with exaggerated sprint, fire trails when flying with elytra
+ichunutil.config.prop.patronRewardType.comment=What kind of patron reward would you like to see?\n1 = Voxel aura\n2 = Pig snout\n3 = Ghost trails\n4 = Bee buzzing around your head (tribute to Bee Barker)\n5 = Fire trails with exaggerated sprint, fire trails when flying with elytra\n6 = Angelic
 
 ichunutil.config.cat.module.compactPorkchop.name=Compact Porkchop Block
 ichunutil.config.cat.module.eula.name=EULA
