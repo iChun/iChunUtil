@@ -7,8 +7,8 @@ import me.ichun.mods.ichunutil.common.packet.mod.PacketRequestBlockEntityData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -77,9 +77,9 @@ public class EntityBlock extends Entity
     }
 
     @Nullable
-    public static EntityBlock createEntityBlock(World world, EntityPlayer player, Collection<BlockPos> poses)
+    public static EntityBlock createEntityBlock(EntityLivingBase entity, ItemStack itemStack, Collection<BlockPos> poses)
     {
-        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, player, poses)) || poses.isEmpty() ? null : new EntityBlock(world, poses);
+        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(entity, itemStack, poses)) || poses.isEmpty() ? null : new EntityBlock(entity.worldObj, poses);
     }
 
     private EntityBlock(World world, Collection<BlockPos> poses)
