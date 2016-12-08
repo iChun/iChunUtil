@@ -33,7 +33,7 @@ public class BlockCompactPorkchop extends Block
         setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
         setHardness(0.8F);
 
-        setRegistryName(new ResourceLocation("ichunutil", "compactPorkchop"));
+        setRegistryName(new ResourceLocation("ichunutil", "compact_porkchop"));
         setUnlocalizedName("ichunutil.block.compactporkchop");
     }
 

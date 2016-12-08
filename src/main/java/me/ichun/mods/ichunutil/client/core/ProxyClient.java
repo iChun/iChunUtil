@@ -27,6 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -71,15 +72,8 @@ public class ProxyClient extends ProxyCommon
 
         RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new RenderLatchedRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new RenderBlock.RenderFactory());
-    }
 
-    @Override
-    public void init()
-    {
-        super.init();
-
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
-//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compactPorkchop", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compact_porkchop", "inventory"));
     }
 
     @Override
