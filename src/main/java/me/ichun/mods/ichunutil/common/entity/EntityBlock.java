@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.common.packet.mod.PacketRequestBlockEntityData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -27,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class EntityBlock extends Entity
@@ -76,12 +77,12 @@ public class EntityBlock extends Entity
     }
 
     @Nullable
-    public static EntityBlock createEntityBlock(World world, ArrayList<BlockPos> poses)
+    public static EntityBlock createEntityBlock(EntityLivingBase entity, ItemStack itemStack, Collection<BlockPos> poses)
     {
-        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) || poses.isEmpty() ? null : new EntityBlock(world, poses);
+        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(entity, itemStack, poses)) || poses.isEmpty() ? null : new EntityBlock(entity.worldObj, poses);
     }
 
-    private EntityBlock(World world, ArrayList<BlockPos> poses)
+    private EntityBlock(World world, Collection<BlockPos> poses)
     {
         this(world);
         int lowX = Integer.MAX_VALUE;
@@ -540,7 +541,7 @@ public class EntityBlock extends Entity
 
                         if (var9.hasTagCompound())
                         {
-                            var14.getEntityItem().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                            var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
                         }
                     }
                 }
