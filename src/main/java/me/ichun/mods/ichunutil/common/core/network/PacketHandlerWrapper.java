@@ -41,68 +41,37 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
 
         if(!msg.requiresMainThread())
         {
-            AbstractPacket result = msg.execute(side, player);
-            if(result != null)
-            {
-                if(side.isServer()) //server recieved the packet, send reply to client.
-                {
-                    ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-                    ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-                    ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                }
-                else
-                {
-                    ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-                    ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                }
-            }
+            executeMessage(msg, player, side, ctx);
         }
         else
         {
-            final EntityPlayer playerForPacket = player;
-
             IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.channel().attr(NetworkRegistry.NET_HANDLER).get());
             if (thread.isCallingFromMinecraftThread())
             {
-                AbstractPacket result = msg.execute(side, player);
-                if(result != null)
-                {
-                    if(side.isServer()) //server recieved the packet, send reply to client.
-                    {
-                        ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-                        ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-                        ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                    }
-                    else
-                    {
-                        ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-                        ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                    }
-                }
+                executeMessage(msg, player, side, ctx);
             }
             else
             {
-                thread.addScheduledTask(new Runnable()
-                {
-                    public void run()
-                    {
-                        AbstractPacket result = msg.execute(side, playerForPacket);
-                        if(result != null)
-                        {
-                            if(side.isServer()) //server recieved the packet, send reply to client.
-                            {
-                                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-                                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(playerForPacket);
-                                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                            }
-                            else
-                            {
-                                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-                                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-                            }
-                        }
-                    }
-                });
+                thread.addScheduledTask(() -> executeMessage(msg, player, side, ctx));
+            }
+        }
+    }
+
+    public void executeMessage(AbstractPacket msg, EntityPlayer player, Side side, ChannelHandlerContext ctx)
+    {
+        AbstractPacket result = msg.execute(side, player);
+        if(result != null)
+        {
+            if(side.isServer()) //server recieved the packet, send reply to client.
+            {
+                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+            }
+            else
+            {
+                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
             }
         }
     }
