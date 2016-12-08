@@ -1,12 +1,13 @@
 package me.ichun.mods.ichunutil.common.entity;
 
-import me.ichun.mods.ichunutil.api.event.BlockPickupEvent;
+import me.ichun.mods.ichunutil.api.event.BlockEntityEvent;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketRequestBlockEntityData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -26,10 +27,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 public class EntityBlock extends Entity
 {
@@ -38,6 +40,8 @@ public class EntityBlock extends Entity
     private static final DataParameter<Boolean> CAN_ROTATE = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.createKey(EntityBlock.class, DataSerializers.VARINT);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
+
+    public EntityLivingBase creator; //TODO do I have to update this is the creator changes dimensions?
 
     public float rotYaw;
     public float rotPitch;
@@ -77,14 +81,16 @@ public class EntityBlock extends Entity
     }
 
     @Nullable
-    public static EntityBlock createEntityBlock(World world, ArrayList<BlockPos> poses)
+    public static EntityBlock createEntityBlock(World world, EntityLivingBase living, Set<BlockPos> poses)
     {
-        return MinecraftForge.EVENT_BUS.post(new BlockPickupEvent(world, poses)) || poses.isEmpty() ? null : new EntityBlock(world, poses);
+        return MinecraftForge.EVENT_BUS.post(new BlockEntityEvent.Pickup(world, living, poses)) || poses.isEmpty() ? null : new EntityBlock(world, living, poses);
     }
 
-    private EntityBlock(World world, ArrayList<BlockPos> poses)
+    private EntityBlock(World world, EntityLivingBase living, Set<BlockPos> poses)
     {
         this(world);
+        this.creator = living;
+
         int lowX = Integer.MAX_VALUE;
         int lowY = Integer.MAX_VALUE;
         int lowZ = Integer.MAX_VALUE;
@@ -424,7 +430,7 @@ public class EntityBlock extends Entity
                         if(blocks[i][j][k] != null)
                         {
                             BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
-                            if(!worldObj.setBlockState(pos, blocks[i][j][k], 2) && canDropItems)
+                            if(MinecraftForge.EVENT_BUS.post(new BlockEntityEvent.Place(worldObj, this, creator, blocks[i][j][k], pos)) || !worldObj.setBlockState(pos, blocks[i][j][k], 2) && canDropItems)
                             {
                                 blocks[i][j][k].getBlock().dropBlockAsItem(worldObj, pos, blocks[i][j][k], 0);
 
@@ -435,6 +441,11 @@ public class EntityBlock extends Entity
                                     {
                                         te.readFromNBT(tileEntityNBTs[i][j][k]);
                                         handleIInventoryBreak((IInventory)te);
+                                    }
+                                    else if(te instanceof IItemHandler)
+                                    {
+                                        te.readFromNBT(tileEntityNBTs[i][j][k]);
+                                        handleIItemHandlerBreak((IItemHandler)te);
                                     }
                                 }
                             }
@@ -509,6 +520,43 @@ public class EntityBlock extends Entity
         return hardness / (float)count;
     }
 
+    public void handleIItemHandlerBreak(IItemHandler var7)
+    {
+        if (var7 != null)
+        {
+            for (int var8 = 0; var8 < var7.getSlots(); ++var8)
+            {
+                int tries = 0;
+                while(tries < 200)
+                {
+                    tries++;
+
+                    ItemStack var9 = var7.extractItem(var8, Short.MAX_VALUE, false);
+                    if(var9 == null || var9.stackSize <= 0)
+                    {
+                        break;
+                    }
+
+                    float var10 = this.rand.nextFloat() * 0.8F + 0.1F;
+                    float var11 = this.rand.nextFloat() * 0.8F + 0.1F;
+                    float var12 = this.rand.nextFloat() * 0.8F + 0.1F;
+                    EntityItem var14 = new EntityItem(worldObj, (double)((float)posX + var10), (double)((float)posY + var11), (double)((float)posZ + var12), var9);
+                    float var15 = 0.05F;
+                    var14.motionX = (double)((float)this.rand.nextGaussian() * var15);
+                    var14.motionY = (double)((float)this.rand.nextGaussian() * var15 + 0.2F);
+                    var14.motionZ = (double)((float)this.rand.nextGaussian() * var15);
+
+                    if (var9.hasTagCompound())
+                    {
+                        var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
+                    }
+
+                    worldObj.spawnEntityInWorld(var14);
+                }
+            }
+        }
+    }
+
     public void handleIInventoryBreak(IInventory var7)
     {
         if (var7 != null)
@@ -541,7 +589,7 @@ public class EntityBlock extends Entity
 
                         if (var9.hasTagCompound())
                         {
-                            var14.getEntityItem().setTagCompound((NBTTagCompound)var9.getTagCompound().copy());
+                            var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
                         }
                     }
                 }
@@ -564,6 +612,7 @@ public class EntityBlock extends Entity
                         if(blocks[i][j][k] != null)
                         {
                             EntityBlock block = new EntityBlock(worldObj);
+                            block.creator = this.creator;
                             block.blocks = new IBlockState[1][1][1];
                             block.tileEntityNBTs = new NBTTagCompound[1][1][1];
                             block.blocks[0][0][0] = blocks[i][j][k];
