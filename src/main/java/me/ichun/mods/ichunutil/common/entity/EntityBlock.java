@@ -18,6 +18,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -631,9 +632,9 @@ public class EntityBlock extends Entity
                 {
                     if(tag.hasKey("state_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k)))
                     {
-                        blocks[i][j][k] = Block.getStateById(tag.getInteger("state_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k)));
+                        blocks[i][j][k] = Block.getBlockFromName(tag.getString("state_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k))).getStateFromMeta(tag.getByte("meta_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k)) & 255);
 
-                        if(tag.hasKey("tileEnt_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k)))
+                        if(blocks[i][j][k] != null && tag.hasKey("tileEnt_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k)))
                         {
                             tileEntityNBTs[i][j][k] = tag.getCompoundTag("tileEnt_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k));
                         }
@@ -665,7 +666,10 @@ public class EntityBlock extends Entity
                 {
                     if(blocks[i][j][k] != null)
                     {
-                        tag.setInteger("state_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k), Block.getStateId(blocks[i][j][k]));
+                        Block block = blocks[i][j][k].getBlock();
+                        ResourceLocation resourcelocation = Block.REGISTRY.getNameForObject(block);
+                        tag.setString("state_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k), resourcelocation.toString());
+                        tag.setByte("meta_" + Integer.toString(i) + "_" + Integer.toString(j) + "_" + Integer.toString(k), (byte)block.getMetaFromState(blocks[i][j][k]));
 
                         if(tileEntityNBTs[i][j][k] != null)
                         {
