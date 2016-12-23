@@ -10,6 +10,7 @@ import me.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen;
@@ -44,7 +45,7 @@ public class iChunUtil
     //Stuff to bump every update
     public static final String VERSION_OF_MC = "1.10.2";
     public static final int VERSION_MAJOR = 6;
-    public static final int VERSION_MINOR = 1;
+    public static final int VERSION_MINOR = 2;
     public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
@@ -200,6 +201,7 @@ public class iChunUtil
         proxy.postInit();
 
 //        UpdateVersionGen.generate();
+//        System.out.println(EntityHelper.getGameProfile("pahimar").getId());
     }
 
     @Mod.EventHandler
