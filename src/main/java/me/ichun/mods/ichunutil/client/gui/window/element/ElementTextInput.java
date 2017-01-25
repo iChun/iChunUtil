@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
-import net.minecraft.client.gui.GuiTextField;
-import org.lwjgl.input.Keyboard;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import net.minecraft.client.gui.GuiTextField;
+import org.lwjgl.input.Keyboard;
 
 public class ElementTextInput extends Element
         implements ITextInput

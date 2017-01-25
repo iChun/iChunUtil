@@ -1,14 +1,14 @@
 package me.ichun.mods.ichunutil.common.packet.mod;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.config.types.Colour;
 import me.ichun.mods.ichunutil.common.core.config.types.NestedIntArray;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

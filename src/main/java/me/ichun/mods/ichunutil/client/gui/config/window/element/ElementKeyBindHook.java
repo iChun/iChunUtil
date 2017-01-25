@@ -1,12 +1,12 @@
 package me.ichun.mods.ichunutil.client.gui.config.window.element;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.input.Keyboard;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowSetKeyBind;
 import me.ichun.mods.ichunutil.client.gui.window.element.Element;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
 
 public class ElementKeyBindHook extends Element
 {

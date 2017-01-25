@@ -9,12 +9,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PacketPatrons extends AbstractPacket
 {
     public PatronInfo info;
-    public ArrayList<PatronInfo> patrons;
+    public HashSet<PatronInfo> patrons;
 
     public PacketPatrons(){}
 
@@ -26,7 +26,7 @@ public class PacketPatrons extends AbstractPacket
     @Override
     public void writeTo(ByteBuf buf)
     {
-        ArrayList<PatronInfo> patrons = info != null ? new ArrayList<PatronInfo>() {{ add(info); }} : iChunUtil.eventHandlerServer.patrons;
+        HashSet<PatronInfo> patrons = info != null ? new HashSet<PatronInfo>() {{ add(info); }} : iChunUtil.eventHandlerServer.patrons;
         for(PatronInfo info : patrons)
         {
             ByteBufUtils.writeUTF8String(buf, info.id);
@@ -39,7 +39,7 @@ public class PacketPatrons extends AbstractPacket
     @Override
     public void readFrom(ByteBuf buf)
     {
-        patrons = new ArrayList<>();
+        patrons = new HashSet<>();
         String s = ByteBufUtils.readUTF8String(buf);
         while(!s.equals("##endPacket"))
         {
@@ -55,10 +55,7 @@ public class PacketPatrons extends AbstractPacket
     {
         for(PatronInfo info : patrons)
         {
-            if(PatronEffectRenderer.patrons.contains(info))
-            {
-                PatronEffectRenderer.patrons.remove(info);
-            }
+            PatronEffectRenderer.patrons.remove(info); //purge the old version of info.
             PatronEffectRenderer.patrons.add(info);
         }
         return null;

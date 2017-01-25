@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.element.ElementPropSetter;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.gui.window.element.Element;
-import me.ichun.mods.ichunutil.client.gui.window.element.ElementNumberInput;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 
 public class WindowSetter extends Window

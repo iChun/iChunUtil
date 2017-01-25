@@ -1,13 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
+import me.ichun.mods.ichunutil.client.gui.Theme;
+import me.ichun.mods.ichunutil.client.gui.window.Window;
+import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import me.ichun.mods.ichunutil.client.gui.Theme;
-import me.ichun.mods.ichunutil.client.gui.window.Window;
-import me.ichun.mods.ichunutil.client.render.RendererHelper;
 
 import java.util.ArrayList;
 import java.util.Locale;

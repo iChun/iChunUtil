@@ -7,14 +7,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ItemRenderingHelper
 {
-    public static ArrayList<Class<? extends Item>> bowAnimationLockedItems = new ArrayList<>();
+    public static HashSet<Class<? extends Item>> bowAnimationLockedItems = new HashSet<>();
     public static int lastThirdPersonView;
 
-    public static ArrayList<SwingProofHandler> swingProofItems = new ArrayList<>();
+    public static HashSet<SwingProofHandler> swingProofItems = new HashSet<>();
 
     private static int prevCurItem;
     private static boolean currentItemIsSwingProof;
@@ -109,10 +109,7 @@ public class ItemRenderingHelper
     //Items registered here can never be allowed to use MC's default "use timer". Their use timer (getMaxItemUseDuration) must be set to Integer.MAX_VALUE.
     public static void registerBowAnimationLockedItem(Class<? extends Item>clz)
     {
-        if(!bowAnimationLockedItems.contains(clz))
-        {
-            bowAnimationLockedItems.add(clz);
-        }
+        bowAnimationLockedItems.add(clz);
     }
 
     public static boolean isItemBowAnimationLocked(Item item)

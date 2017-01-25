@@ -39,6 +39,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 //This class has it's methods passed from EventHandlerClient or EntityTrackerHandler. It is NOT registered with the EVENT_BUS and shouldn't be.
 public class PatronEffectRenderer
@@ -78,7 +79,7 @@ public class PatronEffectRenderer
         }
     }
 
-    public static ArrayList<PatronInfo> patrons = new ArrayList<>();
+    public static HashSet<PatronInfo> patrons = new HashSet<>();
 
     public static HashMap<ResourceLocation, BufferedImage[]> patronRestitchedSkins = new HashMap<>();
     public static HashMap<ResourceLocation, int[]> patronRestitchedSkinsId = new HashMap<>();

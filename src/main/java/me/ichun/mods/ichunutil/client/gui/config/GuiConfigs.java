@@ -1,13 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.config;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowCats;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowSetter;
@@ -17,6 +9,13 @@ import me.ichun.mods.ichunutil.client.gui.window.element.Element;
 import me.ichun.mods.ichunutil.client.gui.window.element.ElementToggle;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 public class GuiConfigs extends IWorkspace
 {

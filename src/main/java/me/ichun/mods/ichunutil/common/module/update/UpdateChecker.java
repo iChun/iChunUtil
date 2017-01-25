@@ -1,35 +1,31 @@
 package me.ichun.mods.ichunutil.common.module.update;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class UpdateChecker
 {
-    private static ArrayList<ModVersionInfo> registeredMods = new ArrayList<>();
-    private static ArrayList<ModVersionInfo> modsWithUpdates = new ArrayList<>();
+    private static TreeSet<ModVersionInfo> registeredMods = new TreeSet<>(Ordering.natural());
+    private static TreeSet<ModVersionInfo> modsWithUpdates = new TreeSet<>(Ordering.natural());
 
     private static boolean updatesChecked;
     private static boolean requireLogging;
 
-    public static ArrayList<ModVersionInfo> getModsWithUpdates()
+    public static TreeSet<ModVersionInfo> getModsWithUpdates()
     {
         return modsWithUpdates;
     }
 
     public static void registerMod(ModVersionInfo info)
     {
-        if(!registeredMods.contains(info))
-        {
-            registeredMods.add(info);
-            Collections.sort(registeredMods);
-        }
+        registeredMods.add(info);
     }
 
     public static void processModsList(Map<String, Object> json)
@@ -57,7 +53,6 @@ public class UpdateChecker
                 }
             }
         }
-        Collections.sort(modsWithUpdates);
 
         requireLogging = false;
         updatesChecked = true;

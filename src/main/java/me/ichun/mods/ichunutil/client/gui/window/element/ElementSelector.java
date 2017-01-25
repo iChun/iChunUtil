@@ -1,12 +1,14 @@
 package me.ichun.mods.ichunutil.client.gui.window.element;
 
 import com.google.common.collect.Ordering;
-import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import org.lwjgl.input.Mouse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.TreeMap;
 
 public class ElementSelector extends Element
 {

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 @SideOnly(Side.CLIENT)
 public class GuiUpdateNotifier extends Gui
@@ -84,7 +85,7 @@ public class GuiUpdateNotifier extends Gui
             GlStateManager.pushMatrix();
 
             int count = 0;
-            ArrayList<UpdateChecker.ModVersionInfo> updates = UpdateChecker.getModsWithUpdates();
+            TreeSet<UpdateChecker.ModVersionInfo> updates = UpdateChecker.getModsWithUpdates();
             for(UpdateChecker.ModVersionInfo info : updates)
             {
                 if(!notifyAll && !info.isModClientOnly)

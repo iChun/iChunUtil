@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.ReportedException;
@@ -24,11 +23,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class RenderBlock extends Render<EntityBlock>
 {
-    public ArrayList<Class<? extends TileEntity>> classesNotToRender = new ArrayList<>();
+    public HashSet<Class<? extends TileEntity>> classesNotToRender = new HashSet<>();
 
     public RenderBlock(RenderManager renderManager)
     {

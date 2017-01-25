@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.common.grab.handlers;
 
+import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityFireball;
-import me.ichun.mods.ichunutil.common.grab.GrabHandler;
 
 public class GrabbedFireballHandler implements GrabHandler.GrabbedEntityHandler
 {

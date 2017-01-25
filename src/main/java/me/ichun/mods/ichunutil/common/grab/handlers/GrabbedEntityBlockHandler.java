@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.common.grab.handlers;
 
-import net.minecraft.entity.Entity;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.grab.GrabHandler;
+import net.minecraft.entity.Entity;
 
 public class GrabbedEntityBlockHandler implements GrabHandler.GrabbedEntityHandler
 {

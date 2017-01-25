@@ -35,11 +35,11 @@ public abstract class ConfigBase
     public HashMap<Field, Object> session = new HashMap<>();
     public HashMap<Field, Object> configScreen = new HashMap<>();
 
-    public ArrayList<Field> requiresRestart = new ArrayList<>();
-    public ArrayList<Field> sessionProp = new ArrayList<>();
+    public HashSet<Field> requiresRestart = new HashSet<>();
+    public HashSet<Field> sessionProp = new HashSet<>();
 
     //This stores the list of properties to reveal/unhide in the config screen/file
-    public ArrayList<String> propsToReveal = new ArrayList<>();
+    public HashSet<String> propsToReveal = new HashSet<>();
 
     public ConfigBase(File file)
     {
@@ -121,7 +121,7 @@ public abstract class ConfigBase
         }
         if(fields == null)
         {
-            fields = new ArrayList<ConfigBase.PropInfo>();
+            fields = new ArrayList<>();
             categories.put(info, fields);
         }
         String comment = propInfo.comment().equals("undefined") ? I18n.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".comment") : I18n.translateToLocal(propInfo.comment());
@@ -292,11 +292,11 @@ public abstract class ConfigBase
                 fields.add(propInfo1);
             }
 
-            if(!propInfo.changeable() && !requiresRestart.contains(field))
+            if(!propInfo.changeable())
             {
                 requiresRestart.add(field);
             }
-            if(propInfo.useSession() && !sessionProp.contains(field))
+            if(propInfo.useSession())
             {
                 sessionProp.add(field);
             }
@@ -405,11 +405,7 @@ public abstract class ConfigBase
         boolean add = false;
         for(String s : toReveal)
         {
-            if(!propsToReveal.contains(s))
-            {
-                propsToReveal.add(s);
-                add = true;
-            }
+            add = propsToReveal.add(s) || add;
         }
         if(add)
         {

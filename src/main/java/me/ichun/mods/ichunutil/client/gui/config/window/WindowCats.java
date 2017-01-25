@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.gui.window.element.Element;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 

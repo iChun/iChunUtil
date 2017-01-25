@@ -1,10 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.config.window;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.translation.I18n;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.element.ElementKeyBindHook;
@@ -14,6 +9,11 @@ import me.ichun.mods.ichunutil.client.keybind.KeyBind;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.annotations.ConfigProp;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.text.translation.I18n;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class WindowSetKeyBind extends Window
 {

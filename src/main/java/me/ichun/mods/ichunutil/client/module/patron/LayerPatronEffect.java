@@ -5,7 +5,6 @@ import me.ichun.mods.ichunutil.client.model.ModelSnout;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;

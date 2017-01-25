@@ -1,9 +1,9 @@
 package me.ichun.mods.ichunutil.common.core.config;
 
+import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
-import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 
 import java.util.Set;
 

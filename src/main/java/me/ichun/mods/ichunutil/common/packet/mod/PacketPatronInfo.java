@@ -43,10 +43,7 @@ public class PacketPatronInfo extends AbstractPacket
     public AbstractPacket execute(Side side, EntityPlayer player)
     {
         PatronInfo info = new PatronInfo(playerId, patronRewardType, showPatronReward);
-        if(iChunUtil.eventHandlerServer.patrons.contains(info)) //This is fine because for the equal check to pass, all that is checked is the ID.
-        {
-            iChunUtil.eventHandlerServer.patrons.remove(info);
-        }
+        iChunUtil.eventHandlerServer.patrons.remove(info); //This is fine because for the equal check to pass, all that is checked is the ID. PURGE the old version of the info.
         iChunUtil.eventHandlerServer.patrons.add(info);
         iChunUtil.channel.sendToAll(new PacketPatrons(info));
         return null;

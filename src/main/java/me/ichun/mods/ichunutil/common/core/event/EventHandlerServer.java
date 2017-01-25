@@ -21,12 +21,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class EventHandlerServer
 {
     public int ticks;
 
-    public ArrayList<PatronInfo> patrons = new ArrayList<>();
+    public HashSet<PatronInfo> patrons = new HashSet<>();
     public EntityTrackerRegistry entityTrackerRegistry = new EntityTrackerRegistry();
 
     @SubscribeEvent

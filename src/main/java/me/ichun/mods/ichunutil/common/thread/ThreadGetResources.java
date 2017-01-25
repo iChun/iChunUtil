@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.common.thread;
 import com.google.gson.Gson;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.io.InputStreamReader;
