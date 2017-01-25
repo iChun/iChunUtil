@@ -10,19 +10,15 @@ import me.ichun.mods.ichunutil.common.core.config.annotations.IntBool;
 import me.ichun.mods.ichunutil.common.core.config.annotations.IntMinMax;
 import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
-import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
-import me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.IThreadListener;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -76,6 +72,7 @@ public class iChunUtil
 
     public static Block blockCompactPorkchop;
     public static List<ItemStack> oreDictBlockCompactRawPorkchop;
+    private static boolean isCompactPorkchopRecipeAdded;
 
     private static boolean hasPostInit;
     private static boolean hasMorphMod;
@@ -145,29 +142,7 @@ public class iChunUtil
             List<ItemStack> compactPorkchops = oreDictBlockCompactRawPorkchop;
             if(compactPorkchops.size() == 1 && compactPorkchops.get(0).getItem() != null && Block.getBlockFromItem(compactPorkchops.get(0).getItem()) == blockCompactPorkchop) //Only handle the recipe if it's the only oredict entry for the block.
             {
-                Minecraft.getMinecraft().addScheduledTask(this::setupCompactPorkchopRecipe);
-            }
-        }
-
-        public void setupCompactPorkchopRecipe()
-        {
-            List recipes = CraftingManager.getInstance().getRecipeList();
-            for(int i = recipes.size() - 1; i >= 0; i--)
-            {
-                if(recipes.get(i) instanceof ShapedRecipes)
-                {
-                    ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
-                    if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
-                    {
-                        recipes.remove(i);
-                    }
-                }
-            }
-
-            if(enableCompactPorkchop == 1)
-            {
-                GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.PORKCHOP);
-                GameRegistry.addShapelessRecipe(new ItemStack(Items.PORKCHOP, 9), blockCompactPorkchop);
+                Minecraft.getMinecraft().addScheduledTask(iChunUtil::setupCompactPorkchopRecipe);
             }
         }
 
@@ -207,20 +182,49 @@ public class iChunUtil
 
         proxy.postInit();
 
-//        UpdateVersionGen.generate();
-//        System.out.println(EntityHelper.getGameProfile("pahimar").getId());
+        //        UpdateVersionGen.generate();
+        //        System.out.println(EntityHelper.getGameProfile("pahimar").getId());
     }
 
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event)
     {
         UpdateChecker.serverStarted();
+        setupCompactPorkchopRecipe();
     }
 
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         eventHandlerServer.shuttingDownServer();
+    }
+
+    public static void setupCompactPorkchopRecipe()
+    {
+        if(isCompactPorkchopRecipeAdded != (config.enableCompactPorkchop == 1))
+        {
+            if(isCompactPorkchopRecipeAdded) //remove the recipe
+            {
+                List recipes = CraftingManager.getInstance().getRecipeList();
+                for(int i = recipes.size() - 1; i >= 0; i--)
+                {
+                    if(recipes.get(i) instanceof ShapedRecipes)
+                    {
+                        ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
+                        if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
+                        {
+                            recipes.remove(i);
+                        }
+                    }
+                }
+            }
+            else //add the recipe
+            {
+                GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.PORKCHOP);
+                GameRegistry.addShapelessRecipe(new ItemStack(Items.PORKCHOP, 9), blockCompactPorkchop);
+            }
+            isCompactPorkchopRecipeAdded = (config.enableCompactPorkchop == 1);
+        }
     }
 
     public static boolean hasPostInit()
