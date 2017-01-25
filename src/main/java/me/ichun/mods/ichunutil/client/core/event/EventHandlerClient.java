@@ -42,7 +42,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.input.Mouse;
 
@@ -89,7 +88,6 @@ public class EventHandlerClient
         EntityTrackerHandler.init();
     }
 
-    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onRendererSafeCompatibility(RendererSafeCompatibilityEvent event)
     {
