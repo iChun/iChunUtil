@@ -15,10 +15,12 @@ import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.IThreadListener;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -46,7 +48,7 @@ public class iChunUtil
     public static final String VERSION_OF_MC = "1.10.2";
     public static final int VERSION_MAJOR = 6;
     public static final int VERSION_MINOR = 2;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
@@ -141,26 +143,31 @@ public class iChunUtil
         public void onReceiveSession()
         {
             List<ItemStack> compactPorkchops = oreDictBlockCompactRawPorkchop;
-            if(compactPorkchops.size() == 1 && compactPorkchops.get(0).getItem() != null && Block.getBlockFromItem(compactPorkchops.get(0).getItem()) == (blockCompactPorkchop)) //Only handle the recipe if it's the only oredict entry for the block.
+            if(compactPorkchops.size() == 1 && compactPorkchops.get(0).getItem() != null && Block.getBlockFromItem(compactPorkchops.get(0).getItem()) == blockCompactPorkchop) //Only handle the recipe if it's the only oredict entry for the block.
             {
-                List recipes = CraftingManager.getInstance().getRecipeList();
-                for(int i = recipes.size() - 1; i >= 0; i--)
+                Minecraft.getMinecraft().addScheduledTask(this::setupCompactPorkchopRecipe);
+            }
+        }
+
+        public void setupCompactPorkchopRecipe()
+        {
+            List recipes = CraftingManager.getInstance().getRecipeList();
+            for(int i = recipes.size() - 1; i >= 0; i--)
+            {
+                if(recipes.get(i) instanceof ShapedRecipes)
                 {
-                    if(recipes.get(i) instanceof ShapedRecipes)
+                    ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
+                    if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
                     {
-                        ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
-                        if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
-                        {
-                            recipes.remove(i);
-                        }
+                        recipes.remove(i);
                     }
                 }
+            }
 
-                if(enableCompactPorkchop == 1)
-                {
-                    GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.PORKCHOP);
-                    GameRegistry.addShapelessRecipe(new ItemStack(Items.PORKCHOP, 9), blockCompactPorkchop);
-                }
+            if(enableCompactPorkchop == 1)
+            {
+                GameRegistry.addRecipe(new ItemStack(blockCompactPorkchop), "PPP", "PPP", "PPP", 'P', Items.PORKCHOP);
+                GameRegistry.addShapelessRecipe(new ItemStack(Items.PORKCHOP, 9), blockCompactPorkchop);
             }
         }
 
