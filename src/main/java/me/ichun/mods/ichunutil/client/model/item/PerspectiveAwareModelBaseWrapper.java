@@ -8,8 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.vecmath.Matrix4f;
 
-import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND;
-import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.*;
 
 public class PerspectiveAwareModelBaseWrapper extends ModelBaseWrapper
     implements IPerspectiveAwareModel
@@ -34,5 +33,35 @@ public class PerspectiveAwareModelBaseWrapper extends ModelBaseWrapper
             ItemCameraTransforms.applyTransformSide(this.getItemCameraTransforms().getTransform(cameraTransformType), cameraTransformType == FIRST_PERSON_LEFT_HAND || cameraTransformType == THIRD_PERSON_LEFT_HAND);
         }
         return pair;
+    }
+
+    public static boolean isFirstPerson(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_LEFT_HAND || type == FIRST_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isThirdPerson(ItemCameraTransforms.TransformType type)
+    {
+        return type == THIRD_PERSON_LEFT_HAND || type == THIRD_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isEntityRender(ItemCameraTransforms.TransformType type)
+    {
+        return isFirstPerson(type) || isThirdPerson(type);
+    }
+
+    public static boolean isLeftHand(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_LEFT_HAND || type == THIRD_PERSON_LEFT_HAND;
+    }
+
+    public static boolean isRightHand(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_RIGHT_HAND || type == THIRD_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isItemRender(ItemCameraTransforms.TransformType type) //default render type
+    {
+        return type == null || type == GROUND || type == NONE;
     }
 }

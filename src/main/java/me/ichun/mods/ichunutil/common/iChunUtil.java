@@ -43,8 +43,8 @@ public class iChunUtil
     //Stuff to bump every update
     public static final String VERSION_OF_MC = "1.10.2";
     public static final int VERSION_MAJOR = 6;
-    public static final int VERSION_MINOR = 1;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
+    public static final int VERSION_MINOR = 2;
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
