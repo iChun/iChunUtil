@@ -19,10 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerProfileCache;
-import net.minecraft.util.EntitySelectors;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.world.BossInfoLerping;
 import net.minecraft.world.World;
@@ -113,6 +110,11 @@ public class EntityHelper
             ite.remove();
         }
         BOSS_INFO_STORE.clear();
+    }
+
+    public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
+    {
+        ent.worldObj.playSound(null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch);
     }
 
     public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
@@ -617,7 +619,7 @@ public class EntityHelper
         return aabb;
     }
 
-    public boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
+    public static boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
     {
         int i = MathHelper.floor_double(aabb.minX);
         int j = MathHelper.floor_double(aabb.minY);

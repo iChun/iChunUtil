@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 
 public class ItemRenderingHelper
@@ -23,7 +24,7 @@ public class ItemRenderingHelper
     public static class SwingProofHandler
     {
         public final Class<? extends Item> clz;
-        public final IItemEquippedHandler hnd;
+        public final @Nullable IItemEquippedHandler hnd;
         public SwingProofHandler(Class<? extends Item> clz, IItemEquippedHandler hnd)
         {
             this.clz = clz;
@@ -34,6 +35,17 @@ public class ItemRenderingHelper
         {
             void handleEquip(EntityPlayerSP player, ItemStack stack);
             boolean hideName();
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if(o instanceof SwingProofHandler)
+            {
+                SwingProofHandler swing = (SwingProofHandler)o;
+                return swing.clz == clz && swing.hnd.getClass() == hnd.getClass();
+            }
+            return false;
         }
     }
 
