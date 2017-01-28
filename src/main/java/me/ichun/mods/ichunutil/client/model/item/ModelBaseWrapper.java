@@ -69,8 +69,8 @@ public class ModelBaseWrapper implements IBakedModel
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
     {
-        if(side == null) return DUMMY_LIST;
-        
+        if(side != null) return DUMMY_LIST;
+
         handleBlockState(state, side, rand);
 
         if(!disableRender)
