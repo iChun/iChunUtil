@@ -11,7 +11,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.TreeSet;
 
 @SideOnly(Side.CLIENT)
@@ -68,7 +67,7 @@ public class GuiUpdateNotifier extends Gui
 
     public void updateWindow()
     {
-        if(notificationTime != 0L && mc.thePlayer != null)
+        if(notificationTime != 0L && mc.player != null)
         {
             double d0 = (double)(Minecraft.getSystemTime() - notificationTime) / 3000.0D;
 

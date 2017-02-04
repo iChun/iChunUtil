@@ -31,5 +31,5 @@ public abstract class AbstractPacket
      * If your packet is thread-safe you can return false for this.
      * @return is packet executed on the main ticking thread.
      */
-    public boolean requiresMainThread(){ return true; };
+    public boolean requiresMainThread(){ return true; }
 }

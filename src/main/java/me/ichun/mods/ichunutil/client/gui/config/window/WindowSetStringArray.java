@@ -33,7 +33,7 @@ public class WindowSetStringArray extends Window
                 elements.add(new ElementTextInput(this, 10, i * 18 + 20, width - 20, 12, i, prop.comment, vals[i]));
             }
         }
-        catch(Exception ignored){};
+        catch(Exception ignored){}
     }
 
     @Override

@@ -33,26 +33,26 @@ import java.util.List;
 @Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
-        dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
+        dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
-        acceptedMinecraftVersions = "[1.9.4,1.10.2]"
+        acceptedMinecraftVersions = "[1.11.2]"
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
 {
     //Stuff to bump every update
-    public static final String VERSION_OF_MC = "1.10.2";
-    public static final int VERSION_MAJOR = 6;
-    public static final int VERSION_MINOR = 2;
+    public static final String VERSION_OF_MC = "1.11.2";
+    public static final int VERSION_MAJOR = 7;
+    public static final int VERSION_MINOR = 0;
     public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
 
-    public static final int REQ_FORGE_MAJOR = 12;
+    public static final int REQ_FORGE_MAJOR = 13;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;
-    public static final int REQ_FORGE_REVISION = 2;
-    public static final int REQ_FORGE_BUILD = 2151;
+    public static final int REQ_FORGE_REVISION = 0;
+    public static final int REQ_FORGE_BUILD = 2214;
 
     public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
 

@@ -54,7 +54,7 @@ public class ElementHoriSlider extends Element
         {
             double sx1 = posX + 4;
             double sx2 = posX + width - 8;
-            sliderProg = MathHelper.clamp_double((double)(mouseX - sx1) / (double)(sx2 - sx1), 0.0D, 1.0D);
+            sliderProg = MathHelper.clamp((double)(mouseX - sx1) / (double)(sx2 - sx1), 0.0D, 1.0D);
 
             if(sliderProg != prevSliderProg)
             {
@@ -67,7 +67,7 @@ public class ElementHoriSlider extends Element
     @Override
     public boolean mouseScroll(int mouseX, int mouseY, int k)
     {
-        sliderProg = MathHelper.clamp_double(sliderProg + (GuiScreen.isShiftKeyDown() ? k * 10 : k) * 0.001D, 0.0D, 1.0D);
+        sliderProg = MathHelper.clamp(sliderProg + (GuiScreen.isShiftKeyDown() ? k * 10 : k) * 0.001D, 0.0D, 1.0D);
         if(sliderProg != prevSliderProg)
         {
             parent.elementTriggered(this);

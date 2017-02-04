@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.client.model.item;
 
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;

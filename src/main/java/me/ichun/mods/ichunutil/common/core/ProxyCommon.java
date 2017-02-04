@@ -37,7 +37,7 @@ public class ProxyCommon
         iChunUtil.blockCompactPorkchop = GameRegistry.register(new BlockCompactPorkchop());
         GameRegistry.register(new ItemBlock(iChunUtil.blockCompactPorkchop).setRegistryName(iChunUtil.blockCompactPorkchop.getRegistryName()));
 
-        EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
+        EntityRegistry.registerModEntity(EntityBlock.RESOURCE_LOCATION, EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
 
         iChunUtil.channel = new PacketChannel(iChunUtil.MOD_ID, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class, PacketUserShouldShowUpdates.class, PacketBlockEntityData.class, PacketNewGrabbedEntityId.class, PacketRequestBlockEntityData.class);
     }

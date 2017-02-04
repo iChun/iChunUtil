@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.10.2";
+    private static final String OBF_VERSION = "1.11.2";
 
     private static boolean isObfuscated;
 
@@ -29,7 +29,7 @@ public class ObfHelper
     public static final String getHurtSoundDeobf = "getHurtSound";
 
     //EntityLivingBase
-    public static final String getDeathSoundObf = "func_188593_c";
+    public static final String getDeathSoundObf = "func_184615_bR";
     public static final String getDeathSoundDeobf = "getDeathSound";
 
     //RenderLivingEntity
@@ -125,6 +125,7 @@ public class ObfHelper
         {
             e.printStackTrace();
         }
+        iChunUtil.LOGGER.error("Could not get Entity Texture");
         return DefaultPlayerSkin.getDefaultSkinLegacy();
     }
 }

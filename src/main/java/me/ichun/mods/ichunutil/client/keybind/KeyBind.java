@@ -49,8 +49,7 @@ public class KeyBind
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean checkPressed()
-    {
+    private boolean checkPressed() {
         boolean stateShift = holdShift && GuiScreen.isShiftKeyDown() || !holdShift && (ignoreHold || !GuiScreen.isShiftKeyDown() || keyIndex == 42 || keyIndex == 54);
         boolean stateCtrl = holdCtrl && GuiScreen.isCtrlKeyDown() || !holdCtrl && (ignoreHold || !GuiScreen.isCtrlKeyDown() || keyIndex == (Minecraft.IS_RUNNING_ON_MAC ? 219 : 29) || keyIndex == (Minecraft.IS_RUNNING_ON_MAC ? 220 : 157));
         boolean stateAlt = holdAlt && (Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || !holdAlt && (ignoreHold || !(Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184)) || keyIndex == 56 || keyIndex == 184);

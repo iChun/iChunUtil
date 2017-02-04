@@ -127,9 +127,9 @@ public class EventHandlerClient
                 }
             }
 
-            if(renderGlobalWorldInstance != mc.renderGlobal.theWorld) //Assume world has changed, eg changing dimension or loading an MC world.
+            if(renderGlobalWorldInstance != mc.renderGlobal.world) //Assume world has changed, eg changing dimension or loading an MC world.
             {
-                renderGlobalWorldInstance = mc.renderGlobal.theWorld;
+                renderGlobalWorldInstance = mc.renderGlobal.world;
 
                 for(RenderGlobalProxy proxy : RendererHelper.renderGlobalProxies)
                 {
@@ -197,7 +197,7 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase.equals(TickEvent.Phase.END))
         {
-            if(mc.theWorld != null)
+            if(mc.world != null)
             {
                 if(connectingToServer)
                 {
@@ -229,9 +229,9 @@ public class EventHandlerClient
 
                     GrabHandler.tick(Side.CLIENT);
 
-                    if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && mc.thePlayer.isElytraFlying() && mc.gameSettings.keyBindJump.isKeyDown())
+                    if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && mc.player.isElytraFlying() && mc.gameSettings.keyBindJump.isKeyDown())
                     {
-                        mc.thePlayer.motionY += 0.05F;
+                        mc.player.motionY += 0.05F;
                     }
                 }
             }

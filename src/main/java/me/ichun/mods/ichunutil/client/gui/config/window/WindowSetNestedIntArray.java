@@ -43,7 +43,7 @@ public class WindowSetNestedIntArray extends Window
                 i++;
             }
         }
-        catch(Exception ignored){};
+        catch(Exception ignored){}
     }
 
     @Override
@@ -151,12 +151,7 @@ public class WindowSetNestedIntArray extends Window
                 {
                     if(e instanceof ElementTextInputNumber)
                     {
-                        ArrayList<ElementTextInputNumber> nums = elementMap.get(e.id - (e.id % 100));
-                        if(nums == null)
-                        {
-                            nums = new ArrayList<ElementTextInputNumber>();
-                            elementMap.put(e.id - (e.id % 100), nums);
-                        }
+                        ArrayList<ElementTextInputNumber> nums = elementMap.computeIfAbsent(e.id - (e.id % 100), k -> new ArrayList<ElementTextInputNumber>());
 
                         String text = ((ElementTextInputNumber)e).textField.getText();
                         if(!text.isEmpty() && !(text.equals("-") || text.equals(".")))

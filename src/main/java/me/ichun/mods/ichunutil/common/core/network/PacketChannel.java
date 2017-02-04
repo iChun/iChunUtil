@@ -148,7 +148,7 @@ public class PacketChannel
 
     /**
      * Construct a minecraft packet from the supplied message. Can be used where minecraft packets are required, such as
-     * {@link TileEntity#getDescriptionPacket}.
+     * {@link TileEntity#getUpdatePacket()}.
      *
      * @param message The message to translate into packet form
      * @return A minecraft {@link Packet} suitable for use in minecraft APIs
@@ -160,9 +160,9 @@ public class PacketChannel
 
     public void sendToAllExcept(AbstractPacket packet, EntityPlayer player)
     {
-        for(int i = 0; i < FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().size(); i++)
+        for(int i = 0; i < FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().size(); i++)
         {
-            EntityPlayerMP player1 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().get(i);
+            EntityPlayerMP player1 = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers().get(i);
             if(player.getName().equalsIgnoreCase(player1.getName()))
             {
                 continue;

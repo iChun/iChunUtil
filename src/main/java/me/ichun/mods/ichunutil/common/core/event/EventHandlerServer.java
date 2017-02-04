@@ -72,7 +72,7 @@ public class EventHandlerServer
         iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && ((EntityPlayerMP)event.player).mcServer.getPlayerList().canSendCommands(event.player.getGameProfile()))), event.player);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST) //TODO NOTE THAT THIS DOES NOT TRIGGER FOR WHEN CLIENT LEAVES THE END. FIX IS ONLY IN 1.11
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
     {
         ArrayList<GrabHandler> handlers = GrabHandler.getHandlers(event.player, Side.SERVER);
@@ -103,7 +103,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(!event.getEntity().worldObj.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
+        if(!event.getEntity().world.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
         {
             Integer x = event.getEntity().getEntityData().getInteger("Grabbed-ID");
             if(event.getEntity().getEntityId() != x)

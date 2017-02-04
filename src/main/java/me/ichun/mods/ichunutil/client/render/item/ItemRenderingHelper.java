@@ -52,22 +52,22 @@ public class ItemRenderingHelper
     //TODO this only takes note of the main hand, not the off hand as well... WHAT DO
     public static void handlePreRender(Minecraft mc)
     {
-        if(mc.thePlayer != null)
+        if(mc.player != null)
         {
-            ItemStack currentInv = mc.thePlayer.getHeldItemMainhand();
+            ItemStack currentInv = mc.player.getHeldItemMainhand();
             if(currentInv != null)
             {
                 if(isItemSwingProof(currentInv.getItem()))
                 {
                     mc.playerController.resetBlockRemoving();
-                    if(prevCurItem == mc.thePlayer.inventory.currentItem)
+                    if(prevCurItem == mc.player.inventory.currentItem)
                     {
                         mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1.0F;
                         mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand = 1.0F;
-                        mc.entityRenderer.itemRenderer.itemStackMainHand = mc.thePlayer.getHeldItemMainhand();
+                        mc.entityRenderer.itemRenderer.itemStackMainHand = mc.player.getHeldItemMainhand();
                         if(!currentItemIsSwingProof)
                         {
-                            handleSwingProofItemEquip(mc.thePlayer, currentInv);
+                            handleSwingProofItemEquip(mc.player, currentInv);
                         }
 
                         if(mc.ingameGUI.remainingHighlightTicks == 0)
@@ -79,17 +79,17 @@ public class ItemRenderingHelper
                             mc.ingameGUI.remainingHighlightTicks = 0;
                         }
                     }
-                    mc.thePlayer.isSwingInProgress = false;
-                    mc.thePlayer.swingProgressInt = 0;
-                    mc.thePlayer.swingProgress = 0;
+                    mc.player.isSwingInProgress = false;
+                    mc.player.swingProgressInt = 0;
+                    mc.player.swingProgress = 0;
                 }
             }
             currentItemIsSwingProof = currentInv != null && isItemSwingProof(currentInv.getItem());
-            if(prevCurItem != mc.thePlayer.inventory.currentItem)
+            if(prevCurItem != mc.player.inventory.currentItem)
             {
-                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F)
+                if(mc.player.inventory.currentItem >= 0 && mc.player.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F)
                 {
-                    prevCurItem = mc.thePlayer.inventory.currentItem;
+                    prevCurItem = mc.player.inventory.currentItem;
                 }
                 currentItemIsSwingProof = false;
                 hasShownItemName = false;

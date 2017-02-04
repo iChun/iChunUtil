@@ -210,7 +210,9 @@ public abstract class IWorkspace extends GuiScreen
                 tips = new ArrayList<String>(tipss.size() > tips.size() ? tipss : tips);
                 if(tips.size() == 1)
                 {
-                    tips.add(I18n.translateToLocal(tips.get(0)));
+                    String translated = I18n.translateToLocal(tips.get(0));
+                    if(translated.isEmpty()) return; // Skip this for empty strings
+                    tips.add(translated);
                     tips.remove(0);
                 }
                 int xOffset = 5;
