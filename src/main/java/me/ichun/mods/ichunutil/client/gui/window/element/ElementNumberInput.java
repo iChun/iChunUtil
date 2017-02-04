@@ -356,7 +356,6 @@ public class ElementNumberInput extends Element
                     int pos = textFields.get(selectedTextField).getCursorPosition();
                     textFields.get(selectedTextField).setText(oldText);
                     textFields.get(selectedTextField).setCursorPosition(pos - 1);
-                    return;
                 }
             }
         }

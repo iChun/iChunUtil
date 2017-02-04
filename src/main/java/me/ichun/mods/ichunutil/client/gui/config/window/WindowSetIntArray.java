@@ -33,7 +33,7 @@ public class WindowSetIntArray extends Window
                 elements.add(new ElementTextInputNumber(this, 10, i * 18 + 20, width - 20, 12, i, prop.comment, Integer.toString(vals[i]), false));
             }
         }
-        catch(Exception ignored){};
+        catch(Exception ignored){}
     }
 
     @Override

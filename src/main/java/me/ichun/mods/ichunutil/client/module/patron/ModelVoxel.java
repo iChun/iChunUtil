@@ -157,7 +157,7 @@ public class ModelVoxel extends ModelBase
             }
 
             int prog = j;
-            float prog2 = MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F);
+            float prog2 = MathHelper.clamp((prog + renderTick) / 100F, 0.0F, 1.0F);
 
             GlStateManager.pushMatrix();
             double tX = trail.prevPosX + (trail.posX - trail.prevPosX) * renderTick;
@@ -184,7 +184,7 @@ public class ModelVoxel extends ModelBase
             }
             else
             {
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F - 0.9F * (MathHelper.clamp_float((prog + renderTick) / 100F, 0.0F, 1.0F)));
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 0.9F - 0.9F * (MathHelper.clamp((prog + renderTick) / 100F, 0.0F, 1.0F)));
             }
 
             if(skins != null)
@@ -228,10 +228,10 @@ public class ModelVoxel extends ModelBase
         //4 = body
         //5 = head
 
-        float prog = MathHelper.clamp_float((progInt + renderTick) / 100F, 0.0F, 1.0F);
+        float prog = MathHelper.clamp((progInt + renderTick) / 100F, 0.0F, 1.0F);
 
         float shatterProg = 1.0F + 0.7F * prog;
-        float properShatterProg = 1.0F - MathHelper.clamp_float((float)(Math.pow(1.0F - MathHelper.clamp_float(((prog - 0.025F) / 0.2F), 0.0F, 1.0F), 2D)), 0.0F, 1.0F);
+        float properShatterProg = 1.0F - MathHelper.clamp((float)(Math.pow(1.0F - MathHelper.clamp(((prog - 0.025F) / 0.2F), 0.0F, 1.0F), 2D)), 0.0F, 1.0F);
 
         rotationPitch *= shatterProg;
 

@@ -5,8 +5,6 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeSet;
 

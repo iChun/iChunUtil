@@ -127,7 +127,7 @@ public class EntityLatchedRenderer extends Entity
 
         MinecraftForge.EVENT_BUS.post(new EntityLatchedRendererUpdateEvent(this));
 
-        lastUpdate = worldObj.getWorldTime();
+        lastUpdate = world.getWorldTime();
     }
 
     @Override

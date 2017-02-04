@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -40,6 +41,7 @@ public class EntityBlock extends Entity
     private static final DataParameter<Boolean> CAN_ROTATE = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.createKey(EntityBlock.class, DataSerializers.VARINT);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
+    public static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation("ichunutil:");
 
     public EntityLivingBase creator; //TODO do I have to update this is the creator changes dimensions?
 
@@ -195,9 +197,9 @@ public class EntityBlock extends Entity
             this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY, this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double)(blocks.length - 0.05F), this.getEntityBoundingBox().minY + (double)(blocks[0].length - 0.05F), this.getEntityBoundingBox().minZ + (double)(blocks[0][0].length - 0.05F)));
         }
 
-        if (this.width > f2 && !this.firstUpdate && !this.worldObj.isRemote)
+        if (this.width > f2 && !this.firstUpdate && !this.world.isRemote)
         {
-            this.moveEntity((double)(f2 - this.width), 0.0D, (double)(f2 - this.width));
+            this.move(MoverType.SELF, (double)(f2 - this.width), 0.0D, (double)(f2 - this.width));
         }
     }
 
@@ -295,7 +297,7 @@ public class EntityBlock extends Entity
     @Override
     public void onUpdate()
     {
-        if(worldObj.isRemote && !setup)
+        if(world.isRemote && !setup)
         {
             if(!requestedSetupPacket)
             {
@@ -307,7 +309,7 @@ public class EntityBlock extends Entity
 
         timeExisting++;
 
-        if(!worldObj.isRemote && posY < -500D)
+        if(!world.isRemote && posY < -500D)
         {
             setDead();
             return;
@@ -333,7 +335,7 @@ public class EntityBlock extends Entity
 
         motionY -= 0.06D;
 
-        moveEntity(motionX, motionY, motionZ);
+        move(MoverType.SELF, motionX, motionY, motionZ);
 
         boolean setBlock = false;
 
@@ -394,7 +396,7 @@ public class EntityBlock extends Entity
                 setRotFacPitch(rand.nextFloat() * (2F * maxRotFac) - maxRotFac);
             }
         }
-        else if(!worldObj.isRemote)
+        else if(!world.isRemote)
         {
             for(int i = 0; i < mobSpawners.length; i++)
             {
@@ -406,7 +408,7 @@ public class EntityBlock extends Entity
                         {
                             BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
                             TileEntityMobSpawner spawner = mobSpawners[i][j][k];
-                            spawner.setWorldObj(worldObj);
+                            spawner.setWorld(world);
                             spawner.setPos(pos);
                             //Update the spawner twice to double spawn rate.
                             spawner.update();
@@ -417,7 +419,7 @@ public class EntityBlock extends Entity
             }
         }
 
-        if(!worldObj.isRemote && (setBlock || timeExisting > (20 * 60 * 5)))
+        if(!world.isRemote && (setBlock || timeExisting > (20 * 60 * 5)))
         {
             setDead();
 
@@ -430,13 +432,13 @@ public class EntityBlock extends Entity
                         if(blocks[i][j][k] != null)
                         {
                             BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
-                            if(MinecraftForge.EVENT_BUS.post(new BlockEntityEvent.Place(worldObj, this, creator, blocks[i][j][k], pos)) || !worldObj.setBlockState(pos, blocks[i][j][k], 2) && canDropItems)
+                            if(MinecraftForge.EVENT_BUS.post(new BlockEntityEvent.Place(world, this, creator, blocks[i][j][k], pos)) || !world.setBlockState(pos, blocks[i][j][k], 2) && canDropItems)
                             {
-                                blocks[i][j][k].getBlock().dropBlockAsItem(worldObj, pos, blocks[i][j][k], 0);
+                                blocks[i][j][k].getBlock().dropBlockAsItem(world, pos, blocks[i][j][k], 0);
 
                                 if(tileEntityNBTs[i][j][k] != null && blocks[i][j][k].getBlock().hasTileEntity(blocks[i][j][k]))
                                 {
-                                    TileEntity te = blocks[i][j][k].getBlock().createTileEntity(worldObj, blocks[i][j][k]);
+                                    TileEntity te = blocks[i][j][k].getBlock().createTileEntity(world, blocks[i][j][k]);
                                     if(te instanceof IInventory)
                                     {
                                         te.readFromNBT(tileEntityNBTs[i][j][k]);
@@ -451,7 +453,7 @@ public class EntityBlock extends Entity
                             }
                             else if(tileEntityNBTs[i][j][k] != null && blocks[i][j][k].getBlock().hasTileEntity(blocks[i][j][k]))
                             {
-                                TileEntity te = worldObj.getTileEntity(pos);
+                                TileEntity te = world.getTileEntity(pos);
 
                                 if(te != null)
                                 {
@@ -487,7 +489,7 @@ public class EntityBlock extends Entity
                         if(blocks[i][j][k] != null)
                         {
                             BlockPos pos = new BlockPos(posX - (((getEntityBoundingBox().maxX - getEntityBoundingBox().minX) + 0.05D) / 2F) + blocks.length - i - 0.5D, posY + blocks[i].length - j - 0.5D, posZ - (((getEntityBoundingBox().maxZ - getEntityBoundingBox().minZ) + 0.05D) / 2F) + blocks[i][j].length - k - 0.5D);
-                            worldObj.notifyNeighborsRespectDebug(pos, Blocks.AIR);
+                            world.notifyNeighborsRespectDebug(pos, Blocks.AIR, true);
                         }
                     }
                 }
@@ -532,7 +534,7 @@ public class EntityBlock extends Entity
                     tries++;
 
                     ItemStack var9 = var7.extractItem(var8, Short.MAX_VALUE, false);
-                    if(var9 == null || var9.stackSize <= 0)
+                    if(var9 == null || var9.getCount() <= 0)
                     {
                         break;
                     }
@@ -540,7 +542,7 @@ public class EntityBlock extends Entity
                     float var10 = this.rand.nextFloat() * 0.8F + 0.1F;
                     float var11 = this.rand.nextFloat() * 0.8F + 0.1F;
                     float var12 = this.rand.nextFloat() * 0.8F + 0.1F;
-                    EntityItem var14 = new EntityItem(worldObj, (double)((float)posX + var10), (double)((float)posY + var11), (double)((float)posZ + var12), var9);
+                    EntityItem var14 = new EntityItem(world, (double)((float)posX + var10), (double)((float)posY + var11), (double)((float)posZ + var12), var9);
                     float var15 = 0.05F;
                     var14.motionX = (double)((float)this.rand.nextGaussian() * var15);
                     var14.motionY = (double)((float)this.rand.nextGaussian() * var15 + 0.2F);
@@ -551,7 +553,7 @@ public class EntityBlock extends Entity
                         var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
                     }
 
-                    worldObj.spawnEntityInWorld(var14);
+                    world.spawnEntity(var14);
                 }
             }
         }
@@ -571,17 +573,17 @@ public class EntityBlock extends Entity
                     float var11 = this.rand.nextFloat() * 0.8F + 0.1F;
                     EntityItem var14;
 
-                    for (float var12 = this.rand.nextFloat() * 0.8F + 0.1F; var9.stackSize > 0; worldObj.spawnEntityInWorld(var14))
+                    for (float var12 = this.rand.nextFloat() * 0.8F + 0.1F; var9.getCount() > 0; world.spawnEntity(var14))
                     {
                         int var13 = this.rand.nextInt(21) + 10;
 
-                        if (var13 > var9.stackSize)
+                        if (var13 > var9.getCount())
                         {
-                            var13 = var9.stackSize;
+                            var13 = var9.getCount();
                         }
 
-                        var9.stackSize -= var13;
-                        var14 = new EntityItem(worldObj, (double)((float)posX + var10), (double)((float)posY + var11), (double)((float)posZ + var12), new ItemStack(var9.getItem(), var13, var9.getItemDamage()));
+                        var9.setCount(var9.getCount() - var13);
+                        var14 = new EntityItem(world, (double)((float)posX + var10), (double)((float)posY + var11), (double)((float)posZ + var12), new ItemStack(var9.getItem(), var13, var9.getItemDamage()));
                         float var15 = 0.05F;
                         var14.motionX = (double)((float)this.rand.nextGaussian() * var15);
                         var14.motionY = (double)((float)this.rand.nextGaussian() * var15 + 0.2F);
@@ -611,7 +613,7 @@ public class EntityBlock extends Entity
                     {
                         if(blocks[i][j][k] != null)
                         {
-                            EntityBlock block = new EntityBlock(worldObj);
+                            EntityBlock block = new EntityBlock(world);
                             block.creator = this.creator;
                             block.blocks = new IBlockState[1][1][1];
                             block.tileEntityNBTs = new NBTTagCompound[1][1][1];
@@ -625,7 +627,7 @@ public class EntityBlock extends Entity
                             block.motionX = motionX + (rand.nextFloat() * 2F - 1F) * randMag;
                             block.motionY = motionY + (rand.nextFloat() * 2F - 1F) * randMag;
                             block.motionZ = motionZ + (rand.nextFloat() * 2F - 1F) * randMag;
-                            worldObj.spawnEntityInWorld(block);
+                            world.spawnEntity(block);
                         }
                     }
                 }

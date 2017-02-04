@@ -185,5 +185,5 @@ public class PacketSession extends AbstractPacket
     public Side receivingSide() { return Side.CLIENT; }
 
     @Override
-    public boolean requiresMainThread(){ return false; };
+    public boolean requiresMainThread(){ return false; }
 }
