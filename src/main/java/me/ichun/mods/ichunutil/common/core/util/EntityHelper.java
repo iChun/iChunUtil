@@ -15,8 +15,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.*;
@@ -110,6 +113,91 @@ public class EntityHelper
             ite.remove();
         }
         BOSS_INFO_STORE.clear();
+    }
+
+    public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item)
+    {
+        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item)
+        {
+            if(--inventory.offHandInventory[0].stackSize <= 0)
+            {
+                inventory.offHandInventory[0] = null;
+            }
+
+            inventory.markDirty();
+            return true;
+        }
+
+        for (int i = 0; i < inventory.mainInventory.length; ++i)
+        {
+            if (inventory.mainInventory[i] != null && inventory.mainInventory[i].getItem() == item)
+            {
+                if (--inventory.mainInventory[i].stackSize <= 0)
+                {
+                    inventory.mainInventory[i] = null;
+                }
+
+                inventory.markDirty();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item, int damage, int amount)
+    {
+        boolean offhand = false;
+        int found = 0;
+        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item && (inventory.offHandInventory[0].getItemDamage() == damage || inventory.offHandInventory[0].getItemDamage() == Short.MAX_VALUE))
+        {
+            found += inventory.offHandInventory[0].stackSize;
+            offhand = true;
+        }
+        ItemStack[] stacks = Arrays.stream(inventory.mainInventory)
+                .filter(is -> is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
+                .toArray(ItemStack[]::new);
+        for(ItemStack is : stacks)
+        {
+            found += is.stackSize;
+        }
+        if(found < amount)
+        {
+            return false;
+        }
+        if(offhand)
+        {
+            while(amount > 0 && inventory.offHandInventory[0].stackSize > 0)
+            {
+                amount--;
+                if(--inventory.offHandInventory[0].stackSize <= 0)
+                {
+                    inventory.offHandInventory[0] = null;
+                }
+            }
+            for(int i = 0 ; i < inventory.mainInventory.length; i++)
+            {
+                ItemStack is = inventory.mainInventory[i];
+                if(is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
+                {
+                    while(amount > 0 && is.stackSize > 0)
+                    {
+                        amount--;
+                        if(--is.stackSize <= 0)
+                        {
+                            inventory.mainInventory[i] = null;
+                        }
+                    }
+                }
+                if(amount <= 0)
+                {
+                    break;
+                }
+            }
+        }
+
+
+        return true;
     }
 
     public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)

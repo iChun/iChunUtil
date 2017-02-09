@@ -87,7 +87,7 @@ public class ItemRenderingHelper
             currentItemIsSwingProof = currentInv != null && isItemSwingProof(currentInv.getItem());
             if(prevCurItem != mc.thePlayer.inventory.currentItem)
             {
-                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F)
+                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F) //TODO off hand rendering?
                 {
                     prevCurItem = mc.thePlayer.inventory.currentItem;
                 }
