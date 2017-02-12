@@ -205,18 +205,9 @@ public class iChunUtil
         {
             if(isCompactPorkchopRecipeAdded) //remove the recipe
             {
+                ItemStack isPorkchop = new ItemStack(blockCompactPorkchop);
                 List recipes = CraftingManager.getInstance().getRecipeList();
-                for(int i = recipes.size() - 1; i >= 0; i--)
-                {
-                    if(recipes.get(i) instanceof ShapedRecipes)
-                    {
-                        ShapedRecipes recipe = (ShapedRecipes)recipes.get(i);
-                        if(recipe.getRecipeOutput().isItemEqual(new ItemStack(blockCompactPorkchop)))
-                        {
-                            recipes.remove(i);
-                        }
-                    }
-                }
+                recipes.removeIf(recipe -> recipe instanceof ShapedRecipes && ((ShapedRecipes)recipe).getRecipeOutput().isItemEqual(isPorkchop));
             }
             else //add the recipe
             {

@@ -138,11 +138,11 @@ public class GrabHandler
     //grabbed entities and their handlers
 
     public static EnumMap<Side, ArrayList<GrabHandler>> grabbedEntities = new EnumMap<Side, ArrayList<GrabHandler>>(Side.class){{
-        put(Side.SERVER, new ArrayList<GrabHandler>());
-        put(Side.CLIENT, new ArrayList<GrabHandler>());
+        put(Side.SERVER, new ArrayList<>());
+        put(Side.CLIENT, new ArrayList<>());
     }};
 
-    public static ArrayList<Integer> dimensionalEntities = new ArrayList<Integer>();
+    public static ArrayList<Integer> dimensionalEntities = new ArrayList<>();
 
     public static void tick(Side side)
     {
@@ -193,7 +193,7 @@ public class GrabHandler
 
     public static ArrayList<GrabHandler> getHandlers(EntityLivingBase grabber, Side side)
     {
-        ArrayList<GrabHandler> handlers = new ArrayList<GrabHandler>();
+        ArrayList<GrabHandler> handlers = new ArrayList<>();
 
         ArrayList<GrabHandler> ents = grabbedEntities.get(side);
         for(int i = ents.size() - 1; i >= 0; i--)

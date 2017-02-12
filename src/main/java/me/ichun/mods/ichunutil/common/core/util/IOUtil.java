@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -41,6 +42,31 @@ public class IOUtil
             return false;
         }
         return true;
+    }
+
+    public static void renameFilesToLowerCaseInDir(File dir)
+    {
+        File[] files = dir.listFiles();
+        for(File file : files)
+        {
+            if(file.isDirectory())
+            {
+                renameFilesToLowerCaseInDir(file);
+            }
+            else if(!file.getName().equals(file.getName().toLowerCase(Locale.ROOT)))
+            {
+                String name = file.getName().toLowerCase();
+                File newFile = new File(dir, name);
+                if(file.renameTo(newFile))
+                {
+                    System.out.println("Renaming " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                }
+                else
+                {
+                    System.out.println("Failed to rename " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                }
+            }
+        }
     }
 
     /*

@@ -60,7 +60,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
     public void executeMessage(AbstractPacket msg, EntityPlayer player, Side side, ChannelHandlerContext ctx)
     {
         AbstractPacket result = msg.execute(side, player);
-        if(result != null)
+        if(result != null)//TODO remove in 1.11
         {
             if(side.isServer()) //server recieved the packet, send reply to client.
             {
