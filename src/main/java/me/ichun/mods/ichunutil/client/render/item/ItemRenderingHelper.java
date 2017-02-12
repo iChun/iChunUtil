@@ -99,7 +99,7 @@ public class ItemRenderingHelper
 
     public static void handlePlayerTick(Minecraft mc, EntityPlayer player)
     {
-        ItemStack is = player.getHeldItemMainhand();
+        ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
         if(is != null && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && ItemRenderingHelper.isItemBowAnimationLocked(is.getItem()))
         {
             if(player.getItemInUseCount() <= 0)

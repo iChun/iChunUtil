@@ -43,6 +43,7 @@ public class RendererHelper
         {
             canUseStencils = Minecraft.getMinecraft().getFramebuffer().enableStencil();
         }
+        lightningRand = new Random();
     }
 
     public static boolean canUseStencils()
