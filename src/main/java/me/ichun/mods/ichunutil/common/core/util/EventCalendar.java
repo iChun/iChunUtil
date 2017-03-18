@@ -2,6 +2,8 @@ package me.ichun.mods.ichunutil.common.core.util;
 
 import java.util.Calendar;
 
+import static java.util.Calendar.*;
+
 public class EventCalendar
 {
     private static boolean isNewYear; //1/1
@@ -22,7 +24,7 @@ public class EventCalendar
 
         switch(calendar.get(Calendar.MONTH)) //month
         {
-            case 1:
+            case JANUARY:
             {
                 if(day == 1)
                 {
@@ -30,14 +32,14 @@ public class EventCalendar
                 }
                 break;
             }
-            case 2:
+            case FEBRUARY:
             {
                 if(day == 14)
                 {
                     isValentinesDay = true;
                 }
             }
-            case 3:
+            case MARCH:
             {
                 if(day == 9)
                 {
@@ -45,7 +47,7 @@ public class EventCalendar
                 }
                 break;
             }
-            case 4:
+            case APRIL:
             {
                 if(day == 1)
                 {
@@ -53,7 +55,7 @@ public class EventCalendar
                 }
                 break;
             }
-            case 10:
+            case OCTOBER:
             {
                 if(day == 31)
                 {
@@ -61,7 +63,7 @@ public class EventCalendar
                 }
                 break;
             }
-            case 12:
+            case DECEMBER:
             {
                 if(day == 25)
                 {
