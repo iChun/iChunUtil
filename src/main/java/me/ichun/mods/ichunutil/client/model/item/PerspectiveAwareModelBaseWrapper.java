@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.client.model.item;
 
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
@@ -11,7 +10,7 @@ import javax.vecmath.Matrix4f;
 import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.*;
 
 public class PerspectiveAwareModelBaseWrapper extends ModelBaseWrapper
-    implements IPerspectiveAwareModel
+        implements IPerspectiveAwareModel
 {
     private final IPerspectiveAwareModelBase perspectiveAwareModelBase;
     private final Pair<IBakedModel, Matrix4f> selfPair;
