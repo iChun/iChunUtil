@@ -98,7 +98,7 @@ public class RenderBlock extends Render<EntityBlock>
                                 }
 
                                 vertexbuffer.begin(7, DefaultVertexFormats.BLOCK);
-                                GlStateManager.translate((float)(x - (double)blockposMaxY.getX() - 0.5D), (float)(y - (double)blockposMaxY.getY()), (float)(z - (double)blockposMaxY.getZ() - 0.5D));
+                                GlStateManager.translate((float)( - (double)blockposMaxY.getX() - 0.5D), (float)( - (double)blockposMaxY.getY()), (float)( - (double)blockposMaxY.getZ() - 0.5D));
                                 BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
                                 blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(iblockstate), iblockstate, blockposMaxY, vertexbuffer, false, MathHelper.getPositionRandom(entBlock.getOrigin().add(ii, jj, kk)));
                                 tessellator.draw();
@@ -111,7 +111,6 @@ public class RenderBlock extends Render<EntityBlock>
 
                                 GlStateManager.enableLighting();
                                 GlStateManager.popMatrix();
-                                super.doRender(entBlock, x, y, z, entityYaw, partialTicks);
                             }
                         }
                         if(entBlock.tileEntityNBTs[ii][jj][kk] != null && block.hasTileEntity(iblockstate))

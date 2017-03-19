@@ -202,7 +202,7 @@ public class EntityHelper
 
     public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
     {
-        ent.worldObj.playSound(null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch);
+        ent.worldObj.playSound(ent.worldObj.isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.thePlayer.
     }
 
     public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)

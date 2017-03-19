@@ -14,6 +14,7 @@ import me.ichun.mods.ichunutil.common.packet.mod.*;
 import me.ichun.mods.ichunutil.common.thread.ThreadGetResources;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.translation.I18n;
@@ -98,6 +99,11 @@ public class ProxyCommon
 
         entity.prevRotationPitch = entity.prevRotationPitch % 90.05F;
         entity.rotationPitch = entity.rotationPitch % 90.05F;
+    }
+
+    public EntityPlayer getMcPlayer()
+    {
+        return null;
     }
 
     @SideOnly(Side.CLIENT)

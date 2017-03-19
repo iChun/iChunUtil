@@ -18,4 +18,10 @@ public class PatronInfo
     {
         return obj instanceof PatronInfo && ((PatronInfo)obj).id.equals(id); //Check for just the ID. This is only used for ArrayList management.
     }
+
+    @Override
+    public int hashCode()
+    {
+        return id.hashCode();
+    }
 }

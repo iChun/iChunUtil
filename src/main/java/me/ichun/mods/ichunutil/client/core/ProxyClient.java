@@ -20,6 +20,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
@@ -133,6 +134,12 @@ public class ProxyClient extends ProxyCommon
     public void nudgeHand(float mag)
     {
         Minecraft.getMinecraft().thePlayer.renderArmPitch += mag;
+    }
+
+    @Override
+    public EntityPlayer getMcPlayer()
+    {
+        return Minecraft.getMinecraft().thePlayer;
     }
 
     @Override
