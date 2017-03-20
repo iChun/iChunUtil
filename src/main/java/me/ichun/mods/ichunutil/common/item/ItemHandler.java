@@ -1,8 +1,10 @@
 package me.ichun.mods.ichunutil.common.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -29,8 +31,26 @@ public class ItemHandler
         return false;
     }
 
-    public static boolean canItemBeUsed(EntityPlayer player, ItemStack is)
+    public static boolean canItemBeUsed(EntityLivingBase living, ItemStack is)
     {
-        return is != null && (!isItemDualHanded(is.getItem()) || player.inventory.mainInventory[player.inventory.currentItem] == is && player.inventory.offHandInventory[0] == null || player.inventory.offHandInventory[0] == is && player.inventory.mainInventory[player.inventory.currentItem] == null);
+        return is != null && (!isItemDualHanded(is.getItem()) || living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND) == null || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND) == null);
+    }
+
+    public static ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
+    {
+        if(canItemBeUsed(living, living.getHeldItem(EnumHand.MAIN_HAND)))
+        {
+            return living.getHeldItem(EnumHand.MAIN_HAND);
+        }
+        if(canItemBeUsed(living, living.getHeldItem(EnumHand.OFF_HAND)))
+        {
+            return living.getHeldItem(EnumHand.OFF_HAND);
+        }
+        return null;
+    }
+
+    public static EnumHandSide getHandSide(EntityLivingBase living, ItemStack is)
+    {
+        return living.getHeldItem(EnumHand.OFF_HAND) == is ? living.getPrimaryHand().opposite() : living.getPrimaryHand();
     }
 }

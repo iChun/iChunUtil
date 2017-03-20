@@ -84,6 +84,10 @@ public class ItemRenderingHelper
                             mc.ingameGUI.remainingHighlightTicks = 0;
                         }
                     }
+                    if(mc.thePlayer.ticksSinceLastSwing < 2)
+                    {
+                        mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1F;
+                    }
                     mc.thePlayer.ticksSinceLastSwing = 10000;
                     mc.thePlayer.isSwingInProgress = false;
                     mc.thePlayer.swingProgressInt = 0;
