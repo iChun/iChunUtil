@@ -58,7 +58,6 @@ public class ItemRenderingHelper
         }
     }
 
-    //TODO this only takes note of the main hand, not the off hand as well... WHAT DO
     public static void handlePreRender(Minecraft mc)
     {
         if(mc.thePlayer != null)

@@ -167,9 +167,9 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
             if(isItemDualHanded && isFirstPerson(currentPerspective) && lastEntity instanceof EntityPlayer && ItemRenderingHelper.dualHandedAnimationRight > 0)
             {
                 float prog = (float)Math.sin(MathHelper.clamp_float((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
-                GlStateManager.rotate(20F * prog, -1F, 0F, 0F);
+                GlStateManager.rotate(30F * prog, -1F, 0F, 0F);
                 GlStateManager.translate(0F, -0.1F * prog, 0.3F * prog);
-                GlStateManager.rotate((isLeft ? -20F : 20F)* prog, 0F, 1F, 0F);
+                GlStateManager.rotate((isLeft ? -35F : 35F)* prog, 0F, 1F, 0F);
             }
 
             ItemCameraTransforms.applyTransformSide(this.getItemCameraTransforms().getTransform(cameraTransformType), isLeft);
