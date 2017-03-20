@@ -33,6 +33,7 @@ import net.minecraft.util.IThreadListener;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -107,6 +108,12 @@ public class EventHandlerClient
     public void onPlayerRenderPost(RenderPlayerEvent.Post event)
     {
         PatronEffectRenderer.onPlayerRenderPost(event);
+    }
+
+    @SubscribeEvent
+    public void onRenderSpecificHand(RenderSpecificHandEvent event)
+    {
+        ItemRenderingHelper.onRenderSpecificHand(event);
     }
 
     @SubscribeEvent

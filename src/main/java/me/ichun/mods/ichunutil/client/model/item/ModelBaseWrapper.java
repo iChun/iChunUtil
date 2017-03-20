@@ -1,6 +1,8 @@
 package me.ichun.mods.ichunutil.client.model.item;
 
 import com.google.common.collect.ImmutableList;
+import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -16,34 +18,54 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 import java.util.Collections;
 import java.util.List;
 
-public class ModelBaseWrapper implements IBakedModel
+import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.*;
+
+@SuppressWarnings("deprecation")
+public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
 {
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
     private final @Nonnull IModelBase modelBase; //an (outdated) example of IModelBase can be found here https://gist.github.com/iChun/b6f3696a119365bbd7e4
+    private final Pair<IBakedModel, Matrix4f> selfPair; //All models should be perspective aware. If you have no need for perspective, just ignore those capabilities.
     private @Nonnull VertexFormat defaultVertexFormat = DefaultVertexFormats.ITEM;
+    private boolean isItemDualHanded = false;
 
     private boolean disableRender = false;
+    private ItemCameraTransforms.TransformType currentPerspective;
+    private ItemStack lastStack;
+    private EntityLivingBase lastEntity;
 
     public ModelBaseWrapper(@Nonnull IModelBase renderer)
     {
         modelBase = renderer;
+        selfPair = Pair.of(this, null);
     }
 
     public ModelBaseWrapper(@Nonnull IModelBase renderer, @Nonnull VertexFormat defVertexFormat)
     {
         this(renderer);
         defaultVertexFormat = defVertexFormat;
+    }
+
+    public ModelBaseWrapper setItemDualHanded()
+    {
+        isItemDualHanded = true;
+        return this;
     }
 
     public void setDisableRender(boolean disable)
@@ -90,6 +112,11 @@ public class ModelBaseWrapper implements IBakedModel
 
             GlStateManager.popMatrix();
 
+            //cleanup
+            currentPerspective = null;
+            lastStack = null;
+            lastEntity = null;
+
             VertexBuffer vertexBuffer = tessellator.getBuffer();
             vertexBuffer.begin(7, defaultVertexFormat);
         }
@@ -128,9 +155,32 @@ public class ModelBaseWrapper implements IBakedModel
     }
 
     @Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
+    {
+        currentPerspective = cameraTransformType;
+
+        Pair<? extends IBakedModel, Matrix4f> pair = modelBase.handlePerspective(cameraTransformType, selfPair);
+
+        if(modelBase.useVanillaCameraTransform())
+        {
+            boolean isLeft = isLeftHand(cameraTransformType);
+            if(isItemDualHanded && isFirstPerson(currentPerspective) && lastEntity instanceof EntityPlayer && ItemRenderingHelper.dualHandedAnimationRight > 0)
+            {
+                float prog = (float)Math.sin(MathHelper.clamp_float((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
+                GlStateManager.rotate(20F * prog, -1F, 0F, 0F);
+                GlStateManager.translate(0F, -0.1F * prog, 0.3F * prog);
+                GlStateManager.rotate((isLeft ? -20F : 20F)* prog, 0F, 1F, 0F);
+            }
+
+            ItemCameraTransforms.applyTransformSide(this.getItemCameraTransforms().getTransform(cameraTransformType), isLeft);
+        }
+        return pair;
+    }
+
+    @Override
     public ItemOverrideList getOverrides()
     {
-        return ItemOverrideListHandler.INSTANCE.setModelBase(modelBase);
+        return ItemOverrideListHandler.INSTANCE.setModelBaseWrapper(this);
     }
 
     private static final class ItemOverrideListHandler extends ItemOverrideList
@@ -142,19 +192,51 @@ public class ModelBaseWrapper implements IBakedModel
             super(ImmutableList.of());
         }
 
-        private IModelBase modelBase;
+        private ModelBaseWrapper modelBaseWrapper;
 
-        private ItemOverrideListHandler setModelBase(IModelBase model)
+        private ItemOverrideListHandler setModelBaseWrapper(ModelBaseWrapper model)
         {
-            modelBase = model;
+            modelBaseWrapper = model;
             return this;
         }
 
         @Override
         public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
         {
-            modelBase.handleItemState(stack, world, entity);
+            modelBaseWrapper.lastStack = stack;
+            modelBaseWrapper.lastEntity = entity;
+            modelBaseWrapper.modelBase.handleItemState(stack, world, entity);
             return originalModel;
         }
+    }
+
+    public static boolean isFirstPerson(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_LEFT_HAND || type == FIRST_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isThirdPerson(ItemCameraTransforms.TransformType type)
+    {
+        return type == THIRD_PERSON_LEFT_HAND || type == THIRD_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isEntityRender(ItemCameraTransforms.TransformType type)
+    {
+        return isFirstPerson(type) || isThirdPerson(type);
+    }
+
+    public static boolean isLeftHand(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_LEFT_HAND || type == THIRD_PERSON_LEFT_HAND;
+    }
+
+    public static boolean isRightHand(ItemCameraTransforms.TransformType type)
+    {
+        return type == FIRST_PERSON_RIGHT_HAND || type == THIRD_PERSON_RIGHT_HAND;
+    }
+
+    public static boolean isItemRender(ItemCameraTransforms.TransformType type) //default render type
+    {
+        return type == null || type == GROUND || type == NONE;
     }
 }

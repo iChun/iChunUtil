@@ -1,18 +1,20 @@
 package me.ichun.mods.ichunutil.client.render.item;
 
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 
 public class ItemRenderingHelper
 {
-    public static HashSet<Class<? extends Item>> bowAnimationLockedItems = new HashSet<>();
     public static int lastThirdPersonView;
 
     public static HashSet<SwingProofHandler> swingProofItems = new HashSet<>();
@@ -20,6 +22,13 @@ public class ItemRenderingHelper
     private static int prevCurItem;
     private static boolean currentItemIsSwingProof;
     private static boolean hasShownItemName;
+
+    public static int dualHandedAnimationRight;
+    public static int dualHandedAnimationLeft;
+    public static int prevDualHandedAnimationRight;
+    public static int prevDualHandedAnimationLeft;
+
+    public static int dualHandedAnimationTime = 5;
 
     public static class SwingProofHandler
     {
@@ -62,9 +71,6 @@ public class ItemRenderingHelper
                     mc.playerController.resetBlockRemoving();
                     if(prevCurItem == mc.thePlayer.inventory.currentItem)
                     {
-                        mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1.0F;
-                        mc.entityRenderer.itemRenderer.prevEquippedProgressMainHand = 1.0F;
-                        mc.entityRenderer.itemRenderer.itemStackMainHand = mc.thePlayer.getHeldItemMainhand();
                         if(!currentItemIsSwingProof)
                         {
                             handleSwingProofItemEquip(mc.thePlayer, currentInv);
@@ -79,6 +85,7 @@ public class ItemRenderingHelper
                             mc.ingameGUI.remainingHighlightTicks = 0;
                         }
                     }
+                    mc.thePlayer.ticksSinceLastSwing = 10000;
                     mc.thePlayer.isSwingInProgress = false;
                     mc.thePlayer.swingProgressInt = 0;
                     mc.thePlayer.swingProgress = 0;
@@ -97,43 +104,104 @@ public class ItemRenderingHelper
         }
     }
 
+    public static void onRenderSpecificHand(RenderSpecificHandEvent event)
+    {
+        if(event.getHand() == EnumHand.MAIN_HAND && event.getItemStack() == null)
+        {
+            ItemStack is = Minecraft.getMinecraft().thePlayer.getHeldItem(EnumHand.OFF_HAND);
+            if(is != null && ItemHandler.isItemDualHanded(is.getItem()))
+            {
+                event.setCanceled(true);
+            }
+        }
+    }
+
     public static void handlePlayerTick(Minecraft mc, EntityPlayer player)
     {
-        ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
-        if(is != null && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && ItemRenderingHelper.isItemBowAnimationLocked(is.getItem()))
+        boolean isRenderViewEntity = mc.getRenderViewEntity() == player;
+        if(isRenderViewEntity)
         {
-            if(player.getItemInUseCount() <= 0)
+            prevDualHandedAnimationLeft = dualHandedAnimationLeft;
+            prevDualHandedAnimationRight = dualHandedAnimationRight;
+
+            dualHandedAnimationRight++;
+            dualHandedAnimationLeft++;
+            dualHandedAnimationTime = 4;
+            if(dualHandedAnimationRight > dualHandedAnimationTime)
+            {
+                dualHandedAnimationRight = dualHandedAnimationTime;
+            }
+            if(dualHandedAnimationLeft > dualHandedAnimationTime)
+            {
+                dualHandedAnimationLeft = dualHandedAnimationTime;
+            }
+        }
+        ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
+        if(is != null && ItemHandler.isItemDualHanded(is.getItem()) && ItemHandler.canItemBeUsed(player, is))
+        {
+            if(isRenderViewEntity)
+            {
+                if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                {
+                    dualHandedAnimationRight -= 2;
+                    if(dualHandedAnimationRight < 0)
+                    {
+                        dualHandedAnimationRight = 0;
+                    }
+                }
+                else
+                {
+                    dualHandedAnimationLeft -= 2;
+                    if(dualHandedAnimationLeft < 0)
+                    {
+                        dualHandedAnimationLeft = 0;
+                    }
+                }
+            }
+            if(!(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && player.getItemInUseCount() <= 0)
             {
                 player.resetActiveHand();
                 player.setActiveHand(EnumHand.MAIN_HAND);
             }
         }
+        is = player.getHeldItem(EnumHand.OFF_HAND);
+        if(is != null && ItemHandler.isItemDualHanded(is.getItem()) && ItemHandler.canItemBeUsed(player, is))
+        {
+            if(isRenderViewEntity)
+            {
+                if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                {
+                    dualHandedAnimationLeft -= 2;
+                    if(dualHandedAnimationLeft < 0)
+                    {
+                        dualHandedAnimationLeft = 0;
+                    }
+                }
+                else
+                {
+                    dualHandedAnimationRight -= 2;
+                    if(dualHandedAnimationRight < 0)
+                    {
+                        dualHandedAnimationRight = 0;
+                    }
+                }
+            }
+            if(!(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && player.getItemInUseCount() <= 0)
+            {
+                player.resetActiveHand();
+                player.setActiveHand(EnumHand.OFF_HAND);
+            }
+        }
+
         if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && lastThirdPersonView != 0)
         {
             player.resetActiveHand();
         }
+
         if(player == mc.getRenderViewEntity())
         {
             lastThirdPersonView = mc.gameSettings.thirdPersonView;
         }
-    }
-
-    //Items registered here can never be allowed to use MC's default "use timer". Their use timer (getMaxItemUseDuration) must be set to Integer.MAX_VALUE.
-    public static void registerBowAnimationLockedItem(Class<? extends Item>clz)
-    {
-        bowAnimationLockedItems.add(clz);
-    }
-
-    public static boolean isItemBowAnimationLocked(Item item)
-    {
-        for(Class<? extends Item> clz : bowAnimationLockedItems)
-        {
-            if(clz.isInstance(item))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void registerSwingProofItem(SwingProofHandler handler)
