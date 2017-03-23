@@ -78,8 +78,8 @@ public class EntityBlock extends Entity
         preventEntitySpawning = true;
         isImmuneToFire = true;
         canDropItems = true;
-        blocks = new IBlockState[0][0][0];
-        tileEntityNBTs = new NBTTagCompound[0][0][0];
+        blocks = new IBlockState[][][] { new IBlockState[][] { new IBlockState[] { Blocks.AIR.getDefaultState() }}};
+        tileEntityNBTs = new NBTTagCompound[1][1][1];
     }
 
     @Nullable
