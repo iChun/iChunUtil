@@ -25,12 +25,14 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("BackTools", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.1.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("BeeBarker", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
@@ -53,6 +55,7 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("GravityGun", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
 
         versions = new TreeMap<>(Ordering.natural());
@@ -128,12 +131,14 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Torched", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("TrailMix", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.2");
