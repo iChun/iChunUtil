@@ -596,6 +596,117 @@ public class EntityHelper
         }
     }
 
+    public static double[] simulateMoveEntity(Entity ent, double x, double y, double z) //does not check for step height.
+    {
+        if (ent.noClip)
+        {
+            return new double[] { x, y, z };
+        }
+        else
+        {
+            double d3 = x;
+            double d4 = y;
+            double d5 = z;
+            boolean flag = ent.onGround && ent.isSneaking() && ent instanceof EntityPlayer;
+
+            if (flag)
+            {
+                for (double d6 = 0.05D; x != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
+                {
+                    if (x < 0.05D && x >= -0.05D)
+                    {
+                        x = 0.0D;
+                    }
+                    else if (x > 0.0D)
+                    {
+                        x -= 0.05D;
+                    }
+                    else
+                    {
+                        x += 0.05D;
+                    }
+                }
+
+                for (; z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
+                {
+                    if (z < 0.05D && z >= -0.05D)
+                    {
+                        z = 0.0D;
+                    }
+                    else if (z > 0.0D)
+                    {
+                        z -= 0.05D;
+                    }
+                    else
+                    {
+                        z += 0.05D;
+                    }
+                }
+
+                for (; x != 0.0D && z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
+                {
+                    if (x < 0.05D && x >= -0.05D)
+                    {
+                        x = 0.0D;
+                    }
+                    else if (x > 0.0D)
+                    {
+                        x -= 0.05D;
+                    }
+                    else
+                    {
+                        x += 0.05D;
+                    }
+
+                    d3 = x;
+
+                    if (z < 0.05D && z >= -0.05D)
+                    {
+                        z = 0.0D;
+                    }
+                    else if (z > 0.0D)
+                    {
+                        z -= 0.05D;
+                    }
+                    else
+                    {
+                        z += 0.05D;
+                    }
+                }
+            }
+
+            List<AxisAlignedBB> list1 = ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().addCoord(x, y, z));
+            AxisAlignedBB axisalignedbb = ent.getEntityBoundingBox();
+            int i = 0;
+
+            for (int j = list1.size(); i < j; ++i)
+            {
+                y = list1.get(i).calculateYOffset(ent.getEntityBoundingBox(), y);
+            }
+
+            ent.setEntityBoundingBox(ent.getEntityBoundingBox().offset(0.0D, y, 0.0D));
+            int j4 = 0;
+
+            for (int k = list1.size(); j4 < k; ++j4)
+            {
+                x = list1.get(j4).calculateXOffset(ent.getEntityBoundingBox(), x);
+            }
+
+            ent.setEntityBoundingBox(ent.getEntityBoundingBox().offset(x, 0.0D, 0.0D));
+            j4 = 0;
+
+            for (int k4 = list1.size(); j4 < k4; ++j4)
+            {
+                z = list1.get(j4).calculateZOffset(ent.getEntityBoundingBox(), z);
+            }
+
+            ent.setEntityBoundingBox(axisalignedbb); //restore the bounding box
+
+            return new double[] { x, y, z };
+        }
+    }
+
+
     public static void addPosition(Entity living, double offset, boolean subtract, int axis)
     {
         if(subtract)
