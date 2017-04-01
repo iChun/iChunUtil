@@ -83,7 +83,7 @@ public abstract class IWorkspace extends GuiScreen
         }
         for(int i = levels.size() - 1; i >= 0; i--)//clean up empty levels.
         {
-            if(levels.get(i).isEmpty()&& i >= VARIABLE_LEVEL)
+            if(levels.get(i).isEmpty() && i >= VARIABLE_LEVEL)
             {
                 levels.remove(i);
             }
@@ -109,7 +109,7 @@ public abstract class IWorkspace extends GuiScreen
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.translate(0F, 0F, 100F);
-        for(int i = levels.size() - 1; i >= 0 ; i--)
+        for(int i = levels.size() - 1; i >= 0; i--)
         {
             for(int j = levels.get(i).size() - 1; j >= 0; j--)
             {
@@ -591,7 +591,7 @@ public abstract class IWorkspace extends GuiScreen
 
     public void removeWindow(Window window, boolean checkTab)
     {
-        for(int i = levels.size() - 1; i >= 0 ; i--)
+        for(int i = levels.size() - 1; i >= 0; i--)
         {
             for(int j = levels.get(i).size() - 1; j >= 0; j--)
             {
@@ -645,7 +645,7 @@ public abstract class IWorkspace extends GuiScreen
     {
         if(!window.allowMultipleInstances() && window.getClass() != Window.class)
         {
-            for(int i = levels.size() - 1; i >= 0 ; i--)
+            for(int i = levels.size() - 1; i >= 0; i--)
             {
                 for(int j = levels.get(i).size() - 1; j >= 0; j--)
                 {
@@ -786,7 +786,7 @@ public abstract class IWorkspace extends GuiScreen
         {
             return;
         }
-        for(int i = levels.size() - 1; i >= 0 ; i--)
+        for(int i = levels.size() - 1; i >= 0; i--)
         {
             for(int j = levels.get(i).size() - 1; j >= 0; j--)
             {

@@ -156,11 +156,11 @@ public class GuiConfigs extends IWorkspace
     @Override
     public void keyTyped(char c, int key)
     {
-        if (key == 1)
+        if(key == 1)
         {
             this.mc.displayGuiScreen(oriScreen);
 
-            if (this.mc.currentScreen == null)
+            if(this.mc.currentScreen == null)
             {
                 this.mc.setIngameFocus();
             }

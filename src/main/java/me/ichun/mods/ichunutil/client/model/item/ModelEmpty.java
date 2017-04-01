@@ -20,7 +20,7 @@ public class ModelEmpty implements IBakedModel
 
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
-    private ModelEmpty(){}
+    private ModelEmpty() {}
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)

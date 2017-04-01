@@ -12,8 +12,7 @@ import org.lwjgl.input.Mouse;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ElementNumberInput extends Element
-        implements ITextInput
+public class ElementNumberInput extends Element implements ITextInput
 {
     public ArrayList<GuiTextField> textFields = new ArrayList<GuiTextField>();
     public int selectedTextField = -1;
@@ -26,7 +25,7 @@ public class ElementNumberInput extends Element
     public double min;
     public double max;
 
-    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, double minn, double maxx, double...args)
+    public ElementNumberInput(Window window, int x, int y, int w, int h, int ID, String tip, int fieldCount, boolean allowDec, double minn, double maxx, double... args)
     {
         super(window, x, y, w, h, ID, false); //12 for height?
 

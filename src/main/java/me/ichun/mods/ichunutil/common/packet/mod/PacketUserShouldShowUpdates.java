@@ -14,7 +14,7 @@ public class PacketUserShouldShowUpdates extends AbstractPacket
 {
     public boolean notifyUpdate;
 
-    public PacketUserShouldShowUpdates(){}
+    public PacketUserShouldShowUpdates() {}
 
     public PacketUserShouldShowUpdates(boolean update)
     {

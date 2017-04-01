@@ -23,8 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public abstract class ConfigBase
-        implements Comparable<ConfigBase>, IIdentifiable, IListable
+public abstract class ConfigBase implements Comparable<ConfigBase>, IIdentifiable, IListable
 {
     private Configuration config;
 
@@ -48,6 +47,7 @@ public abstract class ConfigBase
     }
 
     public abstract String getModId();
+
     public abstract String getModName();
 
     @Override
@@ -150,7 +150,7 @@ public abstract class ConfigBase
                 int max = Integer.MAX_VALUE;
                 if(field.isAnnotationPresent(IntMinMax.class))
                 {
-                    IntMinMax minMax =  field.getAnnotation(IntMinMax.class);
+                    IntMinMax minMax = field.getAnnotation(IntMinMax.class);
                     min = minMax.min();
                     max = minMax.max();
                 }
@@ -175,7 +175,7 @@ public abstract class ConfigBase
                 int max = Integer.MAX_VALUE;
                 if(field.isAnnotationPresent(IntMinMax.class))
                 {
-                    IntMinMax minMax =  field.getAnnotation(IntMinMax.class);
+                    IntMinMax minMax = field.getAnnotation(IntMinMax.class);
                     min = minMax.min();
                     max = minMax.max();
                 }
@@ -198,7 +198,7 @@ public abstract class ConfigBase
                 int nMax = Integer.MAX_VALUE;
                 if(field.isAnnotationPresent(IntMinMax.class))
                 {
-                    IntMinMax minMax =  field.getAnnotation(IntMinMax.class);
+                    IntMinMax minMax = field.getAnnotation(IntMinMax.class);
                     min = minMax.min();
                     max = minMax.max();
                     nMin = minMax.nestedMin();
@@ -301,7 +301,9 @@ public abstract class ConfigBase
                 sessionProp.add(field);
             }
         }
-        catch(Exception ignored){}
+        catch(Exception ignored)
+        {
+        }
     }
 
     public void setCategoryComments()
@@ -335,7 +337,9 @@ public abstract class ConfigBase
                 field.setAccessible(true);
                 session.put(field, field.get(this));
             }
-            catch(Exception ignored){}
+            catch(Exception ignored)
+            {
+            }
         }
     }
 
@@ -348,7 +352,9 @@ public abstract class ConfigBase
                 e.getKey().setAccessible(true);
                 e.getKey().set(this, e.getValue());
             }
-            catch(Exception ignored){}
+            catch(Exception ignored)
+            {
+            }
         }
     }
 
@@ -380,7 +386,9 @@ public abstract class ConfigBase
                 field.setAccessible(true);
                 configScreen.put(field, field.get(this));
             }
-            catch(Exception ignored){}
+            catch(Exception ignored)
+            {
+            }
         }
         resetSession();
     }
@@ -395,12 +403,14 @@ public abstract class ConfigBase
                 e.getKey().setAccessible(true);
                 e.getKey().set(this, e.getValue());
             }
-            catch(Exception ignored){}
+            catch(Exception ignored)
+            {
+            }
         }
         configScreen.clear();
     }
 
-    public void reveal(String...toReveal)
+    public void reveal(String... toReveal)
     {
         boolean add = false;
         for(String s : toReveal)
@@ -446,8 +456,7 @@ public abstract class ConfigBase
         return setup;
     }
 
-    public class CategoryInfo
-            implements Comparable<CategoryInfo>, IIdentifiable, IListable
+    public class CategoryInfo implements Comparable<CategoryInfo>, IIdentifiable, IListable
     {
         public final String category;
         public String name;

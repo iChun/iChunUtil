@@ -277,7 +277,7 @@ public class EventHandlerClient
     public void onClientDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
     {
         IThreadListener thread = Minecraft.getMinecraft();
-        if (thread.isCallingFromMinecraftThread())
+        if(thread.isCallingFromMinecraftThread())
         {
             onClientDisconnect();
         }
@@ -335,7 +335,7 @@ public class EventHandlerClient
     @SubscribeEvent
     public void onLatchedRendererUpdate(EntityLatchedRenderer.EntityLatchedRendererUpdateEvent event)
     {
-        EntityTrackerHandler.onLatchedRendererUpdate(event); //patron update is there
+        EntityTrackerHandler.onLatchedRendererUpdate(event); //patron updateWorldPortal is there
     }
 
     @SubscribeEvent

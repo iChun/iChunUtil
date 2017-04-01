@@ -24,7 +24,7 @@ public class ElementMinimize extends Element
             RendererHelper.drawColourOnScreen(Theme.getAsHex(parent.workspace.currentTheme.font), 255, getPosX() - 0.5D, getPosY(), width, 1, 0);
             RendererHelper.drawColourOnScreen(Theme.getAsHex(parent.workspace.currentTheme.font), 255, getPosX() - 0.5D, getPosY(), 1, height, 0);
             RendererHelper.drawColourOnScreen(Theme.getAsHex(parent.workspace.currentTheme.font), 255, getPosX() - 0.5D, getPosY() + height - 1, width, 1, 0);
-            RendererHelper.drawColourOnScreen(Theme.getAsHex(parent.workspace.currentTheme.font), 255, getPosX() + width - 1  - 0.5D, getPosY(), 1, height, 0);
+            RendererHelper.drawColourOnScreen(Theme.getAsHex(parent.workspace.currentTheme.font), 255, getPosX() + width - 1 - 0.5D, getPosY(), 1, height, 0);
         }
         GlStateManager.pushMatrix();
         float scale = 2F;

@@ -14,7 +14,7 @@ public class PacketPatronInfo extends AbstractPacket
     public int patronRewardType;
     public boolean showPatronReward;
 
-    public PacketPatronInfo(){}
+    public PacketPatronInfo() {}
 
     public PacketPatronInfo(String playerId, int patronRewardType, boolean showPatronReward)
     {

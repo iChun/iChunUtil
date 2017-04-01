@@ -12,7 +12,7 @@ public class PacketNewGrabbedEntityId extends AbstractPacket
     public int oldId;
     public int newId;
 
-    public PacketNewGrabbedEntityId(){}
+    public PacketNewGrabbedEntityId() {}
 
     public PacketNewGrabbedEntityId(boolean grabbedd, int oldd, int neww)
     {

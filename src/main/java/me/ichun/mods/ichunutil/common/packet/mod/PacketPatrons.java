@@ -16,7 +16,7 @@ public class PacketPatrons extends AbstractPacket
     public PatronInfo info;
     public HashSet<PatronInfo> patrons;
 
-    public PacketPatrons(){}
+    public PacketPatrons() {}
 
     public PacketPatrons(PatronInfo info)
     {
@@ -26,7 +26,10 @@ public class PacketPatrons extends AbstractPacket
     @Override
     public void writeTo(ByteBuf buf)
     {
-        HashSet<PatronInfo> patrons = info != null ? new HashSet<PatronInfo>() {{ add(info); }} : iChunUtil.eventHandlerServer.patrons;
+        HashSet<PatronInfo> patrons = info != null ? new HashSet<PatronInfo>()
+        {{
+            add(info);
+        }} : iChunUtil.eventHandlerServer.patrons;
         for(PatronInfo info : patrons)
         {
             ByteBufUtils.writeUTF8String(buf, info.id);

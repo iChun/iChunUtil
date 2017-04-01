@@ -39,7 +39,9 @@ public class ElementTextInputNumber extends ElementTextInput
             }
             reject = false;
         }
-        catch(NumberFormatException ignored){}
+        catch(NumberFormatException ignored)
+        {
+        }
         if(reject)
         {
             int pos = textField.getCursorPosition();

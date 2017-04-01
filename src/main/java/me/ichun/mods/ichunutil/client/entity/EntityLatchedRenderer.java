@@ -166,6 +166,7 @@ public class EntityLatchedRenderer extends Entity
     public class EntityLatchedRendererUpdateEvent extends EntityEvent
     {
         public final EntityLatchedRenderer ent;
+
         public EntityLatchedRendererUpdateEvent(EntityLatchedRenderer ent)
         {
             super(ent);

@@ -43,7 +43,10 @@ public class WindowSetNestedIntArray extends Window
                 i++;
             }
         }
-        catch(Exception ignored){};
+        catch(Exception ignored)
+        {
+        }
+        ;
     }
 
     @Override
@@ -161,7 +164,7 @@ public class WindowSetNestedIntArray extends Window
                         String text = ((ElementTextInputNumber)e).textField.getText();
                         if(!text.isEmpty() && !(text.equals("-") || text.equals(".")))
                         {
-                                nums.add((ElementTextInputNumber)e);
+                            nums.add((ElementTextInputNumber)e);
                         }
                     }
                 }
@@ -216,10 +219,14 @@ public class WindowSetNestedIntArray extends Window
                     parent.removeWindow(this, true);
                     parent.elementSelected = null;
                 }
-                catch(Exception ignored){}
+                catch(Exception ignored)
+                {
+                }
             }
         }
-        catch(Exception ignored){}
+        catch(Exception ignored)
+        {
+        }
     }
 
     @Override

@@ -348,7 +348,9 @@ public class ElementPropSetter extends Element
                     element = new ElementButton(parent, 0, 0, 0, 12, 0, false, 0, 0, "Set");
                 }
             }
-            catch(Exception ignored){}
+            catch(Exception ignored)
+            {
+            }
         }
 
         public void resized()
@@ -400,7 +402,7 @@ public class ElementPropSetter extends Element
             boolean found = false;
             boolean obstructed = false;
 
-            for(int i = parent.workspace.levels.size() - 1; i >= 0 ; i--)
+            for(int i = parent.workspace.levels.size() - 1; i >= 0; i--)
             {
                 if(found)
                 {
@@ -630,7 +632,9 @@ public class ElementPropSetter extends Element
                         }
                     }
                 }
-                catch(Exception ignored){}
+                catch(Exception ignored)
+                {
+                }
 
                 boolean flag = x != element.posX || y != element.posY || w != element.width;
 

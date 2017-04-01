@@ -93,9 +93,13 @@ public class ProxyCommon
         entity.prevRotationYaw = entity.prevRotationYaw % 360F;
         entity.rotationYaw = entity.rotationYaw % 360F;
 
-        for (; entity.prevRotationYaw < 0F; entity.prevRotationYaw += 360F) {}
+        for(; entity.prevRotationYaw < 0F; entity.prevRotationYaw += 360F)
+        {
+        }
 
-        for (; entity.rotationYaw < 0F; entity.rotationYaw += 360F) {}
+        for(; entity.rotationYaw < 0F; entity.rotationYaw += 360F)
+        {
+        }
 
         entity.prevRotationPitch = entity.prevRotationPitch % 90.05F;
         entity.rotationPitch = entity.rotationPitch % 90.05F;
@@ -111,6 +115,7 @@ public class ProxyCommon
 
     /**
      * Please note that this keybind will trigger without checking for SHIFT/CTRL/ALT being held down. That checking has to be done on your end.
+     *
      * @param bind Minecraft Keybind
      */
     @SideOnly(Side.CLIENT)

@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
- *
  * Modification of SimpleNetworkWrapper from FML done by cpw.
  *
  * @author cpw, iChun
- *
  */
 public class PacketChannel
 {
@@ -40,6 +38,7 @@ public class PacketChannel
     private AbstractPacketCodec packetCodec;
     private static Class<?> defaultChannelPipeline;
     private static Method generateName;
+
     {
         try
         {
@@ -47,7 +46,7 @@ public class PacketChannel
             generateName = defaultChannelPipeline.getDeclaredMethod("generateName", ChannelHandler.class);
             generateName.setAccessible(true);
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             // How is this possible?
             FMLLog.log(Level.FATAL, e, "What? Netty isn't installed, what magic is this?");
@@ -77,14 +76,14 @@ public class PacketChannel
         {
             return (String)generateName.invoke(defaultChannelPipeline.cast(pipeline), handler);
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             FMLLog.log(Level.FATAL, e, "It appears we somehow have a not-standard pipeline. Huh");
             throw Throwables.propagate(e);
         }
     }
 
-    public PacketChannel(String modId, Class<? extends AbstractPacket>...packetTypes)
+    public PacketChannel(String modId, Class<? extends AbstractPacket>... packetTypes)
     {
         if(packetTypes.length == 0)
         {
@@ -139,9 +138,9 @@ public class PacketChannel
                 channel.pipeline().addAfter(type, generateName(channel.pipeline(), handler), handler);
             }
         }
-        catch (Exception e)
+        catch(Exception e)
         {
-            iChunUtil.LOGGER.warn("Could not create packet for class " + packetClass.getName() + " for channel " + modId + ". Is there a default constructor in that class?" );
+            iChunUtil.LOGGER.warn("Could not create packet for class " + packetClass.getName() + " for channel " + modId + ". Is there a default constructor in that class?");
             throw Throwables.propagate(e);
         }
     }

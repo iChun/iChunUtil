@@ -71,20 +71,20 @@ public class RenderGlobalProxy extends RenderGlobal
     }
 
     @Override
-    public void playRecord(@Nullable SoundEvent soundIn, BlockPos pos){}
+    public void playRecord(@Nullable SoundEvent soundIn, BlockPos pos) {}
 
     @Override
-    public void playSoundToAllNearExcept(@Nullable EntityPlayer player, SoundEvent soundIn, SoundCategory category, double x, double y, double z, float volume, float pitch){}
+    public void playSoundToAllNearExcept(@Nullable EntityPlayer player, SoundEvent soundIn, SoundCategory category, double x, double y, double z, float volume, float pitch) {}
 
     @Override
-    public void broadcastSound(int soundID, BlockPos pos, int data){}
+    public void broadcastSound(int soundID, BlockPos pos, int data) {}
 
     @Override
     public void playEvent(EntityPlayer player, int type, BlockPos blockPosIn, int data) //Remove every case that plays sound instead
     {
         Random random = this.theWorld.rand;
 
-        switch (type)
+        switch(type)
         {
             case 2000:
                 int i1 = data % 3 - 1;
@@ -93,7 +93,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 double d10 = (double)blockPosIn.getY() + 0.5D;
                 double d12 = (double)blockPosIn.getZ() + (double)i * 0.6D + 0.5D;
 
-                for (int k1 = 0; k1 < 10; ++k1)
+                for(int k1 = 0; k1 < 10; ++k1)
                 {
                     double d13 = random.nextDouble() * 0.2D + 0.01D;
                     double d14 = d8 + (double)i1 * 0.01D + (random.nextDouble() - 0.5D) * (double)i * 0.5D;
@@ -115,9 +115,9 @@ public class RenderGlobalProxy extends RenderGlobal
                 double d7 = (double)blockPosIn.getY();
                 double d9 = (double)blockPosIn.getZ();
 
-                for (int j1 = 0; j1 < 8; ++j1)
+                for(int j1 = 0; j1 < 8; ++j1)
                 {
-                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d6, d7, d9, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.SPLASH_POTION)});
+                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d6, d7, d9, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] { Item.getIdFromItem(Items.SPLASH_POTION) });
                 }
 
                 PotionType potiontype = PotionType.getPotionTypeForID(data);
@@ -127,7 +127,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 float f2 = (float)(k >> 0 & 255) / 255.0F;
                 EnumParticleTypes enumparticletypes = potiontype.hasInstantEffect() ? EnumParticleTypes.SPELL_INSTANT : EnumParticleTypes.SPELL;
 
-                for (int i2 = 0; i2 < 100; ++i2)
+                for(int i2 = 0; i2 < 100; ++i2)
                 {
                     double d16 = random.nextDouble() * 4.0D;
                     double d19 = random.nextDouble() * Math.PI * 2.0D;
@@ -136,7 +136,7 @@ public class RenderGlobalProxy extends RenderGlobal
                     double d26 = Math.sin(d19) * d16;
                     Particle particle1 = this.spawnEntityFX(enumparticletypes.getParticleID(), enumparticletypes.getShouldIgnoreRange(), d6 + d22 * 0.1D, d7 + 0.3D, d9 + d26 * 0.1D, d22, d24, d26, new int[0]);
 
-                    if (particle1 != null)
+                    if(particle1 != null)
                     {
                         float f5 = 0.75F + random.nextFloat() * 0.25F;
                         particle1.setRBGColorF(f * f5, f1 * f5, f2 * f5);
@@ -149,12 +149,12 @@ public class RenderGlobalProxy extends RenderGlobal
                 double d1 = (double)blockPosIn.getY();
                 double d2 = (double)blockPosIn.getZ() + 0.5D;
 
-                for (int j = 0; j < 8; ++j)
+                for(int j = 0; j < 8; ++j)
                 {
-                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d0, d1, d2, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.ENDER_EYE)});
+                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d0, d1, d2, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] { Item.getIdFromItem(Items.ENDER_EYE) });
                 }
 
-                for (double d11 = 0.0D; d11 < (Math.PI * 2D); d11 += 0.15707963267948966D)
+                for(double d11 = 0.0D; d11 < (Math.PI * 2D); d11 += 0.15707963267948966D)
                 {
                     this.spawnParticle(EnumParticleTypes.PORTAL, d0 + Math.cos(d11) * 5.0D, d1 - 0.4D, d2 + Math.sin(d11) * 5.0D, Math.cos(d11) * -5.0D, 0.0D, Math.sin(d11) * -5.0D, new int[0]);
                     this.spawnParticle(EnumParticleTypes.PORTAL, d0 + Math.cos(d11) * 5.0D, d1 - 0.4D, d2 + Math.sin(d11) * 5.0D, Math.cos(d11) * -7.0D, 0.0D, Math.sin(d11) * -7.0D, new int[0]);
@@ -163,7 +163,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 return;
             case 2004:
 
-                for (int l1 = 0; l1 < 20; ++l1)
+                for(int l1 = 0; l1 < 20; ++l1)
                 {
                     double d15 = (double)blockPosIn.getX() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
                     double d18 = (double)blockPosIn.getY() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
@@ -178,7 +178,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 break;
             case 2006:
 
-                for (int l = 0; l < 200; ++l)
+                for(int l = 0; l < 200; ++l)
                 {
                     float f3 = random.nextFloat() * 4.0F;
                     float f4 = random.nextFloat() * ((float)Math.PI * 2F);
@@ -187,7 +187,7 @@ public class RenderGlobalProxy extends RenderGlobal
                     double d5 = (double)(MathHelper.sin(f4) * f3);
                     Particle particle = this.spawnEntityFX(EnumParticleTypes.DRAGON_BREATH.getParticleID(), false, (double)blockPosIn.getX() + d3 * 0.1D, (double)blockPosIn.getY() + 0.3D, (double)blockPosIn.getZ() + d5 * 0.1D, d3, d4, d5, new int[0]);
 
-                    if (particle != null)
+                    if(particle != null)
                     {
                         particle.multiplyVelocity(f3);
                     }

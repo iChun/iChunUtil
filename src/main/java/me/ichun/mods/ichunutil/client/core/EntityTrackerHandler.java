@@ -188,7 +188,7 @@ public class EntityTrackerHandler
         GlStateManager.disableCull();
 
         float progress = MathHelper.clamp_float((latched.currentDeathPersistTime - 40 + partialTick) / 60F, 0F, 1F);
-        float progressSin = alive ? 0F : (float)Math.sin(Math.toRadians(90F * progress)) ;
+        float progressSin = alive ? 0F : (float)Math.sin(Math.toRadians(90F * progress));
 
         float pitch = (float)Math.toRadians(alive ? EntityHelper.interpolateRotation(living.prevRotationPitch, living.rotationPitch, partialTick) : -45F * progress);
         float yaw = alive ? (float)Math.toRadians(EntityHelper.interpolateRotation(living.prevRotationYawHead, living.rotationYawHead, partialTick) - renderYaw) : 0F;

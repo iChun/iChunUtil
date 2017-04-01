@@ -75,7 +75,7 @@ public class RendererHelper
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-        if (model.isBuiltInRenderer() && stack != null)
+        if(model.isBuiltInRenderer() && stack != null)
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableRescaleNormal();
@@ -85,7 +85,7 @@ public class RendererHelper
         {
             renderModel(model, color, stack);
 
-            if (stack != null && stack.getItem() != null && stack.hasEffect())
+            if(stack != null && stack.getItem() != null && stack.hasEffect())
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.depthFunc(GL11.GL_EQUAL);
@@ -134,7 +134,7 @@ public class RendererHelper
         VertexBuffer vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
 
-        for (EnumFacing enumfacing : EnumFacing.values())
+        for(EnumFacing enumfacing : EnumFacing.values())
         {
             renderQuads(vertexbuffer, model.getQuads((IBlockState)null, enumfacing, 0L), color, stack);
         }
@@ -148,16 +148,16 @@ public class RendererHelper
         boolean flag = color == -1 && stack != null;
         int i = 0;
 
-        for (int j = quads.size(); i < j; ++i)
+        for(int j = quads.size(); i < j; ++i)
         {
             BakedQuad bakedquad = (BakedQuad)quads.get(i);
             int k = color;
 
-            if (flag && bakedquad.hasTintIndex())
+            if(flag && bakedquad.hasTintIndex())
             {
                 k = Minecraft.getMinecraft().getItemColors().getColorFromItemstack(stack, bakedquad.getTintIndex());
 
-                if (EntityRenderer.anaglyphEnable)
+                if(EntityRenderer.anaglyphEnable)
                 {
                     k = TextureUtil.anaglyphColor(k);
                 }
@@ -269,7 +269,8 @@ public class RendererHelper
         GlStateManager.enableTexture2D();
     }
 
-    public static void setColorFromInt(int color) {
+    public static void setColorFromInt(int color)
+    {
         float r = (color >> 16 & 255) / 255.0F;
         float g = (color >> 8 & 255) / 255.0F;
         float b = (color & 255) / 255.0F;

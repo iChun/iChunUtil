@@ -46,13 +46,7 @@ public class PatronEffectRenderer
 {
     public enum EnumEffect
     {
-        NONE(0),
-        VOXEL(1),
-        PIG_SNOUT(2),
-        GHOST_TRAILS(3),
-        BEE(4),
-        FIRE_TRAILS(5),
-        ANGELIC(6);
+        NONE(0), VOXEL(1), PIG_SNOUT(2), GHOST_TRAILS(3), BEE(4), FIRE_TRAILS(5), ANGELIC(6);
 
         private final int id;
 
@@ -201,14 +195,14 @@ public class PatronEffectRenderer
 
                                                 Graphics2D gfx = tmp.createGraphics();
 
-                                                int[] xSource = new int[] { dim[2], dim[2], dim[2] + dim[0] + dim[2], 0, dim[2] + dim[0], dim[2] + dim[0], dim[2] + dim[0], dim[2] + dim[0], 				dim[2]};
-                                                int[] ySource = new int[] { 0, 0, dim[2], dim[2], 0, 0, 0, 0,  					0 };
+                                                int[] xSource = new int[] { dim[2], dim[2], dim[2] + dim[0] + dim[2], 0, dim[2] + dim[0], dim[2] + dim[0], dim[2] + dim[0], dim[2] + dim[0], dim[2] };
+                                                int[] ySource = new int[] { 0, 0, dim[2], dim[2], 0, 0, 0, 0, 0 };
 
-                                                int[] xCoord = new int[] { dim[0], dim[0] + dim[2] + dim[0] + dim[2], 0, dim[0] + dim[2] + dim[0] + dim[2] + dim[0], dim[0], dim[0] + dim[2], dim[0] + dim[2] + dim[0], dim[0] + dim[2] + dim[0] + dim[2], 				dim[2] + dim[0] + dim[2] };
-                                                int[] yCoord = new int[] { 0, 0, dim[2], dim[2], dim[2] + dim[1], dim[2] + dim[1], dim[2] + dim[1], dim[2] + dim[1], 				0 };
+                                                int[] xCoord = new int[] { dim[0], dim[0] + dim[2] + dim[0] + dim[2], 0, dim[0] + dim[2] + dim[0] + dim[2] + dim[0], dim[0], dim[0] + dim[2], dim[0] + dim[2] + dim[0], dim[0] + dim[2] + dim[0] + dim[2], dim[2] + dim[0] + dim[2] };
+                                                int[] yCoord = new int[] { 0, 0, dim[2], dim[2], dim[2] + dim[1], dim[2] + dim[1], dim[2] + dim[1], dim[2] + dim[1], 0 };
 
-                                                int[] dimX = new int[] { dim[0], dim[0], dim[0], dim[2], dim[0], dim[0], dim[0], dim[0], 					dim[0] };
-                                                int[] dimY = new int[] { dim[2], dim[2], dim[1], dim[1], dim[2], dim[2], dim[2], dim[2], 					dim[2] };
+                                                int[] dimX = new int[] { dim[0], dim[0], dim[0], dim[2], dim[0], dim[0], dim[0], dim[0], dim[0] };
+                                                int[] dimY = new int[] { dim[2], dim[2], dim[1], dim[1], dim[2], dim[2], dim[2], dim[2], dim[2] };
 
                                                 for(int i = 0; i < rots.length; i++)
                                                 {
@@ -324,7 +318,7 @@ public class PatronEffectRenderer
 
                                     float f8 = entInfo.limbSwing - entInfo.limbSwingAmount;
 
-                                    if (f7 > 1.0F)
+                                    if(f7 > 1.0F)
                                     {
                                         f7 = 1.0F;
                                     }
@@ -409,7 +403,7 @@ public class PatronEffectRenderer
                     int k = MathHelper.floor_double(parent.posZ);
                     BlockPos blockpos = new BlockPos(i, j, k);
                     IBlockState iblockstate = event.ent.worldObj.getBlockState(blockpos);
-                    if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
+                    if(iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                     {
                         if(parent.isSprinting())
                         {

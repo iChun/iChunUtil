@@ -268,7 +268,7 @@ public class Window
         return true;
     }
 
-    public void shutdown(){}
+    public void shutdown() {}
 
     public void toggleMinimize()
     {

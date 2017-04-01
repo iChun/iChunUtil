@@ -105,7 +105,7 @@ public class ProxyClient extends ProxyCommon
         float prevPitch = 0.0F;
         float pitch = 0.0F;
 
-        if (ent instanceof EntityPlayerSP)
+        if(ent instanceof EntityPlayerSP)
         {
             EntityPlayerSP player = (EntityPlayerSP)ent;
             prevYaw = player.prevRotationYaw - player.prevRenderArmYaw;
@@ -116,7 +116,7 @@ public class ProxyClient extends ProxyCommon
 
         super.adjustRotation(ent, yawChange, pitchChange);
 
-        if (ent instanceof EntityPlayerSP)
+        if(ent instanceof EntityPlayerSP)
         {
             EntityPlayerSP player = (EntityPlayerSP)ent;
             player.prevRenderArmYaw = player.prevRotationYaw;

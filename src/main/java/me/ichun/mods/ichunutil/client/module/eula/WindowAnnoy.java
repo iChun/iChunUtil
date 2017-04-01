@@ -16,12 +16,14 @@ public class WindowAnnoy extends Window
 {
     public WindowAnnoy()
     {
-        super(new IWorkspace() {
+        super(new IWorkspace()
+        {
             @Override
             public boolean canClickOnElement(Window window, Element element)
             {
                 return true;
             }
+
             {
                 VARIABLE_LEVEL = 0;
                 mc = Minecraft.getMinecraft();

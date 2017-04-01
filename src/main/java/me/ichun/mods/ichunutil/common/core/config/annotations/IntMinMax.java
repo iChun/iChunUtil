@@ -10,7 +10,10 @@ import java.lang.annotation.Target;
 public @interface IntMinMax
 {
     int min() default Integer.MIN_VALUE;
+
     int max() default Integer.MAX_VALUE;
+
     int nestedMin() default Integer.MIN_VALUE;
+
     int nestedMax() default Integer.MAX_VALUE;
 }

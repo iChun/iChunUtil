@@ -40,9 +40,13 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
 {
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
-    private final @Nonnull IModelBase modelBase; //an (outdated) example of IModelBase can be found here https://gist.github.com/iChun/b6f3696a119365bbd7e4
+    private final
+    @Nonnull
+    IModelBase modelBase; //an (outdated) example of IModelBase can be found here https://gist.github.com/iChun/b6f3696a119365bbd7e4
     private final Pair<IBakedModel, Matrix4f> selfPair; //All models should be perspective aware. If you have no need for perspective, just ignore those capabilities.
-    private @Nonnull VertexFormat defaultVertexFormat = DefaultVertexFormats.ITEM;
+    private
+    @Nonnull
+    VertexFormat defaultVertexFormat = DefaultVertexFormats.ITEM;
     private boolean isItemDualHanded = false;
 
     private boolean disableRender = false;
@@ -91,7 +95,10 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
     {
-        if(side != null) return DUMMY_LIST;
+        if(side != null)
+        {
+            return DUMMY_LIST;
+        }
 
         handleBlockState(state, side, rand);
 
@@ -169,7 +176,7 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
                 float prog = (float)Math.sin(MathHelper.clamp_float((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
                 GlStateManager.rotate(30F * prog, -1F, 0F, 0F);
                 GlStateManager.translate(0F, -0.1F * prog, 0.3F * prog);
-                GlStateManager.rotate((isLeft ? -35F : 35F)* prog, 0F, 1F, 0F);
+                GlStateManager.rotate((isLeft ? -35F : 35F) * prog, 0F, 1F, 0F);
             }
 
             ItemCameraTransforms.applyTransformSide(this.getItemCameraTransforms().getTransform(cameraTransformType), isLeft);

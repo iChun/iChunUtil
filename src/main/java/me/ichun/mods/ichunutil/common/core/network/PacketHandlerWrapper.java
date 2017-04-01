@@ -16,7 +16,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
-public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChannelInboundHandler<REQ> {
+public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChannelInboundHandler<REQ>
+{
     private final Side side;
 
     public PacketHandlerWrapper(Side side, Class<REQ> requestType)
@@ -32,7 +33,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
         if(side.isServer())
         {
             INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-            player = ((NetHandlerPlayServer) netHandler).playerEntity;
+            player = ((NetHandlerPlayServer)netHandler).playerEntity;
         }
         else
         {
@@ -46,7 +47,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
         else
         {
             IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.channel().attr(NetworkRegistry.NET_HANDLER).get());
-            if (thread.isCallingFromMinecraftThread())
+            if(thread.isCallingFromMinecraftThread())
             {
                 executeMessage(msg, player, side, ctx);
             }

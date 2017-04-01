@@ -23,7 +23,7 @@ public class ElementTextWrapper extends Element
     public int spacerU;
     public int spacerD;
 
-    public ElementTextWrapper(Window window, int x, int y, int w, int h, int ID, boolean igMin, boolean border, String...lines)
+    public ElementTextWrapper(Window window, int x, int y, int w, int h, int ID, boolean igMin, boolean border, String... lines)
     {
         super(window, x, y, w, h, ID, igMin);
 
@@ -87,7 +87,7 @@ public class ElementTextWrapper extends Element
 
             RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x1, y1, width, 1, 0);
             RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x1, y1, 1, height, 0);
-            RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x1, y2- 1, width, 1, 0);
+            RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x1, y2 - 1, width, 1, 0);
             RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x2 - 1, y1, 1, height, 0);
         }
     }

@@ -12,7 +12,7 @@ public class PacketRequestBlockEntityData extends AbstractPacket
 {
     public int id;
 
-    public PacketRequestBlockEntityData(){}
+    public PacketRequestBlockEntityData() {}
 
     public PacketRequestBlockEntityData(EntityBlock block)
     {

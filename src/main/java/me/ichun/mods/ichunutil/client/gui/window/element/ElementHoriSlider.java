@@ -42,7 +42,7 @@ public class ElementHoriSlider extends Element
         double y2 = y1 + height - 10;
         RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, x1, y1, (x2 - x1), (y2 - y1), 0);
 
-        RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, getPosX() + ((x2 - parent.workspace.getFontRenderer().getStringWidth(label)) - x1) * sliderProg , getPosY(), (8 + parent.workspace.getFontRenderer().getStringWidth(label)), height, 0);
+        RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeBorder[0], parent.workspace.currentTheme.elementTreeBorder[1], parent.workspace.currentTheme.elementTreeBorder[2], 255, getPosX() + ((x2 - parent.workspace.getFontRenderer().getStringWidth(label)) - x1) * sliderProg, getPosY(), (8 + parent.workspace.getFontRenderer().getStringWidth(label)), height, 0);
         RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeScrollBar[0], parent.workspace.currentTheme.elementTreeScrollBar[1], parent.workspace.currentTheme.elementTreeScrollBar[2], 255, getPosX() + ((x2 - parent.workspace.getFontRenderer().getStringWidth(label)) - x1) * sliderProg + 1, getPosY() + 1, (6 + parent.workspace.getFontRenderer().getStringWidth(label)), height - 2, 0);
 
         if(!label.isEmpty())

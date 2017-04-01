@@ -33,7 +33,10 @@ public class ItemRenderingHelper
     public static class SwingProofHandler
     {
         public final Class<? extends Item> clz;
-        public final @Nullable IItemEquippedHandler hnd;
+        public final
+        @Nullable
+        IItemEquippedHandler hnd;
+
         public SwingProofHandler(Class<? extends Item> clz, IItemEquippedHandler hnd)
         {
             this.clz = clz;
@@ -43,6 +46,7 @@ public class ItemRenderingHelper
         public interface IItemEquippedHandler
         {
             void handleEquip(EntityPlayerSP player, ItemStack stack);
+
             boolean hideName();
         }
 

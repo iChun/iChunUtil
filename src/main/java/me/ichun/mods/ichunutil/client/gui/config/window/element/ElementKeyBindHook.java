@@ -11,6 +11,7 @@ import org.lwjgl.input.Keyboard;
 public class ElementKeyBindHook extends Element
 {
     public WindowSetKeyBind bind;
+
     public ElementKeyBindHook(WindowSetKeyBind window, int x, int y, int w, int h, int ID, boolean igMin)
     {
         super(window, x, y, w, h, ID, igMin);

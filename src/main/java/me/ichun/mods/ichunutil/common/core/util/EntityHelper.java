@@ -68,7 +68,7 @@ public class EntityHelper
 
         GameProfile gameprofile = profileCache.getGameProfileForUsername(playerName);
 
-        if (gameprofile == null)
+        if(gameprofile == null)
         {
             return new GameProfile(null, playerName);
         }
@@ -76,7 +76,7 @@ public class EntityHelper
         {
             Property property = Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
 
-            if (property == null)
+            if(property == null)
             {
                 gameprofile = sessionService.fillProfileProperties(gameprofile, true);
                 gameProfileCache.put(playerName, gameprofile);
@@ -128,11 +128,11 @@ public class EntityHelper
             return true;
         }
 
-        for (int i = 0; i < inventory.mainInventory.length; ++i)
+        for(int i = 0; i < inventory.mainInventory.length; ++i)
         {
-            if (inventory.mainInventory[i] != null && inventory.mainInventory[i].getItem() == item)
+            if(inventory.mainInventory[i] != null && inventory.mainInventory[i].getItem() == item)
             {
-                if (--inventory.mainInventory[i].stackSize <= 0)
+                if(--inventory.mainInventory[i].stackSize <= 0)
                 {
                     inventory.mainInventory[i] = null;
                 }
@@ -154,9 +154,7 @@ public class EntityHelper
             found += inventory.offHandInventory[0].stackSize;
             offhand = true;
         }
-        ItemStack[] stacks = Arrays.stream(inventory.mainInventory)
-                .filter(is -> is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
-                .toArray(ItemStack[]::new);
+        ItemStack[] stacks = Arrays.stream(inventory.mainInventory).filter(is -> is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE)).toArray(ItemStack[]::new);
         for(ItemStack is : stacks)
         {
             found += is.stackSize;
@@ -175,7 +173,7 @@ public class EntityHelper
                     inventory.offHandInventory[0] = null;
                 }
             }
-            for(int i = 0 ; i < inventory.mainInventory.length; i++)
+            for(int i = 0; i < inventory.mainInventory.length; i++)
             {
                 ItemStack is = inventory.mainInventory[i];
                 if(is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
@@ -253,12 +251,12 @@ public class EntityHelper
     {
         float var4 = MathHelper.wrapDegrees(intendedRot - oriRot);
 
-        if (var4 > maxChange)
+        if(var4 > maxChange)
         {
             var4 = maxChange;
         }
 
-        if (var4 < -maxChange)
+        if(var4 < -maxChange)
         {
             var4 = -maxChange;
         }
@@ -286,7 +284,7 @@ public class EntityHelper
 
     public static Vec3d getEntityPositionEyes(Entity ent, float partialTicks)
     {
-        if (partialTicks == 1.0F)
+        if(partialTicks == 1.0F)
         {
             return new Vec3d(ent.posX, ent.posY + (double)ent.getEyeHeight(), ent.posZ);
         }
@@ -303,12 +301,12 @@ public class EntityHelper
     {
         float f3;
 
-        for (f3 = nextRotation - prevRotation; f3 < -180.0F; f3 += 360.0F)
+        for(f3 = nextRotation - prevRotation; f3 < -180.0F; f3 += 360.0F)
         {
             ;
         }
 
-        while (f3 >= 180.0F)
+        while(f3 >= 180.0F)
         {
             f3 -= 360.0F;
         }
@@ -366,31 +364,31 @@ public class EntityHelper
             }));
             double d2 = dist;
 
-            for (int j = 0; j < list.size(); ++j)
+            for(int j = 0; j < list.size(); ++j)
             {
                 Entity entity1 = (Entity)list.get(j);
                 float f1 = entity1.getCollisionBorderSize();
                 AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f1, (double)f1, (double)f1);
                 RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
-                if (axisalignedbb.isVecInside(vec3))
+                if(axisalignedbb.isVecInside(vec3))
                 {
-                    if (d2 >= 0.0D)
+                    if(d2 >= 0.0D)
                     {
                         entityTrace = entity1;
                         vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
                         d2 = 0.0D;
                     }
                 }
-                else if (movingobjectposition != null)
+                else if(movingobjectposition != null)
                 {
                     double d3 = vec3.distanceTo(movingobjectposition.hitVec);
 
-                    if (d3 < d2 || d2 == 0.0D)
+                    if(d3 < d2 || d2 == 0.0D)
                     {
-                        if (entity1 == ent.getRidingEntity() && !ent.canRiderInteract())
+                        if(entity1 == ent.getRidingEntity() && !ent.canRiderInteract())
                         {
-                            if (d2 == 0.0D)
+                            if(d2 == 0.0D)
                             {
                                 entityTrace = entity1;
                                 vec33 = movingobjectposition.hitVec;
@@ -406,7 +404,7 @@ public class EntityHelper
                 }
             }
 
-            if (entityTrace != null && (d2 < dist || rayTrace == null))
+            if(entityTrace != null && (d2 < dist || rayTrace == null))
             {
                 rayTrace = new RayTraceResult(entityTrace, vec33);
             }
@@ -418,9 +416,9 @@ public class EntityHelper
 
     public static RayTraceResult rayTraceBlocks(World world, double dist, Vec3d vec31, Vec3d vec32, boolean stopOnLiquid, boolean ignoreTransparentBlocks, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
     {
-        if (!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
+        if(!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
         {
-            if (!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord))
+            if(!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord))
             {
                 int i = MathHelper.floor_double(vec32.xCoord);
                 int j = MathHelper.floor_double(vec32.yCoord);
@@ -432,11 +430,11 @@ public class EntityHelper
                 IBlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
 
-                if ((!ignoreBlockWithoutBoundingBox || iblockstate.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block, iblockstate, world, blockpos)))
+                if((!ignoreBlockWithoutBoundingBox || iblockstate.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && block.canCollideCheck(iblockstate, stopOnLiquid) && !(ignoreTransparentBlocks && isTransparent(block, iblockstate, world, blockpos)))
                 {
-                    RayTraceResult mop =iblockstate.collisionRayTrace(world, blockpos, vec31, vec32);
+                    RayTraceResult mop = iblockstate.collisionRayTrace(world, blockpos, vec31, vec32);
 
-                    if (mop != null)
+                    if(mop != null)
                     {
                         return mop;
                     }
@@ -445,14 +443,14 @@ public class EntityHelper
                 RayTraceResult movingobjectposition2 = null;
                 int k1 = (int)Math.ceil(dist + 1);
 
-                while (k1-- >= 0)
+                while(k1-- >= 0)
                 {
-                    if (Double.isNaN(vec31.xCoord) || Double.isNaN(vec31.yCoord) || Double.isNaN(vec31.zCoord))
+                    if(Double.isNaN(vec31.xCoord) || Double.isNaN(vec31.yCoord) || Double.isNaN(vec31.zCoord))
                     {
                         return null;
                     }
 
-                    if (l == i && i1 == j && j1 == k)
+                    if(l == i && i1 == j && j1 == k)
                     {
                         return returnLastUncollidableBlock ? movingobjectposition2 : null;
                     }
@@ -464,11 +462,11 @@ public class EntityHelper
                     double d1 = 999.0D;
                     double d2 = 999.0D;
 
-                    if (i > l)
+                    if(i > l)
                     {
                         d0 = (double)l + 1.0D;
                     }
-                    else if (i < l)
+                    else if(i < l)
                     {
                         d0 = (double)l + 0.0D;
                     }
@@ -477,11 +475,11 @@ public class EntityHelper
                         flag2 = false;
                     }
 
-                    if (j > i1)
+                    if(j > i1)
                     {
                         d1 = (double)i1 + 1.0D;
                     }
-                    else if (j < i1)
+                    else if(j < i1)
                     {
                         d1 = (double)i1 + 0.0D;
                     }
@@ -490,11 +488,11 @@ public class EntityHelper
                         flag = false;
                     }
 
-                    if (k > j1)
+                    if(k > j1)
                     {
                         d2 = (double)j1 + 1.0D;
                     }
-                    else if (k < j1)
+                    else if(k < j1)
                     {
                         d2 = (double)j1 + 0.0D;
                     }
@@ -510,44 +508,44 @@ public class EntityHelper
                     double d7 = vec32.yCoord - vec31.yCoord;
                     double d8 = vec32.zCoord - vec31.zCoord;
 
-                    if (flag2)
+                    if(flag2)
                     {
                         d3 = (d0 - vec31.xCoord) / d6;
                     }
 
-                    if (flag)
+                    if(flag)
                     {
                         d4 = (d1 - vec31.yCoord) / d7;
                     }
 
-                    if (flag1)
+                    if(flag1)
                     {
                         d5 = (d2 - vec31.zCoord) / d8;
                     }
 
-                    if (d3 == -0.0D)
+                    if(d3 == -0.0D)
                     {
                         d3 = -1.0E-4D;
                     }
 
-                    if (d4 == -0.0D)
+                    if(d4 == -0.0D)
                     {
                         d4 = -1.0E-4D;
                     }
 
-                    if (d5 == -0.0D)
+                    if(d5 == -0.0D)
                     {
                         d5 = -1.0E-4D;
                     }
 
                     EnumFacing enumfacing;
 
-                    if (d3 < d4 && d3 < d5)
+                    if(d3 < d4 && d3 < d5)
                     {
                         enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
                         vec31 = new Vec3d(d0, vec31.yCoord + d7 * d3, vec31.zCoord + d8 * d3);
                     }
-                    else if (d4 < d5)
+                    else if(d4 < d5)
                     {
                         enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
                         vec31 = new Vec3d(vec31.xCoord + d6 * d4, d1, vec31.zCoord + d8 * d4);
@@ -565,13 +563,13 @@ public class EntityHelper
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
 
-                    if ((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
+                    if((!ignoreBlockWithoutBoundingBox || iblockstate1.getMaterial() == Material.PORTAL || iblockstate1.getCollisionBoundingBox(world, blockpos) != Block.NULL_AABB) && !(ignoreTransparentBlocks && isTransparent(block1, iblockstate1, world, blockpos)))
                     {
-                        if (block1.canCollideCheck(iblockstate1, stopOnLiquid))
+                        if(block1.canCollideCheck(iblockstate1, stopOnLiquid))
                         {
                             RayTraceResult movingobjectposition1 = iblockstate1.collisionRayTrace(world, blockpos, vec31, vec32);
 
-                            if (movingobjectposition1 != null)
+                            if(movingobjectposition1 != null)
                             {
                                 return movingobjectposition1;
                             }
@@ -596,9 +594,37 @@ public class EntityHelper
         }
     }
 
+    public static void putEntityWithinAABB(Entity ent, AxisAlignedBB aabb)
+    {
+        if(ent.getEntityBoundingBox().maxX > aabb.maxX)
+        {
+            ent.posX += aabb.maxX - ent.getEntityBoundingBox().maxX;
+        }
+        if(ent.getEntityBoundingBox().minX < aabb.minX)
+        {
+            ent.posX += aabb.minX - ent.getEntityBoundingBox().minX;
+        }
+        if(ent.posY + ent.getEyeHeight() > aabb.maxY)
+        {
+            ent.posY += aabb.maxY - ent.posY - ent.getEyeHeight();
+        }
+        if(ent.posY < aabb.minY)
+        {
+            ent.posY += aabb.minY - ent.posY + 0.001D;
+        }
+        if(ent.getEntityBoundingBox().maxZ > aabb.maxZ)
+        {
+            ent.posZ += aabb.maxZ - ent.getEntityBoundingBox().maxZ;
+        }
+        if(ent.getEntityBoundingBox().minZ < aabb.minZ)
+        {
+            ent.posZ += aabb.minZ - ent.getEntityBoundingBox().minZ;
+        }
+    }
+
     public static double[] simulateMoveEntity(Entity ent, double x, double y, double z) //does not check for step height.
     {
-        if (ent.noClip)
+        if(ent.noClip)
         {
             return new double[] { x, y, z };
         }
@@ -609,15 +635,15 @@ public class EntityHelper
             double d5 = z;
             boolean flag = ent.onGround && ent.isSneaking() && ent instanceof EntityPlayer;
 
-            if (flag)
+            if(flag)
             {
-                for (double d6 = 0.05D; x != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
+                for(double d6 = 0.05D; x != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
                 {
-                    if (x < 0.05D && x >= -0.05D)
+                    if(x < 0.05D && x >= -0.05D)
                     {
                         x = 0.0D;
                     }
-                    else if (x > 0.0D)
+                    else if(x > 0.0D)
                     {
                         x -= 0.05D;
                     }
@@ -627,13 +653,13 @@ public class EntityHelper
                     }
                 }
 
-                for (; z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
+                for(; z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
                 {
-                    if (z < 0.05D && z >= -0.05D)
+                    if(z < 0.05D && z >= -0.05D)
                     {
                         z = 0.0D;
                     }
-                    else if (z > 0.0D)
+                    else if(z > 0.0D)
                     {
                         z -= 0.05D;
                     }
@@ -643,13 +669,13 @@ public class EntityHelper
                     }
                 }
 
-                for (; x != 0.0D && z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
+                for(; x != 0.0D && z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
                 {
-                    if (x < 0.05D && x >= -0.05D)
+                    if(x < 0.05D && x >= -0.05D)
                     {
                         x = 0.0D;
                     }
-                    else if (x > 0.0D)
+                    else if(x > 0.0D)
                     {
                         x -= 0.05D;
                     }
@@ -660,11 +686,11 @@ public class EntityHelper
 
                     d3 = x;
 
-                    if (z < 0.05D && z >= -0.05D)
+                    if(z < 0.05D && z >= -0.05D)
                     {
                         z = 0.0D;
                     }
-                    else if (z > 0.0D)
+                    else if(z > 0.0D)
                     {
                         z -= 0.05D;
                     }
@@ -679,7 +705,7 @@ public class EntityHelper
             AxisAlignedBB axisalignedbb = ent.getEntityBoundingBox();
             int i = 0;
 
-            for (int j = list1.size(); i < j; ++i)
+            for(int j = list1.size(); i < j; ++i)
             {
                 y = list1.get(i).calculateYOffset(ent.getEntityBoundingBox(), y);
             }
@@ -687,7 +713,7 @@ public class EntityHelper
             ent.setEntityBoundingBox(ent.getEntityBoundingBox().offset(0.0D, y, 0.0D));
             int j4 = 0;
 
-            for (int k = list1.size(); j4 < k; ++j4)
+            for(int k = list1.size(); j4 < k; ++j4)
             {
                 x = list1.get(j4).calculateXOffset(ent.getEntityBoundingBox(), x);
             }
@@ -695,7 +721,7 @@ public class EntityHelper
             ent.setEntityBoundingBox(ent.getEntityBoundingBox().offset(x, 0.0D, 0.0D));
             j4 = 0;
 
-            for (int k4 = list1.size(); j4 < k4; ++j4)
+            for(int k4 = list1.size(); j4 < k4; ++j4)
             {
                 z = list1.get(j4).calculateZOffset(ent.getEntityBoundingBox(), z);
             }
@@ -713,19 +739,19 @@ public class EntityHelper
         {
             offset = -offset;
         }
-        if (axis == 0) //X axis
+        if(axis == 0) //X axis
         {
             living.lastTickPosX += offset;
             living.prevPosX += offset;
             living.posX += offset;
         }
-        else if (axis == 1) //Y axis
+        else if(axis == 1) //Y axis
         {
             living.lastTickPosY += offset;
             living.prevPosY += offset;
             living.posY += offset;
         }
-        else if (axis == 2) //Z axis
+        else if(axis == 2) //Z axis
         {
             living.lastTickPosZ += offset;
             living.prevPosZ += offset;
@@ -772,13 +798,13 @@ public class EntityHelper
             double oriZ = aabb.minZ - originZ;
             double oriY = aabb.minY - originY;
 
-            double z1 =  oriZ * Math.cos(rads) + oriY * Math.sin(rads);
+            double z1 = oriZ * Math.cos(rads) + oriY * Math.sin(rads);
             double y1 = -oriZ * Math.sin(rads) + oriY * Math.cos(rads);
 
             oriZ = aabb.maxZ - originZ;
             oriY = aabb.maxY - originY;
 
-            double z2 =  oriZ * Math.cos(rads) + oriY * Math.sin(rads);
+            double z2 = oriZ * Math.cos(rads) + oriY * Math.sin(rads);
             double y2 = -oriZ * Math.sin(rads) + oriY * Math.cos(rads);
 
             return new AxisAlignedBB(aabb.minX, Math.min(y1, y2) + originY, Math.min(z1, z2) + originZ, aabb.maxX, Math.max(y1, y2) + originY, Math.max(z1, z2) + originZ);
@@ -788,13 +814,13 @@ public class EntityHelper
             double oriX = aabb.minX - originX;
             double oriZ = aabb.minZ - originZ;
 
-            double x1 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            double x1 = oriX * Math.cos(rads) + oriZ * Math.sin(rads);
             double z1 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
 
             oriX = aabb.maxX - originX;
             oriZ = aabb.maxZ - originZ;
 
-            double x2 =  oriX * Math.cos(rads) + oriZ * Math.sin(rads);
+            double x2 = oriX * Math.cos(rads) + oriZ * Math.sin(rads);
             double z2 = -oriX * Math.sin(rads) + oriZ * Math.cos(rads);
 
             return new AxisAlignedBB(Math.min(x1, x2) + originX, aabb.minY, Math.min(z1, z2) + originZ, Math.max(x1, x2) + originX, aabb.maxY, Math.max(z1, z2) + originZ);
@@ -804,13 +830,13 @@ public class EntityHelper
             double oriX = aabb.minX - originX;
             double oriY = aabb.minY - originY;
 
-            double x1 =  oriX * Math.cos(rads) + oriY * Math.sin(rads);
+            double x1 = oriX * Math.cos(rads) + oriY * Math.sin(rads);
             double y1 = -oriX * Math.sin(rads) + oriY * Math.cos(rads);
 
             oriX = aabb.maxX - originX;
             oriY = aabb.maxY - originY;
 
-            double x2 =  oriX * Math.cos(rads) + oriY * Math.sin(rads);
+            double x2 = oriX * Math.cos(rads) + oriY * Math.sin(rads);
             double y2 = -oriX * Math.sin(rads) + oriY * Math.cos(rads);
 
             return new AxisAlignedBB(Math.min(x1, x2) + originX, Math.min(y1, y2) + originY, aabb.minZ, Math.max(x1, x2) + originX, Math.max(y1, y2) + originY, aabb.maxZ);
@@ -829,25 +855,25 @@ public class EntityHelper
         boolean flag = false;
         boolean flag1 = false;
 
-        for (int k1 = i; k1 <= l; ++k1)
+        for(int k1 = i; k1 <= l; ++k1)
         {
-            for (int l1 = j; l1 <= i1; ++l1)
+            for(int l1 = j; l1 <= i1; ++l1)
             {
-                for (int i2 = k; i2 <= j1; ++i2)
+                for(int i2 = k; i2 <= j1; ++i2)
                 {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
                     IBlockState iblockstate = ent.worldObj.getBlockState(blockpos);
                     Block block = ent.worldObj.getBlockState(blockpos).getBlock();
 
-                    if (!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
+                    if(!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
                     {
-                        if (!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
+                        if(!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
                         {
                             flag = true;
                         }
-                        else if (block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
+                        else if(block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
                         {
-                            if (block != Blocks.COMMAND_BLOCK && block != Blocks.REPEATING_COMMAND_BLOCK && block != Blocks.CHAIN_COMMAND_BLOCK && block != Blocks.IRON_BARS && block != Blocks.END_GATEWAY)
+                            if(block != Blocks.COMMAND_BLOCK && block != Blocks.REPEATING_COMMAND_BLOCK && block != Blocks.CHAIN_COMMAND_BLOCK && block != Blocks.IRON_BARS && block != Blocks.END_GATEWAY)
                             {
                                 flag1 = ent.worldObj.setBlockToAir(blockpos) || flag1;
                             }
@@ -865,7 +891,7 @@ public class EntityHelper
             }
         }
 
-        if (flag1)
+        if(flag1)
         {
             double d0 = aabb.minX + (aabb.maxX - aabb.minX) * (double)ent.worldObj.rand.nextFloat();
             double d1 = aabb.minY + (aabb.maxY - aabb.minY) * (double)ent.worldObj.rand.nextFloat();

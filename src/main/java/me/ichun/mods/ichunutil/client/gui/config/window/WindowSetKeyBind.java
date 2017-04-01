@@ -36,7 +36,7 @@ public class WindowSetKeyBind extends Window
         this.config = conf;
         this.prop = info;
         message = msg;
-        hook = new ElementKeyBindHook(this, 0,0,0,0,0,true);
+        hook = new ElementKeyBindHook(this, 0, 0, 0, 0, 0, true);
     }
 
     @Override

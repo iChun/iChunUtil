@@ -23,7 +23,7 @@ public abstract class Element
         ignoreMinimized = igMin;
     }
 
-    public void update(){}
+    public void update() {}
 
     public abstract void draw(int mouseX, int mouseY, boolean hover);
 
@@ -37,18 +37,18 @@ public abstract class Element
         return false;//return true for elements that has input eg typing
     }
 
-    public void selected(){}
+    public void selected() {}
 
-    public void deselected(){}
+    public void deselected() {}
 
-    public void resized(){}
+    public void resized() {}
 
     public void triggerInput()
     {
         parent.elementTriggered(this);
     }
 
-    public void keyInput(char c, int key){}
+    public void keyInput(char c, int key) {}
 
     public boolean mouseScroll(int mouseX, int mouseY, int k)
     {

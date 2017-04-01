@@ -83,11 +83,7 @@ public class KeyBind
         if(obj instanceof KeyBind)
         {
             KeyBind bind = (KeyBind)obj;
-            return bind.keyIndex == keyIndex &&
-                    bind.holdShift == holdShift &&
-                    bind.holdCtrl == holdCtrl &&
-                    bind.holdAlt == holdAlt &&
-                    bind.ignoreHold == ignoreHold;
+            return bind.keyIndex == keyIndex && bind.holdShift == holdShift && bind.holdCtrl == holdCtrl && bind.holdAlt == holdAlt && bind.ignoreHold == ignoreHold;
         }
         return false;
     }
@@ -138,6 +134,8 @@ public class KeyBind
             holdCtrl = s.contains("CTRL");
             holdAlt = s.contains("ALT");
         }
-        catch(NumberFormatException ignored){}
+        catch(NumberFormatException ignored)
+        {
+        }
     }
 }

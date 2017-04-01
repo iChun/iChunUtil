@@ -14,7 +14,7 @@ public class ItemHandler
     public static HashSet<Class<? extends Item>> dualHandedItems = new HashSet<>();
 
     //Items registered here can never be allowed to use MC's default "use timer". Their use timer (getMaxItemUseDuration) must be set to Integer.MAX_VALUE.
-    public static void registerDualHandedItem(@Nonnull Class<? extends Item>clz)
+    public static void registerDualHandedItem(@Nonnull Class<? extends Item> clz)
     {
         dualHandedItems.add(clz);
     }

@@ -12,7 +12,7 @@ public class Logger
         this.modName = id;
     }
 
-    public void log(Level logLevel, String format, Object...msg)
+    public void log(Level logLevel, String format, Object... msg)
     {
         //        FMLLog.log(modName, logLevel, "[%s] " + String.valueOf(msg), modName);
         FMLLog.log(modName, logLevel, format, msg);

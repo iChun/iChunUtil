@@ -16,7 +16,6 @@ import java.util.Collection;
  * {@link #world} is the world for the entity.<br>
  * <br>
  * All children of this event are fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}.<br>
- *
  */
 public class BlockEntityEvent extends WorldEvent
 {

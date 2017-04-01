@@ -81,9 +81,9 @@ public class RenderBlock extends Render<EntityBlock>
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(-ii, -jj, -kk);
 
-                        if (iblockstate.getRenderType() == EnumBlockRenderType.MODEL)
+                        if(iblockstate.getRenderType() == EnumBlockRenderType.MODEL)
                         {
-                            if (iblockstate != world.getBlockState(blockpos) && iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
+                            if(iblockstate != world.getBlockState(blockpos) && iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                             {
                                 this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
                                 GlStateManager.pushMatrix();
@@ -91,19 +91,19 @@ public class RenderBlock extends Render<EntityBlock>
                                 Tessellator tessellator = Tessellator.getInstance();
                                 VertexBuffer vertexbuffer = tessellator.getBuffer();
 
-                                if (this.renderOutlines)
+                                if(this.renderOutlines)
                                 {
                                     GlStateManager.enableColorMaterial();
                                     GlStateManager.enableOutlineMode(this.getTeamColor(entBlock));
                                 }
 
                                 vertexbuffer.begin(7, DefaultVertexFormats.BLOCK);
-                                GlStateManager.translate((float)( - (double)blockposMaxY.getX() - 0.5D), (float)( - (double)blockposMaxY.getY()), (float)( - (double)blockposMaxY.getZ() - 0.5D));
+                                GlStateManager.translate((float)(-(double)blockposMaxY.getX() - 0.5D), (float)(-(double)blockposMaxY.getY()), (float)(-(double)blockposMaxY.getZ() - 0.5D));
                                 BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
                                 blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(iblockstate), iblockstate, blockposMaxY, vertexbuffer, false, MathHelper.getPositionRandom(entBlock.getOrigin().add(ii, jj, kk)));
                                 tessellator.draw();
 
-                                if (this.renderOutlines)
+                                if(this.renderOutlines)
                                 {
                                     GlStateManager.disableOutlineMode();
                                     GlStateManager.disableColorMaterial();

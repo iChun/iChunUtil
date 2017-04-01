@@ -18,7 +18,7 @@ public abstract class PacketDataFragment extends AbstractPacket
     public int fragmentSize;
     public byte[] data;
 
-    public PacketDataFragment(){}
+    public PacketDataFragment() {}
 
     public PacketDataFragment(String fileName, int packetTotal, int packetNumber, int fragmentSize, byte[] data)
     {

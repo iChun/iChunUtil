@@ -3,7 +3,8 @@ package me.ichun.mods.ichunutil.client.model;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
-public class ModelAngelPeriphs extends ModelBase {
+public class ModelAngelPeriphs extends ModelBase
+{
     public ModelRenderer haloOuter;
     public ModelRenderer haloInner;
     public ModelRenderer wingSpineLeft1;
@@ -22,7 +23,8 @@ public class ModelAngelPeriphs extends ModelBase {
     public ModelRenderer wingFeathersLeftFront5;
     public ModelRenderer wingFeathersLeftBack5;
 
-    public ModelAngelPeriphs() {
+    public ModelAngelPeriphs()
+    {
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.wingSpineLeft2 = new ModelRenderer(this, 25, 6);
@@ -107,7 +109,8 @@ public class ModelAngelPeriphs extends ModelBase {
         this.wingSpineLeft1.addChild(this.wingFeathersLeftFront1);
     }
 
-    public void renderHalo(float f5) {
+    public void renderHalo(float f5)
+    {
         this.haloInner.render(f5);
         this.haloOuter.render(f5);
     }
@@ -129,7 +132,8 @@ public class ModelAngelPeriphs extends ModelBase {
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
+    {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

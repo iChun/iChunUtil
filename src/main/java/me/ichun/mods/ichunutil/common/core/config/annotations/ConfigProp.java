@@ -12,11 +12,18 @@ import java.lang.annotation.Target;
 public @interface ConfigProp
 {
     boolean changeable() default true;
+
     boolean useSession() default false;
+
     boolean hidden() default false; //Hidden properties are never read
+
     String category() default "general";
+
     String comment() default "undefined";
+
     String nameOverride() default "";
+
     String module() default "";
+
     Side side() default Side.SERVER;
 }

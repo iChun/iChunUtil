@@ -41,7 +41,7 @@ public class EntityBlock extends Entity
     private static final DataParameter<Integer> BEHAVIOUR = EntityDataManager.createKey(EntityBlock.class, DataSerializers.VARINT);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBlock.class, DataSerializers.BLOCK_POS);
 
-    public EntityLivingBase creator; //TODO do I have to update this is the creator changes dimensions?
+    public EntityLivingBase creator; //TODO do I have to updateWorldPortal this is the creator changes dimensions?
 
     public float rotYaw;
     public float rotPitch;
@@ -78,7 +78,7 @@ public class EntityBlock extends Entity
         preventEntitySpawning = true;
         isImmuneToFire = true;
         canDropItems = true;
-        blocks = new IBlockState[][][] { new IBlockState[][] { new IBlockState[] { Blocks.AIR.getDefaultState() }}};
+        blocks = new IBlockState[][][] { new IBlockState[][] { new IBlockState[] { Blocks.AIR.getDefaultState() } } };
         tileEntityNBTs = new NBTTagCompound[1][1][1];
     }
 
@@ -197,7 +197,7 @@ public class EntityBlock extends Entity
             this.setEntityBoundingBox(new AxisAlignedBB(this.getEntityBoundingBox().minX, this.getEntityBoundingBox().minY, this.getEntityBoundingBox().minZ, this.getEntityBoundingBox().minX + (double)(blocks.length - 0.05F), this.getEntityBoundingBox().minY + (double)(blocks[0].length - 0.05F), this.getEntityBoundingBox().minZ + (double)(blocks[0][0].length - 0.05F)));
         }
 
-        if (this.width > f2 && !this.firstUpdate && !this.worldObj.isRemote)
+        if(this.width > f2 && !this.firstUpdate && !this.worldObj.isRemote)
         {
             this.moveEntity((double)(f2 - this.width), 0.0D, (double)(f2 - this.width));
         }
@@ -209,7 +209,7 @@ public class EntityBlock extends Entity
     {
         double d0 = this.getEntityBoundingBox().getAverageEdgeLength() * 20.0D; // * 20D is the new renderDistanceWeight
 
-        if (Double.isNaN(d0))
+        if(Double.isNaN(d0))
         {
             d0 = 1.0D;
         }
@@ -524,9 +524,9 @@ public class EntityBlock extends Entity
 
     public void handleIItemHandlerBreak(IItemHandler var7)
     {
-        if (var7 != null)
+        if(var7 != null)
         {
-            for (int var8 = 0; var8 < var7.getSlots(); ++var8)
+            for(int var8 = 0; var8 < var7.getSlots(); ++var8)
             {
                 int tries = 0;
                 while(tries < 200)
@@ -548,7 +548,7 @@ public class EntityBlock extends Entity
                     var14.motionY = (double)((float)this.rand.nextGaussian() * var15 + 0.2F);
                     var14.motionZ = (double)((float)this.rand.nextGaussian() * var15);
 
-                    if (var9.hasTagCompound())
+                    if(var9.hasTagCompound())
                     {
                         var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
                     }
@@ -561,23 +561,23 @@ public class EntityBlock extends Entity
 
     public void handleIInventoryBreak(IInventory var7)
     {
-        if (var7 != null)
+        if(var7 != null)
         {
-            for (int var8 = 0; var8 < var7.getSizeInventory(); ++var8)
+            for(int var8 = 0; var8 < var7.getSizeInventory(); ++var8)
             {
                 ItemStack var9 = var7.getStackInSlot(var8);
 
-                if (var9 != null)
+                if(var9 != null)
                 {
                     float var10 = this.rand.nextFloat() * 0.8F + 0.1F;
                     float var11 = this.rand.nextFloat() * 0.8F + 0.1F;
                     EntityItem var14;
 
-                    for (float var12 = this.rand.nextFloat() * 0.8F + 0.1F; var9.stackSize > 0; worldObj.spawnEntityInWorld(var14))
+                    for(float var12 = this.rand.nextFloat() * 0.8F + 0.1F; var9.stackSize > 0; worldObj.spawnEntityInWorld(var14))
                     {
                         int var13 = this.rand.nextInt(21) + 10;
 
-                        if (var13 > var9.stackSize)
+                        if(var13 > var9.stackSize)
                         {
                             var13 = var9.stackSize;
                         }
@@ -589,7 +589,7 @@ public class EntityBlock extends Entity
                         var14.motionY = (double)((float)this.rand.nextGaussian() * var15 + 0.2F);
                         var14.motionZ = (double)((float)this.rand.nextGaussian() * var15);
 
-                        if (var9.hasTagCompound())
+                        if(var9.hasTagCompound())
                         {
                             var14.getEntityItem().setTagCompound(var9.getTagCompound().copy());
                         }

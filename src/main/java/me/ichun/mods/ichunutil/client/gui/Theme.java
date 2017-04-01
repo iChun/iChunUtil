@@ -4,8 +4,7 @@ import me.ichun.mods.ichunutil.client.gui.window.element.IListable;
 
 import java.lang.reflect.Field;
 
-public class Theme
-    implements IListable
+public class Theme implements IListable
 {
     private static transient Theme instance = new Theme(); //defaults. Try not to change this if possible.
 
@@ -14,42 +13,42 @@ public class Theme
     public String name = "Default";
     public String author = "iChun";
 
-    public int[] workspaceBackground                 = new int[] { 204, 204, 204 };
-    public int[] windowBorder                        = new int[] { 150, 150, 150 };
-    public int[] windowBackground                    = new int[] { 34, 34, 34 };
-    public int[] tabBorder                           = new int[] { 255, 255, 255 };
-    public int[] tabSideInactive                     = new int[] { 100, 100, 100 };
+    public int[] workspaceBackground = new int[] { 204, 204, 204 };
+    public int[] windowBorder = new int[] { 150, 150, 150 };
+    public int[] windowBackground = new int[] { 34, 34, 34 };
+    public int[] tabBorder = new int[] { 255, 255, 255 };
+    public int[] tabSideInactive = new int[] { 100, 100, 100 };
 
-    public int[] elementInputBackgroundInactive      = new int[] { 60, 60, 60 };
-    public int[] elementInputBackgroundHover         = new int[] { 70, 70, 70 };
-    public int[] elementInputBorder                  = new int[] { 140, 140, 140 };
-    public int[] elementInputUpDownHover             = new int[] { 170, 170, 170 };
-    public int[] elementInputUpDownClick             = new int[] { 100, 100, 100 };
+    public int[] elementInputBackgroundInactive = new int[] { 60, 60, 60 };
+    public int[] elementInputBackgroundHover = new int[] { 70, 70, 70 };
+    public int[] elementInputBorder = new int[] { 140, 140, 140 };
+    public int[] elementInputUpDownHover = new int[] { 170, 170, 170 };
+    public int[] elementInputUpDownClick = new int[] { 100, 100, 100 };
 
-    public int[] elementButtonBackgroundInactive      = new int[] { 60, 60, 60 };
-    public int[] elementButtonBackgroundHover         = new int[] { 70, 70, 70 };
-    public int[] elementButtonBorder                  = new int[] { 140, 140, 140 };
-    public int[] elementButtonClick                   = new int[] { 100, 100, 100 };
-    public int[] elementButtonToggle                  = new int[] { 120, 120, 120 };
-    public int[] elementButtonToggleHover             = new int[] { 170, 170, 170 };
+    public int[] elementButtonBackgroundInactive = new int[] { 60, 60, 60 };
+    public int[] elementButtonBackgroundHover = new int[] { 70, 70, 70 };
+    public int[] elementButtonBorder = new int[] { 140, 140, 140 };
+    public int[] elementButtonClick = new int[] { 100, 100, 100 };
+    public int[] elementButtonToggle = new int[] { 120, 120, 120 };
+    public int[] elementButtonToggleHover = new int[] { 170, 170, 170 };
 
-    public int[] elementProjectTabActive             = new int[] { 60, 60, 60 };
-    public int[] elementProjectTabHover              = new int[] { 100, 100, 100 };
-    public int[] elementProjectTabFont               = new int[] { 140, 140, 140 };
-    public int[] elementProjectTabFontChanges        = new int[] { 255, 255, 255 };
+    public int[] elementProjectTabActive = new int[] { 60, 60, 60 };
+    public int[] elementProjectTabHover = new int[] { 100, 100, 100 };
+    public int[] elementProjectTabFont = new int[] { 140, 140, 140 };
+    public int[] elementProjectTabFontChanges = new int[] { 255, 255, 255 };
 
-    public int[] elementTreeBorder                   = new int[] { 100, 100, 100 };
-    public int[] elementTreeScrollBar                = new int[] { 34, 34, 34 };
-    public int[] elementTreeScrollBarBorder          = new int[] { 60, 60, 60 };
+    public int[] elementTreeBorder = new int[] { 100, 100, 100 };
+    public int[] elementTreeScrollBar = new int[] { 34, 34, 34 };
+    public int[] elementTreeScrollBarBorder = new int[] { 60, 60, 60 };
 
-    public int[] elementTreeItemBorder               = new int[] { 40, 40, 40 };
-    public int[] elementTreeItemBg                   = new int[] { 60, 60, 60 };
-    public int[] elementTreeItemBgSelect             = new int[] { 100, 100, 100 };
-    public int[] elementTreeItemBgHover              = new int[] { 120, 120, 120 };
+    public int[] elementTreeItemBorder = new int[] { 40, 40, 40 };
+    public int[] elementTreeItemBg = new int[] { 60, 60, 60 };
+    public int[] elementTreeItemBgSelect = new int[] { 100, 100, 100 };
+    public int[] elementTreeItemBgHover = new int[] { 120, 120, 120 };
 
-    public int[] fontChat                            = new int[] { 220, 220, 220 };
-    public int[] font                                = new int[] { 255, 255, 255 };
-    public int[] fontDim                             = new int[] { 150, 150, 150 };
+    public int[] fontChat = new int[] { 220, 220, 220 };
+    public int[] font = new int[] { 255, 255, 255 };
+    public int[] fontDim = new int[] { 150, 150, 150 };
 
     public static Theme getInstance()
     {

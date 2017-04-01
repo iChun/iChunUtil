@@ -17,13 +17,23 @@ import javax.vecmath.Matrix4f;
 
 public interface IModelBase
 {
-    @Nonnull ResourceLocation getTexture(); //ResourceLocation to the model texture
+    @Nonnull
+    ResourceLocation getTexture(); //ResourceLocation to the model texture
+
     void renderModel(float renderTick); //To actually transform/scale and render the model.
+
     void postRender();
-    @Nonnull ModelBase getModel();
+
+    @Nonnull
+    ModelBase getModel();
+
     ItemCameraTransforms getCameraTransforms();
+
     Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, Pair<? extends IBakedModel, Matrix4f> pair);
+
     boolean useVanillaCameraTransform();
+
     void handleBlockState(@Nullable IBlockState state, @Nullable EnumFacing side, long rand);
+
     void handleItemState(ItemStack stack, World world, EntityLivingBase entity);
 }

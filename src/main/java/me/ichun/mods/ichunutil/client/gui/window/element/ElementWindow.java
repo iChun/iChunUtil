@@ -30,7 +30,7 @@ public class ElementWindow extends Element
     public void draw(int mouseX, int mouseY, boolean hover)
     {
         String titleToRender = I18n.translateToLocal(mountedWindow.titleLocale);
-        while(titleToRender.length() > 1 && parent.workspace.getFontRenderer().getStringWidth(titleToRender) > width )
+        while(titleToRender.length() > 1 && parent.workspace.getFontRenderer().getStringWidth(titleToRender) > width)
         {
             if(titleToRender.startsWith("... "))
             {
@@ -63,7 +63,7 @@ public class ElementWindow extends Element
             if(tab.selectedTab == id && !tab.minimized)
             {
                 mountedWindow.isTab = true;
-                mountedWindow.draw(mouseX,mouseY);
+                mountedWindow.draw(mouseX, mouseY);
                 mountedWindow.isTab = false;
                 RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.windowBorder[0], parent.workspace.currentTheme.windowBorder[1], parent.workspace.currentTheme.windowBorder[2], 255, getPosX(), getPosY() + 1 + height, width + 3, 2, 0);
             }

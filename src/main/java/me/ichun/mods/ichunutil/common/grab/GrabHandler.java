@@ -137,7 +137,8 @@ public class GrabHandler
 
     //grabbed entities and their handlers
 
-    public static EnumMap<Side, ArrayList<GrabHandler>> grabbedEntities = new EnumMap<Side, ArrayList<GrabHandler>>(Side.class){{
+    public static EnumMap<Side, ArrayList<GrabHandler>> grabbedEntities = new EnumMap<Side, ArrayList<GrabHandler>>(Side.class)
+    {{
         put(Side.SERVER, new ArrayList<>());
         put(Side.CLIENT, new ArrayList<>());
     }};
@@ -240,7 +241,8 @@ public class GrabHandler
 
     //entity handlers section
 
-    private static ArrayList<GrabbedEntityHandler> entityHandlers = new ArrayList<GrabbedEntityHandler>() {{
+    private static ArrayList<GrabbedEntityHandler> entityHandlers = new ArrayList<GrabbedEntityHandler>()
+    {{
         add(new GrabbedFireballHandler());
         add(new GrabbedFallingBlockHandler());
         add(new GrabbedEntityBlockHandler());
@@ -249,6 +251,7 @@ public class GrabHandler
     public interface GrabbedEntityHandler
     {
         boolean eligible(Entity grabbed);
+
         void handle(GrabHandler grabHandler);
     }
 

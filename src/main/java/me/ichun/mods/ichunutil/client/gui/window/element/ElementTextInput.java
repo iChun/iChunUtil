@@ -6,8 +6,7 @@ import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Keyboard;
 
-public class ElementTextInput extends Element
-        implements ITextInput
+public class ElementTextInput extends Element implements ITextInput
 {
     public GuiTextField textField;
     public String tooltip;

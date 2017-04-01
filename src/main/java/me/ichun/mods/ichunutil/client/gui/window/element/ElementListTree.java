@@ -212,7 +212,7 @@ public class ElementListTree extends Element
         rmbDown = Mouse.isButtonDown(1);
     }
 
-    public void dragOnto(Object draggedOn, Object dragged){}
+    public void dragOnto(Object draggedOn, Object dragged) {}
 
     @Override
     public void resized()
@@ -368,7 +368,7 @@ public class ElementListTree extends Element
                 boolean found = false;
                 boolean obstructed = false;
 
-                for(int i = parent.workspace.levels.size() - 1; i >= 0 ; i--)
+                for(int i = parent.workspace.levels.size() - 1; i >= 0; i--)
                 {
                     if(found)
                     {

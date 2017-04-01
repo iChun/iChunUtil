@@ -22,7 +22,7 @@ public class PacketSession extends AbstractPacket
     public String modId;
     public HashMap<String, Object> vars;
 
-    public PacketSession(){}
+    public PacketSession() {}
 
     public PacketSession(ConfigBase config)
     {
@@ -172,7 +172,9 @@ public class PacketSession extends AbstractPacket
                             conf.onSessionChange(field, ori);
                         }
                     }
-                    catch(Exception ignored){}
+                    catch(Exception ignored)
+                    {
+                    }
                 }
                 conf.onReceiveSession();
                 break;
@@ -185,5 +187,7 @@ public class PacketSession extends AbstractPacket
     public Side receivingSide() { return Side.CLIENT; }
 
     @Override
-    public boolean requiresMainThread(){ return false; };
+    public boolean requiresMainThread() { return false; }
+
+    ;
 }

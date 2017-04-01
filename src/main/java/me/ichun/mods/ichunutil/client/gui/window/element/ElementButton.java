@@ -20,15 +20,23 @@ public class ElementButton extends Element
         anchorH = sideH;
         switch(anchorH)
         {
-            case 0: spaceH = posX; break;
-            case 1: spaceH = parent.width - posX - width; break;
+            case 0:
+                spaceH = posX;
+                break;
+            case 1:
+                spaceH = parent.width - posX - width;
+                break;
         }
 
         anchorV = sideV;
         switch(anchorV)
         {
-            case 0: spaceV = posY; break;
-            case 1: spaceV = parent.height - posY - height; break;
+            case 0:
+                spaceV = posY;
+                break;
+            case 1:
+                spaceV = parent.height - posY - height;
+                break;
         }
         text = Text;
     }
@@ -70,15 +78,27 @@ public class ElementButton extends Element
     {
         switch(anchorH)
         {
-            case 0: posX = spaceH; break;
-            case 1: posX = parent.width - spaceH - width; break;
-            case 2: posX = (parent.width / 2) - (width / 2); break;
+            case 0:
+                posX = spaceH;
+                break;
+            case 1:
+                posX = parent.width - spaceH - width;
+                break;
+            case 2:
+                posX = (parent.width / 2) - (width / 2);
+                break;
         }
         switch(anchorV)
         {
-            case 0: posY = spaceV; break;
-            case 1: posY = parent.height - spaceV - height; break;
-            case 2: posY = (parent.height / 2) - (height / 2); break;
+            case 0:
+                posY = spaceV;
+                break;
+            case 1:
+                posY = parent.height - spaceV - height;
+                break;
+            case 2:
+                posY = (parent.height / 2) - (height / 2);
+                break;
         }
     }
 }

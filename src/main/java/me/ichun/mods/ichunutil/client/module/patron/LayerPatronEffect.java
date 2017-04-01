@@ -18,7 +18,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
     public ModelBee modelBee = new ModelBee();
     public RenderPlayer parentRenderer;
 
-    public static final ResourceLocation texBee = new ResourceLocation("ichunutil","textures/model/bee.png");
+    public static final ResourceLocation texBee = new ResourceLocation("ichunutil", "textures/model/bee.png");
 
     public LayerPatronEffect(RenderPlayer render)
     {
