@@ -297,7 +297,11 @@ public abstract class WorldPortal
         //TODO notify partner that the partner no longer has a pair as well.
         for(Entity ent : lastScanEntities)
         {
-            EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
+            if(ent.getEntityBoundingBox().intersectsWith(portalInsides))
+            {
+                EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
+                ent.setPosition(ent.posX, ent.posY, ent.posZ);
+            }
             WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
         }
     }

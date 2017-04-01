@@ -105,38 +105,6 @@ public class WorldPortalRenderer
 
             GL11.glDisable(GL11.GL_STENCIL_TEST);
 
-            AxisAlignedBB flatPlane = portal.getFlatPlane();
-            double centerX = (flatPlane.maxX + flatPlane.minX) / 2D;
-            double centerY = (flatPlane.maxY + flatPlane.minY) / 2D;
-            double centerZ = (flatPlane.maxZ + flatPlane.minZ) / 2D;
-
-            AxisAlignedBB pairFlatPlane = portal.getPair().getFlatPlane();
-            double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
-            double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
-            double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate((destX - centerX) - (centerX - portal.getPosition().xCoord) + appliedOffset[0], (destY - centerY) - (centerY - portal.getPosition().yCoord) + appliedOffset[1], (destZ - centerZ) - (centerZ - portal.getPosition().zCoord) + appliedOffset[2]);
-
-            for(Entity entity : portal.lastScanEntities)
-            {
-                if(entity.getEntityBoundingBox().intersectsWith(portal.portalInsides))
-                {
-                    //Entity is "in" the portal. Render it.
-
-                    float[] entOffset = portal.getQuaternionFormula().applyPositionalRotation(new float[] {
-                            EntityHelper.interpolateValues((float)entity.prevPosX, (float)entity.posX, partialTick) - (float)centerX,
-                            EntityHelper.interpolateValues((float)entity.prevPosY, (float)entity.posY, partialTick) + entity.getEyeHeight() - (float)centerY,
-                            EntityHelper.interpolateValues((float)entity.prevPosZ, (float)entity.posZ, partialTick) - (float)centerZ
-                    });
-                    float[] entRotation = portal.getQuaternionFormula().applyRotationalRotation(new float[] { 0F, 0F, 0F });
-
-                    mc.renderGlobal.renderManager.renderEntityStatic(entity, partialTick, false);
-                }
-            }
-
-            GlStateManager.popMatrix();
-
             renderLevel--;
         }
     }
