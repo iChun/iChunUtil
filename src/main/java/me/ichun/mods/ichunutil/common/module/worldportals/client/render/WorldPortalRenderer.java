@@ -178,9 +178,9 @@ public class WorldPortalRenderer
         double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
         double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
 
-        EntityTransformationStack.moveEntity(renderer, destX, destY, destZ, posOffset, rotOffset, partialTick);
+        EntityTransformationStack ets = new EntityTransformationStack(renderer).moveEntity(destX, destY, destZ, posOffset, rotOffset, partialTick);
         drawWorld(WorldPortals.eventHandlerClient.renderGlobalProxy, renderer, worldPortal, pair, partialTick);
-        EntityTransformationStack.resetEntity(renderer);
+        ets.pop();
 
         //                mc.gameSettings.renderDistanceChunks = renderDist;
         mc.renderGlobal = global;

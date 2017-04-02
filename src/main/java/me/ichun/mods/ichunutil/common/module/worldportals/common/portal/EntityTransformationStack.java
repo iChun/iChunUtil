@@ -12,30 +12,22 @@ import java.util.Deque;
 
 public class EntityTransformationStack
 {
+    private final Deque<EntityTransformation> stack = new ArrayDeque<>();
+    private final Entity entity;
 
-    private static final Deque<EntityTransformation> stack = new ArrayDeque<>();
-    private static Entity entity;
-
-    public static void setEntity(Entity entity)
+    public EntityTransformationStack(Entity ent)
     {
-
-        if(EntityTransformationStack.entity == entity)
-        {
-            return;
-        }
-        EntityTransformationStack.entity = entity;
-        stack.clear();
+        this.entity = ent;
     }
 
-    public static void push()
+    public void push()
     {
 
         stack.push(new EntityTransformationSeparator());
     }
 
-    public static void pop()
+    public void pop()
     {
-
         EntityTransformation last;
         while((last = stack.poll()) != null && !(last instanceof EntityTransformationSeparator))
         {
@@ -43,7 +35,7 @@ public class EntityTransformationStack
         }
     }
 
-    public static void translate(double x, double y, double z)
+    public void translate(double x, double y, double z)
     {
 
         EntityTransformation transformation = new EntityTransformation(x, y, z, 0, 0, 0);
@@ -51,7 +43,7 @@ public class EntityTransformationStack
         transformation.apply();
     }
 
-    public static void rotate(float yaw, float pitch, float roll)
+    public void rotate(float yaw, float pitch, float roll)
     {
 
         EntityTransformation transformation = new EntityTransformation(0, 0, 0, yaw, pitch, roll);
@@ -59,7 +51,7 @@ public class EntityTransformationStack
         transformation.apply();
     }
 
-    private static class EntityTransformation
+    private class EntityTransformation
     {
 
         private double x, y, z;
@@ -228,29 +220,24 @@ public class EntityTransformationStack
 
     }
 
-    private static class EntityTransformationSeparator extends EntityTransformation
-    {
+    private class EntityTransformationSeparator extends EntityTransformation {}
 
+    public EntityTransformationStack moveEntity(double destX, double destY, double destZ, float[] pos, float[] rot, float partialTicks)
+    {
+        push();
+
+        double ePosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTicks;
+        double ePosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTicks + entity.getEyeHeight();
+        double ePosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTicks;
+
+        translate(destX - ePosX + pos[0], destY - ePosY + pos[1], destZ - ePosZ + pos[2]); //go to the centre of the dest portal and offset with the fields
+        rotate(rot[0], rot[1], rot[2]);
+
+        return this;
     }
 
-    public static void moveEntity(Entity ent, double destX, double destY, double destZ, float[] pos, float[] rot, float partialTicks)
+    public void reset() //only call this if you've done push before pop.
     {
-        EntityTransformationStack.setEntity(ent);
-        EntityTransformationStack.push();
-
-        double ePosX = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * (double)partialTicks;
-        double ePosY = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * (double)partialTicks + ent.getEyeHeight();
-        double ePosZ = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * (double)partialTicks;
-
-        EntityTransformationStack.translate(destX - ePosX + pos[0], destY - ePosY + pos[1], destZ - ePosZ + pos[2]); //go to the centre of the dest portal and offset with the fields
-        EntityTransformationStack.rotate(rot[0], rot[1], rot[2]);
-    }
-
-    public static void resetEntity(Entity ent)
-    {
-        if(ent == entity)
-        {
-            EntityTransformationStack.pop();
-        }
+        pop();
     }
 }

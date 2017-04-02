@@ -210,12 +210,9 @@ public abstract class WorldPortal
                     double destY = (pairTeleportPlane.maxY + pairTeleportPlane.minY) / 2D;
                     double destZ = (pairTeleportPlane.maxZ + pairTeleportPlane.minZ) / 2D;
 
-                    EntityTransformationStack.setEntity(ent);
-                    EntityTransformationStack.push();
-
-                    EntityTransformationStack.translate(destX - ent.posX + appliedOffset[0], destY - (ent.posY + ent.getEyeHeight()) + appliedOffset[1], destZ - ent.posZ + appliedOffset[2]); //go to the centre of the dest portal and offset with the fields
-                    EntityTransformationStack.rotate(appliedRotation[0], appliedRotation[1], appliedRotation[2]);
-                    EntityTransformationStack.setEntity(null); //release the stack.
+                    EntityTransformationStack ets = new EntityTransformationStack(ent);
+                    ets.translate(destX - ent.posX + appliedOffset[0], destY - (ent.posY + ent.getEyeHeight()) + appliedOffset[1], destZ - ent.posZ + appliedOffset[2]); //go to the centre of the dest portal and offset with the fields
+                    ets.rotate(appliedRotation[0], appliedRotation[1], appliedRotation[2]);
 
                     ent.setPosition(ent.posX, ent.posY, ent.posZ);
                     double maxWidthHeight = Math.max(ent.width, ent.height);
@@ -383,7 +380,7 @@ public abstract class WorldPortal
             {
                 double size = 0.0125D;
                 setupAABBs();
-                AxisAlignedBB plane = flatPlane.expandXyz(size);
+                AxisAlignedBB plane = flatPlane;
 
                 if(plane.maxX - plane.minX > size * 3D)
                 {
