@@ -441,7 +441,7 @@ public class EntityHelper
                 }
 
                 RayTraceResult movingobjectposition2 = null;
-                int k1 = (int)Math.ceil(dist + 1);
+                int k1 = (int)Math.ceil(dist + 1) * 2;
 
                 while(k1-- >= 0)
                 {

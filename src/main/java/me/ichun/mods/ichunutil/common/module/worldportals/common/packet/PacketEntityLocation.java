@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -169,6 +170,10 @@ public class PacketEntityLocation extends AbstractPacket
                     living.renderYawOffset = living.prevRenderYawOffset = ent.rotationYaw;
                     living.renderYawOffset += yawDifference;
                     living.prevRenderYawOffset += prevYawDifference;
+                }
+                else if(ent instanceof EntityArrow)
+                {
+                    ((EntityArrow)ent).inGround = false;
                 }
             }
         }

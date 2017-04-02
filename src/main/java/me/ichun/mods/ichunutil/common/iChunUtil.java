@@ -31,14 +31,20 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
-@Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME, version = iChunUtil.VERSION, guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory", dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)", acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)", acceptedMinecraftVersions = "[1.9.4,1.10.2]")
+@Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
+        version = iChunUtil.VERSION,
+        guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
+        dependencies = "required-after:Forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
+        acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
+        acceptedMinecraftVersions = "[1.9.4,1.10.2]"
+)
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
 {
     //Stuff to bump every updateWorldPortal
     public static final String VERSION_OF_MC = "1.10.2";
     public static final int VERSION_MAJOR = 6;
-    public static final int VERSION_MINOR = 2;
+    public static final int VERSION_MINOR = 3;
     public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";

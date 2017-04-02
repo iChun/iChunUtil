@@ -5,10 +5,13 @@ import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleRain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -260,6 +263,11 @@ public abstract class WorldPortal
             }
         }
 
+        if(world.isRemote)
+        {
+            handleParticles();
+        }
+
         lastScanEntities.removeAll(entitiesInRange); // now contains entities that are out of the range. Remove this from the tracking.
         for(Entity ent : lastScanEntities)
         {
@@ -286,6 +294,73 @@ public abstract class WorldPortal
             fireball.accelerationX = appliedAcceleration[0];
             fireball.accelerationY = appliedAcceleration[1];
             fireball.accelerationZ = appliedAcceleration[2];
+        }
+        else if(ent instanceof EntityArrow)
+        {
+            ((EntityArrow)ent).inGround = false;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void handleParticles() //TODO a config for this?
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        for (int i = 0; i < 4; ++i)
+        {
+            for (int j = 0; j < 2; ++j)
+            {
+                for(Iterator<Particle> ite = mc.effectRenderer.fxLayers[i][j].iterator(); ite.hasNext(); )
+                {
+                    Particle particle = ite.next();
+                    Vec3d particlePos = new Vec3d(particle.prevPosX, particle.prevPosY, particle.prevPosZ); //motion isn't accessible.
+                    Vec3d newParticlePos = new Vec3d(particle.posX, particle.posY, particle.posZ);
+
+                    float offset = (float)Math.abs((particle.prevPosX - particle.posX) * faceOn.getFrontOffsetX() * 1.5D + (particle.prevPosY - particle.posY) * faceOn.getFrontOffsetY() * 1.5D + (particle.prevPosZ - particle.posZ) * faceOn.getFrontOffsetZ() * 1.5D);
+                    boolean isRain = particle instanceof ParticleRain && faceOn == EnumFacing.UP && scanRange.isVecInside(particlePos);
+                    if(isRain || !scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(particlePos) && portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newParticlePos))
+                    {
+                        AxisAlignedBB teleportPlane = getTeleportPlane(offset);
+
+                        double centerX = (teleportPlane.maxX + teleportPlane.minX) / 2D;
+                        double centerY = (teleportPlane.maxY + teleportPlane.minY) / 2D;
+                        double centerZ = (teleportPlane.maxZ + teleportPlane.minZ) / 2D;
+
+                        if(pair != null)
+                        {
+                            float[] appliedOffset = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newParticlePos.xCoord - centerX), (float)(newParticlePos.yCoord - centerY), (float)(newParticlePos.zCoord - centerZ) });
+                            float[] appliedMotion = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newParticlePos.xCoord - particlePos.xCoord), (float)(newParticlePos.yCoord - particlePos.yCoord), (float)(newParticlePos.zCoord - particlePos.zCoord) });
+
+                            pair.setupAABBs();
+                            AxisAlignedBB pairTeleportPlane = pair.getTeleportPlane(offset);
+
+                            double destX = (pairTeleportPlane.maxX + pairTeleportPlane.minX) / 2D;
+                            double destY = (pairTeleportPlane.maxY + pairTeleportPlane.minY) / 2D;
+                            double destZ = (pairTeleportPlane.maxZ + pairTeleportPlane.minZ) / 2D;
+
+                            double x = destX - particle.posX + appliedOffset[0];
+                            double y = destY - particle.posY + appliedOffset[1];
+                            double z = destZ - particle.posZ + appliedOffset[2];
+                            particle.posX += x;
+                            particle.posY += y;
+                            particle.posZ += z;
+                            particle.prevPosX += x;
+                            particle.prevPosY += y;
+                            particle.prevPosZ += z;
+                            particle.setPosition(particle.posX, particle.posY, particle.posZ);
+                            particle.motionX = appliedMotion[0];
+                            particle.motionY = appliedMotion[1];
+                            particle.motionZ = appliedMotion[2];
+                            if(isRain)
+                            {
+                                particle.motionX *= 5D;
+                                particle.motionY *= 5D;
+                                particle.motionZ *= 5D;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

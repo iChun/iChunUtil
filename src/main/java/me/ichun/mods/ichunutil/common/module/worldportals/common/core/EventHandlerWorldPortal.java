@@ -51,7 +51,7 @@ public class EventHandlerWorldPortal
     @SubscribeEvent
     public void onGetCollisionBoxesEvent(GetCollisionBoxesEvent event)
     {
-        if(event.getEntity() == null) //assume particles? //TODO support particles. //TODO do not render particles beyond POV
+        if(event.getEntity() == null) //assume particles? too much work to figure out, ignore.
         {
             return;
         }

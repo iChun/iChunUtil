@@ -59,7 +59,6 @@ public class EntityTransformationStack
 
         public EntityTransformation(double x, double y, double z, float yaw, float pitch, float roll)
         {
-
             this.x = x;
             this.y = y;
             this.z = z;
