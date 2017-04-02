@@ -147,7 +147,6 @@ public class WorldPortalRenderer
         }
     }
 
-    //TODO render entity if they are inside a portal
     private static void drawWorld(Minecraft mc, WorldPortal worldPortal, Entity renderer, float[] posOffset, float[] rotOffset, float partialTick)
     {
         WorldPortal pair = worldPortal.getPair();
@@ -161,7 +160,7 @@ public class WorldPortalRenderer
         mc.gameSettings.hideGUI = true;
 
         double cameraZoom = mc.entityRenderer.cameraZoom;
-        mc.entityRenderer.cameraZoom = 1.05F; //Lightly narrow the FoV of the player view to reduce the rendering but it's not being very helpful :/
+        mc.entityRenderer.cameraZoom = 1.0125F; //Lightly narrow the FoV of the player view to reduce the rendering but it's not being very helpful :/
 
         //                int renderDist = mc.gameSettings.renderDistanceChunks;
         //                mc.gameSettings.renderDistanceChunks = 2;
@@ -510,7 +509,7 @@ public class WorldPortalRenderer
         {
             float yaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F;
             float pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
-            float roll = renderRoll;
+            float roll = (WorldPortals.eventHandlerClient.prevCameraRoll + (WorldPortals.eventHandlerClient.cameraRoll - WorldPortals.eventHandlerClient.prevCameraRoll) * partialTicks) + renderRoll;
             if(entity instanceof EntityAnimal)
             {
                 EntityAnimal entityanimal = (EntityAnimal)entity;

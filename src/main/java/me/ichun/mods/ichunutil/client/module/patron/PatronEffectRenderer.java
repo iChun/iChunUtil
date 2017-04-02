@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
+import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import me.ichun.mods.morph.api.MorphApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -135,7 +136,7 @@ public class PatronEffectRenderer
         {
             AbstractClientPlayer parent = (AbstractClientPlayer)event.ent.latchedEnt;
 
-            if(!(parent.getName().equals(Minecraft.getMinecraft().getRenderViewEntity().getName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0))
+            if(!(parent.getName().equals(Minecraft.getMinecraft().getRenderViewEntity().getName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && WorldPortalRenderer.renderLevel <= 0))
             {
                 GlStateManager.pushMatrix();
 
