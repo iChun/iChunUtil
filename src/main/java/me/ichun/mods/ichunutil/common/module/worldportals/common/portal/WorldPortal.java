@@ -336,7 +336,7 @@ public abstract class WorldPortal
         {
             plane = EntityHelper.rotateAABB(EnumFacing.Axis.X, plane, faceOn == EnumFacing.UP ? -90F : 90F, pos.xCoord, pos.yCoord, pos.zCoord);
         }
-        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.xCoord, pos.yCoord, pos.zCoord).offset(faceOn.getFrontOffsetX() * getPlaneOffset(), faceOn.getFrontOffsetY() * getPlaneOffset(), faceOn.getFrontOffsetZ() * getPlaneOffset());
+        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : faceOn.getAxis() == EnumFacing.Axis.Y && upDir.getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.xCoord, pos.yCoord, pos.zCoord).offset(faceOn.getFrontOffsetX() * getPlaneOffset(), faceOn.getFrontOffsetY() * getPlaneOffset(), faceOn.getFrontOffsetZ() * getPlaneOffset());
         return plane;
     }
 
@@ -383,7 +383,7 @@ public abstract class WorldPortal
             {
                 double size = 0.0125D;
                 setupAABBs();
-                AxisAlignedBB plane = flatPlane;
+                AxisAlignedBB plane = flatPlane.expandXyz(size);
 
                 if(plane.maxX - plane.minX > size * 3D)
                 {

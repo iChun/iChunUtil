@@ -1,10 +1,12 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render.world;
 
 import com.google.common.collect.Lists;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.chunk.IRenderChunkWorldPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.factory.ListChunkFactory;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.factory.VboChunkFactory;
-import me.ichun.mods.ichunutil.common.module.worldportals.common.portal.EntityTransformationStack;
+import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.portal.WorldPortal;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -20,7 +22,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
-import net.minecraft.network.Packet;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -320,60 +321,61 @@ public class RenderGlobalProxy extends RenderGlobal
                 {
                     for(Entity entity2 : classinheritancemultimap)
                     {
-                        boolean needsRender = portal != null && pair != null && portal.lastScanEntities.contains(entity2) && portal.portalInsides.intersectsWith(entity2.getEntityBoundingBox());
-                        if(!needsRender && (!shouldRenderEntity(entity2) || !entity2.shouldRenderInPass(pass)))
+                        if(portal != null && pair != null && portal.lastScanEntities.contains(entity2) && portal.portalInsides.intersectsWith(entity2.getEntityBoundingBox()))
+                        {
+                            double eePosX = entity2.lastTickPosX + (entity2.posX - entity2.lastTickPosX) * (double)partialTicks;
+                            double eePosY = entity2.lastTickPosY + (entity2.posY - entity2.lastTickPosY) * (double)partialTicks;
+                            double eePosZ = entity2.lastTickPosZ + (entity2.posZ - entity2.lastTickPosZ) * (double)partialTicks;
+
+                            AxisAlignedBB flatPlane = portal.getFlatPlane();
+                            double centerX = (flatPlane.maxX + flatPlane.minX) / 2D;
+                            double centerY = (flatPlane.maxY + flatPlane.minY) / 2D;
+                            double centerZ = (flatPlane.maxZ + flatPlane.minZ) / 2D;
+
+                            AxisAlignedBB pairFlatPlane = portal.getPair().getFlatPlane();
+                            double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
+                            double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
+                            double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
+                            GlStateManager.pushMatrix();
+
+                            double rotX = eePosX - d3;
+                            double rotY = eePosY - d4;
+                            double rotZ = eePosZ - d5;
+
+                            float[] appliedOffset = portal.getQuaternionFormula().applyPositionalRotation(new float[] { (float)(eePosX - centerX), (float)(eePosY - centerY), (float)(eePosZ - centerZ) });
+                            float[] appliedRot = portal.getQuaternionFormula().applyRotationalRotation(new float[] {
+                                    180F,
+                                    0F,
+                                    0F
+                            });
+
+                            GlStateManager.translate(destX - eePosX + appliedOffset[0], destY - eePosY + appliedOffset[1], destZ - eePosZ + appliedOffset[2]);
+                            GlStateManager.translate(rotX, rotY, rotZ);
+
+                            GlStateManager.rotate(-appliedRot[0], 0F, 1F, 0F);
+                            GlStateManager.rotate(-appliedRot[1], 1F, 0F, 0F);
+                            GlStateManager.rotate(-appliedRot[2], 0F, 0F, 1F);
+
+                            GlStateManager.translate(-(rotX), -(rotY), -(rotZ));
+
+                            this.renderManager.renderEntityStatic(entity2, partialTicks, false);
+
+                            GlStateManager.popMatrix();
+                        }
+
+                        if(!shouldRenderEntity(entity2) || !entity2.shouldRenderInPass(pass))
                         {
                             continue;
                         }
-                        boolean flag = this.renderManager.shouldRender(entity2, camera, d0, d1, d2) || entity2 == mc.thePlayer || entity2.isRidingOrBeingRiddenBy(this.mc.thePlayer) || needsRender;
+                        boolean flag = this.renderManager.shouldRender(entity2, camera, d0, d1, d2) || entity2 == mc.thePlayer || entity2.isRidingOrBeingRiddenBy(this.mc.thePlayer);
 
                         if(flag && (entity2.posY < 0.0D || entity2.posY >= 256.0D || this.theWorld.isBlockLoaded(new BlockPos(entity2))))
                         {
                             ++this.countEntitiesRendered;
-
-                            if(needsRender)
-                            {
-                                double eePosX = entity2.lastTickPosX + (entity2.posX - entity2.lastTickPosX) * (double)partialTicks;
-                                double eePosY = entity2.lastTickPosY + (entity2.posY - entity2.lastTickPosY) * (double)partialTicks;
-                                double eePosZ = entity2.lastTickPosZ + (entity2.posZ - entity2.lastTickPosZ) * (double)partialTicks;
-
-                                AxisAlignedBB flatPlane = portal.getFlatPlane();
-                                double centerX = (flatPlane.maxX + flatPlane.minX) / 2D;
-                                double centerY = (flatPlane.maxY + flatPlane.minY) / 2D;
-                                double centerZ = (flatPlane.maxZ + flatPlane.minZ) / 2D;
-
-                                AxisAlignedBB pairFlatPlane = portal.getPair().getFlatPlane();
-                                double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
-                                double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
-                                double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
-                                GlStateManager.pushMatrix();
-
-                                double rotX = eePosX - d3;
-                                double rotY = eePosY - d4;
-                                double rotZ = eePosZ - d5;
-
-                                float[] appliedOffset = portal.getQuaternionFormula().applyPositionalRotation(new float[] { (float)(eePosX - centerX), (float)(eePosY + entity2.getEyeHeight() - centerY), (float)(eePosZ - centerZ) });
-                                float[] appliedRot = portal.getQuaternionFormula().applyRotationalRotation(new float[] { 0F, 0F, 0F });
-
-                                GlStateManager.translate(destX - centerX, destY - centerY, destZ - centerZ);
-                                GlStateManager.translate(rotX, rotY, rotZ);
-                                GlStateManager.rotate(-appliedRot[0], 0F, 1F, 0F);
-                                GlStateManager.translate(-(rotX), -(rotY), -(rotZ));
-                                GlStateManager.translate(-(destX - centerX), -(destY - centerY), -(destZ - centerZ));
-
-                                GlStateManager.translate(destX - eePosX + appliedOffset[0], destY - eePosY - entity2.getEyeHeight() + appliedOffset[1], destZ - eePosZ + appliedOffset[2]);
-
-                                this.renderManager.renderEntityStatic(entity2, partialTicks, false);
-
-//                                GL11.glDisable(GL11.GL_STENCIL_TEST);
-
-                                GlStateManager.popMatrix();
-                            }
-
                             boolean disableStencil = false;
                             if(pair != null && pair.lastScanEntities.contains(entity2) && pair.portalInsides.intersectsWith(entity2.getEntityBoundingBox()))
                             {
-                                disableStencil = false;
+                                disableStencil = true;
                             }
                             if(disableStencil)
                             {
