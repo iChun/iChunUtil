@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.common.module.worldportals.client.render;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.ClippingHelperPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.Frustum;
+import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.RenderGlobalProxy;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.portal.EntityTransformationStack;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.portal.WorldPortal;
@@ -105,6 +106,43 @@ public class WorldPortalRenderer
 
             GL11.glDisable(GL11.GL_STENCIL_TEST);
 
+//            double ePosX = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * (double)partialTick;
+//            double ePosY = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * (double)partialTick + ent.getEyeHeight();
+//            double ePosZ = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * (double)partialTick;
+//
+//            AxisAlignedBB flatPlane = portal.getFlatPlane();
+//            double centerX = (flatPlane.maxX + flatPlane.minX) / 2D;
+//            double centerY = (flatPlane.maxY + flatPlane.minY) / 2D;
+//            double centerZ = (flatPlane.maxZ + flatPlane.minZ) / 2D;
+//
+//            AxisAlignedBB pairFlatPlane = portal.getPair().getFlatPlane();
+//            double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
+//            double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
+//            double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
+//
+//
+//            for(Entity entity : portal.lastScanEntities)
+//            {
+//                if(entity.getEntityBoundingBox().intersectsWith(portal.portalInsides))
+//                {
+//                    //Entity is "in" the portal. Render it.
+//                    double eePosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTick;
+//                    double eePosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTick;
+//                    double eePosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTick;
+//
+//                    GlStateManager.pushMatrix();
+////                    GlStateManager.translate(ePosX - portal.getPosition().xCoord + (ePosX - eePosX), ePosY - portal.getPosition().yCoord - ent.getEyeHeight() + (ePosY - eePosY), ePosZ - portal.getPosition().zCoord + (ePosZ - eePosZ));
+////                    GlStateManager.rotate(appliedRotation[2], 0F, 0F, 1F);
+////                    GlStateManager.rotate(appliedRotation[1], 1F, 0F, 0F);
+////                    GlStateManager.rotate(10F, 0F, 1F, 0F);
+//                    GlStateManager.translate((destX - centerX) + ePosX - centerX - (portal.getPosition().xCoord - centerX), (destY - centerY) + ePosY - centerY - (portal.getPosition().yCoord - centerY) - ent.getEyeHeight(), (destZ - centerZ) + ePosZ - centerZ - (portal.getPosition().zCoord - centerZ));
+//
+//                    mc.renderGlobal.renderManager.renderEntityStatic(entity, partialTick, false);
+//                    GlStateManager.popMatrix();
+//                }
+//            }
+
+
             renderLevel--;
         }
     }
@@ -141,7 +179,7 @@ public class WorldPortalRenderer
         double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
 
         EntityTransformationStack.moveEntity(renderer, destX, destY, destZ, posOffset, rotOffset, partialTick);
-        drawWorld(mc.renderGlobal, renderer, pair, partialTick);
+        drawWorld(WorldPortals.eventHandlerClient.renderGlobalProxy, renderer, worldPortal, pair, partialTick);
         EntityTransformationStack.resetEntity(renderer);
 
         //                mc.gameSettings.renderDistanceChunks = renderDist;
@@ -166,7 +204,7 @@ public class WorldPortalRenderer
         TileEntityRendererDispatcher.instance.preDrawBatch();
     }
 
-    private static void drawWorld(RenderGlobal renderglobal, Entity entity, WorldPortal pair, float partialTick)
+    private static void drawWorld(RenderGlobalProxy renderglobal, Entity entity, WorldPortal portal, WorldPortal pair, float partialTick)
     {
         Minecraft mc = Minecraft.getMinecraft();
         ParticleManager particlemanager = mc.effectRenderer;
@@ -244,7 +282,7 @@ public class WorldPortalRenderer
         GlStateManager.pushMatrix();
         RenderHelper.enableStandardItemLighting();
         net.minecraftforge.client.ForgeHooksClient.setRenderPass(0);
-        renderglobal.renderEntities(entity, icamera, partialTick);
+        renderglobal.renderEntities(entity, icamera, partialTick, portal, pair);
         net.minecraftforge.client.ForgeHooksClient.setRenderPass(0);
         RenderHelper.disableStandardItemLighting();
         mc.entityRenderer.disableLightmap();
@@ -361,7 +399,7 @@ public class WorldPortalRenderer
         renderglobal.renderBlockLayer(BlockRenderLayer.TRANSLUCENT, (double)partialTick, 2, entity);
         RenderHelper.enableStandardItemLighting();
         net.minecraftforge.client.ForgeHooksClient.setRenderPass(1);
-        renderglobal.renderEntities(entity, icamera, partialTick);
+        renderglobal.renderEntities(entity, icamera, partialTick, portal, pair);
         net.minecraftforge.client.ForgeHooksClient.setRenderPass(-1);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.shadeModel(GL11.GL_FLAT);
