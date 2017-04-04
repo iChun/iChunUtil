@@ -53,9 +53,11 @@ ichunutil.config.cat.module.worldPortals.comment=World Portals related configs.
 ichunutil.config.prop.maxRecursion.name=Maximum Recursion
 ichunutil.config.prop.stencilValue.name=Stencil Value
 ichunutil.config.prop.renderDistanceChunks.name=Render Distance (Chunks)
+ichunutil.config.prop.maxRendersPerTick.name=Max Renders Per Frame
 ichunutil.config.prop.maxRecursion.comment=Maximum recursion for World Portals. Set to 0 to disable World Portal render.\n\nWarning! The higher this is, the more recursion, the more FPS loss!
 ichunutil.config.prop.stencilValue.comment=Stencils use a specific value to see if the render is ours or not. \n\nIf you're having rendering issues and changing this doesn't help, there might be a conflicting mod. Find out which mod that is and inform both that mod's author and me (iChun).
 ichunutil.config.prop.renderDistanceChunks.comment=Sets the render distance of each world portal (by chunk) if it's not overridden by the world portal.\n\nSetting to 0 binds to MC's default game settings.
+ichunutil.config.prop.maxRendersPerTick.comment=Max World Portal Renders per frame.\nThis will limit the number of renders a tick despite your maxRecursion setting.\nThis is here in hopes that your FPS doesn't tank if you happen to be at the wrong place in the wrong place.
 
 ichunutil.gui.newUpdate=New Mod Update Available!
 

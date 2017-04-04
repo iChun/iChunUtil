@@ -33,6 +33,7 @@ import java.util.Queue;
 public class WorldPortalRenderer
 {
     public static int renderLevel = 0;
+    public static int renderCount = 0;
     public static float renderRoll = 0F;
     public static int frameCount;
 
@@ -43,9 +44,10 @@ public class WorldPortalRenderer
     //partial tick
     public static void renderWorldPortal(Minecraft mc, WorldPortal portal, Entity ent, float[] appliedOffset, float[] appliedRotation, float partialTick)
     {
-        if(RendererHelper.canUseStencils() && renderLevel <= (iChunUtil.config.maxRecursion - 1) && portal.hasPair())
+        if(RendererHelper.canUseStencils() && renderLevel <= (iChunUtil.config.maxRecursion - 1) && renderCount < iChunUtil.config.maxRendersPerTick && portal.hasPair())
         {
             renderLevel++;
+            renderCount++;
 
             //set fields and render the stencil area.
             GL11.glEnable(GL11.GL_STENCIL_TEST);
@@ -53,21 +55,18 @@ public class WorldPortalRenderer
             GlStateManager.depthMask(true);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            if(renderLevel == 0) //only clear the stencil if we're about to start drawing the first world portal.
-            {
-                //set the stencil func to only allow white, clear the stencil buffer.
-                GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue, 0xFF); //set the stencil test to always pass, set reference value, set mask.
-                GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_KEEP);  // sPass, dFail, dPass. Set stencil where the depth test fails. (depth mask is on)
-                GL11.glStencilMask(0xFF); //set the stencil mask.
+            GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue, 0xFF); //set the stencil test to always pass, set reference value, set mask.
+            GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
+            GL11.glStencilMask(0xFF); //set the stencil mask.
 
-                GL11.glClearStencil(0); //stencil clears to 0 when cleared.
-                GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+            GL11.glClearStencil(0); //stencil clears to 0 when cleared.
+            GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
-                //only draw the portal on first recursion, we shouldn't draw anything outside the portal.
-                portal.drawPlane();//draw to stencil to set the areas that pass stencil and depth to our reference value
-            }
+            //only draw the portal on first recursion, we shouldn't draw anything outside the portal.
+            portal.drawPlane();//draw to stencil to set the areas that pass stencil and depth to our reference value
 
             GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
+            portal.drawDepthObstructor(); //Draw a large plane to the depth buffer (but not stencil) to prevent recursive portals showing up.
             GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
             //This is where we hope nothing would have done GL_INCR or GL_DECR where we've drawn our stuffs.
 
@@ -138,7 +137,6 @@ public class WorldPortalRenderer
         WorldPortals.eventHandlerClient.renderGlobalProxy.bindViewFrustum(pair); //binds to the View Frustum for this TE.
         WorldPortals.eventHandlerClient.renderGlobalProxy.storePlayerInfo();
 
-        pair.setupAABBs();
         AxisAlignedBB pairFlatPlane = pair.getFlatPlane();
         double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
         double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;

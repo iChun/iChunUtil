@@ -67,6 +67,8 @@ public class EventHandlerWorldPortalClient
                 }
                 renderGlobalProxy.setWorldAndLoadRenderers(instance);
             }
+            WorldPortalRenderer.renderLevel = 0;
+            WorldPortalRenderer.renderCount = 0;
         }
     }
 

@@ -129,6 +129,10 @@ public class iChunUtil
         @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)
         @IntMinMax(min = 0, max = 16)
         public int renderDistanceChunks = 0;
+
+        @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)
+        @IntMinMax(min = 1, max = 100)
+        public int maxRendersPerTick = 10;
         //End Modules
 
         public Config(File file)

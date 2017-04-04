@@ -27,7 +27,7 @@ public class WorldPortals
         }
         init = true;
 
-        iChunUtil.config.reveal("maxRecursion", "stencilValue");
+        iChunUtil.config.reveal("maxRecursion", "stencilValue", "renderDistanceChunks", "maxRendersPerTick");
 
         eventHandler = new EventHandlerWorldPortal();
         MinecraftForge.EVENT_BUS.register(eventHandler);

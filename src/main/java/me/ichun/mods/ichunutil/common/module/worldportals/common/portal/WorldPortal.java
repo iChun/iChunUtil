@@ -33,8 +33,6 @@ public abstract class WorldPortal
 
     private QuaternionFormula quaternionFormula; //used to calculate the rotation and the positional offset (as well as motion)
 
-    private float scanDistance;
-
     private AxisAlignedBB plane;
     private AxisAlignedBB flatPlane; //AABB that defines the plane where the magic happens.
     public AxisAlignedBB scanRange;
@@ -65,8 +63,6 @@ public abstract class WorldPortal
         this.faceOn = EnumFacing.NORTH;
         this.upDir = EnumFacing.UP;
 
-        this.scanDistance = 3F;
-
         this.firstUpdate = true;
     }
 
@@ -82,7 +78,7 @@ public abstract class WorldPortal
         this.width = width;
         this.height = height;
 
-        this.scanDistance = 3F;
+        this.setupAABBs();
 
         this.firstUpdate = true;
     }
@@ -96,10 +92,14 @@ public abstract class WorldPortal
     @SideOnly(Side.CLIENT)
     public abstract void drawPlane();
 
+    @SideOnly(Side.CLIENT)
+    public abstract void drawDepthObstructor(); //this is drawn to prevent recursion showing up outside the portal. Generally just a large texture across the plane.
+
     public void setFace(EnumFacing faceOut, EnumFacing upDir)
     {
         this.faceOn = faceOut;
         this.upDir = upDir;
+        setupAABBs();
     }
 
     public EnumFacing getFaceOn()
@@ -131,20 +131,18 @@ public abstract class WorldPortal
     {
         this.width = width;
         this.height = height;
+        setupAABBs();
     }
 
-    public void setScanDistance(float scanDistance)
+    public float getScanDistance()
     {
-        this.scanDistance = scanDistance;
-        this.plane = null;
-        setupAABBs();
+        return 3F;
     }
 
     public void updateWorldPortal()
     {
         if(firstUpdate)
         {
-            setupAABBs(); //setup AABBs.
             firstUpdate = false;
         }
         Iterator<Map.Entry<Entity, Integer>> ite = teleportCooldown.entrySet().iterator();
@@ -210,7 +208,6 @@ public abstract class WorldPortal
                     float[] appliedMotion = getQuaternionFormula().applyPositionalRotation(new float[] { (float)motions[0], (float)motions[1], (float)motions[2] });
                     float[] appliedRotation = getQuaternionFormula().applyRotationalRotation(new float[] { ent.rotationYaw, ent.rotationPitch, 0F });
 
-                    pair.setupAABBs(); //TODO do I have to double check and make sure the player isn't put back in the offset "portal insides"?
                     AxisAlignedBB pairTeleportPlane = pair.getTeleportPlane(offset);
 
                     double destX = (pairTeleportPlane.maxX + pairTeleportPlane.minX) / 2D;
@@ -439,17 +436,17 @@ public abstract class WorldPortal
         return flatPlane.addCoord(faceOn.getFrontOffsetX() * -max, faceOn.getFrontOffsetY() * -max, faceOn.getFrontOffsetZ() * -max);
     }
 
-    public AxisAlignedBB setupAABBs()
+    public AxisAlignedBB getPlane()
     {
-        if(plane == null)
-        {
-            plane = createPlaneAround(0.0125D);
-            flatPlane = createPlaneAround(0);
-            scanRange = flatPlane.addCoord(faceOn.getFrontOffsetX() * scanDistance, faceOn.getFrontOffsetY() * scanDistance, faceOn.getFrontOffsetZ() * scanDistance);
-            portalInsides = flatPlane.addCoord(faceOn.getFrontOffsetX() * -100D, faceOn.getFrontOffsetY() * -100D, faceOn.getFrontOffsetZ() * -100D);
-        }
-
         return plane;
+    }
+
+    private void setupAABBs()
+    {
+        plane = createPlaneAround(0.0125D);
+        flatPlane = createPlaneAround(0);
+        scanRange = flatPlane.addCoord(faceOn.getFrontOffsetX() * getScanDistance(), faceOn.getFrontOffsetY() * getScanDistance(), faceOn.getFrontOffsetZ() * getScanDistance());
+        portalInsides = flatPlane.addCoord(faceOn.getFrontOffsetX() * -100D, faceOn.getFrontOffsetY() * -100D, faceOn.getFrontOffsetZ() * -100D);
     }
 
     public AxisAlignedBB getFlatPlane()
@@ -475,7 +472,6 @@ public abstract class WorldPortal
             if(canCollideWithBorders())
             {
                 double size = 0.0125D;
-                setupAABBs();
                 AxisAlignedBB plane = flatPlane;
 
                 if(plane.maxX - plane.minX > size * 3D)
@@ -524,6 +520,7 @@ public abstract class WorldPortal
     {
         this.position = v;
         this.posBlock = new BlockPos(v);
+        setupAABBs();
     }
 
     public Vec3d getPosition() //position of the world portal, pre-offset
