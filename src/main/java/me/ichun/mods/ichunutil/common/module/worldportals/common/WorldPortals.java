@@ -1,6 +1,8 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.common;
 
+import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.core.EventHandlerWorldPortalClient;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.core.EventHandlerWorldPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
@@ -25,6 +27,8 @@ public class WorldPortals
         }
         init = true;
 
+        iChunUtil.config.reveal("maxRecursion", "stencilValue");
+
         eventHandler = new EventHandlerWorldPortal();
         MinecraftForge.EVENT_BUS.register(eventHandler);
 
@@ -41,6 +45,11 @@ public class WorldPortals
     {
         eventHandlerClient = new EventHandlerWorldPortalClient();
         MinecraftForge.EVENT_BUS.register(eventHandlerClient);
+
+        if(!RendererHelper.canUseStencils())
+        {
+            iChunUtil.LOGGER.error("[WorldPortals] Stencils aren't enabled. We won't be able to render a world portal!");
+        }
     }
 
     public static void onServerStopping()

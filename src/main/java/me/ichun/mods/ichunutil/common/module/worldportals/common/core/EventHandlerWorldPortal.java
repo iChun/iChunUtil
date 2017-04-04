@@ -14,8 +14,7 @@ import java.util.*;
 
 public class EventHandlerWorldPortal
 {
-    //will be the plane x the width/height, whichever bigger.
-    public EnumMap<Side, HashMap<Entity, HashSet<WorldPortal>>> monitoredEntities = new EnumMap<Side, HashMap<Entity, HashSet<WorldPortal>>>(Side.class)
+    public EnumMap<Side, HashMap<Entity, HashSet<WorldPortal>>> monitoredEntities = new EnumMap<Side, HashMap<Entity, HashSet<WorldPortal>>>(Side.class) // This is for portals that are against the wall.
     {{
         put(Side.SERVER, new HashMap<>());
         put(Side.CLIENT, new HashMap<>());

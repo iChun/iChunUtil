@@ -88,7 +88,7 @@ public class iChunUtil
 
         //Modules
         //Compact Porkchop module
-        @ConfigProp(category = "block", useSession = true, module = "compactPorkchop")
+        @ConfigProp(module = "compactPorkchop", category = "block", useSession = true)
         @IntBool
         public int enableCompactPorkchop = 1;
 
@@ -97,11 +97,11 @@ public class iChunUtil
         public String eulaAcknowledged = "";
 
         //Patreon module
-        @ConfigProp(side = Side.CLIENT, module = "patreon", hidden = true)
+        @ConfigProp(module = "patreon", side = Side.CLIENT, hidden = true)
         @IntBool
         public int showPatronReward = 1;
 
-        @ConfigProp(side = Side.CLIENT, module = "patreon", hidden = true)
+        @ConfigProp(module = "patreon", side = Side.CLIENT, hidden = true)
         @IntMinMax(min = 1, max = 6)
         public int patronRewardType = 1;
 
@@ -110,14 +110,21 @@ public class iChunUtil
         @IntMinMax(min = 0, max = 2)
         public int versionNotificationTypes = 0;
 
-        @ConfigProp(side = Side.CLIENT, module = "versionCheck")
+        @ConfigProp(module = "versionCheck", side = Side.CLIENT)
         @IntMinMax(min = 0, max = 2)
         public int versionNotificationFrequency = 2;
 
-        @ConfigProp(side = Side.CLIENT, module = "versionCheck")
+        @ConfigProp(module = "versionCheck", side = Side.CLIENT)
         @IntMinMax(min = 0, max = 35)
         public int versionSave = 0;
 
+        @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)
+        @IntMinMax(min = 0, max = 10)
+        public int maxRecursion = 2;
+
+        @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)
+        @IntMinMax(min = 1, max = 0xff)
+        public int stencilValue = 0x2f;
         //End Modules
 
         public Config(File file)

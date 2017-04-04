@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render;
 
-import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
+import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.ClippingHelperPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.Frustum;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.RenderGlobalProxy;
@@ -42,30 +43,33 @@ public class WorldPortalRenderer
     //partial tick
     public static void renderWorldPortal(Minecraft mc, WorldPortal portal, Entity ent, float[] appliedOffset, float[] appliedRotation, float partialTick)
     {
-        if(renderLevel <= 0 && portal.hasPair())
+        if(RendererHelper.canUseStencils() && renderLevel <= (iChunUtil.config.maxRecursion - 1) && portal.hasPair())
         {
             renderLevel++;
 
-            //TODO figure out how to frigging reset a stencil bit.
             //set fields and render the stencil area.
             GL11.glEnable(GL11.GL_STENCIL_TEST);
             GlStateManager.colorMask(false, false, false, false);
             GlStateManager.depthMask(true);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            //set the stencil func to only allow white, clear the stencil buffer.
-            GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
-            GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // draw 1s on test fail (always)
-            GL11.glStencilMask(0xFF);
-            GL11.glClearStencil(0);
-            GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+            if(renderLevel == 0) //only clear the stencil if we're about to start drawing the first world portal.
+            {
+                //set the stencil func to only allow white, clear the stencil buffer.
+                GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue, 0xFF); //set the stencil test to always pass, set reference value, set mask.
+                GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_REPLACE, GL11.GL_KEEP);  // sPass, dFail, dPass. Set stencil where the depth test fails. (depth mask is on)
+                GL11.glStencilMask(0xFF); //set the stencil mask.
 
-            //draw the white area onto the stencil
-            portal.drawPlane();
+                GL11.glClearStencil(0); //stencil clears to 0 when cleared.
+                GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
-            //Anything rendered after these two will only show up on the white in the stencil buffer
-            GL11.glStencilMask(0x00);
-            GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+                //only draw the portal on first recursion, we shouldn't draw anything outside the portal.
+                portal.drawPlane();//draw to stencil to set the areas that pass stencil and depth to our reference value
+            }
+
+            GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
+            GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
+            //This is where we hope nothing would have done GL_INCR or GL_DECR where we've drawn our stuffs.
 
             //set the z-buffer to the farthest value for every pixel in the portal, before rendering the stuff in the portal
             GlStateManager.depthFunc(GL11.GL_ALWAYS);
@@ -105,43 +109,6 @@ public class WorldPortalRenderer
             GlStateManager.enableTexture2D();
 
             GL11.glDisable(GL11.GL_STENCIL_TEST);
-
-//            double ePosX = ent.lastTickPosX + (ent.posX - ent.lastTickPosX) * (double)partialTick;
-//            double ePosY = ent.lastTickPosY + (ent.posY - ent.lastTickPosY) * (double)partialTick + ent.getEyeHeight();
-//            double ePosZ = ent.lastTickPosZ + (ent.posZ - ent.lastTickPosZ) * (double)partialTick;
-//
-//            AxisAlignedBB flatPlane = portal.getFlatPlane();
-//            double centerX = (flatPlane.maxX + flatPlane.minX) / 2D;
-//            double centerY = (flatPlane.maxY + flatPlane.minY) / 2D;
-//            double centerZ = (flatPlane.maxZ + flatPlane.minZ) / 2D;
-//
-//            AxisAlignedBB pairFlatPlane = portal.getPair().getFlatPlane();
-//            double destX = (pairFlatPlane.maxX + pairFlatPlane.minX) / 2D;
-//            double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
-//            double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
-//
-//
-//            for(Entity entity : portal.lastScanEntities)
-//            {
-//                if(entity.getEntityBoundingBox().intersectsWith(portal.portalInsides))
-//                {
-//                    //Entity is "in" the portal. Render it.
-//                    double eePosX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * (double)partialTick;
-//                    double eePosY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * (double)partialTick;
-//                    double eePosZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * (double)partialTick;
-//
-//                    GlStateManager.pushMatrix();
-////                    GlStateManager.translate(ePosX - portal.getPosition().xCoord + (ePosX - eePosX), ePosY - portal.getPosition().yCoord - ent.getEyeHeight() + (ePosY - eePosY), ePosZ - portal.getPosition().zCoord + (ePosZ - eePosZ));
-////                    GlStateManager.rotate(appliedRotation[2], 0F, 0F, 1F);
-////                    GlStateManager.rotate(appliedRotation[1], 1F, 0F, 0F);
-////                    GlStateManager.rotate(10F, 0F, 1F, 0F);
-//                    GlStateManager.translate((destX - centerX) + ePosX - centerX - (portal.getPosition().xCoord - centerX), (destY - centerY) + ePosY - centerY - (portal.getPosition().yCoord - centerY) - ent.getEyeHeight(), (destZ - centerZ) + ePosZ - centerZ - (portal.getPosition().zCoord - centerZ));
-//
-//                    mc.renderGlobal.renderManager.renderEntityStatic(entity, partialTick, false);
-//                    GlStateManager.popMatrix();
-//                }
-//            }
-
 
             renderLevel--;
         }

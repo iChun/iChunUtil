@@ -17,7 +17,7 @@ public class QuaternionFormula
 
     public static Quaternion getHorizontalQuaternion(EnumFacing in)
     {
-        float horiAngle = in.getHorizontalAngle() * 0.99F;
+        float horiAngle = in.getHorizontalAngle() - 0.0125F; // please tell me you won't notice a 0.0125 difference in the yaw. -.-
         Quaternion quat = horizontalQuats.get(horiAngle);
         if(quat == null)
         {

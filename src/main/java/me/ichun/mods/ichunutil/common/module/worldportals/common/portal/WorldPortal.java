@@ -166,7 +166,10 @@ public abstract class WorldPortal
         {
             Entity ent = entitiesInRange.get(i);
 
-            WorldPortals.eventHandler.addMonitoredEntity(ent, this);
+            if(isAgainstWall())
+            {
+                WorldPortals.eventHandler.addMonitoredEntity(ent, this);
+            }
             if(teleportCooldown.containsKey(ent) || ent instanceof EntityPlayerMP && !ent.worldObj.isRemote)
             {
                 continue;
@@ -244,10 +247,16 @@ public abstract class WorldPortal
                     //transfer over this entity to the other portal.
                     pair.teleportCooldown.put(ent, 3);
                     pair.lastScanEntities.add(ent);
-                    WorldPortals.eventHandler.addMonitoredEntity(ent, pair);
+                    if(pair.isAgainstWall())
+                    {
+                        WorldPortals.eventHandler.addMonitoredEntity(ent, pair);
+                    }
                     teleportCooldown.put(ent, 3);
                     lastScanEntities.remove(ent);
-                    WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+                    if(isAgainstWall())
+                    {
+                        WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+                    }
 
                     handleSpecialEntities(ent);
 
@@ -268,13 +277,16 @@ public abstract class WorldPortal
             handleParticles();
         }
 
-        lastScanEntities.removeAll(entitiesInRange); // now contains entities that are out of the range. Remove this from the tracking.
-        for(Entity ent : lastScanEntities)
+        if(isAgainstWall())
         {
-            WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
-        }
+            lastScanEntities.removeAll(entitiesInRange); // now contains entities that are out of the range. Remove this from the tracking.
+            for(Entity ent : lastScanEntities)
+            {
+                WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+            }
 
-        lastScanEntities = entitiesInRange;
+            lastScanEntities = entitiesInRange;
+        }
     }
 
     public void handleSpecialEntities(Entity ent)
@@ -367,14 +379,17 @@ public abstract class WorldPortal
     public void terminate()
     {
         //TODO notify partner that the partner no longer has a pair as well.
-        for(Entity ent : lastScanEntities)
+        if(isAgainstWall())
         {
-            if(ent.getEntityBoundingBox().intersectsWith(portalInsides))
+            for(Entity ent : lastScanEntities)
             {
-                EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
-                ent.setPosition(ent.posX, ent.posY, ent.posZ);
+                if(ent.getEntityBoundingBox().intersectsWith(portalInsides))
+                {
+                    EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
+                    ent.setPosition(ent.posX, ent.posY, ent.posZ);
+                }
+                WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
             }
-            WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
         }
     }
 
@@ -391,6 +406,11 @@ public abstract class WorldPortal
     public void forceFirstUpdate()
     {
         firstUpdate = true;
+    }
+
+    public boolean isAgainstWall() //you have world, pos, faceOn, etc all to check. This is to remove the collision behind the portal.
+    {
+        return false;
     }
 
     private AxisAlignedBB createPlaneAround(double size)
