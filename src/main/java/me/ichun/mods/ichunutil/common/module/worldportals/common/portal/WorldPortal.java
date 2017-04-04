@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.common.portal;
 
+import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -8,6 +9,7 @@ import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEn
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRain;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,9 +18,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -476,18 +476,18 @@ public abstract class WorldPortal
 
                 if(plane.maxX - plane.minX > size * 3D)
                 {
-                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.minZ, plane.minX + size, plane.maxY, plane.maxZ));
-                    collisions.add(new AxisAlignedBB(plane.maxX - size, plane.minY, plane.minZ, plane.maxX, plane.maxY, plane.maxZ));
+                    collisions.add(new AxisAlignedBB(plane.maxX, plane.minY, plane.minZ, plane.maxX + size, plane.maxY, plane.maxZ));
+                    collisions.add(new AxisAlignedBB(plane.minX - size, plane.minY, plane.minZ, plane.minX, plane.maxY, plane.maxZ));
                 }
                 if(plane.maxY - plane.minY > size * 3D)
                 {
-                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.minZ, plane.maxX, plane.minY + size, plane.maxZ));
-                    collisions.add(new AxisAlignedBB(plane.minX, plane.maxY - size, plane.minZ, plane.maxX, plane.maxY, plane.maxZ));
+                    collisions.add(new AxisAlignedBB(plane.minX, plane.maxY, plane.minZ, plane.maxX, plane.maxY + size, plane.maxZ));
+                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY - size, plane.minZ, plane.maxX, plane.minY, plane.maxZ));
                 }
                 if(plane.maxZ - plane.minZ > size * 3D)
                 {
-                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.minZ, plane.maxX, plane.maxY, plane.minZ + size));
-                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.maxZ - size, plane.maxX, plane.maxY, plane.maxZ));
+                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.maxZ, plane.maxX, plane.maxY, plane.maxZ + size));
+                    collisions.add(new AxisAlignedBB(plane.minX, plane.minY, plane.minZ - size, plane.maxX, plane.maxY, plane.minZ));
                 }
             }
         }
@@ -598,9 +598,13 @@ public abstract class WorldPortal
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean shouldRenderFront(Entity viewer) //TODO THIS
+    public boolean shouldRenderFront(Entity viewer, float partialTicks) //TODO THIS
     {
-        return true;
+        Vec3d position = RendererHelper.getCameraPosition(viewer, partialTicks);
+        return faceOn.getFrontOffsetX() < 0 && position.xCoord < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.xCoord > flatPlane.minX ||
+                faceOn.getFrontOffsetY() < 0 && position.yCoord < flatPlane.minY || faceOn.getFrontOffsetY() > 0 && position.yCoord > flatPlane.minY ||
+                faceOn.getFrontOffsetZ() < 0 && position.zCoord < flatPlane.minZ || faceOn.getFrontOffsetZ() > 0 && position.zCoord > flatPlane.minZ
+                ;
     }
 
     @SideOnly(Side.CLIENT)

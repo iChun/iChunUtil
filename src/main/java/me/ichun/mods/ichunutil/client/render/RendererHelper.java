@@ -18,9 +18,13 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -54,6 +58,62 @@ public class RendererHelper
     public static void spawnParticle(Particle particle)
     {
         Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+    }
+
+    public static Vec3d getCameraPosition(Entity viewer, float partialTicks)
+    {
+        Vec3d position = new Vec3d(viewer.posX, viewer.posY + viewer.getEyeHeight(), viewer.posZ);
+        Minecraft mc = Minecraft.getMinecraft();
+        if(mc.gameSettings.thirdPersonView > 0)
+        {
+            double d3 = (double)(mc.entityRenderer.thirdPersonDistancePrev + (4.0F - mc.entityRenderer.thirdPersonDistancePrev) * partialTicks);
+            if (!mc.gameSettings.debugCamEnable)
+            {
+                double d0 = viewer.prevPosX + (viewer.posX - viewer.prevPosX) * (double)partialTicks;
+                double d1 = viewer.prevPosY + (viewer.posY - viewer.prevPosY) * (double)partialTicks;
+                double d2 = viewer.prevPosZ + (viewer.posZ - viewer.prevPosZ) * (double)partialTicks;
+
+                float f1 = viewer.rotationYaw;
+                float f2 = viewer.rotationPitch;
+
+                if (mc.gameSettings.thirdPersonView == 2)
+                {
+                    f2 += 180.0F;
+                }
+
+                double d4 = (double)(-MathHelper.sin(f1 * 0.017453292F) * MathHelper.cos(f2 * 0.017453292F)) * d3;
+                double d5 = (double)(MathHelper.cos(f1 * 0.017453292F) * MathHelper.cos(f2 * 0.017453292F)) * d3;
+                double d6 = (double)(-MathHelper.sin(f2 * 0.017453292F)) * d3;
+
+                for (int i = 0; i < 8; ++i)
+                {
+                    float f3 = (float)((i & 1) * 2 - 1);
+                    float f4 = (float)((i >> 1 & 1) * 2 - 1);
+                    float f5 = (float)((i >> 2 & 1) * 2 - 1);
+                    f3 = f3 * 0.1F;
+                    f4 = f4 * 0.1F;
+                    f5 = f5 * 0.1F;
+                    RayTraceResult raytraceresult = mc.theWorld.rayTraceBlocks(new Vec3d(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3d(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
+
+                    if (raytraceresult != null)
+                    {
+                        double d7 = raytraceresult.hitVec.distanceTo(new Vec3d(d0, d1, d2));
+
+                        if (d7 < d3)
+                        {
+                            d3 = d7;
+                        }
+                    }
+                }
+
+                if (mc.gameSettings.thirdPersonView == 2)
+                {
+                    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+                }
+                position = position.addVector(-d4, -d6, -d5);
+            }
+        }
+        return position;
     }
 
     public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
