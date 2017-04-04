@@ -129,8 +129,8 @@ public class WorldPortalRenderer
         double cameraZoom = mc.entityRenderer.cameraZoom;
         mc.entityRenderer.cameraZoom = 1.0125F; //Lightly narrow the FoV of the player view to reduce the rendering but it's not being very helpful :/
 
-        //                int renderDist = mc.gameSettings.renderDistanceChunks;
-        //                mc.gameSettings.renderDistanceChunks = 2;
+        int renderDist = mc.gameSettings.renderDistanceChunks;
+        mc.gameSettings.renderDistanceChunks = worldPortal.getRenderDistanceChunks();
 
         RenderGlobal global = mc.renderGlobal;
         mc.renderGlobal = WorldPortals.eventHandlerClient.renderGlobalProxy;
@@ -148,7 +148,7 @@ public class WorldPortalRenderer
         drawWorld(WorldPortals.eventHandlerClient.renderGlobalProxy, renderer, worldPortal, pair, partialTick);
         ets.pop();
 
-        //                mc.gameSettings.renderDistanceChunks = renderDist;
+        mc.gameSettings.renderDistanceChunks = renderDist;
         mc.renderGlobal = global;
 
         mc.entityRenderer.cameraZoom = cameraZoom;

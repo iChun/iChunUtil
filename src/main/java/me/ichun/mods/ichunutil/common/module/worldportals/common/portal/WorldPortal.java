@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.common.module.worldportals.common.portal;
 
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
 import net.minecraft.client.Minecraft;
@@ -600,8 +601,14 @@ public abstract class WorldPortal
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean shouldRenderFront(Entity viewer)
+    public boolean shouldRenderFront(Entity viewer) //TODO THIS
     {
         return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public int getRenderDistanceChunks()
+    {
+        return iChunUtil.config.renderDistanceChunks == 0 ? Minecraft.getMinecraft().gameSettings.renderDistanceChunks : iChunUtil.config.renderDistanceChunks;
     }
 }
