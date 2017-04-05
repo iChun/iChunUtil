@@ -9,7 +9,6 @@ import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEn
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRain;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,9 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -91,9 +92,6 @@ public abstract class WorldPortal
 
     @SideOnly(Side.CLIENT)
     public abstract void drawPlane();
-
-    @SideOnly(Side.CLIENT)
-    public abstract void drawDepthObstructor(); //this is drawn to prevent recursion showing up outside the portal. Generally just a large texture across the plane.
 
     public void setFace(EnumFacing faceOut, EnumFacing upDir)
     {

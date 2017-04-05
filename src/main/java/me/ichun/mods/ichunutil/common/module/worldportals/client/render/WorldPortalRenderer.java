@@ -55,19 +55,19 @@ public class WorldPortalRenderer
             GlStateManager.depthMask(true);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue, 0xFF); //set the stencil test to always pass, set reference value, set mask.
-            GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
+            GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue + renderLevel, 0xFF); //set the stencil test to always pass, set reference value, set mask.
+            if(renderLevel == 1) GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
+            else GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_INCR);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
             GL11.glStencilMask(0xFF); //set the stencil mask.
 
             GL11.glClearStencil(0); //stencil clears to 0 when cleared.
-            GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
+            if(renderLevel == 1)GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
             //only draw the portal on first recursion, we shouldn't draw anything outside the portal.
             portal.drawPlane();//draw to stencil to set the areas that pass stencil and depth to our reference value
 
             GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
-            portal.drawDepthObstructor(); //Draw a large plane to the depth buffer (but not stencil) to prevent recursive portals showing up.
-            GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
+            GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue + renderLevel, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
             //This is where we hope nothing would have done GL_INCR or GL_DECR where we've drawn our stuffs.
 
             //set the z-buffer to the farthest value for every pixel in the portal, before rendering the stuff in the portal
@@ -103,11 +103,16 @@ public class WorldPortalRenderer
             //This call fixes that
             GlStateManager.disableTexture2D();
             GL11.glColorMask(false, false, false, false);
+            GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //set the stencil test to always pass, set reference value, set mask.
+            GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_DECR);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
+            GL11.glStencilMask(0xFF); //set the stencil mask.
             portal.drawPlane();
+            GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
+            GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
             GL11.glColorMask(true, true, true, true);
             GlStateManager.enableTexture2D();
 
-            GL11.glDisable(GL11.GL_STENCIL_TEST);
+            if(renderLevel == 1) GL11.glDisable(GL11.GL_STENCIL_TEST);
 
             renderLevel--;
         }
