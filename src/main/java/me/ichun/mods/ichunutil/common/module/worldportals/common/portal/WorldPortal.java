@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
 import net.minecraft.client.Minecraft;
@@ -204,7 +205,7 @@ public abstract class WorldPortal
                 {
                     float[] appliedOffset = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newEntPos.xCoord - centerX), (float)(newEntPos.yCoord - centerY), (float)(newEntPos.zCoord - centerZ) });
                     float[] appliedMotion = getQuaternionFormula().applyPositionalRotation(new float[] { (float)motions[0], (float)motions[1], (float)motions[2] });
-                    float[] appliedRotation = getQuaternionFormula().applyRotationalRotation(new float[] { ent.rotationYaw, ent.rotationPitch, 0F });
+                    float[] appliedRotation = getQuaternionFormula().applyRotationalRotation(new float[] { ent.rotationYaw, ent.rotationPitch, ent.worldObj.isRemote ? getRoll(ent) : 0F });
 
                     AxisAlignedBB pairTeleportPlane = pair.getTeleportPlane(offset);
 
@@ -283,6 +284,16 @@ public abstract class WorldPortal
 
             lastScanEntities = entitiesInRange;
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getRoll(Entity ent)
+    {
+        if(ent == Minecraft.getMinecraft().getRenderViewEntity())
+        {
+            return WorldPortals.eventHandlerClient.cameraRoll;
+        }
+        return 0F;
     }
 
     public void handleSpecialEntities(Entity ent)

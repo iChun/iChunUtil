@@ -22,7 +22,6 @@ public class EntityTransformationStack
 
     public void push()
     {
-
         stack.push(new EntityTransformationSeparator());
     }
 
@@ -103,8 +102,6 @@ public class EntityTransformationStack
                 pitch = player.rotationPitch - player.renderArmPitch;
             }
 
-            WorldPortalRenderer.renderRoll = roll;
-
             applyMain();
 
             if(entity instanceof EntityPlayerSP)
@@ -176,8 +173,6 @@ public class EntityTransformationStack
             }
 
             revertMain();
-
-            WorldPortalRenderer.renderRoll = 0F;
 
             if(entity instanceof EntityPlayerSP)
             {

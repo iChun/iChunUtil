@@ -96,58 +96,59 @@ public class EventHandlerWorldPortalClient
     {
         WorldPortals.eventHandler.monitoredEntities.get(Side.CLIENT).clear();
         WorldPortalRenderer.renderLevel = 0;
+        WorldPortalRenderer.rollFactor.clear();
     }
 
-        @SubscribeEvent
-        public void onRenderWorldLastEvent(RenderWorldLastEvent event)
+    @SubscribeEvent
+    public void onRenderWorldLastEvent(RenderWorldLastEvent event)
+    {
+        if(aabbToRender.isEmpty())
         {
-            if(aabbToRender.isEmpty())
-            {
-                return;
-            }
-            EntityPlayer lastPlayer = Minecraft.getMinecraft().thePlayer;
-
-            GlStateManager.disableAlpha();
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            float r, g, b, a;
-            if(true)
-            {
-                r = 0.8F;
-                b = 0F;
-                g = 0F;
-                a = 0.4F;
-            }
-            else
-            {
-                r = 120F / 255F;
-                g = 188F / 255F;
-                b = 215F / 255F;
-                a = 0.4F;
-            }
-            GlStateManager.color(r, g, b, a);
-            GlStateManager.glLineWidth(4.0F);
-            GlStateManager.disableTexture2D();
-            GlStateManager.depthMask(false);
-            float f1 = 0.002F;
-
-            double d0 = lastPlayer.lastTickPosX + (lastPlayer.posX - lastPlayer.lastTickPosX) * (double)event.getPartialTicks();
-            double d1 = lastPlayer.lastTickPosY + (lastPlayer.posY - lastPlayer.lastTickPosY) * (double)event.getPartialTicks();
-            double d2 = lastPlayer.lastTickPosZ + (lastPlayer.posZ - lastPlayer.lastTickPosZ) * (double)event.getPartialTicks();
-            for(AxisAlignedBB aabb : aabbToRender)
-            {
-                RenderGlobal.drawSelectionBoundingBox(aabb.expand(0.0020000000949949026D, 0.0020000000949949026D, 0.0020000000949949026D).offset(-d0, -d1, -d2), r, g, b, a);
-            }
-
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlpha();
-
-            if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
-            {
-                aabbToRender.clear();
-            }
+            return;
         }
+        EntityPlayer lastPlayer = Minecraft.getMinecraft().thePlayer;
+
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        float r, g, b, a;
+        if(true)
+        {
+            r = 0.8F;
+            b = 0F;
+            g = 0F;
+            a = 0.4F;
+        }
+        else
+        {
+            r = 120F / 255F;
+            g = 188F / 255F;
+            b = 215F / 255F;
+            a = 0.4F;
+        }
+        GlStateManager.color(r, g, b, a);
+        GlStateManager.glLineWidth(4.0F);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+        float f1 = 0.002F;
+
+        double d0 = lastPlayer.lastTickPosX + (lastPlayer.posX - lastPlayer.lastTickPosX) * (double)event.getPartialTicks();
+        double d1 = lastPlayer.lastTickPosY + (lastPlayer.posY - lastPlayer.lastTickPosY) * (double)event.getPartialTicks();
+        double d2 = lastPlayer.lastTickPosZ + (lastPlayer.posZ - lastPlayer.lastTickPosZ) * (double)event.getPartialTicks();
+        for(AxisAlignedBB aabb : aabbToRender)
+        {
+            RenderGlobal.drawSelectionBoundingBox(aabb.expand(0.0020000000949949026D, 0.0020000000949949026D, 0.0020000000949949026D).offset(-d0, -d1, -d2), r, g, b, a);
+        }
+
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
+        {
+            aabbToRender.clear();
+        }
+    }
 }

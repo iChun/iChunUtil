@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render;
 
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.ClippingHelperPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.Frustum;
@@ -28,14 +29,33 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
+import java.util.ArrayList;
 import java.util.Queue;
 
 public class WorldPortalRenderer
 {
     public static int renderLevel = 0;
     public static int renderCount = 0;
-    public static float renderRoll = 0F;
     public static int frameCount;
+    public static ArrayList<Float> rollFactor = new ArrayList<>();
+
+    public static float getRollFactor(int level, float partialTick)
+    {
+        if(level <= 0)
+        {
+            return EntityHelper.interpolateValues(WorldPortals.eventHandlerClient.prevCameraRoll, WorldPortals.eventHandlerClient.cameraRoll, partialTick);
+        }
+        else if(level <= rollFactor.size())
+        {
+            float roll = EntityHelper.interpolateValues(WorldPortals.eventHandlerClient.prevCameraRoll, WorldPortals.eventHandlerClient.cameraRoll, partialTick);
+            for(int i = level - 1; i >= 0 ; i--)
+            {
+                roll += rollFactor.get(i);
+            }
+            return roll;
+        }
+        return 0F;
+    }
 
     //World Portal we're rendering
     //World
@@ -96,9 +116,18 @@ public class WorldPortalRenderer
             GlStateManager.enableLighting();
             //After here
 
+            //Add roll level
+            rollFactor.add(appliedRotation[2]);
+
             //render world here
             drawWorld(mc, portal, ent, appliedOffset, appliedRotation, partialTick);
             //End render world
+
+            //remove roll level
+            if(!rollFactor.isEmpty())
+            {
+                rollFactor.remove(rollFactor.size() - 1);
+            }
 
             //(stuff rendered at the local side of the portal after the portal is rendered should see the same depth value as if it's a simple normal quad)
             //This call fixes that
@@ -521,7 +550,7 @@ public class WorldPortalRenderer
         {
             float yaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F;
             float pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
-            float roll = (WorldPortals.eventHandlerClient.prevCameraRoll + (WorldPortals.eventHandlerClient.cameraRoll - WorldPortals.eventHandlerClient.prevCameraRoll) * partialTicks) + renderRoll;
+            float roll = getRollFactor(renderLevel, partialTicks);
             if(entity instanceof EntityAnimal)
             {
                 EntityAnimal entityanimal = (EntityAnimal)entity;
@@ -533,7 +562,6 @@ public class WorldPortalRenderer
             GlStateManager.rotate(event.getRoll(), 0.0F, 0.0F, 1.0F);
             GlStateManager.rotate(event.getPitch(), 1.0F, 0.0F, 0.0F);
             GlStateManager.rotate(event.getYaw(), 0.0F, 1.0F, 0.0F);
-            renderRoll = 0F;
         }
 
         GlStateManager.translate(0.0F, -eyeHeight, 0.0F);
