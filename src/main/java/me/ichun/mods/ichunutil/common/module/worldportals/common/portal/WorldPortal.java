@@ -181,7 +181,10 @@ public abstract class WorldPortal
             if(ent instanceof EntityPlayer)
             {
                 offset = Math.min(0.325F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
-                if(!scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newEntPos) && portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newEntPos))
+                if(!scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newEntPos) &&
+                        portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newEntPos) &&
+                        (faceOn.getAxis().isHorizontal() && ent.getEntityBoundingBox().minY >= flatPlane.minY && ent.getEntityBoundingBox().maxY <= flatPlane.maxY || faceOn.getAxis().isVertical()  && ent.getEntityBoundingBox().minX >= flatPlane.minX && ent.getEntityBoundingBox().maxX <= flatPlane.maxX  && ent.getEntityBoundingBox().minZ >= flatPlane.minZ && ent.getEntityBoundingBox().maxZ <= flatPlane.maxZ) // special casing cause of pushOutOfBlocks for player
+                        )
                 {
                     teleportPlane = getTeleportPlane(offset);
                     teleport = true;
