@@ -100,8 +100,6 @@ public class WorldPortalRenderer
             drawWorld(mc, portal, ent, appliedOffset, appliedRotation, partialTick);
             //End render world
 
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
             //(stuff rendered at the local side of the portal after the portal is rendered should see the same depth value as if it's a simple normal quad)
             //This call fixes that
             //This also resets the stencil buffer to how it was previously before this function was called..
@@ -167,19 +165,38 @@ public class WorldPortalRenderer
         mc.entityRenderer.cameraZoom = cameraZoom;
         mc.gameSettings.hideGUI = hideGui;
 
+        double d0 = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * partialTick;
+        double d1 = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * partialTick;
+        double d2 = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * partialTick;
+
+        //TODO double check if this is still necessary after each individual WP gets it's own render global proxy.
+        //Water render recursing portal fix
+        if(renderLevel > 1)
+        {
+            WorldPortals.eventHandlerClient.renderGlobalProxy.bindViewFrustum(pair); //binds to the View Frustum for this TE.
+            WorldPortals.eventHandlerClient.renderGlobalProxy.renderContainer.initialize(d0, d1, d2);
+
+            WorldPortals.eventHandlerClient.renderGlobalProxy.lastViewEntityX = renderer.posX;
+            WorldPortals.eventHandlerClient.renderGlobalProxy.lastViewEntityY = renderer.posY;
+            WorldPortals.eventHandlerClient.renderGlobalProxy.lastViewEntityZ = renderer.posZ;
+            WorldPortals.eventHandlerClient.renderGlobalProxy.lastViewEntityPitch = (double)renderer.rotationPitch;
+            WorldPortals.eventHandlerClient.renderGlobalProxy.lastViewEntityYaw = (double)renderer.rotationYaw;
+        }
+        //Water render recursing portal fix end
+
         TileEntityRendererDispatcher.instance.prepare(mc.theWorld, mc.getTextureManager(), mc.fontRendererObj, renderer, mc.objectMouseOver, partialTick);
         mc.getRenderManager().cacheActiveRenderInfo(mc.theWorld, mc.fontRendererObj, renderer, mc.pointedEntity, mc.gameSettings, partialTick);
-        mc.getRenderManager().renderPosX = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * (double)partialTick;
-        mc.getRenderManager().renderPosY = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * (double)partialTick;
-        mc.getRenderManager().renderPosZ = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * (double)partialTick;
-        TileEntityRendererDispatcher.staticPlayerX = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * (double)partialTick;
-        TileEntityRendererDispatcher.staticPlayerY = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * (double)partialTick;
-        TileEntityRendererDispatcher.staticPlayerZ = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * (double)partialTick;
+        mc.getRenderManager().renderPosX = d0;
+        mc.getRenderManager().renderPosY = d1;
+        mc.getRenderManager().renderPosZ = d2;
+        TileEntityRendererDispatcher.staticPlayerX = d0;
+        TileEntityRendererDispatcher.staticPlayerY = d1;
+        TileEntityRendererDispatcher.staticPlayerZ = d2;
         ActiveRenderInfo.updateRenderInfo(mc.thePlayer, false); // view changes?
         ClippingHelperPortal.getInstance();
-        Particle.interpPosX = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * (double)partialTick;
-        Particle.interpPosY = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * (double)partialTick;
-        Particle.interpPosZ = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * (double)partialTick;
+        Particle.interpPosX = d0;
+        Particle.interpPosY = d1;
+        Particle.interpPosZ = d2;
         Particle.cameraViewDir = renderer.getLook(partialTick);
 
         GlStateManager.popMatrix();
