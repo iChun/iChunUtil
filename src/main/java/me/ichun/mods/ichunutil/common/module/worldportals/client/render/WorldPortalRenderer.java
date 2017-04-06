@@ -63,6 +63,7 @@ public class WorldPortalRenderer
             GL11.glClearStencil(0); //stencil clears to 0 when cleared.
             if(renderLevel == 1)GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT);
 
+            GlStateManager.disableTexture2D();
             //only draw the portal on first recursion, we shouldn't draw anything outside the portal.
             portal.drawPlane();//draw to stencil to set the areas that pass stencil and depth to our reference value
 
@@ -99,16 +100,25 @@ public class WorldPortalRenderer
             drawWorld(mc, portal, ent, appliedOffset, appliedRotation, partialTick);
             //End render world
 
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+
             //(stuff rendered at the local side of the portal after the portal is rendered should see the same depth value as if it's a simple normal quad)
             //This call fixes that
+            //This also resets the stencil buffer to how it was previously before this function was called..
             GlStateManager.disableTexture2D();
             GL11.glColorMask(false, false, false, false);
-            GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //set the stencil test to always pass, set reference value, set mask.
-            GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_DECR);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
-            GL11.glStencilMask(0xFF); //set the stencil mask.
+            if(renderLevel > 1)
+            {
+                GL11.glStencilFunc(GL11.GL_ALWAYS, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //set the stencil test to always pass, set reference value, set mask.
+                GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_DECR);  // sPass, dFail, dPass. Set stencil where the depth passes fails. (which means the render is the topmost - depth mask is on)
+                GL11.glStencilMask(0xFF); //set the stencil mask.
+            }
             portal.drawPlane();
-            GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
-            GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
+            if(renderLevel > 1)
+            {
+                GL11.glStencilMask(0x00); //Disable drawing to the stencil buffer now.
+                GL11.glStencilFunc(GL11.GL_EQUAL, iChunUtil.config.stencilValue + renderLevel - 1, 0xFF); //anything drawn now will only show if the value on the stencil equals to our reference value.
+            }
             GL11.glColorMask(true, true, true, true);
             GlStateManager.enableTexture2D();
 
@@ -167,6 +177,10 @@ public class WorldPortalRenderer
         TileEntityRendererDispatcher.staticPlayerZ = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * (double)partialTick;
         ActiveRenderInfo.updateRenderInfo(mc.thePlayer, false); // view changes?
         ClippingHelperPortal.getInstance();
+        Particle.interpPosX = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * (double)partialTick;
+        Particle.interpPosY = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * (double)partialTick;
+        Particle.interpPosZ = renderer.lastTickPosZ + (renderer.posZ - renderer.lastTickPosZ) * (double)partialTick;
+        Particle.cameraViewDir = renderer.getLook(partialTick);
 
         GlStateManager.popMatrix();
 
@@ -270,6 +284,10 @@ public class WorldPortalRenderer
         GlStateManager.disableBlend();
 
         mc.entityRenderer.enableLightmap();
+        Particle.interpPosX = d0;
+        Particle.interpPosY = d1;
+        Particle.interpPosZ = d2;
+        Particle.cameraViewDir = entity.getLook(partialTick);
         float f = 0.017453292F;
         float f1 = MathHelper.cos(entity.rotationYaw * 0.017453292F);
         float f2 = MathHelper.sin(entity.rotationYaw * 0.017453292F);
@@ -295,10 +313,17 @@ public class WorldPortalRenderer
                 }
             }
         }
-
-        particlemanager.renderLitParticles(entity, partialTick);
         RenderHelper.disableStandardItemLighting();
         mc.entityRenderer.setupFog(0, partialTick);
+
+        float ff = ActiveRenderInfo.getRotationX();
+        float ff1 = ActiveRenderInfo.getRotationZ();
+        float ff2 = ActiveRenderInfo.getRotationYZ();
+        float ff3 = ActiveRenderInfo.getRotationXY();
+        float ff4 = ActiveRenderInfo.getRotationXZ();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.alphaFunc(516, 0.003921569F);
 
         for(int i_nf = 0; i_nf < 3; ++i_nf)
         {
@@ -336,7 +361,7 @@ public class WorldPortalRenderer
                     {
                         if(canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                         {
-                            particle.renderParticle(vertexbuffer, entity, partialTick, f, f4, f1, f2, f3);
+                            particle.renderParticle(vertexbuffer, entity, partialTick, ff, ff4, ff1, ff2, ff3);
                         }
                     }
 

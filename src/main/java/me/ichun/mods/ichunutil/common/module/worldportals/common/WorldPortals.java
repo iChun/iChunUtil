@@ -1,9 +1,11 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.common;
 
+import me.ichun.mods.ichunutil.api.worldportals.WorldPortalsApi;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.core.EventHandlerWorldPortalClient;
+import me.ichun.mods.ichunutil.common.module.worldportals.common.core.ApiImpl;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.core.EventHandlerWorldPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +33,8 @@ public class WorldPortals
 
         eventHandler = new EventHandlerWorldPortal();
         MinecraftForge.EVENT_BUS.register(eventHandler);
+
+        WorldPortalsApi.setApiImpl(new ApiImpl());
 
         channel = new PacketChannel("iChunUtil_WorldPortals", PacketEntityLocation.class);
 

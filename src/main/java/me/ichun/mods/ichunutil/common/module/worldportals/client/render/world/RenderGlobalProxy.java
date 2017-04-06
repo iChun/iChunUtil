@@ -1,12 +1,9 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render.world;
 
 import com.google.common.collect.Lists;
-import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
-import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.chunk.IRenderChunkWorldPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.factory.ListChunkFactory;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.factory.VboChunkFactory;
-import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.portal.WorldPortal;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -38,8 +35,6 @@ import java.util.*;
 
 public class RenderGlobalProxy extends RenderGlobal
 {
-    public BlockPos portalPos = BlockPos.ORIGIN;
-    public EnumFacing portalFace = EnumFacing.UP;
     public HashMap<WorldPortal, ViewFrustum> usedViewFrustums = new HashMap<>();
     public ArrayList<ViewFrustum> freeViewFrustums = new ArrayList<>();
     public float playerPrevYaw;
@@ -187,8 +182,6 @@ public class RenderGlobalProxy extends RenderGlobal
             }
         }
         viewFrustum = vf;
-        portalPos = pm.getPos();
-        portalFace = pm.getFaceOn();
         for(RenderChunk renderChunk : viewFrustum.renderChunks)
         {
             if(renderChunk instanceof IRenderChunkWorldPortal)
@@ -265,7 +258,7 @@ public class RenderGlobalProxy extends RenderGlobal
             for(int i = 0; i < this.theWorld.weatherEffects.size(); ++i)
             {
                 Entity entity1 = this.theWorld.weatherEffects.get(i);
-                if(!shouldRenderEntity(entity1) || !entity1.shouldRenderInPass(pass))
+                if(pair != null && !shouldRenderEntity(entity1, pair) || !entity1.shouldRenderInPass(pass))
                 {
                     continue;
                 }
@@ -363,7 +356,7 @@ public class RenderGlobalProxy extends RenderGlobal
                             GlStateManager.popMatrix();
                         }
 
-                        if(!shouldRenderEntity(entity2) || !entity2.shouldRenderInPass(pass))
+                        if(pair != null && !shouldRenderEntity(entity2, pair) || !entity2.shouldRenderInPass(pass))
                         {
                             continue;
                         }
@@ -529,9 +522,12 @@ public class RenderGlobalProxy extends RenderGlobal
         }
     }
 
-    public boolean shouldRenderEntity(Entity ent)
+    public boolean shouldRenderEntity(Entity ent, WorldPortal portal)
     {
-        return !(portalFace.getFrontOffsetX() < 0 && ent.posX > portalPos.getX() + 2 || portalFace.getFrontOffsetX() > 0 && ent.posX < portalPos.getX() - 1 || portalFace.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portalPos.getY() + 2 || portalFace.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portalPos.getY() - 1 || portalFace.getFrontOffsetZ() < 0 && ent.posZ > portalPos.getZ() + 2 || portalFace.getFrontOffsetZ() > 0 && ent.posZ < portalPos.getZ() - 1);
+        return !(portal.getFaceOn().getFrontOffsetX() < 0 && ent.posX > portal.getFlatPlane().minX || portal.getFaceOn().getFrontOffsetX() > 0 && ent.posX < portal.getFlatPlane().minX ||
+                portal.getFaceOn().getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
+                portal.getFaceOn().getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
+                portal.getFaceOn().getFrontOffsetZ() < 0 && ent.posZ > portal.getFlatPlane().minZ || portal.getFaceOn().getFrontOffsetZ() > 0 && ent.posZ < portal.getFlatPlane().minZ);
     }
 
     @Override
