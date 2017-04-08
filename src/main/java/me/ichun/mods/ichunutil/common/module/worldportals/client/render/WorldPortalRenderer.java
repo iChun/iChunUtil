@@ -26,6 +26,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
@@ -193,6 +195,8 @@ public class WorldPortalRenderer
 
         mc.entityRenderer.cameraZoom = cameraZoom;
         mc.gameSettings.hideGUI = hideGui;
+
+        ForgeHooksClient.setRenderPass(0);
 
         double d0 = renderer.lastTickPosX + (renderer.posX - renderer.lastTickPosX) * partialTick;
         double d1 = renderer.lastTickPosY + (renderer.posY - renderer.lastTickPosY) * partialTick;

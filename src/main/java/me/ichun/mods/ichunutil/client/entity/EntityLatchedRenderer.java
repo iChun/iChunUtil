@@ -1,5 +1,7 @@
 package me.ichun.mods.ichunutil.client.entity;
 
+import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -137,8 +139,13 @@ public class EntityLatchedRenderer extends Entity
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public int getBrightnessForRender(float par1)
     {
+        if(WorldPortalRenderer.renderLevel >= 1 && latchedEnt == Minecraft.getMinecraft().getRenderViewEntity())
+        {
+            return super.getBrightnessForRender(par1);
+        }
         return latchedEnt.getBrightnessForRender(par1);
     }
 

@@ -178,7 +178,7 @@ public abstract class WorldPortal
             boolean teleport = false;
             AxisAlignedBB teleportPlane = flatPlane;
             float offset = 0.0F; //should I test player width specifically?
-            if(ent instanceof EntityPlayer)
+            if(isAgainstWall() && ent instanceof EntityPlayer)
             {
                 offset = Math.min(0.325F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
                 if(!scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).isVecInside(newEntPos) &&
@@ -353,7 +353,6 @@ public abstract class WorldPortal
                             float[] appliedOffset = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newParticlePos.xCoord - centerX), (float)(newParticlePos.yCoord - centerY), (float)(newParticlePos.zCoord - centerZ) });
                             float[] appliedMotion = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newParticlePos.xCoord - particlePos.xCoord), (float)(newParticlePos.yCoord - particlePos.yCoord), (float)(newParticlePos.zCoord - particlePos.zCoord) });
 
-                            pair.setupAABBs();
                             AxisAlignedBB pairTeleportPlane = pair.getTeleportPlane(offset);
 
                             double destX = (pairTeleportPlane.maxX + pairTeleportPlane.minX) / 2D;

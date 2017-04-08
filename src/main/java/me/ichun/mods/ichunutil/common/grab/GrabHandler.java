@@ -27,6 +27,7 @@ public class GrabHandler
     public float yawTweak;
     public float pitchTweak;
     public boolean forceTerminate;
+    public boolean terminated;
     public int time;
 
     //TODO handler entities travelling through dimensions if they're holding something in the new forge.
@@ -108,6 +109,7 @@ public class GrabHandler
 
     public void terminate()
     {
+        terminated = true;
     }
 
     @SideOnly(Side.CLIENT)
