@@ -92,7 +92,7 @@ public abstract class WorldPortal
     public abstract String owner(); //mod that owns this;
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawPlane();
+    public abstract void drawPlane(float partialTick);
 
     public void setFace(EnumFacing faceOut, EnumFacing upDir)
     {
