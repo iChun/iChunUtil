@@ -168,6 +168,11 @@ public abstract class WorldPortal
             {
                 WorldPortals.eventHandler.addMonitoredEntity(ent, this);
             }
+            if(!canEntityTeleport(ent))
+            {
+                entitiesInRange.remove(i);
+                continue;
+            }
             if(teleportCooldown.containsKey(ent) || ent instanceof EntityPlayerMP && !ent.worldObj.isRemote)
             {
                 continue;
@@ -299,6 +304,11 @@ public abstract class WorldPortal
         return 0F;
     }
 
+    public boolean canEntityTeleport(Entity ent)
+    {
+        return true;
+    }
+
     public void handleSpecialEntities(Entity ent)
     {
         if(ent instanceof EntityBlock)
@@ -387,7 +397,6 @@ public abstract class WorldPortal
 
     public void terminate()
     {
-        //TODO notify partner that the partner no longer has a pair as well.
         if(isAgainstWall())
         {
             for(Entity ent : lastScanEntities)
@@ -399,6 +408,11 @@ public abstract class WorldPortal
                 }
                 WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
             }
+        }
+        if(hasPair())
+        {
+            pair.setPair(null);
+            setPair(null);
         }
     }
 

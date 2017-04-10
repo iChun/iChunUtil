@@ -11,4 +11,11 @@ public class ApiDummy implements IApi
     {
         return 0;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public float getCameraRoll(int renderLevel, float partialTick)
+    {
+        return 0F;
+    }
 }

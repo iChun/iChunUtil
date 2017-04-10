@@ -13,4 +13,11 @@ public class ApiImpl implements IApi
     {
         return WorldPortalRenderer.renderLevel;
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public float getCameraRoll(int renderLevel, float partialTick)
+    {
+        return WorldPortalRenderer.getRollFactor(renderLevel, partialTick);
+    }
 }
