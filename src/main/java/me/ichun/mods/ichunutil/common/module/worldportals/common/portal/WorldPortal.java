@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.packet.PacketEntityLocation;
 import net.minecraft.client.Minecraft;
@@ -279,7 +278,7 @@ public abstract class WorldPortal
 
         if(world.isRemote)
         {
-            handleParticles();
+            handleClient();
         }
 
         if(isAgainstWall())
@@ -334,10 +333,11 @@ public abstract class WorldPortal
     }
 
     @SideOnly(Side.CLIENT)
-    public void handleParticles() //TODO a config for this?
+    public void handleClient()
     {
         Minecraft mc = Minecraft.getMinecraft();
 
+        //TODO a config for this?
         for (int i = 0; i < 4; ++i)
         {
             for (int j = 0; j < 2; ++j)
@@ -459,6 +459,16 @@ public abstract class WorldPortal
     {
         double max = Math.max(Math.max(ent.width, ent.height) + Math.sqrt(ent.motionX * ent.motionX + ent.motionY * ent.motionY + ent.motionZ * ent.motionZ), 1D);
         return flatPlane.addCoord(faceOn.getFrontOffsetX() * -max, faceOn.getFrontOffsetY() * -max, faceOn.getFrontOffsetZ() * -max);
+    }
+
+    public AxisAlignedBB getPortalInsides(Entity ent)
+    {
+        if(isAgainstWall() && ent instanceof EntityPlayer)
+        {
+            float offset = Math.min(0.325F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
+            return portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
+        }
+        return portalInsides;
     }
 
     public AxisAlignedBB getPlane()

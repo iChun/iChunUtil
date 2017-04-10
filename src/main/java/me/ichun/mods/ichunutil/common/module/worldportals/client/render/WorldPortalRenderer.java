@@ -1,8 +1,10 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render;
 
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
+import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.item.ItemHandler;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.ClippingHelperPortal;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.culling.Frustum;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.world.RenderGlobalProxy;
@@ -21,8 +23,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -186,9 +190,31 @@ public class WorldPortalRenderer
         double destY = (pairFlatPlane.maxY + pairFlatPlane.minY) / 2D;
         double destZ = (pairFlatPlane.maxZ + pairFlatPlane.minZ) / 2D;
 
+        if(mc.gameSettings.thirdPersonView == 0)
+        {
+            ItemStack mainHand = mc.thePlayer.getHeldItemMainhand();
+            if(mainHand != null && ItemHandler.isItemDualHanded(mainHand.getItem()))
+            {
+                mc.thePlayer.setActiveHand(EnumHand.MAIN_HAND);
+            }
+            ItemStack offHand = mc.thePlayer.getHeldItemOffhand();
+            if(offHand != null && ItemHandler.isItemDualHanded(offHand.getItem()))
+            {
+                mc.thePlayer.setActiveHand(EnumHand.OFF_HAND);
+            }
+        }
+
         EntityTransformationStack ets = new EntityTransformationStack(renderer).moveEntity(destX, destY, destZ, posOffset, rotOffset, partialTick);
         drawWorld(WorldPortals.eventHandlerClient.renderGlobalProxy, renderer, worldPortal, pair, partialTick);
         ets.pop();
+
+        if(mc.gameSettings.thirdPersonView == 0)
+        {
+            if(ItemHandler.getUsableDualHandedItem(mc.thePlayer) != null)
+            {
+                mc.thePlayer.resetActiveHand();
+            }
+        }
 
         mc.gameSettings.renderDistanceChunks = renderDist;
         mc.renderGlobal = global;

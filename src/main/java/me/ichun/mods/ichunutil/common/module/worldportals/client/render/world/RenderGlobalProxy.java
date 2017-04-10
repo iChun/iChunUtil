@@ -314,7 +314,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 {
                     for(Entity entity2 : classinheritancemultimap)
                     {
-                        if(portal != null && pair != null && !(entity2 == mc.thePlayer && mc.gameSettings.thirdPersonView == 0) && portal.lastScanEntities.contains(entity2) && portal.portalInsides.intersectsWith(entity2.getEntityBoundingBox()))
+                        if(portal != null && pair != null && !(entity2 == mc.thePlayer && mc.gameSettings.thirdPersonView == 0) && portal.lastScanEntities.contains(entity2) && portal.getPortalInsides(entity2).intersectsWith(entity2.getEntityBoundingBox()))
                         {
                             double eePosX = entity2.lastTickPosX + (entity2.posX - entity2.lastTickPosX) * (double)partialTicks;
                             double eePosY = entity2.lastTickPosY + (entity2.posY - entity2.lastTickPosY) * (double)partialTicks;
