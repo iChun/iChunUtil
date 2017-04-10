@@ -79,6 +79,10 @@ public class ItemRenderingHelper
                             handleSwingProofItemEquip(mc.thePlayer, currentInv);
                         }
 
+                        if(currentInv.getItem().shouldCauseReequipAnimation(currentInv, mc.getItemRenderer().itemStackMainHand, false))
+                        {
+                            mc.getItemRenderer().itemStackMainHand = currentInv;
+                        }
                         if(mc.ingameGUI.remainingHighlightTicks == 0)
                         {
                             hasShownItemName = true;
