@@ -337,6 +337,14 @@ public class RendererHelper
         GlStateManager.color(r, g, b, 1.0F);
     }
 
+    public static void setColorFromInt(int color, float alpha)
+    {
+        float r = (color >> 16 & 255) / 255.0F;
+        float g = (color >> 8 & 255) / 255.0F;
+        float b = (color & 255) / 255.0F;
+        GlStateManager.color(r, g, b, alpha);
+    }
+
     public static void drawTextureOnScreen(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
     {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
