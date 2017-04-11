@@ -53,6 +53,8 @@ public class RenderGlobalProxy extends RenderGlobal
     public double playerLastTickY;
     public double playerLastTickZ;
 
+    public boolean released;
+
     public RenderGlobalProxy(Minecraft mcIn)
     {
         super(mcIn);

@@ -50,6 +50,7 @@ public abstract class WorldPortal
     private WorldPortal pair;
 
     public World world;
+    public int time;
     public List<Entity> lastScanEntities = new ArrayList<>();
     public HashMap<Entity, Integer> teleportCooldown = new HashMap<>();
 
@@ -64,6 +65,7 @@ public abstract class WorldPortal
         this.faceOn = EnumFacing.NORTH;
         this.upDir = EnumFacing.UP;
 
+        this.time = 0;
         this.firstUpdate = true;
     }
 
@@ -81,6 +83,7 @@ public abstract class WorldPortal
 
         this.setupAABBs();
 
+        this.time = 0;
         this.firstUpdate = true;
     }
 
@@ -143,6 +146,7 @@ public abstract class WorldPortal
         {
             firstUpdate = false;
         }
+        time++;
         Iterator<Map.Entry<Entity, Integer>> ite = teleportCooldown.entrySet().iterator();
         while(ite.hasNext())
         {
@@ -585,6 +589,8 @@ public abstract class WorldPortal
         tag.setDouble("posY", position.yCoord);
         tag.setDouble("posZ", position.zCoord);
 
+        tag.setInteger("time", time);
+
         return tag;
     }
 
@@ -608,6 +614,8 @@ public abstract class WorldPortal
         setSize(tag.getFloat("width"), tag.getFloat("height"));
         setFace(EnumFacing.getFront(tag.getInteger("faceOn")), EnumFacing.getFront(tag.getInteger("up")));
         setPosition(new Vec3d(tag.getDouble("posX"), tag.getDouble("posY"), tag.getDouble("posZ")));
+
+        time = tag.getInteger("time");
 
         firstUpdate = true;
     }

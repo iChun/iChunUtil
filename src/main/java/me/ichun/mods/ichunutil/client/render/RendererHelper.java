@@ -229,6 +229,34 @@ public class RendererHelper
         }
     }
 
+    public static void renderSinLight(double distance, double size, double startAngle, double angleFactor, boolean droppingIntensity, int clr)//TODO not finished.
+    {
+        float r = (clr >> 16 & 0xff) / 255F;
+        float g = (clr >> 8 & 0xff) / 255F;
+        float b = (clr & 0xff) / 255F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+
+        vertexbuffer.begin(4, DefaultVertexFormats.POSITION_COLOR); //GL_TRIANGLE_STRIP
+        float max = (float)distance * 10F;
+        double halfSize = size / 2D;
+        for(float f = 0F; f < max; f++)
+        {
+            vertexbuffer.pos(-halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
+            vertexbuffer.pos(halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
+        }
+        tessellator.draw();
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
+        GlStateManager.enableTexture2D();
+    }
+
     public static void renderLighting(double x, double y, double z, int randSeed, int bends, int spread, double heightOfBend, int layerCount, double layerSize, float intensity, int clr)
     {
         float r = (clr >> 16 & 0xff) / 255F;

@@ -20,7 +20,17 @@ public class ModelEmpty implements IBakedModel
 
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
-    private ModelEmpty() {}
+    private TextureAtlasSprite particleTexture;
+
+    private ModelEmpty()
+    {
+        this.particleTexture = null;
+    }
+
+    public ModelEmpty(TextureAtlasSprite particleTexture)
+    {
+        this.particleTexture = particleTexture;
+    }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
@@ -49,7 +59,7 @@ public class ModelEmpty implements IBakedModel
     @Override
     public TextureAtlasSprite getParticleTexture()
     {
-        return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+        return particleTexture;
     }
 
     @Override
