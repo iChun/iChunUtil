@@ -118,6 +118,7 @@ public class iChunUtil
         @IntMinMax(min = 0, max = 35)
         public int versionSave = 0;
 
+        //World Portals module
         @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)
         @IntMinMax(min = 0, max = 10)
         public int maxRecursion = 2;
