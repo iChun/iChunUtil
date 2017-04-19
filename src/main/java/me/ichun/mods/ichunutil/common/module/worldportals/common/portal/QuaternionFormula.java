@@ -1,9 +1,8 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.common.portal;
 
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.util.EnumFacing;
-import org.lwjgl.util.vector.Quaternion;
 
+import javax.vecmath.Matrix3f;
 import java.util.HashMap;
 
 public class QuaternionFormula
@@ -56,11 +55,11 @@ public class QuaternionFormula
     public QuaternionFormula(Quaternion inH, Quaternion outH) //horizontal in and out
     {
         qHI = inH;
-        conjQHI = qHI.negate(null);
+        conjQHI = qHI.conjugate();
         qHO = outH;
-        conjQHO = qHO.negate(null);
+        conjQHO = qHO.conjugate();
         qVI = qVO = NO_ROTATION_QUAT;
-        conjQVI = conjQVO = NO_ROTATION_QUAT.negate(null);
+        conjQVI = conjQVO = NO_ROTATION_QUAT.conjugate();
 
         noRotation = QuaternionFormula.quaternionsIdentical(qHI, qHO);
     }
@@ -69,9 +68,9 @@ public class QuaternionFormula
     {
         this(inH, outH);
         qVI = inV;
-        conjQVI = qVI.negate(null);
+        conjQVI = qVI.conjugate();
         qVO = outV;
-        conjQVO = qVO.negate(null);
+        conjQVO = qVO.conjugate();
 
         noRotation = QuaternionFormula.quaternionsIdentical(qVI, qVO) && noRotation;
     }
@@ -99,13 +98,13 @@ public class QuaternionFormula
         float[] applied = new float[3];
 
         Quaternion qPos = new Quaternion(ori[0], ori[1], ori[2], 0);
-        qPos = Quaternion.mul(Quaternion.mul(qHI, qPos, null), conjQHI, null); //apply the out
-        qPos = Quaternion.mul(Quaternion.mul(qVI, qPos, null), conjQVI, null); //apply the out
-        qPos = Quaternion.mul(Quaternion.mul(conjQVO, qPos, null), qVO, null); //reset the in
-        qPos = Quaternion.mul(Quaternion.mul(conjQHO, qPos, null), qHO, null); //reset the in
-        applied[0] = qPos.getX();
-        applied[1] = qPos.getY();
-        applied[2] = qPos.getZ();
+        qPos = qHI.mul(qPos).mul(conjQHI); //apply the out
+        qPos = qVI.mul(qPos).mul(conjQVI); //apply the out
+        qPos = conjQVO.mul(qPos).mul(qVO); //reset the in
+        qPos = conjQHO.mul(qPos).mul(qHO); //reset the in
+        applied[0] = qPos.x;
+        applied[1] = qPos.y;
+        applied[2] = qPos.z;
 
         return applied;
     }
@@ -122,24 +121,17 @@ public class QuaternionFormula
         //q2 * q1 = absolute frame of reference
         //q1 * q2 = frame of reference of rotating object
         Quaternion qRot = createQuaternionFromZXYEuler(ori[1], ori[0], ori[2]); //x = pitch, y = yaw, z = roll.
-        if(QuaternionFormula.quaternionsIdentical(qVI, NO_ROTATION_QUAT)) //Horizontal IN only
+        qRot = qRot.mul(conjQHI);
+
+        if(!QuaternionFormula.quaternionsIdentical(qVI, NO_ROTATION_QUAT)) //Vertical involvement
         {
-            qRot = Quaternion.mul(qRot, conjQHI, null);
+            qRot = qRot.mul(qVI);
         }
-        else
+        if(!QuaternionFormula.quaternionsIdentical(qVO, NO_ROTATION_QUAT)) //Horizontal OUT only
         {
-            qRot = Quaternion.mul(qRot, conjQHI, null);
-            qRot = Quaternion.mul(qRot, qVI, null);
+            qRot = qRot.mul(conjQVO);
         }
-        if(QuaternionFormula.quaternionsIdentical(qVO, NO_ROTATION_QUAT)) //Horizontal OUT only
-        {
-            qRot = Quaternion.mul(qRot, qHO, null);
-        }
-        else
-        {
-            qRot = Quaternion.mul(qRot, conjQVO, null);
-            qRot = Quaternion.mul(qRot, qHO, null);
-        }
+        qRot = qRot.mul(qHO);
 
         float[] angles = createZXYEulerFromQuaternion(qRot);
         return new float[] { angles[1] - ori[0], angles[0] - ori[1], angles[2] - ori[2] }; //x = pitch, y = yaw, z = roll; 0 = yaw, 1 = pitch, 2 = roll
@@ -161,7 +153,7 @@ public class QuaternionFormula
         float cz = (float)Math.cos(radZ);
         float sz = (float)Math.sin(radZ);
 
-        return Quaternion.setFromMatrix(new Matrix4f(new float[] { cy * cz - sx * sy * sz, -cx * sz, cz * sy + cy * sx * sz, 0, cz * sx * sy + cy * sz, cx * cz, -cy * cz * sx + sy * sz, 0, -cx * sy, sx, cx * cy, 0, 0, 0, 0, 0 }), new Quaternion());
+        return new Quaternion().setFromMatrix(new Matrix3f(new float[] { cy * cz - sx * sy * sz, -cx * sz, cz * sy + cy * sx * sz, cz * sx * sy + cy * sz, cx * cz, -cy * cz * sx + sy * sz, -cx * sy, sx, cx * cy }));
     }
 
     public static float[] createZXYEulerFromQuaternion(Quaternion q) // https://www.geometrictools.com/Documentation/EulerAngles.pdf
@@ -176,7 +168,7 @@ public class QuaternionFormula
         final float zz = q.z * q.z;
         final float zw = q.z * q.w;
 
-        Matrix4f matrix = new Matrix4f(new float[] { 1 - 2 * (yy + zz), 2 * (xy - zw), 2 * (xz + yw), 0, 2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz - xw), 0, 2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy), 0, 0, 0, 0, 1 });
+        Matrix3f matrix = new Matrix3f(new float[] { 1 - 2 * (yy + zz), 2 * (xy - zw), 2 * (xz + yw), 2 * (xy + zw), 1 - 2 * (xx + zz), 2 * (yz - xw), 2 * (xz - yw), 2 * (yz + xw), 1 - 2 * (xx + yy)});
 
         double thetaX, thetaY, thetaZ;
         if(matrix.m21 < 1)
@@ -213,6 +205,6 @@ public class QuaternionFormula
 
     public static boolean quaternionsIdentical(Quaternion a, Quaternion b)
     {
-        return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ() && a.getW() == b.getW();
+        return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
     }
 }
