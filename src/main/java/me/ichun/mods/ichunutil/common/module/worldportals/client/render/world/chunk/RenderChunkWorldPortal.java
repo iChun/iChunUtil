@@ -18,8 +18,10 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkWorldPortal
 {
@@ -63,8 +65,8 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
             generator.getLock().unlock();
         }
 
-        VisGraph lvt_10_1_ = new VisGraph();
-        HashSet lvt_11_1_ = Sets.newHashSet();
+        VisGraph lvt_9_1_ = new VisGraph();
+        HashSet lvt_10_1_ = Sets.newHashSet();
 
         if(!this.region.extendedLevelsInChunkCache())
         {
@@ -81,28 +83,32 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
 
                 if(iblockstate.isOpaqueCube())
                 {
-                    lvt_10_1_.setOpaqueCube(blockpos$mutableblockpos);
+                    lvt_9_1_.setOpaqueCube(blockpos$mutableblockpos);
                 }
 
                 if(!noRender && block.hasTileEntity(iblockstate))
                 {
-                    TileEntity tileentity = this.region.getTileEntity(new BlockPos(blockpos$mutableblockpos));
-                    TileEntitySpecialRenderer<TileEntity> tileentityspecialrenderer = TileEntityRendererDispatcher.instance.getSpecialRenderer(tileentity);
+                    TileEntity tileentity = this.region.getTileEntity(blockpos$mutableblockpos, Chunk.EnumCreateEntityType.CHECK);
 
-                    if(tileentity != null && tileentityspecialrenderer != null)
+                    if (tileentity != null)
                     {
-                        compiledchunk.addTileEntity(tileentity);
+                        TileEntitySpecialRenderer<TileEntity> tileentityspecialrenderer = TileEntityRendererDispatcher.instance.getSpecialRenderer(tileentity);
 
-                        if(tileentityspecialrenderer.isGlobalRenderer(tileentity))
+                        if (tileentityspecialrenderer != null)
                         {
-                            lvt_11_1_.add(tileentity);
+                            compiledchunk.addTileEntity(tileentity);
+
+                            if (tileentityspecialrenderer.isGlobalRenderer(tileentity))
+                            {
+                                lvt_10_1_.add(tileentity);
+                            }
                         }
                     }
                 }
 
                 for(BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values())
                 {
-                    if(!block.canRenderInLayer(blockrenderlayer1))
+                    if(!block.canRenderInLayer(iblockstate, blockrenderlayer1))
                     {
                         continue;
                     }
@@ -142,7 +148,22 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
             }
         }
 
-        compiledchunk.setVisibility(lvt_10_1_.computeVisibility());
-    }
+        compiledchunk.setVisibility(lvt_9_1_.computeVisibility());
+        this.lockCompileTask.lock();
 
+        try
+        {
+            Set<TileEntity> set = Sets.newHashSet(lvt_10_1_);
+            Set<TileEntity> set1 = Sets.newHashSet(this.setTileEntities);
+            set.removeAll(this.setTileEntities);
+            set1.removeAll(lvt_10_1_);
+            this.setTileEntities.clear();
+            this.setTileEntities.addAll(lvt_10_1_);
+            this.renderGlobal.updateTileEntities(set1, set);
+        }
+        finally
+        {
+            this.lockCompileTask.unlock();
+        }
+    }
 }
