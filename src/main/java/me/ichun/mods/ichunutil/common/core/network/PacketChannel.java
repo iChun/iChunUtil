@@ -93,7 +93,7 @@ public class PacketChannel
         packetCodec = new AbstractPacketCodec();
         channels = NetworkRegistry.INSTANCE.newChannel(modId, packetCodec);
 
-        ArrayList<Class<? extends AbstractPacket>> list = new ArrayList<Class<? extends AbstractPacket>>();
+        ArrayList<Class<? extends AbstractPacket>> list = new ArrayList<>();
         for(Class<? extends AbstractPacket> packetType : packetTypes)
         {
             if(!list.contains(packetType))
