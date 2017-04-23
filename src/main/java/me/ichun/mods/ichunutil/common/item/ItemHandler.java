@@ -38,13 +38,15 @@ public class ItemHandler
 
     public static ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
     {
-        if(canItemBeUsed(living, living.getHeldItem(EnumHand.MAIN_HAND)))
+        ItemStack is = living.getHeldItem(EnumHand.MAIN_HAND);
+        if(is != null && isItemDualHanded(is.getItem()) && canItemBeUsed(living, is))
         {
-            return living.getHeldItem(EnumHand.MAIN_HAND);
+            return is;
         }
-        if(canItemBeUsed(living, living.getHeldItem(EnumHand.OFF_HAND)))
+        is = living.getHeldItem(EnumHand.OFF_HAND);
+        if(is != null && isItemDualHanded(is.getItem()) && canItemBeUsed(living, is))
         {
-            return living.getHeldItem(EnumHand.OFF_HAND);
+            return is;
         }
         return null;
     }

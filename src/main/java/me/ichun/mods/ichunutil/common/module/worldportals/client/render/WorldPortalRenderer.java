@@ -192,15 +192,10 @@ public class WorldPortalRenderer
 
         if(mc.gameSettings.thirdPersonView == 0)
         {
-            ItemStack mainHand = mc.thePlayer.getHeldItemMainhand();
-            if(mainHand != null && ItemHandler.isItemDualHanded(mainHand.getItem()))
+            ItemStack usable = ItemHandler.getUsableDualHandedItem(mc.thePlayer);
+            if(usable != null)
             {
-                mc.thePlayer.setActiveHand(EnumHand.MAIN_HAND);
-            }
-            ItemStack offHand = mc.thePlayer.getHeldItemOffhand();
-            if(offHand != null && ItemHandler.isItemDualHanded(offHand.getItem()))
-            {
-                mc.thePlayer.setActiveHand(EnumHand.OFF_HAND);
+                mc.thePlayer.setActiveHand(usable.equals(mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND)) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
             }
         }
 
