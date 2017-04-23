@@ -199,7 +199,7 @@ public class iChunUtil
 
         proxy.postInit();
 
-        //        me.ichun.mods.ichunutil.common.module.updateWorldPortal.UpdateVersionGen.generate();
+//                me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen.generate();
         //        System.out.println(EntityHelper.getGameProfile("pahimar").getId());
     }
 
