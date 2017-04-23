@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.render;
 
 import gnu.trove.map.hash.TIntFloatHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.OpenGlHelper;
 import org.lwjgl.opengl.ARBFragmentShader;
@@ -14,15 +15,14 @@ import org.lwjgl.opengl.GL11;
  */
 public final class ShaderHelper
 {
-
     private static final int VERT = ARBVertexShader.GL_VERTEX_SHADER_ARB;
     private static final int FRAG = ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
 
     private static TIntFloatHashMap prevTime = new TIntFloatHashMap();
+    private static TIntIntHashMap timeUniformLocation = new TIntIntHashMap(); //shader, time loc.
 
     public static void useShader(int shader, IShaderCallback callback)
     {
-
         if(!supportsShaders())
         {
             return;
@@ -35,10 +35,14 @@ public final class ShaderHelper
             float frameTime = iChunUtil.eventHandlerClient.ticks + iChunUtil.eventHandlerClient.renderTick;
             boolean newFrame = frameTime != prevTime.get(shader);
 
-            if(newFrame)
+            if(!timeUniformLocation.containsKey(shader))
             {
-                int time = ARBShaderObjects.glGetUniformLocationARB(shader, "time");
-                ARBShaderObjects.glUniform1fARB(time, frameTime);
+                timeUniformLocation.put(shader, ARBShaderObjects.glGetUniformLocationARB(shader, "time"));
+            }
+
+            if(newFrame && timeUniformLocation.get(shader) >= 0)
+            {
+                ARBShaderObjects.glUniform1fARB(timeUniformLocation.get(shader), frameTime);
                 prevTime.put(shader, frameTime);
             }
 
@@ -71,7 +75,6 @@ public final class ShaderHelper
     // http://lwjgl.org/wiki/index.php?title=GLSL_Shaders_with_LWJGL
     public static int createProgram(String vert, String frag)
     {
-
         if(!supportsShaders())
         {
             return -1;
