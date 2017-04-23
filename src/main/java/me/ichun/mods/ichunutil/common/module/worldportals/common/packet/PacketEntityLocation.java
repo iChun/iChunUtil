@@ -111,6 +111,9 @@ public class PacketEntityLocation extends AbstractPacket
         if(ent != null && !(player.worldObj.isRemote && player == ent))
         {
             ent.setLocationAndAngles(x, y, z, yaw, pitch);
+            ent.motionX = mX;
+            ent.motionY = mY;
+            ent.motionZ = mZ;
             if(!player.worldObj.isRemote)
             {
                 if(ent instanceof EntityPlayerMP && ent == player)

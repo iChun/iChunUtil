@@ -85,6 +85,10 @@ public class PacketChannel
 
     public PacketChannel(String modId, Class<? extends AbstractPacket>... packetTypes)
     {
+        if(modId.length() > 20)
+        {
+            throw new ReportedException(new CrashReport("Mod " + modId + " has a channel name that's too long!", new Throwable()));
+        }
         if(packetTypes.length == 0)
         {
             throw new ReportedException(new CrashReport("Mod " + modId + " is not registering any packets with its channel handlers.", new Throwable()));

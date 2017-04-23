@@ -36,7 +36,7 @@ public class WorldPortals
 
         WorldPortalsApi.setApiImpl(new ApiImpl());
 
-        channel = new PacketChannel("iChunUtil_WorldPortals", PacketEntityLocation.class);
+        channel = new PacketChannel("iChun_WorldPortals", PacketEntityLocation.class);
 
         if(FMLCommonHandler.instance().getSide().isClient())
         {
