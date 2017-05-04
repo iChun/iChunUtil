@@ -122,8 +122,12 @@ public class RenderBlock extends Render<EntityBlock>
                             if(entBlock.renderingTileEntities[ii][jj][kk] == null)
                             {
                                 TileEntity te = block.createTileEntity(entBlock.worldObj, iblockstate);
-                                te.readFromNBT(entBlock.tileEntityNBTs[ii][jj][kk].copy());
-                                entBlock.renderingTileEntities[ii][jj][kk] = te;
+                                if(te != null) //no IDEA, te can definitely be null.
+                                {
+                                    te.setWorldObj(entBlock.worldObj);
+                                    te.readFromNBT(entBlock.tileEntityNBTs[ii][jj][kk].copy());
+                                    entBlock.renderingTileEntities[ii][jj][kk] = te;
+                                }
                             }
                             if(!classesNotToRender.contains(entBlock.renderingTileEntities[ii][jj][kk].getClass()))
                             {
