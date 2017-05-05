@@ -1,0 +1,11 @@
+package me.ichun.mods.ichunutil.common.module.tabula.formats.types;
+
+import me.ichun.mods.ichunutil.common.module.tabula.project.ProjectInfo;
+
+import java.io.File;
+
+public abstract class Importer
+{
+    public abstract ProjectInfo createProjectInfo(File file);
+    public abstract int getProjectVersion();//Returns the project info version which the importer creates. This is for Tabula to repair outdated save files if possible.
+}
