@@ -1,11 +1,11 @@
 package me.ichun.mods.ichunutil.common.module.tabula.project.components;
 
+import me.ichun.mods.ichunutil.common.module.tabula.project.ProjectInfo;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.client.model.ModelRenderer;
 import org.apache.commons.lang3.RandomStringUtils;
-import me.ichun.mods.ichunutil.common.module.tabula.project.ProjectInfo;
 
 import java.util.ArrayList;
 

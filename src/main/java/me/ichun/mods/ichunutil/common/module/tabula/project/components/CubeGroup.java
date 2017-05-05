@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.common.module.tabula.project.components;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import me.ichun.mods.ichunutil.common.module.tabula.project.ProjectInfo;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 

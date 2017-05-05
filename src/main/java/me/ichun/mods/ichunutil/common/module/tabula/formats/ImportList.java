@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.common.module.tabula.formats;
 
-import org.apache.commons.io.FilenameUtils;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.tabula.formats.types.ImportTabula;
 import me.ichun.mods.ichunutil.common.module.tabula.formats.types.Importer;
 import me.ichun.mods.ichunutil.common.module.tabula.project.ProjectInfo;
-import me.ichun.mods.ichunutil.common.module.tabula.formats.types.ImportTabula;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.HashMap;
