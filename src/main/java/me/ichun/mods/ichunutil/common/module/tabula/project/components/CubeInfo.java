@@ -38,9 +38,9 @@ public class CubeInfo
 
     public boolean hidden = false;
 
-    public ArrayList<String> metadata = new ArrayList<String>();
+    public ArrayList<String> metadata = new ArrayList<>();
 
-    private ArrayList<CubeInfo> children = new ArrayList<CubeInfo>();
+    private ArrayList<CubeInfo> children = new ArrayList<>();
     public String parentIdentifier;
 
     public String identifier;

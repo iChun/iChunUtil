@@ -80,7 +80,7 @@ public class WindowSetStringArray extends Window
         {
             if(!(element instanceof ElementTextInput))
             {
-                ArrayList<String> strings = new ArrayList<String>();
+                ArrayList<String> strings = new ArrayList<>();
 
                 for(Element e : elements)
                 {

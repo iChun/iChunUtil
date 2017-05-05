@@ -346,9 +346,8 @@ public abstract class WorldPortal
         {
             for (int j = 0; j < 2; ++j)
             {
-                for(Iterator<Particle> ite = mc.effectRenderer.fxLayers[i][j].iterator(); ite.hasNext(); )
+                for(Particle particle : mc.effectRenderer.fxLayers[i][j])
                 {
-                    Particle particle = ite.next();
                     Vec3d particlePos = new Vec3d(particle.prevPosX, particle.prevPosY, particle.prevPosZ); //motion isn't accessible.
                     Vec3d newParticlePos = new Vec3d(particle.posX, particle.posY, particle.posZ);
 

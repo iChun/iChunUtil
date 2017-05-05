@@ -24,7 +24,7 @@ public class ModelHelper
             ModelRenderer renderer = modelList.get(i);
             if(renderer.childModels != null)
             {
-                ArrayList<ModelRenderer> children = new ArrayList<ModelRenderer>();
+                ArrayList<ModelRenderer> children = new ArrayList<>();
                 while(!renderer.childModels.isEmpty())
                 {
                     children.add((ModelRenderer)renderer.childModels.get(renderer.childModels.size() - 1));
@@ -54,8 +54,8 @@ public class ModelHelper
             }
             Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(ent).doRender(ent, 0.0D, -500D, 0.0D, 0.0F, 1.0F);
 
-            ArrayList<ModelRenderer> modelListCopy = new ArrayList<ModelRenderer>(modelList);
-            ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+            ArrayList<ModelRenderer> modelListCopy = new ArrayList<>(modelList);
+            ArrayList<ModelRenderer> list = new ArrayList<>();
 
             for(int i = modelListCopy.size() - 1; i >= 0; i--)
             {
@@ -74,7 +74,7 @@ public class ModelHelper
         else
         {
 
-            ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+            ArrayList<ModelRenderer> list = new ArrayList<>();
 
             for(int i = 0; i < modelList.size(); i++)
             {
@@ -200,15 +200,15 @@ public class ModelHelper
     //Gets the parent ModelRenderers in a ModelBase.
     public static ArrayList<ModelRenderer> getModelCubes(ModelBase parent)
     {
-        return new ArrayList<ModelRenderer>(getModelCubesWithNames(parent).values());
+        return new ArrayList<>(getModelCubesWithNames(parent).values());
     }
 
     //Gets the parent ModelRenderers in a ModelBase with their field names. No children are in this list.
     public static HashMap<String, ModelRenderer> getModelCubesWithNames(ModelBase parent)
     {
-        HashMap<String, ModelRenderer> list = new HashMap<String, ModelRenderer>();
+        HashMap<String, ModelRenderer> list = new HashMap<>();
 
-        HashMap<String,  ModelRenderer[]> list1 = new HashMap<String, ModelRenderer[]>();
+        HashMap<String,  ModelRenderer[]> list1 = new HashMap<>();
 
         if(parent != null)
         {
@@ -269,7 +269,7 @@ public class ModelHelper
             }
         }
 
-        ArrayList<ModelRenderer> children = new ArrayList<ModelRenderer>();
+        ArrayList<ModelRenderer> children = new ArrayList<>();
 
         for(Map.Entry<String, ModelRenderer> e : list.entrySet())
         {
@@ -302,7 +302,7 @@ public class ModelHelper
     //Gets all the model cubes from several models
     public static ArrayList<ModelRenderer> getMultiModelCubes(ArrayList<ModelBase> parent)
     {
-        ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+        ArrayList<ModelRenderer> list = new ArrayList<>();
         for(ModelBase base : parent)
         {
             list.addAll(getModelCubes(base));
@@ -313,7 +313,7 @@ public class ModelHelper
     //Gets the children models from a ModelRenderer
     public static ArrayList<ModelRenderer> getChildren(ModelRenderer parent, boolean recursive, int depth)
     {
-        ArrayList<ModelRenderer> list = new ArrayList<ModelRenderer>();
+        ArrayList<ModelRenderer> list = new ArrayList<>();
         if(parent.childModels != null && depth < 20)
         {
             for(int i = 0; i < parent.childModels.size(); i++)
@@ -342,7 +342,7 @@ public class ModelHelper
     //Tries to find the most likely model for the Render class
     public static ModelBase getPossibleModel(Render rend)
     {
-        ArrayList<ArrayList<ModelBase>> models = new ArrayList<ArrayList<ModelBase>>();
+        ArrayList<ArrayList<ModelBase>> models = new ArrayList<>();
 
         if(rend != null)
         {
@@ -351,7 +351,7 @@ public class ModelHelper
                 Class clz = rend.getClass();
                 while(clz != Render.class)
                 {
-                    ArrayList<ModelBase> priorityLevel = new ArrayList<ModelBase>();
+                    ArrayList<ModelBase> priorityLevel = new ArrayList<>();
 
                     Field[] fields = clz.getDeclaredFields();
                     for(Field f : fields)
@@ -379,7 +379,7 @@ public class ModelHelper
 
                     if(clz == RenderLivingBase.class)
                     {
-                        ArrayList<ModelBase> topPriority = new ArrayList<ModelBase>();
+                        ArrayList<ModelBase> topPriority = new ArrayList<>();
                         for(Field f : fields)
                         {
                             f.setAccessible(true);
@@ -640,6 +640,6 @@ public class ModelHelper
         return arms;
     }
 
-    public static HashMap<Class<? extends ModelBase>, ModelRenderer[]> armMappings = new HashMap<Class<? extends ModelBase>, ModelRenderer[]>();
-    public static HashMap<Class<? extends Render>, ArrayList<ModelRenderer>> classToModelRendererMap = new HashMap<Class<? extends Render>, ArrayList<ModelRenderer>>();
+    public static HashMap<Class<? extends ModelBase>, ModelRenderer[]> armMappings = new HashMap<>();
+    public static HashMap<Class<? extends Render>, ArrayList<ModelRenderer>> classToModelRendererMap = new HashMap<>();
 }

@@ -207,7 +207,7 @@ public abstract class IWorkspace extends GuiScreen
                 GlStateManager.translate(0F, 0F, 20F * levels.size());
                 List<String> tips = Splitter.on("\n").splitToList(tooltip);
                 List<String> tipss = Splitter.on("\\n").splitToList(tooltip);
-                tips = new ArrayList<String>(tipss.size() > tips.size() ? tipss : tips);
+                tips = new ArrayList<>(tipss.size() > tips.size() ? tipss : tips);
                 if(tips.size() == 1)
                 {
                     tips.add(I18n.translateToLocal(tips.get(0)));
@@ -707,7 +707,7 @@ public abstract class IWorkspace extends GuiScreen
                 }
             }
         }
-        ArrayList<Window> topLevel = new ArrayList<Window>();
+        ArrayList<Window> topLevel = new ArrayList<>();
         topLevel.add(window);
         levels.add(topLevel);
     }
@@ -793,7 +793,7 @@ public abstract class IWorkspace extends GuiScreen
                 Window window1 = levels.get(i).get(j);
                 if(window1 == window && window.docked < 0 && !(i == levels.size() - 1 && levels.get(i).size() == 1))
                 {
-                    ArrayList<Window> topLevel = new ArrayList<Window>();
+                    ArrayList<Window> topLevel = new ArrayList<>();
                     topLevel.add(window1);
                     levels.get(i).remove(j);
                     if(levels.get(i).isEmpty() && i >= VARIABLE_LEVEL)

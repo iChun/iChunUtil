@@ -27,7 +27,7 @@ public class ModelTabula extends ModelBase
         this.textureHeight = projectInfo.textureHeight;
         this.textureWidth = projectInfo.textureWidth;
 
-        this.cubes = new ArrayList<CubeInfo>();
+        this.cubes = new ArrayList<>();
 
         for(int i = 0; i < projectInfo.cubeGroups.size(); i++)
         {
@@ -66,30 +66,27 @@ public class ModelTabula extends ModelBase
 
         GlStateManager.scale(1D / projectInfo.scale[0], 1D / projectInfo.scale[1], 1D / projectInfo.scale[2]);
 
-        for(CubeInfo info : cubes)
+        cubes.stream().filter(info -> info.modelCube != null && !info.hidden).forEach(info ->
         {
-            if(info.modelCube != null && !info.hidden)
+            GlStateManager.pushMatrix();
+            if(useOpacity)
             {
-                GlStateManager.pushMatrix();
-                if(useOpacity)
-                {
-                    GlStateManager.color(r, g, b, alpha * (float)(info.opacity / 100D));
-                }
-
-                if(!(info.scale[0] == 1D && info.scale[1] == 1D && info.scale[2] == 1D))
-                {
-                    GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
-                    GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
-                    GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
-                    GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
-                    GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
-                }
-
-                info.modelCube.render(f5);
-
-                GlStateManager.popMatrix();
+                GlStateManager.color(r, g, b, alpha * (float)(info.opacity / 100D));
             }
-        }
+
+            if(!(info.scale[0] == 1D && info.scale[1] == 1D && info.scale[2] == 1D))
+            {
+                GlStateManager.translate(info.modelCube.offsetX, info.modelCube.offsetY, info.modelCube.offsetZ);
+                GlStateManager.translate(info.modelCube.rotationPointX * f5, info.modelCube.rotationPointY * f5, info.modelCube.rotationPointZ * f5);
+                GlStateManager.scale(info.scale[0], info.scale[1], info.scale[2]);
+                GlStateManager.translate(-info.modelCube.offsetX, -info.modelCube.offsetY, -info.modelCube.offsetZ);
+                GlStateManager.translate(-info.modelCube.rotationPointX * f5, -info.modelCube.rotationPointY * f5, -info.modelCube.rotationPointZ * f5);
+            }
+
+            info.modelCube.render(f5);
+
+            GlStateManager.popMatrix();
+        });
 
         GlStateManager.popMatrix();
     }

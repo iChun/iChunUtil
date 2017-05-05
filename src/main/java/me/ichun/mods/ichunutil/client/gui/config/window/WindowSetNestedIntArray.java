@@ -62,8 +62,8 @@ public class WindowSetNestedIntArray extends Window
         ElementTextInputNumber parentNum = null;
         boolean lastIsEmpty = false;
 
-        ArrayList<Element> elementsToAdd = new ArrayList<Element>();
-        ArrayList<Element> elementsToRemove = new ArrayList<Element>();
+        ArrayList<Element> elementsToAdd = new ArrayList<>();
+        ArrayList<Element> elementsToRemove = new ArrayList<>();
         for(Element e : elements)
         {
             if(e instanceof ElementTextInputNumber && e.id % 100 == 0)
@@ -148,7 +148,7 @@ public class WindowSetNestedIntArray extends Window
         {
             if(!(element instanceof ElementTextInputNumber))
             {
-                TreeMap<Integer, ArrayList<ElementTextInputNumber>> elementMap = new TreeMap<Integer, ArrayList<ElementTextInputNumber>>();
+                TreeMap<Integer, ArrayList<ElementTextInputNumber>> elementMap = new TreeMap<>();
 
                 for(Element e : elements)
                 {
@@ -157,7 +157,7 @@ public class WindowSetNestedIntArray extends Window
                         ArrayList<ElementTextInputNumber> nums = elementMap.get(e.id - (e.id % 100));
                         if(nums == null)
                         {
-                            nums = new ArrayList<ElementTextInputNumber>();
+                            nums = new ArrayList<>();
                             elementMap.put(e.id - (e.id % 100), nums);
                         }
 
@@ -173,11 +173,11 @@ public class WindowSetNestedIntArray extends Window
                 {
                     NestedIntArray vals = (NestedIntArray)prop.field.get(config);
 
-                    vals.values = new TreeMap<Integer, ArrayList<Integer>>();
+                    vals.values = new TreeMap<>();
 
                     for(Map.Entry<Integer, ArrayList<ElementTextInputNumber>> e : elementMap.entrySet())
                     {
-                        ArrayList<Integer> list = new ArrayList<Integer>();
+                        ArrayList<Integer> list = new ArrayList<>();
                         int parent = Short.MIN_VALUE + 32;
 
                         for(ElementTextInputNumber e1 : e.getValue())

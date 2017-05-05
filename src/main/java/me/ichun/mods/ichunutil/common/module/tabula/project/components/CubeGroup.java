@@ -13,8 +13,8 @@ public class CubeGroup
         identifier = RandomStringUtils.randomAscii(ProjectInfo.IDENTIFIER_LENGTH);
     }
 
-    public ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
-    public ArrayList<CubeGroup> cubeGroups = new ArrayList<CubeGroup>();
+    public ArrayList<CubeInfo> cubes = new ArrayList<>();
+    public ArrayList<CubeGroup> cubeGroups = new ArrayList<>();
 
     public String name;
 
@@ -22,7 +22,7 @@ public class CubeGroup
 
     public boolean hidden = false;
 
-    public ArrayList<String> metadata = new ArrayList<String>();
+    public ArrayList<String> metadata = new ArrayList<>();
 
     public String identifier;
 }

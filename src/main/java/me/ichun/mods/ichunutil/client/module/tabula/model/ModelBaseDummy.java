@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ModelBaseDummy extends ModelBase
 {
     public ProjectInfo parent;
-    public ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
+    public ArrayList<CubeInfo> cubes = new ArrayList<>();
 
     public ModelRotationPoint rotationPoint;
     public ModelSizeControls sizeControls;
@@ -55,7 +55,7 @@ public class ModelBaseDummy extends ModelBase
 
     public ArrayList<CubeInfo> getParents(CubeInfo info) // in reverse order.
     {
-        ArrayList<CubeInfo> parents = new ArrayList<CubeInfo>();
+        ArrayList<CubeInfo> parents = new ArrayList<>();
 
         for(CubeInfo cube : cubes)
         {
@@ -79,8 +79,8 @@ public class ModelBaseDummy extends ModelBase
 
     public void render(float f5, ArrayList<CubeInfo> cubesToSelect, ArrayList<CubeInfo> cubesToHide, float zoomLevel, boolean hasTexture, int pass, boolean renderRotationPoint, boolean renderControls)
     {
-        ArrayList<CubeInfo> cubesToRender = new ArrayList<CubeInfo>(cubesToSelect);
-        ArrayList<CubeInfo> unrendered = new ArrayList<CubeInfo>(cubesToSelect);
+        ArrayList<CubeInfo> cubesToRender = new ArrayList<>(cubesToSelect);
+        ArrayList<CubeInfo> unrendered = new ArrayList<>(cubesToSelect);
         unrendered.removeAll(cubes);
         if(!unrendered.isEmpty())
         {
@@ -152,9 +152,9 @@ public class ModelBaseDummy extends ModelBase
                 }
             }
         }
-        for(CubeInfo info : unrendered)
+        if(pass == 0)
         {
-            if(pass == 0)
+            unrendered.stream().forEach(info ->
             {
                 if(cubesToRender.size() == 1)
                 {
@@ -170,7 +170,7 @@ public class ModelBaseDummy extends ModelBase
                 }
 
                 renderSelectedCube(info, cubesToHide, f5, zoomLevel, hasTexture, unrendered.contains(info) || cubesToSelect.contains(info), renderRotationPoint, renderControls);
-            }
+            });
         }
     }
 
@@ -467,10 +467,7 @@ public class ModelBaseDummy extends ModelBase
 
     private void deleteModelDisplayList(CubeInfo info)//Done to free up Graphics memory
     {
-        for(CubeInfo info1 : info.getChildren())
-        {
-            deleteModelDisplayList(info1);
-        }
+        info.getChildren().forEach(this::deleteModelDisplayList);
         if(info.modelCube != null && info.modelCube.compiled)
         {
             GLAllocation.deleteDisplayLists(info.modelCube.displayList);

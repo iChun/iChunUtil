@@ -122,7 +122,7 @@ public class PacketSession extends AbstractPacket
             }
             else if(type == 2)
             {
-                NestedIntArray ints = new NestedIntArray(new TreeMap<Integer, ArrayList<Integer>>());
+                NestedIntArray ints = new NestedIntArray(new TreeMap<>());
                 ints.deserialize(ByteBufUtils.readUTF8String(buffer), Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
                 vars.put(var, ints);

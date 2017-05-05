@@ -166,7 +166,7 @@ public class TC2Info
             Enumeration entries = zipFile.entries();
 
             ZipEntry modelInfo = null;
-            HashMap<String, InputStream> images = new HashMap<String, InputStream>();
+            HashMap<String, InputStream> images = new HashMap<>();
 
             boolean tampered = false;
 
@@ -260,7 +260,7 @@ public class TC2Info
 
             ZipInputStream clonePNG = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-            HashMap<String, InputStream> images = new HashMap<String, InputStream>();
+            HashMap<String, InputStream> images = new HashMap<>();
 
             boolean tampered = false;
 

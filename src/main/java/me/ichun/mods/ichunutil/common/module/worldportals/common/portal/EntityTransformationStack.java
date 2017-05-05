@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.common.portal;
 
-import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

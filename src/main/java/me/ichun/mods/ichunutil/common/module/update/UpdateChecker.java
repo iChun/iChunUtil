@@ -65,13 +65,7 @@ public class UpdateChecker
     {
         if(UpdateChecker.hasCheckedForUpdates())
         {
-            for(UpdateChecker.ModVersionInfo info : UpdateChecker.getModsWithUpdates())
-            {
-                if(!info.isModClientOnly)
-                {
-                    iChunUtil.LOGGER.info("[NEW UPDATE AVAILABLE] " + info.modName + " - " + info.modVersionNew);
-                }
-            }
+            UpdateChecker.getModsWithUpdates().stream().filter(info -> !info.isModClientOnly).forEach(info -> iChunUtil.LOGGER.info("[NEW UPDATE AVAILABLE] " + info.modName + " - " + info.modVersionNew));
         }
         else
         {

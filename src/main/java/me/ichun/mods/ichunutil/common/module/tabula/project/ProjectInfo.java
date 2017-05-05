@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -89,14 +90,14 @@ public class ProjectInfo
     {
         modelName = "";
         authorName = "";
-        metadata = new ArrayList<String>();
+        metadata = new ArrayList<>();
         cameraFov = 30F;
         cameraZoom = 1.0F;
-        cubeGroups = new ArrayList<CubeGroup>();
-        cubes = new ArrayList<CubeInfo>();
-        anims = new ArrayList<Animation>();
+        cubeGroups = new ArrayList<>();
+        cubes = new ArrayList<>();
+        anims = new ArrayList<>();
 
-        states = new ArrayList<String>();
+        states = new ArrayList<>();
         switchState = -1;
     }
 
@@ -106,8 +107,8 @@ public class ProjectInfo
         modelName = name;
         authorName = author;
 
-        cubeGroups = new ArrayList<CubeGroup>();
-        cubes = new ArrayList<CubeInfo>();
+        cubeGroups = new ArrayList<>();
+        cubes = new ArrayList<>();
     }
 
     public String getAsJson()
@@ -124,14 +125,8 @@ public class ProjectInfo
         model = new ModelBaseDummy(this);
 //        model.textureWidth = textureWidth;
 //        model.textureHeight = textureHeight;
-        for(int i = 0; i < cubeGroups.size(); i++)
-        {
-            createGroupCubes(cubeGroups.get(i));
-        }
-        for(int i = 0 ; i < cubes.size(); i++)
-        {
-            model.cubes.add(cubes.get(i).createModel(model));
-        }
+        cubeGroups.forEach(this::createGroupCubes);
+        model.cubes.addAll(cubes.stream().map(cube -> cube.createModel(model)).collect(Collectors.toList()));
     }
 
     @SideOnly(Side.CLIENT)
@@ -161,7 +156,7 @@ public class ProjectInfo
 
     public ArrayList<CubeInfo> getAllCubes()
     {
-        ArrayList<CubeInfo> cubes = new ArrayList<CubeInfo>();
+        ArrayList<CubeInfo> cubes = new ArrayList<>();
         addAllCubes(cubes, this.cubes);
         addAllCubesFromGroups(cubes, this.cubeGroups);
         return cubes;
@@ -514,18 +509,18 @@ public class ProjectInfo
             }
             else if(projVersion == 2)
             {
-                metadata = new ArrayList<String>();
+                metadata = new ArrayList<>();
             }
             else if(projVersion == 3)
             {
                 for(CubeGroup group : cubeGroups)
                 {
-                    group.metadata = new ArrayList<String>();
+                    group.metadata = new ArrayList<>();
                 }
                 ArrayList<CubeInfo> cubes = getAllCubes();
                 for(CubeInfo info : cubes)
                 {
-                    info.metadata = new ArrayList<String>();
+                    info.metadata = new ArrayList<>();
                 }
             }
             projVersion++;

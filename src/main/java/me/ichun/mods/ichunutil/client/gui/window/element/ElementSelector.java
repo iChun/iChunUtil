@@ -90,7 +90,7 @@ public class ElementSelector extends Element
         {
             String before = "";
             String after = "";
-            ArrayList<String> names = new ArrayList<String>(choices.keySet());
+            ArrayList<String> names = new ArrayList<>(choices.keySet());
             Collections.sort(names);
             for(int i = 0; i < names.size(); i++)
             {
@@ -127,7 +127,7 @@ public class ElementSelector extends Element
     {
         String before = "";
         String after = "";
-        ArrayList<String> names = new ArrayList<String>(choices.keySet());
+        ArrayList<String> names = new ArrayList<>(choices.keySet());
         Collections.sort(names);
         for(int i = 0; i < names.size(); i++)
         {

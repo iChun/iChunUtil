@@ -14,7 +14,7 @@ import java.util.Locale;
 
 public class ElementNumberInput extends Element implements ITextInput
 {
-    public ArrayList<GuiTextField> textFields = new ArrayList<GuiTextField>();
+    public ArrayList<GuiTextField> textFields = new ArrayList<>();
     public int selectedTextField = -1;
 
     public boolean allowDecimal;

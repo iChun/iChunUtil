@@ -194,7 +194,7 @@ public class Window
         clickId = id;
 
         boolean clickedElement = false;
-        ArrayList<Element> els = new ArrayList<Element>(elements);
+        ArrayList<Element> els = new ArrayList<>(elements);
         for(int k = els.size() - 1; k >= 0; k--)
         {
             Element element = els.get(k);

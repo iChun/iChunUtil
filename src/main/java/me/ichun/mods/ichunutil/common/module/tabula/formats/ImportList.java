@@ -37,9 +37,7 @@ public class ImportList
             }
             catch(Exception e)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Error creating Project for format ").append(FilenameUtils.getExtension(file.getName())).append(" for file ").append(file.getAbsolutePath()).append(" by importer ").append(importer);
-                iChunUtil.LOGGER.warn(sb.toString());
+                iChunUtil.LOGGER.warn("Error creating Project for format " + FilenameUtils.getExtension(file.getName()) + " for file " + file.getAbsolutePath() + " by importer " + importer);
                 return null;
             }
         }

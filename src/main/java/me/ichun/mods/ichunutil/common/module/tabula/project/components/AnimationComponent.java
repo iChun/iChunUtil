@@ -124,7 +124,7 @@ public class AnimationComponent
     {
         if(progressionCoords == null)
         {
-            progressionCoords = new ArrayList<double[]>();
+            progressionCoords = new ArrayList<>();
         }
         progressionCoords.add(new double[] { x, y });
 

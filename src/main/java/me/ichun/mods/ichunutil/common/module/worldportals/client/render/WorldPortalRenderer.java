@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.common.module.worldportals.client.render;
 
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
-import me.ichun.mods.ichunutil.client.render.item.ItemRenderingHelper;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.item.ItemHandler;
@@ -31,7 +30,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Project;
 
