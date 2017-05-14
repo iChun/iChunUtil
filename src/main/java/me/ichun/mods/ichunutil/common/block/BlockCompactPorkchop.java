@@ -8,11 +8,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
 import java.util.Random;
 
 public class BlockCompactPorkchop extends Block
@@ -39,13 +39,15 @@ public class BlockCompactPorkchop extends Block
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         if(iChunUtil.config.enableCompactPorkchop == 1)
         {
             list.add(new ItemStack(itemIn, 1, 0));
         }
     }
+
+
 
     //For ObfHelper use to check
     @Override

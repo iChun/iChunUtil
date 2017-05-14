@@ -1,4 +1,5 @@
 *.class
+/run
 
 # Package Files #
 *.war
@@ -7,6 +8,7 @@
 # IDEA Files #
 *.iml
 /.idea
+/classes
 
 # Gradle #
 /.gradle

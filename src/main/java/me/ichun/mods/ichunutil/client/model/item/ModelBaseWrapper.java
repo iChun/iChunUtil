@@ -51,6 +51,7 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
 
     private boolean disableRender = false;
     private ItemCameraTransforms.TransformType currentPerspective;
+    @Nonnull
     private ItemStack lastStack;
     private EntityLivingBase lastEntity;
 
@@ -121,7 +122,7 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
 
             //cleanup
             currentPerspective = null;
-            lastStack = null;
+            lastStack = ItemStack.EMPTY;
             lastEntity = null;
 
             VertexBuffer vertexBuffer = tessellator.getBuffer();
@@ -173,7 +174,7 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
             boolean isLeft = isLeftHand(cameraTransformType);
             if(isItemDualHanded && isFirstPerson(currentPerspective) && lastEntity instanceof EntityPlayer && ItemRenderingHelper.dualHandedAnimationRight > 0)
             {
-                float prog = (float)Math.sin(MathHelper.clamp_float((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
+                float prog = (float)Math.sin(MathHelper.clamp((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
                 GlStateManager.rotate(30F * prog, -1F, 0F, 0F);
                 GlStateManager.translate(0F, -0.1F * prog, 0.3F * prog);
                 GlStateManager.rotate((isLeft ? -35F : 35F) * prog, 0F, 1F, 0F);
@@ -208,7 +209,8 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
         }
 
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+        @Nonnull
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity)
         {
             modelBaseWrapper.lastStack = stack;
             modelBaseWrapper.lastEntity = entity;

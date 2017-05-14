@@ -35,5 +35,5 @@ public interface IModelBase
 
     void handleBlockState(@Nullable IBlockState state, @Nullable EnumFacing side, long rand);
 
-    void handleItemState(ItemStack stack, World world, EntityLivingBase entity);
+    void handleItemState(@Nonnull ItemStack stack, World world, EntityLivingBase entity);
 }

@@ -43,11 +43,11 @@ public class AnimationComponent
 
     public void animate(CubeInfo info, float time)
     {
-        float prog = MathHelper.clamp_float((time - startKey) / (float)length, 0F, 1F);
+        float prog = MathHelper.clamp((time - startKey) / (float)length, 0F, 1F);
         float mag = prog;
         if(getProgressionCurve() != null)
         {
-            mag = MathHelper.clamp_float((float)getProgressionCurve().value(prog), 0.0F, 1.0F);
+            mag = MathHelper.clamp((float)getProgressionCurve().value(prog), 0.0F, 1.0F);
         }
         if(time >= startKey)
         {
@@ -78,11 +78,11 @@ public class AnimationComponent
 
     public void reset(CubeInfo info, float time)
     {
-        float prog = MathHelper.clamp_float((time - startKey) / (float)length, 0F, 1F);
+        float prog = MathHelper.clamp((time - startKey) / (float)length, 0F, 1F);
         float mag = prog;
         if(getProgressionCurve() != null)
         {
-            mag = MathHelper.clamp_float((float)getProgressionCurve().value(prog), 0.0F, 1.0F);
+            mag = MathHelper.clamp((float)getProgressionCurve().value(prog), 0.0F, 1.0F);
         }
         if(time >= startKey)
         {

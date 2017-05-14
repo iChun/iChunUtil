@@ -143,8 +143,8 @@ public class ElementTextWrapper extends Element
     {
         if(!text.isEmpty())
         {
-            sliderProg += (0.1D * MathHelper.clamp_double((height / (parent.workspace.getFontRenderer().FONT_HEIGHT + 2)) / text.size(), 1.0D, 0.0D)) * -k;
-            sliderProg = MathHelper.clamp_double(sliderProg, 0.0D, 1.0D);
+            sliderProg += (0.1D * MathHelper.clamp((height / (parent.workspace.getFontRenderer().FONT_HEIGHT + 2)) / text.size(), 1.0D, 0.0D)) * -k;
+            sliderProg = MathHelper.clamp(sliderProg, 0.0D, 1.0D);
         }
         return false;//return true to say you're interacted with
     }

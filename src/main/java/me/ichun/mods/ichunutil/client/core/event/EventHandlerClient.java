@@ -134,9 +134,9 @@ public class EventHandlerClient
                 }
             }
 
-            if(renderGlobalWorldInstance != mc.renderGlobal.theWorld) //Assume world has changed, eg changing dimension or loading an MC world.
+            if(renderGlobalWorldInstance != mc.renderGlobal.world) //Assume world has changed, eg changing dimension or loading an MC world.
             {
-                renderGlobalWorldInstance = mc.renderGlobal.theWorld;
+                renderGlobalWorldInstance = mc.renderGlobal.world;
 
                 for(RenderGlobalProxy proxy : RendererHelper.renderGlobalProxies)
                 {
@@ -177,17 +177,17 @@ public class EventHandlerClient
             if(mc.currentScreen instanceof GuiControls && !keyBindList.isEmpty())
             {
                 String s = I18n.translateToLocal("ichunutil.config.controls.moreKeys");
-                int width = Math.round(mc.fontRendererObj.getStringWidth(s) / 2F);
+                int width = Math.round(mc.fontRenderer.getStringWidth(s) / 2F);
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(reso.getScaledWidth() - width - 2, (reso.getScaledHeight() - (mc.fontRendererObj.FONT_HEIGHT / 2D) - 2), 0);
+                GlStateManager.translate(reso.getScaledWidth() - width - 2, (reso.getScaledHeight() - (mc.fontRenderer.FONT_HEIGHT / 2D) - 2), 0);
                 GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                mc.fontRendererObj.drawString(s, 0, 0, 0xffffff, true);
+                mc.fontRenderer.drawString(s, 0, 0, 0xffffff, true);
                 GlStateManager.popMatrix();
 
                 int i = Mouse.getX() * reso.getScaledWidth() / mc.displayWidth;
                 int j = reso.getScaledHeight() - Mouse.getY() * reso.getScaledHeight() / mc.displayHeight - 1;
 
-                if(!mouseLeftDown && Mouse.isButtonDown(0) && i >= (reso.getScaledWidth() - width - 2) && i <= reso.getScaledWidth() && j >= (reso.getScaledHeight() - mc.fontRendererObj.FONT_HEIGHT - 2) && j <= reso.getScaledHeight())
+                if(!mouseLeftDown && Mouse.isButtonDown(0) && i >= (reso.getScaledWidth() - width - 2) && i <= reso.getScaledWidth() && j >= (reso.getScaledHeight() - mc.fontRenderer.FONT_HEIGHT - 2) && j <= reso.getScaledHeight())
                 {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     FMLClientHandler.instance().showGuiScreen(new GuiConfigs(mc.currentScreen));
@@ -204,7 +204,7 @@ public class EventHandlerClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase.equals(TickEvent.Phase.END))
         {
-            if(mc.theWorld != null)
+            if(mc.world != null)
             {
                 if(connectingToServer)
                 {
@@ -236,9 +236,9 @@ public class EventHandlerClient
 
                     GrabHandler.tick(Side.CLIENT);
 
-                    if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && mc.thePlayer.isElytraFlying() && mc.gameSettings.keyBindJump.isKeyDown())
+                    if(!ObfHelper.obfuscated() && Minecraft.getMinecraft().getSession().getProfile().getName().equals("iChun") && mc.player.isElytraFlying() && mc.gameSettings.keyBindJump.isKeyDown())
                     {
-                        mc.thePlayer.motionY += 0.05F;
+                        mc.player.motionY += 0.05F;
                     }
                 }
             }

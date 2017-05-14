@@ -28,7 +28,7 @@ public class ClippingHelperPortal extends ClippingHelper
 
     private void normalize(float[] p_180547_1_)
     {
-        float f = MathHelper.sqrt_float(p_180547_1_[0] * p_180547_1_[0] + p_180547_1_[1] * p_180547_1_[1] + p_180547_1_[2] * p_180547_1_[2]);
+        float f = MathHelper.sqrt(p_180547_1_[0] * p_180547_1_[0] + p_180547_1_[1] * p_180547_1_[1] + p_180547_1_[2] * p_180547_1_[2]);
         p_180547_1_[0] /= f;
         p_180547_1_[1] /= f;
         p_180547_1_[2] /= f;

@@ -176,7 +176,7 @@ public abstract class WorldPortal
                 entitiesInRange.remove(i);
                 continue;
             }
-            if(teleportCooldown.containsKey(ent) || ent instanceof EntityPlayerMP && !ent.worldObj.isRemote)
+            if(teleportCooldown.containsKey(ent) || ent instanceof EntityPlayerMP && !ent.world.isRemote)
             {
                 continue;
             }
@@ -216,7 +216,7 @@ public abstract class WorldPortal
                 {
                     float[] appliedOffset = getQuaternionFormula().applyPositionalRotation(new float[] { (float)(newEntPos.xCoord - centerX), (float)(newEntPos.yCoord - centerY), (float)(newEntPos.zCoord - centerZ) });
                     float[] appliedMotion = getQuaternionFormula().applyPositionalRotation(new float[] { (float)motions[0], (float)motions[1], (float)motions[2] });
-                    float[] appliedRotation = getQuaternionFormula().applyRotationalRotation(new float[] { ent.rotationYaw, ent.rotationPitch, ent.worldObj.isRemote ? getRoll(ent) : 0F });
+                    float[] appliedRotation = getQuaternionFormula().applyRotationalRotation(new float[] { ent.rotationYaw, ent.rotationPitch, ent.world.isRemote ? getRoll(ent) : 0F });
 
                     AxisAlignedBB pairTeleportPlane = pair.getTeleportPlane(offset);
 
@@ -268,7 +268,7 @@ public abstract class WorldPortal
 
                     handleSpecialEntities(ent);
 
-                    if(ent.worldObj.isRemote)
+                    if(ent.world.isRemote)
                     {
                         handleClientEntityTeleport(ent, appliedRotation);
                     }
@@ -632,7 +632,7 @@ public abstract class WorldPortal
     @SideOnly(Side.CLIENT)
     public void handleClientEntityTeleport(Entity ent, float[] rotations)
     {
-        if(ent == Minecraft.getMinecraft().thePlayer)
+        if(ent == Minecraft.getMinecraft().player)
         {
             WorldPortals.eventHandlerClient.prevCameraRoll = WorldPortals.eventHandlerClient.cameraRoll = rotations[2];
             WorldPortals.channel.sendToServer(new PacketEntityLocation(ent));

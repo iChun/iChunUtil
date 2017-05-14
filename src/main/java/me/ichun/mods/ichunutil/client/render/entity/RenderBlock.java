@@ -65,7 +65,7 @@ public class RenderBlock extends Render<EntityBlock>
 
         BlockPos blockpos = new BlockPos(entBlock);
         BlockPos blockposMaxY = new BlockPos(entBlock.posX, entBlock.getEntityBoundingBox().maxY, entBlock.posZ);
-        World world = entBlock.worldObj;
+        World world = entBlock.world;
 
         for(int ii = 0; ii < entBlock.blocks.length; ii++)
         {
@@ -121,10 +121,10 @@ public class RenderBlock extends Render<EntityBlock>
                             }
                             if(entBlock.renderingTileEntities[ii][jj][kk] == null)
                             {
-                                TileEntity te = block.createTileEntity(entBlock.worldObj, iblockstate);
+                                TileEntity te = block.createTileEntity(entBlock.world, iblockstate);
                                 if(te != null) //no IDEA, te can definitely be null.
                                 {
-                                    te.setWorldObj(entBlock.worldObj);
+                                    te.setWorld(entBlock.world);
                                     te.readFromNBT(entBlock.tileEntityNBTs[ii][jj][kk].copy());
                                     entBlock.renderingTileEntities[ii][jj][kk] = te;
                                 }

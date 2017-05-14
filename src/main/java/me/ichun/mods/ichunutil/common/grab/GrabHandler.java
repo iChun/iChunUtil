@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -70,7 +71,7 @@ public class GrabHandler
             grabbed.setLocationAndAngles(grabbed.posX, grabbed.posY, grabbed.posZ, grabbed.rotationYaw, grabbed.rotationPitch);
 
             EntityHelper.setVelocity(grabbed, (grabPos.xCoord - grabbed.posX), (grabPos.yCoord - ((grabbed.getEntityBoundingBox().minY + grabbed.getEntityBoundingBox().maxY) / 2D)), (grabPos.zCoord - grabbed.posZ));
-            grabbed.moveEntity(grabbed.motionX, grabbed.motionY, grabbed.motionZ);
+            grabbed.move(MoverType.PLAYER, grabbed.motionX, grabbed.motionY, grabbed.motionZ);
             grabbed.setLocationAndAngles(grabbed.posX, grabbed.posY, grabbed.posZ, grabbed.rotationYaw, grabbed.rotationPitch);
         }
         EntityHelper.setVelocity(grabbed, (grabPos.xCoord - grabbed.posX), (grabPos.yCoord - ((grabbed.getEntityBoundingBox().minY + grabbed.getEntityBoundingBox().maxY) / 2D)), (grabPos.zCoord - grabbed.posZ));
@@ -115,12 +116,12 @@ public class GrabHandler
     @SideOnly(Side.CLIENT)
     public void getIDs()
     {
-        WorldClient client = Minecraft.getMinecraft().theWorld;
+        WorldClient client = Minecraft.getMinecraft().world;
         if(grabber == null)
         {
             if(grabberId == -1)
             {
-                grabber = Minecraft.getMinecraft().thePlayer;
+                grabber = Minecraft.getMinecraft().player;
             }
             else
             {
