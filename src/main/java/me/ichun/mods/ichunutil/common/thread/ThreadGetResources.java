@@ -13,10 +13,8 @@ import java.util.Map;
 
 public class ThreadGetResources extends Thread
 {
-    //    private static final String patronList  = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/patrons.json";
-    //    private static final String versionList = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/versions.json";
-    private static final String patronList = "https://raw.githubusercontent.com/iChun/iChunUtil/1.10/src/main/resources/assets/ichunutil/mod/patrons.json";
-    private static final String versionList = "https://raw.githubusercontent.com/iChun/iChunUtil/1.10/src/main/resources/assets/ichunutil/mod/versions.json";
+    private static final String patronList  = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/patrons.json";
+    private static final String versionList = "https://raw.github.com/iChun/iChunUtil/master/src/main/resources/assets/ichunutil/mod/versions.json";
     private final Side side;
 
     public ThreadGetResources(Side side)
