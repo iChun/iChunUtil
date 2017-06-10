@@ -14,6 +14,9 @@ import java.util.Random;
 
 public class WindowAnnoy extends Window
 {
+    public int timeout = 6000;
+    public ElementButton btnOk;
+
     public WindowAnnoy()
     {
         super(new IWorkspace()
@@ -33,7 +36,8 @@ public class WindowAnnoy extends Window
 
         elements.add(new ElementTextWrapper(this, 10, 15, width - 20, height - 30, 0, true, false, I18n.translateToLocal("ichunutil.eula.message")));
 
-        elements.add(new ElementButton(this, width - 50, height - 25, 40, 16, 3, false, 1, 1, "element.button.ok"));
+        btnOk = new ElementButton(this, width - 70, height - 25, 60, 16, 3, false, 1, 1, I18n.translateToLocal("element.button.ok") + " (" + (int)Math.floor(timeout / 20F) + ")");
+        elements.add(btnOk);
     }
 
     @Override
@@ -49,6 +53,24 @@ public class WindowAnnoy extends Window
         iChunUtil.config.eulaAcknowledged = RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode()))))));
         iChunUtil.config.save();
         iChunUtil.LOGGER.info("Thanks for acknowledging the message! The EULA message should no longer pop up when you launch Minecraft.");
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
+        if(timeout < 0)
+        {
+            iChunUtil.eventHandlerClient.eulaDrawEulaNotice = false;
+            iChunUtil.config.eulaAcknowledged = RandomStringUtils.random(20, 32, 127, false, false, null, (new Random(Math.abs(Minecraft.getMinecraft().getSession().getPlayerID().replaceAll("-", "").hashCode() + (Math.abs("iChunUtilEULA".hashCode()))))));
+            iChunUtil.config.save();
+            iChunUtil.LOGGER.info("Acknoledgement period timed out. Automatically accepting the EULA. The EULA message should no longer pop up when you launch Minecraft.");
+        }
+        else
+        {
+            btnOk.text = I18n.translateToLocal("element.button.ok") + " (" + (int)Math.floor(timeout / 20F) + ")";
+        }
+        timeout--;
     }
 
     @Override

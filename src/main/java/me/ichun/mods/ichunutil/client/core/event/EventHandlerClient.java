@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
@@ -171,6 +172,10 @@ public class EventHandlerClient
                 {
                     eulaWindow.onClick(i - eulaWindow.posX, j - eulaWindow.posY, 0);
                 }
+                if(Keyboard.isKeyDown(Keyboard.KEY_RETURN) || Keyboard.isKeyDown(Keyboard.KEY_NUMPADENTER))
+                {
+                    eulaWindow.elementTriggered(null);
+                }
             }
             GuiUpdateNotifier.update();
 
@@ -241,6 +246,10 @@ public class EventHandlerClient
                         mc.thePlayer.motionY += 0.05F;
                     }
                 }
+            }
+            if(eulaDrawEulaNotice)
+            {
+                eulaWindow.update();
             }
             ticks++;
         }

@@ -3,8 +3,12 @@ package me.ichun.mods.ichunutil.client.gui.window.element;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.gui.window.WindowTopDockBase;
+import me.ichun.mods.ichunutil.client.module.tabula.model.ModelInfo;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import me.ichun.mods.ichunutil.common.core.util.IOUtil;
+import me.ichun.mods.ichunutil.common.module.tabula.project.components.Animation;
+import me.ichun.mods.ichunutil.common.module.tabula.project.components.CubeGroup;
+import me.ichun.mods.ichunutil.common.module.tabula.project.components.CubeInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -255,7 +259,11 @@ public class ElementListTree extends Element
 
     public void clickElement(Object obj)
     {
-        if(obj instanceof String)
+        if(obj instanceof Animation)
+        {
+            selectedIdentifier = ((Animation)obj).identifier;
+        }
+        else if(obj instanceof String)
         {
             selectedIdentifier = ((String)obj);
         }
@@ -267,7 +275,18 @@ public class ElementListTree extends Element
 
     public void rightClickElement(Object obj)
     {
+    }
 
+    public Object getObjectByIdentifier(String s)
+    {
+        for(Tree tree : trees)
+        {
+            if(tree.attachedObject instanceof CubeInfo && ((CubeInfo)tree.attachedObject).identifier.equals(s) || tree.attachedObject instanceof CubeGroup && ((CubeGroup)tree.attachedObject).identifier.equals(s) || tree.attachedObject instanceof Animation && ((Animation)tree.attachedObject).identifier.equals(s))
+            {
+                return tree.attachedObject;
+            }
+        }
+        return null;
     }
 
     public void triggerParent()
@@ -348,12 +367,107 @@ public class ElementListTree extends Element
                     }
                 }
 
-                if(attachedObject instanceof File)
+                if(attachedObject instanceof CubeInfo)
+                {
+                    CubeInfo info = (CubeInfo)attachedObject;
+                    boolean hide = info.hidden;
+                    int level = attached;
+                    int index = -1;
+                    for(int i = 0; i < trees.size(); i++)
+                    {
+                        Tree tree = trees.get(i);
+
+                        if(tree == this)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    while(level > 0 && !hide && index != -1)
+                    {
+                        Tree tree = trees.get(--index);
+                        if(tree.attached == level - 1)//that means it's the parent
+                        {
+                            level = tree.attached;
+                            if(tree.attachedObject instanceof CubeInfo)
+                            {
+                                hide = ((CubeInfo)tree.attachedObject).hidden;
+                            }
+                            else if(tree.attachedObject instanceof CubeGroup)
+                            {
+                                hide = ((CubeGroup)tree.attachedObject).hidden;
+                            }
+                        }
+                    }
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    RendererHelper.drawTextureOnScreen(txModel, getPosX() + offX + 1.5D + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, theHeight - 4, theHeight - 4, 0);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    if(info.parentIdentifier == null && realBorder && rClicking)
+                    {
+                        rightClickElement(attachedObject);
+                    }
+                }
+                else if(attachedObject instanceof CubeGroup)
+                {
+                    CubeGroup info = (CubeGroup)attachedObject;
+                    boolean hide = info.hidden;
+                    int level = attached;
+                    int index = -1;
+                    for(int i = 0; i < trees.size(); i++)
+                    {
+                        Tree tree = trees.get(i);
+
+                        if(tree == this)
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                    while(level > 0 && !hide && index != -1)
+                    {
+                        Tree tree = trees.get(--index);
+                        if(tree.attached == level - 1)//that means it's the parent
+                        {
+                            level = tree.attached;
+                            if(tree.attachedObject instanceof CubeInfo)
+                            {
+                                hide = ((CubeInfo)tree.attachedObject).hidden;
+                            }
+                            else if(tree.attachedObject instanceof CubeGroup)
+                            {
+                                hide = ((CubeGroup)tree.attachedObject).hidden;
+                            }
+                        }
+                    }
+                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                    RendererHelper.drawTextureOnScreen(txGroup, getPosX() + offX + 1.5D + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, theHeight - 4, theHeight - 4, 0);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.name, width - 8), getPosX() + offX + 4 + 8 + (attached * 5), getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, hide ? Theme.getAsHex(parent.workspace.currentTheme.fontDim) : Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    if(realBorder && rClicking)
+                    {
+                        rightClickElement(attachedObject);
+                    }
+                }
+                else if(attachedObject instanceof ModelInfo)
+                {
+                    ModelInfo info = (ModelInfo)attachedObject;
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.modelParent.getClass().getSimpleName() + " - " + info.clz.getSimpleName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                }
+                else if(attachedObject instanceof File)
                 {
                     File info = (File)attachedObject;
                     parent.workspace.getFontRenderer().drawString(info.getName(), getPosX() + offX + 4, getPosY() + offY + 3 + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                     parent.workspace.getFontRenderer().drawString((new SimpleDateFormat()).format(new Date(info.lastModified())), getPosX() + offX + 4, getPosY() + offY + 14 + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                     parent.workspace.getFontRenderer().drawString(IOUtil.readableFileSize(info.length()), getPosX() + offX + width - 4 - parent.workspace.getFontRenderer().getStringWidth(IOUtil.readableFileSize(info.length())), getPosY() + offY + 3 + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                }
+                else if(attachedObject instanceof Theme)
+                {
+                    Theme theme = (Theme)attachedObject;
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(theme.name + " - " + theme.author, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                }
+                else if(attachedObject instanceof Animation)
+                {
+                    Animation anim = (Animation)attachedObject;
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(anim.name, width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
                 else if(attachedObject instanceof String)
                 {
