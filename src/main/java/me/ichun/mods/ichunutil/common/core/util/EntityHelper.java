@@ -117,25 +117,21 @@ public class EntityHelper
 
     public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item)
     {
-        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item)
+        ItemStack inOffHand = inventory.offHandInventory.get(0);
+        if(inOffHand.getItem() == item)
         {
-            if(--inventory.offHandInventory[0].stackSize <= 0)
-            {
-                inventory.offHandInventory[0] = null;
-            }
+            inOffHand.shrink(1);
 
             inventory.markDirty();
             return true;
         }
 
-        for(int i = 0; i < inventory.mainInventory.length; ++i)
+        for(int i = 0; i < inventory.mainInventory.size(); ++i)
         {
-            if(inventory.mainInventory[i] != null && inventory.mainInventory[i].getItem() == item)
+            ItemStack inMainInventory = inventory.mainInventory.get(i);
+            if(inMainInventory.getItem() == item)
             {
-                if(--inventory.mainInventory[i].stackSize <= 0)
-                {
-                    inventory.mainInventory[i] = null;
-                }
+                inMainInventory.shrink(1);
 
                 inventory.markDirty();
                 return true;
@@ -149,15 +145,16 @@ public class EntityHelper
     {
         boolean offhand = false;
         int found = 0;
-        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item && (inventory.offHandInventory[0].getItemDamage() == damage || inventory.offHandInventory[0].getItemDamage() == Short.MAX_VALUE))
+        ItemStack inOffHand = inventory.offHandInventory.get(0);
+        if(inOffHand.getItem() == item && (inOffHand.getItemDamage() == damage || inOffHand.getItemDamage() == Short.MAX_VALUE))
         {
-            found += inventory.offHandInventory[0].stackSize;
+            found += inOffHand.getCount();
             offhand = true;
         }
-        ItemStack[] stacks = Arrays.stream(inventory.mainInventory).filter(is -> is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE)).toArray(ItemStack[]::new);
+        ItemStack[] stacks = inventory.mainInventory.stream().filter(is -> is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE)).toArray(ItemStack[]::new);
         for(ItemStack is : stacks)
         {
-            found += is.stackSize;
+            found += is.getCount();
         }
         if(found < amount)
         {
@@ -165,26 +162,20 @@ public class EntityHelper
         }
         if(offhand)
         {
-            while(amount > 0 && inventory.offHandInventory[0].stackSize > 0)
+            while(amount > 0 && !inOffHand.isEmpty())
             {
                 amount--;
-                if(--inventory.offHandInventory[0].stackSize <= 0)
-                {
-                    inventory.offHandInventory[0] = null;
-                }
+                inOffHand.shrink(1);
             }
-            for(int i = 0; i < inventory.mainInventory.length; i++)
+            for(int i = 0; i < inventory.mainInventory.size(); i++)
             {
-                ItemStack is = inventory.mainInventory[i];
-                if(is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
+                ItemStack is = inventory.mainInventory.get(i);
+                if(is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
                 {
-                    while(amount > 0 && is.stackSize > 0)
+                    while(amount > 0 && is.getCount() > 0)
                     {
                         amount--;
-                        if(--is.stackSize <= 0)
-                        {
-                            inventory.mainInventory[i] = null;
-                        }
+                        is.shrink(1);
                     }
                 }
                 if(amount <= 0)
@@ -200,7 +191,7 @@ public class EntityHelper
 
     public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
     {
-        ent.worldObj.playSound(ent.worldObj.isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.thePlayer.
+        ent.world.playSound(ent.world.isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.player.
     }
 
     public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
@@ -275,7 +266,7 @@ public class EntityHelper
         double d1 = posZ - facer.posZ;
         double d2 = posY - (facer.posY + (double)facer.getEyeHeight());
 
-        double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+        double d3 = (double)MathHelper.sqrt(d0 * d0 + d1 * d1);
         float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
         float f3 = (float)(-(Math.atan2(d2, d3) * 180.0D / Math.PI));
         facer.rotationPitch = updateRotation(facer.rotationPitch, f3, maxPitch);
@@ -342,7 +333,7 @@ public class EntityHelper
         Vec3d vec31 = ent.getLook(renderTick);
         Vec3d vec32 = vec3.addVector(vec31.xCoord * d, vec31.yCoord * d, vec31.zCoord * d);
 
-        RayTraceResult rayTrace = rayTraceBlocks(ent.worldObj, d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
+        RayTraceResult rayTrace = rayTraceBlocks(ent.world, d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
 
         if(!ignoreEntities)
         {
@@ -355,7 +346,7 @@ public class EntityHelper
             Entity entityTrace = null;
             Vec3d vec33 = null;
             float f = 1.0F;
-            List<Entity> list = ent.worldObj.getEntitiesInAABBexcluding(ent, ent.getEntityBoundingBox().addCoord(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist).expand((double)f, (double)f, (double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+            List<Entity> list = ent.world.getEntitiesInAABBexcluding(ent, ent.getEntityBoundingBox().addCoord(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist).expand((double)f, (double)f, (double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
             {
                 public boolean apply(Entity p_apply_1_)
                 {
@@ -420,12 +411,12 @@ public class EntityHelper
         {
             if(!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord))
             {
-                int i = MathHelper.floor_double(vec32.xCoord);
-                int j = MathHelper.floor_double(vec32.yCoord);
-                int k = MathHelper.floor_double(vec32.zCoord);
-                int l = MathHelper.floor_double(vec31.xCoord);
-                int i1 = MathHelper.floor_double(vec31.yCoord);
-                int j1 = MathHelper.floor_double(vec31.zCoord);
+                int i = MathHelper.floor(vec32.xCoord);
+                int j = MathHelper.floor(vec32.yCoord);
+                int k = MathHelper.floor(vec32.zCoord);
+                int l = MathHelper.floor(vec31.xCoord);
+                int i1 = MathHelper.floor(vec31.yCoord);
+                int j1 = MathHelper.floor(vec31.zCoord);
                 BlockPos blockpos = new BlockPos(l, i1, j1);
                 IBlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
@@ -556,9 +547,9 @@ public class EntityHelper
                         vec31 = new Vec3d(vec31.xCoord + d6 * d5, vec31.yCoord + d7 * d5, d2);
                     }
 
-                    l = MathHelper.floor_double(vec31.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
-                    i1 = MathHelper.floor_double(vec31.yCoord) - (enumfacing == EnumFacing.UP ? 1 : 0);
-                    j1 = MathHelper.floor_double(vec31.zCoord) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
+                    l = MathHelper.floor(vec31.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
+                    i1 = MathHelper.floor(vec31.yCoord) - (enumfacing == EnumFacing.UP ? 1 : 0);
+                    j1 = MathHelper.floor(vec31.zCoord) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
                     blockpos = new BlockPos(l, i1, j1);
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
@@ -637,7 +628,7 @@ public class EntityHelper
 
             if(flag)
             {
-                for(double d6 = 0.05D; x != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
+                for(double d6 = 0.05D; x != 0.0D && ent.world.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
                 {
                     if(x < 0.05D && x >= -0.05D)
                     {
@@ -653,7 +644,7 @@ public class EntityHelper
                     }
                 }
 
-                for(; z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
+                for(; z != 0.0D && ent.world.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
                 {
                     if(z < 0.05D && z >= -0.05D)
                     {
@@ -669,7 +660,7 @@ public class EntityHelper
                     }
                 }
 
-                for(; x != 0.0D && z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
+                for(; x != 0.0D && z != 0.0D && ent.world.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
                 {
                     if(x < 0.05D && x >= -0.05D)
                     {
@@ -701,7 +692,7 @@ public class EntityHelper
                 }
             }
 
-            List<AxisAlignedBB> list1 = ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().addCoord(x, y, z));
+            List<AxisAlignedBB> list1 = ent.world.getCollisionBoxes(ent, ent.getEntityBoundingBox().addCoord(x, y, z));
             AxisAlignedBB axisalignedbb = ent.getEntityBoundingBox();
             int i = 0;
 
@@ -846,12 +837,12 @@ public class EntityHelper
 
     public static boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
     {
-        int i = MathHelper.floor_double(aabb.minX);
-        int j = MathHelper.floor_double(aabb.minY);
-        int k = MathHelper.floor_double(aabb.minZ);
-        int l = MathHelper.floor_double(aabb.maxX);
-        int i1 = MathHelper.floor_double(aabb.maxY);
-        int j1 = MathHelper.floor_double(aabb.maxZ);
+        int i = MathHelper.floor(aabb.minX);
+        int j = MathHelper.floor(aabb.minY);
+        int k = MathHelper.floor(aabb.minZ);
+        int l = MathHelper.floor(aabb.maxX);
+        int i1 = MathHelper.floor(aabb.maxY);
+        int j1 = MathHelper.floor(aabb.maxZ);
         boolean flag = false;
         boolean flag1 = false;
 
@@ -862,20 +853,20 @@ public class EntityHelper
                 for(int i2 = k; i2 <= j1; ++i2)
                 {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
-                    IBlockState iblockstate = ent.worldObj.getBlockState(blockpos);
-                    Block block = ent.worldObj.getBlockState(blockpos).getBlock();
+                    IBlockState iblockstate = ent.world.getBlockState(blockpos);
+                    Block block = ent.world.getBlockState(blockpos).getBlock();
 
-                    if(!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
+                    if(!block.isAir(iblockstate, ent.world, blockpos) && iblockstate.getMaterial() != Material.FIRE)
                     {
-                        if(!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
+                        if(!ent.world.getGameRules().getBoolean("mobGriefing"))
                         {
                             flag = true;
                         }
-                        else if(block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
+                        else if(block.canEntityDestroy(iblockstate, ent.world, blockpos, ent))
                         {
                             if(block != Blocks.COMMAND_BLOCK && block != Blocks.REPEATING_COMMAND_BLOCK && block != Blocks.CHAIN_COMMAND_BLOCK && block != Blocks.IRON_BARS && block != Blocks.END_GATEWAY)
                             {
-                                flag1 = ent.worldObj.setBlockToAir(blockpos) || flag1;
+                                flag1 = ent.world.setBlockToAir(blockpos) || flag1;
                             }
                             else
                             {
@@ -893,10 +884,10 @@ public class EntityHelper
 
         if(flag1)
         {
-            double d0 = aabb.minX + (aabb.maxX - aabb.minX) * (double)ent.worldObj.rand.nextFloat();
-            double d1 = aabb.minY + (aabb.maxY - aabb.minY) * (double)ent.worldObj.rand.nextFloat();
-            double d2 = aabb.minZ + (aabb.maxZ - aabb.minZ) * (double)ent.worldObj.rand.nextFloat();
-            ent.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            double d0 = aabb.minX + (aabb.maxX - aabb.minX) * (double)ent.world.rand.nextFloat();
+            double d1 = aabb.minY + (aabb.maxY - aabb.minY) * (double)ent.world.rand.nextFloat();
+            double d2 = aabb.minZ + (aabb.maxZ - aabb.minZ) * (double)ent.world.rand.nextFloat();
+            ent.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
         }
 
         return flag;

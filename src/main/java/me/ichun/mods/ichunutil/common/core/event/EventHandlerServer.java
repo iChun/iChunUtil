@@ -104,7 +104,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(!event.getEntity().worldObj.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
+        if(!event.getEntity().world.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
         {
             Integer x = event.getEntity().getEntityData().getInteger("Grabbed-ID");
             if(event.getEntity().getEntityId() != x)

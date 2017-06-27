@@ -133,13 +133,13 @@ public class ProxyClient extends ProxyCommon
     @Override
     public void nudgeHand(float mag)
     {
-        Minecraft.getMinecraft().thePlayer.renderArmPitch += mag;
+        Minecraft.getMinecraft().player.renderArmPitch += mag;
     }
 
     @Override
     public EntityPlayer getMcPlayer()
     {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override

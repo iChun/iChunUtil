@@ -17,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -38,7 +39,8 @@ public class ProxyCommon
         iChunUtil.blockCompactPorkchop = GameRegistry.register(new BlockCompactPorkchop());
         GameRegistry.register(new ItemBlock(iChunUtil.blockCompactPorkchop).setRegistryName(iChunUtil.blockCompactPorkchop.getRegistryName()));
 
-        EntityRegistry.registerModEntity(EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
+        //TODO verify ResourceLocation
+        EntityRegistry.registerModEntity(new ResourceLocation("ichunutil", "entityBlock"), EntityBlock.class, "EntityBlock", 500, iChunUtil.instance, 160, 20, true);
 
         iChunUtil.channel = new PacketChannel(iChunUtil.MOD_ID, PacketSession.class, PacketPatronInfo.class, PacketPatrons.class, PacketUserShouldShowUpdates.class, PacketBlockEntityData.class, PacketNewGrabbedEntityId.class, PacketRequestBlockEntityData.class);
     }

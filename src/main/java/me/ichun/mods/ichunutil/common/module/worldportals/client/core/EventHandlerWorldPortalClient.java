@@ -51,9 +51,9 @@ public class EventHandlerWorldPortalClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase == TickEvent.Phase.START)
         {
-            if(instance != mc.theWorld)
+            if(instance != mc.world)
             {
-                instance = mc.theWorld;
+                instance = mc.world;
 
                 if(renderGlobalProxy == null)
                 {
@@ -101,7 +101,7 @@ public class EventHandlerWorldPortalClient
 //        {
 //            return;
 //        }
-//        EntityPlayer lastPlayer = Minecraft.getMinecraft().thePlayer;
+//        EntityPlayer lastPlayer = Minecraft.getMinecraft().player;
 //
 //        GlStateManager.disableAlpha();
 //        GlStateManager.enableBlend();

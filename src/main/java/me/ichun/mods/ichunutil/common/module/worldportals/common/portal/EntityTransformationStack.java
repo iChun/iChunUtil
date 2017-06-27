@@ -72,7 +72,7 @@ public class EntityTransformationStack
 
         public void apply()
         {
-            if(entity.worldObj.isRemote)
+            if(entity.world.isRemote)
             {
                 applyClient();
             }
@@ -143,7 +143,7 @@ public class EntityTransformationStack
 
         public void revert()
         {
-            if(entity.worldObj.isRemote)
+            if(entity.world.isRemote)
             {
                 revertClient();
             }

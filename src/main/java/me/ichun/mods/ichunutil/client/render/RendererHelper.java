@@ -29,7 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -93,7 +93,7 @@ public class RendererHelper
                     f3 = f3 * 0.1F;
                     f4 = f4 * 0.1F;
                     f5 = f5 * 0.1F;
-                    RayTraceResult raytraceresult = mc.theWorld.rayTraceBlocks(new Vec3d(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3d(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
+                    RayTraceResult raytraceresult = mc.world.rayTraceBlocks(new Vec3d(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3d(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
 
                     if (raytraceresult != null)
                     {
@@ -116,7 +116,7 @@ public class RendererHelper
         return position;
     }
 
-    public static void renderBakedModel(IBakedModel model, int color, ItemStack stack)
+    public static void renderBakedModel(IBakedModel model, int color, @Nonnull ItemStack stack)
     {
         Minecraft mc = Minecraft.getMinecraft();
 
@@ -135,7 +135,7 @@ public class RendererHelper
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-        if(model.isBuiltInRenderer() && stack != null)
+        if(model.isBuiltInRenderer() && !stack.isEmpty())
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableRescaleNormal();
@@ -145,7 +145,7 @@ public class RendererHelper
         {
             renderModel(model, color, stack);
 
-            if(stack != null && stack.getItem() != null && stack.hasEffect())
+            if(!stack.isEmpty() && stack.hasEffect())
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.depthFunc(GL11.GL_EQUAL);
@@ -188,7 +188,7 @@ public class RendererHelper
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
     }
 
-    private static void renderModel(IBakedModel model, int color, @Nullable ItemStack stack)
+    private static void renderModel(IBakedModel model, int color, @Nonnull ItemStack stack)
     {
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vertexbuffer = tessellator.getBuffer();
@@ -203,9 +203,9 @@ public class RendererHelper
         tessellator.draw();
     }
 
-    private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads, int color, @Nullable ItemStack stack)
+    private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads, int color, @Nonnull ItemStack stack)
     {
-        boolean flag = color == -1 && stack != null;
+        boolean flag = color == -1 && !stack.isEmpty();
         int i = 0;
 
         for(int j = quads.size(); i < j; ++i)

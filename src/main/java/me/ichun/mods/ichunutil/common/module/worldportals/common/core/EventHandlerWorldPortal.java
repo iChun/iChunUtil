@@ -23,7 +23,7 @@ public class EventHandlerWorldPortal
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event)
     {
-        if(event.getSource() == DamageSource.inWall) //check to see if entity is inside a portal.
+        if(event.getSource() == DamageSource.IN_WALL) //check to see if entity is inside a portal.
         {
             if(isInPortal(event.getEntity()))
             {
@@ -54,7 +54,7 @@ public class EventHandlerWorldPortal
         {
             return;
         }
-        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(event.getEntity().worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(event.getEntity().world.isRemote ? Side.CLIENT : Side.SERVER);
         if(sideMap.containsKey(event.getEntity()))
         {
             HashSet<WorldPortal> portals = sideMap.get(event.getEntity());
@@ -102,7 +102,7 @@ public class EventHandlerWorldPortal
 
     public void addMonitoredEntity(Entity ent, WorldPortal portal)
     {
-        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.world.isRemote ? Side.CLIENT : Side.SERVER);
         HashSet<WorldPortal> portals = sideMap.get(ent);
         if(portals == null)
         {
@@ -114,7 +114,7 @@ public class EventHandlerWorldPortal
 
     public void removeMonitoredEntity(Entity ent, WorldPortal portal)
     {
-        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.world.isRemote ? Side.CLIENT : Side.SERVER);
         HashSet<WorldPortal> portals = sideMap.get(ent);
         if(portals != null)
         {
@@ -128,7 +128,7 @@ public class EventHandlerWorldPortal
 
     public boolean isInPortal(Entity ent)
     {
-        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.world.isRemote ? Side.CLIENT : Side.SERVER);
         if(sideMap.containsKey(ent))
         {
             HashSet<WorldPortal> portals = sideMap.get(ent);

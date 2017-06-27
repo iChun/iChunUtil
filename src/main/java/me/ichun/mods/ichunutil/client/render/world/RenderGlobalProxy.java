@@ -8,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -56,11 +54,11 @@ public class RenderGlobalProxy extends RenderGlobal
     }
 
     @Override
-    public void renderClouds(float partialTicks, int pass)
+    public void renderClouds(float partialTicks, int pass, double p_180447_3_, double p_180447_5_, double p_180447_7_)
     {
         if(renderSky)
         {
-            super.renderClouds(partialTicks, pass);
+            super.renderClouds(partialTicks, pass, p_180447_3_, p_180447_5_, p_180447_7_);
         }
     }
 
@@ -82,7 +80,7 @@ public class RenderGlobalProxy extends RenderGlobal
     @Override
     public void playEvent(EntityPlayer player, int type, BlockPos blockPosIn, int data) //Remove every case that plays sound instead
     {
-        Random random = this.theWorld.rand;
+        Random random = this.world.rand;
 
         switch(type)
         {
@@ -111,38 +109,38 @@ public class RenderGlobalProxy extends RenderGlobal
                 this.mc.effectRenderer.addBlockDestroyEffects(blockPosIn, block.getStateFromMeta(data >> 12 & 255));
                 break;
             case 2002:
+            case 2007:
                 double d6 = (double)blockPosIn.getX();
                 double d7 = (double)blockPosIn.getY();
                 double d9 = (double)blockPosIn.getZ();
 
-                for(int j1 = 0; j1 < 8; ++j1)
+                for (int iterations = 0; iterations < 8; ++iterations)
                 {
-                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d6, d7, d9, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] { Item.getIdFromItem(Items.SPLASH_POTION) });
+                    this.spawnParticle(EnumParticleTypes.ITEM_CRACK, d6, d7, d9, random.nextGaussian() * 0.15D, random.nextDouble() * 0.2D, random.nextGaussian() * 0.15D, new int[] {Item.getIdFromItem(Items.SPLASH_POTION)});
                 }
 
-                PotionType potiontype = PotionType.getPotionTypeForID(data);
-                int k = PotionUtils.getPotionColor(potiontype);
-                float f = (float)(k >> 16 & 255) / 255.0F;
-                float f1 = (float)(k >> 8 & 255) / 255.0F;
-                float f2 = (float)(k >> 0 & 255) / 255.0F;
-                EnumParticleTypes enumparticletypes = potiontype.hasInstantEffect() ? EnumParticleTypes.SPELL_INSTANT : EnumParticleTypes.SPELL;
+                float f5 = (float)(data >> 16 & 255) / 255.0F;
+                float f = (float)(data >> 8 & 255) / 255.0F;
+                float f1 = (float)(data >> 0 & 255) / 255.0F;
+                EnumParticleTypes enumparticletypes = type == 2007 ? EnumParticleTypes.SPELL_INSTANT : EnumParticleTypes.SPELL;
 
-                for(int i2 = 0; i2 < 100; ++i2)
+                for (int l1 = 0; l1 < 100; ++l1)
                 {
-                    double d16 = random.nextDouble() * 4.0D;
-                    double d19 = random.nextDouble() * Math.PI * 2.0D;
-                    double d22 = Math.cos(d19) * d16;
-                    double d24 = 0.01D + random.nextDouble() * 0.5D;
-                    double d26 = Math.sin(d19) * d16;
-                    Particle particle1 = this.spawnEntityFX(enumparticletypes.getParticleID(), enumparticletypes.getShouldIgnoreRange(), d6 + d22 * 0.1D, d7 + 0.3D, d9 + d26 * 0.1D, d22, d24, d26, new int[0]);
+                    double d15 = random.nextDouble() * 4.0D;
+                    double d18 = random.nextDouble() * Math.PI * 2.0D;
+                    double d21 = Math.cos(d18) * d15;
+                    double d23 = 0.01D + random.nextDouble() * 0.5D;
+                    double d25 = Math.sin(d18) * d15;
+                    Particle particle1 = this.spawnEntityFX(enumparticletypes.getParticleID(), enumparticletypes.getShouldIgnoreRange(), d6 + d21 * 0.1D, d7 + 0.3D, d9 + d25 * 0.1D, d21, d23, d25, new int[0]);
 
-                    if(particle1 != null)
+                    if (particle1 != null)
                     {
-                        float f5 = 0.75F + random.nextFloat() * 0.25F;
-                        particle1.setRBGColorF(f * f5, f1 * f5, f2 * f5);
-                        particle1.multiplyVelocity((float)d16);
+                        float f4 = 0.75F + random.nextFloat() * 0.25F;
+                        particle1.setRBGColorF(f5 * f4, f * f4, f1 * f4);
+                        particle1.multiplyVelocity((float)d15);
                     }
                 }
+
                 break;
             case 2003:
                 double d0 = (double)blockPosIn.getX() + 0.5D;
@@ -165,16 +163,16 @@ public class RenderGlobalProxy extends RenderGlobal
 
                 for(int l1 = 0; l1 < 20; ++l1)
                 {
-                    double d15 = (double)blockPosIn.getX() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
-                    double d18 = (double)blockPosIn.getY() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
-                    double d21 = (double)blockPosIn.getZ() + 0.5D + ((double)this.theWorld.rand.nextFloat() - 0.5D) * 2.0D;
-                    this.theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
-                    this.theWorld.spawnParticle(EnumParticleTypes.FLAME, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
+                    double d15 = (double)blockPosIn.getX() + 0.5D + ((double)this.world.rand.nextFloat() - 0.5D) * 2.0D;
+                    double d18 = (double)blockPosIn.getY() + 0.5D + ((double)this.world.rand.nextFloat() - 0.5D) * 2.0D;
+                    double d21 = (double)blockPosIn.getZ() + 0.5D + ((double)this.world.rand.nextFloat() - 0.5D) * 2.0D;
+                    this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
+                    this.world.spawnParticle(EnumParticleTypes.FLAME, d15, d18, d21, 0.0D, 0.0D, 0.0D, new int[0]);
                 }
 
                 return;
             case 2005:
-                ItemDye.spawnBonemealParticles(this.theWorld, blockPosIn, data);
+                ItemDye.spawnBonemealParticles(this.world, blockPosIn, data);
                 break;
             case 2006:
 
@@ -194,7 +192,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 }
                 break;
             case 3000:
-                this.theWorld.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, (double)blockPosIn.getX() + 0.5D, (double)blockPosIn.getY() + 0.5D, (double)blockPosIn.getZ() + 0.5D, 0.0D, 0.0D, 0.0D, new int[0]);
+                this.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, true, (double)blockPosIn.getX() + 0.5D, (double)blockPosIn.getY() + 0.5D, (double)blockPosIn.getZ() + 0.5D, 0.0D, 0.0D, 0.0D, new int[0]);
                 break;
             case 3001:
         }
