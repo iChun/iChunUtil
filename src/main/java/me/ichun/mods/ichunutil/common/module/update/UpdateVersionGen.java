@@ -45,11 +45,13 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Hats", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.7.10", "4.0.1");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("HatStand", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.7.10", "4.0.0");
         versions.put("1.7", "3.0.0");
 
@@ -125,11 +127,13 @@ public class UpdateVersionGen
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Sync", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.7.10", "4.0.1");
         versions.put("1.7", "3.0.1");
 
         versions = new TreeMap<>(Ordering.natural());
         map.put("Tabula", versions);
+        versions.put("1.10.2", "6.0.0");
         versions.put("1.8.0", "5.1.0");
         versions.put("1.7.10", "4.1.1");
 
