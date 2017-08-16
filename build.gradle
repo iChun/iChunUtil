@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "1.10.2-6.4.0"
+version = "1.10.2-6.5.0"
 group = "me.ichun"
 archivesBaseName = "iChunUtil"
 

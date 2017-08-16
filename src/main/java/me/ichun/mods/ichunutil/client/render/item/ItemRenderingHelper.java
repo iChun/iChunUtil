@@ -6,6 +6,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.Packet;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
@@ -120,7 +121,7 @@ public class ItemRenderingHelper
         if(event.getHand() == EnumHand.MAIN_HAND && event.getItemStack() == null)
         {
             ItemStack is = Minecraft.getMinecraft().thePlayer.getHeldItem(EnumHand.OFF_HAND);
-            if(is != null && ItemHandler.isItemDualHanded(is.getItem()))
+            if(is != null && ItemHandler.isItemDualHanded(is))
             {
                 event.setCanceled(true);
             }
@@ -148,7 +149,7 @@ public class ItemRenderingHelper
             }
         }
         ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
-        if(is != null && ItemHandler.isItemDualHanded(is.getItem()) && ItemHandler.canItemBeUsed(player, is))
+        if(is != null && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
         {
             if(isRenderViewEntity)
             {
@@ -169,14 +170,21 @@ public class ItemRenderingHelper
                     }
                 }
             }
-            if(!(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && player.getItemInUseCount() <= 0)
+            if(ItemHandler.getDualHandedItemCallback(is).shouldItemBeHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0))
+            {
+                if(player.getItemInUseCount() <= 0)
+                {
+                    player.resetActiveHand();
+                    player.setActiveHand(EnumHand.MAIN_HAND);
+                }
+            }
+            else
             {
                 player.resetActiveHand();
-                player.setActiveHand(EnumHand.MAIN_HAND);
             }
         }
         is = player.getHeldItem(EnumHand.OFF_HAND);
-        if(is != null && ItemHandler.isItemDualHanded(is.getItem()) && ItemHandler.canItemBeUsed(player, is))
+        if(is != null && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
         {
             if(isRenderViewEntity)
             {
@@ -197,14 +205,21 @@ public class ItemRenderingHelper
                     }
                 }
             }
-            if(!(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0) && player.getItemInUseCount() <= 0)
+            if(ItemHandler.getDualHandedItemCallback(is).shouldItemBeHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0))
+            {
+                if(player.getItemInUseCount() <= 0)
+                {
+                    player.resetActiveHand();
+                    player.setActiveHand(EnumHand.OFF_HAND);
+                }
+            }
+            else
             {
                 player.resetActiveHand();
-                player.setActiveHand(EnumHand.OFF_HAND);
             }
         }
 
-        if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && lastThirdPersonView != 0)
+        if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && !(is != null && ItemHandler.getDualHandedItemCallback(is).shouldItemBeHeldLikeBow(is, player)) && lastThirdPersonView != 0)
         {
             player.resetActiveHand();
         }

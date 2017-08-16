@@ -7,25 +7,43 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemHandler
 {
-    public static HashSet<Class<? extends Item>> dualHandedItems = new HashSet<>();
+    public static HashMap<Class<? extends Item>, DualHandedItemCallback> dualHandedItems = new HashMap<>();
 
     //Items registered here can never be allowed to use MC's default "use timer". Their use timer (getMaxItemUseDuration) must be set to Integer.MAX_VALUE.
-    public static void registerDualHandedItem(@Nonnull Class<? extends Item> clz)
+    public static void registerDualHandedItem(@Nonnull Class<? extends Item> clz, DualHandedItemCallback itemCallback)
     {
-        dualHandedItems.add(clz);
+        dualHandedItems.put(clz, itemCallback != null ? itemCallback : DualHandedItemCallback.DEFAULT);
     }
 
-    public static boolean isItemDualHanded(Item item)
+    public static void registerDualHandedItem(@Nonnull Class<? extends Item> clz)
     {
-        for(Class<? extends Item> clz : dualHandedItems)
+        registerDualHandedItem(clz, null);
+    }
+
+    public static DualHandedItemCallback getDualHandedItemCallback(ItemStack is)
+    {
+        for(Map.Entry<Class<? extends Item>, DualHandedItemCallback> e : dualHandedItems.entrySet())
         {
-            if(clz.isInstance(item))
+            if(e.getKey().isInstance(is.getItem()))
             {
-                return true;
+                return e.getValue();
+            }
+        }
+        return DualHandedItemCallback.DEFAULT;
+    }
+
+    public static boolean isItemDualHanded(ItemStack is)
+    {
+        for(Map.Entry<Class<? extends Item>, DualHandedItemCallback> e : dualHandedItems.entrySet())
+        {
+            if(e.getKey().isInstance(is.getItem()))
+            {
+                return e.getValue().isItemDualHanded(is);
             }
         }
         return false;
@@ -33,18 +51,18 @@ public class ItemHandler
 
     public static boolean canItemBeUsed(EntityLivingBase living, ItemStack is)
     {
-        return is != null && (!isItemDualHanded(is.getItem()) || living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND) == null || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND) == null);
+        return is != null && (!isItemDualHanded(is) || getDualHandedItemCallback(is).canItemBeUsed(is, living) && (living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND) == null || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND) == null));
     }
 
     public static ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
     {
         ItemStack is = living.getHeldItem(EnumHand.MAIN_HAND);
-        if(is != null && isItemDualHanded(is.getItem()) && canItemBeUsed(living, is))
+        if(is != null && isItemDualHanded(is) && canItemBeUsed(living, is))
         {
             return is;
         }
         is = living.getHeldItem(EnumHand.OFF_HAND);
-        if(is != null && isItemDualHanded(is.getItem()) && canItemBeUsed(living, is))
+        if(is != null && isItemDualHanded(is) && canItemBeUsed(living, is))
         {
             return is;
         }

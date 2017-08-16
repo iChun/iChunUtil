@@ -244,6 +244,6 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
 
     public static boolean isItemRender(ItemCameraTransforms.TransformType type) //default render type
     {
-        return type == null || type == GROUND || type == NONE;
+        return type == null || type == GUI || type == GROUND || type == NONE;
     }
 }
