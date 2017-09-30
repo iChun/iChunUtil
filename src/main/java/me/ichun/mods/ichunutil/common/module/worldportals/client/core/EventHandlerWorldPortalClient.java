@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.PlayerSPPushOutOfBlocksEvent;
 import net.minecraftforge.client.event.RenderBlockOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -40,6 +41,15 @@ public class EventHandlerWorldPortalClient
     public void onRenderBlockOverlay(RenderBlockOverlayEvent event)
     {
         if(WorldPortals.eventHandler.isInPortal(event.getPlayer()))
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPushPlayerSPOutOfBlock(PlayerSPPushOutOfBlocksEvent event)
+    {
+        if(WorldPortals.eventHandler.isInPortal(event.getEntityPlayer()))
         {
             event.setCanceled(true);
         }

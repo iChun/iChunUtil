@@ -58,7 +58,7 @@ public class ItemHandler
         return is != null && (!isItemDualHanded(is) || getDualHandedItemCallback(is).canItemBeUsed(is, living) && (living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND).isEmpty() || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND).isEmpty()));
     }
 
-    public static ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
+    public static @Nonnull ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
     {
         ItemStack is = living.getHeldItem(EnumHand.MAIN_HAND);
         if(isItemDualHanded(is) && canItemBeUsed(living, is))

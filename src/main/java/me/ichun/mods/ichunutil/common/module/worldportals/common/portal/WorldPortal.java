@@ -154,6 +154,7 @@ public abstract class WorldPortal
             e.setValue(e.getValue() - 1);
             if(e.getValue() < 0)
             {
+                WorldPortals.eventHandler.removeMonitoredEntity(e.getKey(), this);
                 ite.remove();
             }
         }
@@ -188,7 +189,7 @@ public abstract class WorldPortal
             float offset = 0.0F; //should I test player width specifically?
             if(isAgainstWall() && ent instanceof EntityPlayer)
             {
-                offset = Math.min(0.325F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
+                offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
                 if(!scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(newEntPos) &&
                         portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(newEntPos) &&
                         (faceOn.getAxis().isHorizontal() && ent.getEntityBoundingBox().minY >= flatPlane.minY && ent.getEntityBoundingBox().maxY <= flatPlane.maxY || faceOn.getAxis().isVertical()  && ent.getEntityBoundingBox().minX >= flatPlane.minX && ent.getEntityBoundingBox().maxX <= flatPlane.maxX  && ent.getEntityBoundingBox().minZ >= flatPlane.minZ && ent.getEntityBoundingBox().maxZ <= flatPlane.maxZ) // special casing cause of pushOutOfBlocks for player
@@ -261,10 +262,10 @@ public abstract class WorldPortal
                     }
                     teleportCooldown.put(ent, 3);
                     lastScanEntities.remove(ent);
-                    if(isAgainstWall())
-                    {
-                        WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
-                    }
+//                    if(isAgainstWall()) //now removed by the teleport cooldown
+//                    {
+//                        WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+//                    }
 
                     handleSpecialEntities(ent);
 
@@ -290,7 +291,10 @@ public abstract class WorldPortal
             lastScanEntities.removeAll(entitiesInRange); // now contains entities that are out of the range. Remove this from the tracking.
             for(Entity ent : lastScanEntities)
             {
-                WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+                if(!teleportCooldown.containsKey(ent))
+                {
+                    WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+                }
             }
 
             lastScanEntities = entitiesInRange;
@@ -468,7 +472,7 @@ public abstract class WorldPortal
     {
         if(isAgainstWall() && ent instanceof EntityPlayer)
         {
-            float offset = Math.min(0.325F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
+            float offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
             return portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
         }
         return portalInsides;

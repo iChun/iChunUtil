@@ -103,12 +103,7 @@ public class EventHandlerWorldPortal
     public void addMonitoredEntity(Entity ent, WorldPortal portal)
     {
         HashMap<Entity, HashSet<WorldPortal>> sideMap = monitoredEntities.get(ent.getEntityWorld().isRemote ? Side.CLIENT : Side.SERVER);
-        HashSet<WorldPortal> portals = sideMap.get(ent);
-        if(portals == null)
-        {
-            portals = new HashSet<>();
-            sideMap.put(ent, portals);
-        }
+        HashSet<WorldPortal> portals = sideMap.computeIfAbsent(ent, k -> new HashSet<>());
         portals.add(portal);
     }
 
