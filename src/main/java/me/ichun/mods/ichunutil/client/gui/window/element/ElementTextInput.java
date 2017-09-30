@@ -117,8 +117,8 @@ public class ElementTextInput extends Element implements ITextInput
     @Override
     public void resized()
     {
-        textField.xPosition = parent.posX + posX + 2;
-        textField.yPosition = parent.posY + posY + 2;
+        textField.x = parent.posX + posX + 2;
+        textField.y = parent.posY + posY + 2;
         textField.width = width - 9;
         textField.setCursorPositionZero();
         width = parent.width - posX - spacing;

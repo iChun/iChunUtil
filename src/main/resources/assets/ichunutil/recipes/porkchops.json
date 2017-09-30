@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+      {
+        "item": "ichunutil:compact_porkchop"
+      }
+  ],
+  "result": {
+    "item": "minecraft:porkchop",
+	"count": 9
+  }
+}
+ 

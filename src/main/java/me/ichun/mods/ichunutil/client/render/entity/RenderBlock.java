@@ -6,9 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -65,7 +65,7 @@ public class RenderBlock extends Render<EntityBlock>
 
         BlockPos blockpos = new BlockPos(entBlock);
         BlockPos blockposMaxY = new BlockPos(entBlock.posX, entBlock.getEntityBoundingBox().maxY, entBlock.posZ);
-        World world = entBlock.worldObj;
+        World world = entBlock.world;
 
         for(int ii = 0; ii < entBlock.blocks.length; ii++)
         {
@@ -89,7 +89,7 @@ public class RenderBlock extends Render<EntityBlock>
                                 GlStateManager.pushMatrix();
                                 GlStateManager.disableLighting();
                                 Tessellator tessellator = Tessellator.getInstance();
-                                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                                BufferBuilder bufferbuilder = tessellator.getBuffer();
 
                                 if(this.renderOutlines)
                                 {
@@ -97,10 +97,10 @@ public class RenderBlock extends Render<EntityBlock>
                                     GlStateManager.enableOutlineMode(this.getTeamColor(entBlock));
                                 }
 
-                                vertexbuffer.begin(7, DefaultVertexFormats.BLOCK);
+                                bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
                                 GlStateManager.translate((float)(-(double)blockposMaxY.getX() - 0.5D), (float)(-(double)blockposMaxY.getY()), (float)(-(double)blockposMaxY.getZ() - 0.5D));
                                 BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-                                blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(iblockstate), iblockstate, blockposMaxY, vertexbuffer, false, MathHelper.getPositionRandom(entBlock.getOrigin().add(ii, jj, kk)));
+                                blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(iblockstate), iblockstate, blockposMaxY, bufferbuilder, false, MathHelper.getPositionRandom(entBlock.getOrigin().add(ii, jj, kk)));
                                 tessellator.draw();
 
                                 if(this.renderOutlines)
@@ -121,10 +121,10 @@ public class RenderBlock extends Render<EntityBlock>
                             }
                             if(entBlock.renderingTileEntities[ii][jj][kk] == null)
                             {
-                                TileEntity te = block.createTileEntity(entBlock.worldObj, iblockstate);
+                                TileEntity te = block.createTileEntity(entBlock.world, iblockstate);
                                 if(te != null) //no IDEA, te can definitely be null.
                                 {
-                                    te.setWorldObj(entBlock.worldObj);
+                                    te.setWorld(entBlock.world);
                                     te.readFromNBT(entBlock.tileEntityNBTs[ii][jj][kk].copy());
                                     entBlock.renderingTileEntities[ii][jj][kk] = te;
                                 }
@@ -133,7 +133,7 @@ public class RenderBlock extends Render<EntityBlock>
                             {
                                 try
                                 {
-                                    TileEntityRendererDispatcher.instance.renderTileEntityAt(entBlock.renderingTileEntities[ii][jj][kk], -0.5D, 0.0D, -0.5D, partialTicks);
+                                    TileEntityRendererDispatcher.instance.render(entBlock.renderingTileEntities[ii][jj][kk], -0.5D, 0.0D, -0.5D, partialTicks);
                                 }
                                 catch(ReportedException e)
                                 {

@@ -410,7 +410,7 @@ public class ProjectInfo
                 }
 
                 PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
-                info1.txMirror = (((vertices[info1.txMirror ? 1 : 2].vector3D.yCoord - vertices[info1.txMirror ? 3 : 0].vector3D.yCoord) - info1.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
+                info1.txMirror = (((vertices[info1.txMirror ? 1 : 2].vector3D.y - vertices[info1.txMirror ? 3 : 0].vector3D.y) - info1.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
 
                 cubeCount++;
                 info.addChild(info1);

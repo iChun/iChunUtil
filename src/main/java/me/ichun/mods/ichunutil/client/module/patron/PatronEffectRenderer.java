@@ -256,7 +256,7 @@ public class PatronEffectRenderer
                                 RenderPlayer renderPlayer = (RenderPlayer)render;
                                 ModelBase biped = renderPlayer.getMainModel();
 
-                                int ii = parent.getBrightnessForRender(event.partialTick);
+                                int ii = parent.getBrightnessForRender();
                                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)(ii % 65536) / 1.0F, (float)(ii / 65536) / 1.0F);
 
                                 GlStateManager.enableBlend();
@@ -287,16 +287,16 @@ public class PatronEffectRenderer
                                     if(parent.isElytraFlying())
                                     {
                                         float f = (float)parent.getTicksElytraFlying() + event.partialTick;
-                                        float f1 = MathHelper.clamp_float(f * f / 100.0F, 0.0F, 1.0F);
+                                        float f1 = MathHelper.clamp(f * f / 100.0F, 0.0F, 1.0F);
                                         GlStateManager.rotate(f1 * (-90.0F - parent.rotationPitch), -1.0F, 0.0F, 0.0F);
                                         Vec3d vec3d = parent.getLook(event.partialTick);
                                         double d0 = parent.motionX * parent.motionX + parent.motionZ * parent.motionZ;
-                                        double d1 = vec3d.xCoord * vec3d.xCoord + vec3d.zCoord * vec3d.zCoord;
+                                        double d1 = vec3d.x * vec3d.x + vec3d.z * vec3d.z;
 
                                         if(d0 > 0.0D && d1 > 0.0D)
                                         {
-                                            double d2 = (parent.motionX * vec3d.xCoord + parent.motionZ * vec3d.zCoord) / (Math.sqrt(d0) * Math.sqrt(d1));
-                                            double d3 = parent.motionX * vec3d.zCoord - parent.motionZ * vec3d.xCoord;
+                                            double d2 = (parent.motionX * vec3d.x + parent.motionZ * vec3d.z) / (Math.sqrt(d0) * Math.sqrt(d1));
+                                            double d3 = parent.motionX * vec3d.z - parent.motionZ * vec3d.x;
                                             GlStateManager.rotate((float)(Math.signum(d3) * Math.acos(d2)) * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
                                         }
                                     }
@@ -307,7 +307,7 @@ public class PatronEffectRenderer
 
                                     GlStateManager.translate(0.0F, -1.5F, 0.0F);
 
-                                    float alpha = 1.0F - MathHelper.clamp_float(((i - 1) + event.partialTick) / 5F, 0.0F, 1.0F);//1.0F - MathHelper.clamp_float(((float)(loc.size() - 2 - i) + partialTick) / (float)((loc.size() - 2) > 5 ? 5 : loc.size() - 2), 0.0F, 1.0F);
+                                    float alpha = 1.0F - MathHelper.clamp(((i - 1) + event.partialTick) / 5F, 0.0F, 1.0F);//1.0F - MathHelper.clamp(((float)(loc.size() - 2 - i) + partialTick) / (float)((loc.size() - 2) > 5 ? 5 : loc.size() - 2), 0.0F, 1.0F);
 
                                     GlStateManager.color(1.0F, 1.0F, 1.0F, alpha);
 
@@ -373,7 +373,7 @@ public class PatronEffectRenderer
                                 elyZ = loc.get(0).getTracker(PatronTracker.class).elytraZ - (-0.2617994F);
                             }
 
-                            float prog = MathHelper.clamp_float((elyX / (0.34776512F - 0.2617994F)) * 0.5F + (elyZ / -(1.5512857F - 0.2617994F)) * 0.5F, 0F, 1F);
+                            float prog = MathHelper.clamp((elyX / (0.34776512F - 0.2617994F)) * 0.5F + (elyZ / -(1.5512857F - 0.2617994F)) * 0.5F, 0F, 1F);
 
                             EntityTrackerHandler.renderAngelicModel(parent, event.ent, biped, rl, prog, event.partialTick);
 
@@ -399,34 +399,34 @@ public class PatronEffectRenderer
                 double moZ = parent.posZ - parent.prevPosZ;
                 if(Math.sqrt(moX * moX + moZ * moZ) > 0.11D)
                 {
-                    int i = MathHelper.floor_double(parent.posX);
-                    int j = MathHelper.floor_double(parent.posY - 0.20000000298023224D);
-                    int k = MathHelper.floor_double(parent.posZ);
+                    int i = MathHelper.floor(parent.posX);
+                    int j = MathHelper.floor(parent.posY - 0.20000000298023224D);
+                    int k = MathHelper.floor(parent.posZ);
                     BlockPos blockpos = new BlockPos(i, j, k);
-                    IBlockState iblockstate = event.ent.worldObj.getBlockState(blockpos);
+                    IBlockState iblockstate = event.ent.getEntityWorld().getBlockState(blockpos);
                     if(iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE)
                     {
                         if(parent.isSprinting())
                         {
                             for(int kk = 0; kk < 2; kk++)
                             {
-                                event.ent.worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, parent.posX + ((double)parent.getRNG().nextFloat() - 0.5D) * (double)parent.width, parent.getEntityBoundingBox().minY + 0.1D, parent.posZ + ((double)parent.getRNG().nextFloat() - 0.5D) * (double)parent.width, -moX * 0.8D, 0.2D + 0.3D * parent.getRNG().nextDouble(), -moZ * 0.8D, Block.getStateId(iblockstate));
+                                event.ent.getEntityWorld().spawnParticle(EnumParticleTypes.BLOCK_DUST, parent.posX + ((double)parent.getRNG().nextFloat() - 0.5D) * (double)parent.width, parent.getEntityBoundingBox().minY + 0.1D, parent.posZ + ((double)parent.getRNG().nextFloat() - 0.5D) * (double)parent.width, -moX * 0.8D, 0.2D + 0.3D * parent.getRNG().nextDouble(), -moZ * 0.8D, Block.getStateId(iblockstate));
                             }
                         }
                         for(int kk = 0; kk < 3; kk++)
                         {
-                            double d0 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
-                            double d2 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
-                            event.ent.worldObj.spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0, parent.posY + 0.1F, parent.posZ + d2, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
+                            double d0 = event.ent.getEntityWorld().rand.nextGaussian() * 0.1D;
+                            double d2 = event.ent.getEntityWorld().rand.nextGaussian() * 0.1D;
+                            event.ent.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0, parent.posY + 0.1F, parent.posZ + d2, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
                         }
                     }
                     if(parent.isElytraFlying())
                     {
                         for(int kk = 0; kk < 5; kk++)
                         {
-                            double d0 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
-                            double d2 = event.ent.worldObj.rand.nextGaussian() * 0.1D;
-                            event.ent.worldObj.spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0 - parent.motionX * 1.5D, parent.posY + 0.1F - parent.motionY * 1.5D, parent.posZ + d2 - parent.motionZ * 1.5D, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
+                            double d0 = event.ent.getEntityWorld().rand.nextGaussian() * 0.1D;
+                            double d2 = event.ent.getEntityWorld().rand.nextGaussian() * 0.1D;
+                            event.ent.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, parent.posX + d0 - parent.motionX * 1.5D, parent.posY + 0.1F - parent.motionY * 1.5D, parent.posZ + d2 - parent.motionZ * 1.5D, 0D, parent.isSprinting() ? parent.getRNG().nextFloat() * 0.05D : 0.0125D, 0D);
                         }
                     }
                 }
@@ -439,7 +439,7 @@ public class PatronEffectRenderer
         EntityPlayer oriPlayer = player;
         if(iChunUtil.hasMorphMod())
         {
-            EntityLivingBase ent = MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getName(), Side.CLIENT);
+            EntityLivingBase ent = MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT);
             if(ent != null) //is morphed
             {
                 if(!(ent instanceof EntityPlayer) || MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F)

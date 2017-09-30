@@ -68,8 +68,6 @@ public class ProxyClient extends ProxyCommon
 
         RenderingRegistry.registerEntityRenderingHandler(EntityLatchedRenderer.class, new RenderLatchedRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlock.class, new RenderBlock.RenderFactory());
-
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(iChunUtil.blockCompactPorkchop), 0, new ModelResourceLocation("ichunutil:compact_porkchop", "inventory"));
     }
 
     @Override
@@ -133,13 +131,13 @@ public class ProxyClient extends ProxyCommon
     @Override
     public void nudgeHand(float mag)
     {
-        Minecraft.getMinecraft().thePlayer.renderArmPitch += mag;
+        Minecraft.getMinecraft().player.renderArmPitch += mag;
     }
 
     @Override
     public EntityPlayer getMcPlayer()
     {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override

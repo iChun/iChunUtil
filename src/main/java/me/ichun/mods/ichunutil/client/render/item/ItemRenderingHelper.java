@@ -65,19 +65,19 @@ public class ItemRenderingHelper
 
     public static void handlePreRender(Minecraft mc)
     {
-        if(mc.thePlayer != null)
+        if(mc.player != null)
         {
-            ItemStack currentInv = mc.thePlayer.getHeldItemMainhand();
-            if(currentInv != null)
+            ItemStack currentInv = mc.player.getHeldItemMainhand();
+            if(!currentInv.isEmpty())
             {
                 if(isItemSwingProof(currentInv.getItem()))
                 {
                     mc.playerController.resetBlockRemoving();
-                    if(prevCurItem == mc.thePlayer.inventory.currentItem)
+                    if(prevCurItem == mc.player.inventory.currentItem)
                     {
                         if(!currentItemIsSwingProof)
                         {
-                            handleSwingProofItemEquip(mc.thePlayer, currentInv);
+                            handleSwingProofItemEquip(mc.player, currentInv);
                         }
 
                         if(currentInv.getItem().shouldCauseReequipAnimation(currentInv, mc.getItemRenderer().itemStackMainHand, false))
@@ -93,22 +93,22 @@ public class ItemRenderingHelper
                             mc.ingameGUI.remainingHighlightTicks = 0;
                         }
                     }
-                    if(mc.thePlayer.ticksSinceLastSwing < 2)
+                    if(mc.player.ticksSinceLastSwing < 2)
                     {
                         mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1F;
                     }
-                    mc.thePlayer.ticksSinceLastSwing = 10000;
-                    mc.thePlayer.isSwingInProgress = false;
-                    mc.thePlayer.swingProgressInt = 0;
-                    mc.thePlayer.swingProgress = 0;
+                    mc.player.ticksSinceLastSwing = 10000;
+                    mc.player.isSwingInProgress = false;
+                    mc.player.swingProgressInt = 0;
+                    mc.player.swingProgress = 0;
                 }
             }
-            currentItemIsSwingProof = currentInv != null && isItemSwingProof(currentInv.getItem());
-            if(prevCurItem != mc.thePlayer.inventory.currentItem)
+            currentItemIsSwingProof = !currentInv.isEmpty() && isItemSwingProof(currentInv.getItem());
+            if(prevCurItem != mc.player.inventory.currentItem)
             {
-                if(mc.thePlayer.inventory.currentItem >= 0 && mc.thePlayer.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F) //TODO off hand rendering?
+                if(mc.player.inventory.currentItem >= 0 && mc.player.inventory.currentItem <= 9 && mc.entityRenderer.itemRenderer.equippedProgressMainHand >= 1.0F) //TODO off hand rendering?
                 {
-                    prevCurItem = mc.thePlayer.inventory.currentItem;
+                    prevCurItem = mc.player.inventory.currentItem;
                 }
                 currentItemIsSwingProof = false;
                 hasShownItemName = false;
@@ -118,10 +118,10 @@ public class ItemRenderingHelper
 
     public static void onRenderSpecificHand(RenderSpecificHandEvent event)
     {
-        if(event.getHand() == EnumHand.MAIN_HAND && event.getItemStack() == null)
+        if(event.getHand() == EnumHand.MAIN_HAND && event.getItemStack().isEmpty())
         {
-            ItemStack is = Minecraft.getMinecraft().thePlayer.getHeldItem(EnumHand.OFF_HAND);
-            if(is != null && ItemHandler.isItemDualHanded(is))
+            ItemStack is = Minecraft.getMinecraft().player.getHeldItem(EnumHand.OFF_HAND);
+            if(!is.isEmpty() && ItemHandler.isItemDualHanded(is))
             {
                 event.setCanceled(true);
             }
@@ -149,7 +149,7 @@ public class ItemRenderingHelper
             }
         }
         ItemStack is = player.getHeldItem(EnumHand.MAIN_HAND);
-        if(is != null && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
+        if(!is.isEmpty() && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
         {
             if(isRenderViewEntity)
             {
@@ -184,7 +184,7 @@ public class ItemRenderingHelper
             }
         }
         is = player.getHeldItem(EnumHand.OFF_HAND);
-        if(is != null && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
+        if(!is.isEmpty() && ItemHandler.isItemDualHanded(is) && ItemHandler.canItemBeUsed(player, is))
         {
             if(isRenderViewEntity)
             {
@@ -219,7 +219,7 @@ public class ItemRenderingHelper
             }
         }
 
-        if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && !(is != null && ItemHandler.getDualHandedItemCallback(is).shouldItemBeHeldLikeBow(is, player)) && lastThirdPersonView != 0)
+        if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && !(!is.isEmpty() && ItemHandler.getDualHandedItemCallback(is).shouldItemBeHeldLikeBow(is, player)) && lastThirdPersonView != 0)
         {
             player.resetActiveHand();
         }

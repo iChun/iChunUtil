@@ -51,9 +51,9 @@ public class EventHandlerWorldPortalClient
         Minecraft mc = Minecraft.getMinecraft();
         if(event.phase == TickEvent.Phase.START)
         {
-            if(instance != mc.theWorld)
+            if(instance != mc.world)
             {
-                instance = mc.theWorld;
+                instance = mc.world;
 
                 if(renderGlobalProxy == null)
                 {
@@ -101,7 +101,7 @@ public class EventHandlerWorldPortalClient
 //        {
 //            return;
 //        }
-//        EntityPlayer lastPlayer = Minecraft.getMinecraft().thePlayer;
+//        EntityPlayer lastPlayer = Minecraft.getMinecraft().player;
 //
 //        GlStateManager.disableAlpha();
 //        GlStateManager.enableBlend();
@@ -132,7 +132,7 @@ public class EventHandlerWorldPortalClient
 //        double d2 = lastPlayer.lastTickPosZ + (lastPlayer.posZ - lastPlayer.lastTickPosZ) * (double)event.getPartialTicks();
 //        for(AxisAlignedBB aabb : aabbToRender)
 //        {
-//            RenderGlobal.drawSelectionBoundingBox(aabb.expand(0.0020000000949949026D, 0.0020000000949949026D, 0.0020000000949949026D).offset(-d0, -d1, -d2), r, g, b, a);
+//            RenderGlobal.drawSelectionBoundingBox(aabb.grow(0.002D).offset(-d0, -d1, -d2), r, g, b, a);
 //        }
 //
 //        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

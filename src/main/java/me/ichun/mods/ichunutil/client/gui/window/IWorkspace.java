@@ -56,7 +56,7 @@ public abstract class IWorkspace extends GuiScreen
 
     public FontRenderer getFontRenderer()
     {
-        return fontRendererObj;
+        return fontRenderer;
     }
 
     @Override
@@ -218,14 +218,14 @@ public abstract class IWorkspace extends GuiScreen
                 int longest = 0;
                 for(String tip : tips)
                 {
-                    int length = fontRendererObj.getStringWidth(tip);
+                    int length = fontRenderer.getStringWidth(tip);
                     if(length > longest)
                     {
                         longest = length;
                     }
                 }
                 int size = longest + ((Window.BORDER_SIZE - 1) * 2);
-                int ySize = 1 + (tips.size() * (fontRendererObj.FONT_HEIGHT + 1));
+                int ySize = 1 + (tips.size() * (fontRenderer.FONT_HEIGHT + 1));
                 if(width - mouseX < size)
                 {
                     xOffset -= size - (width - mouseX) + 20;
@@ -238,7 +238,7 @@ public abstract class IWorkspace extends GuiScreen
                 RendererHelper.drawColourOnScreen(currentTheme.windowBackground[0], currentTheme.windowBackground[1], currentTheme.windowBackground[2], 255, mouseX + xOffset + 1, mouseY + yOffset + 1, longest + ((Window.BORDER_SIZE - 1) * 2) - 2, ySize - 2, 0);
                 for(int i = 0; i < tips.size(); i++)
                 {
-                    fontRendererObj.drawString(tips.get(i), mouseX + xOffset + (Window.BORDER_SIZE - 1), mouseY + yOffset + (Window.BORDER_SIZE - 1) + (i * (fontRendererObj.FONT_HEIGHT + 1)), currentTheme.getAsHex(currentTheme.font), false);
+                    fontRenderer.drawString(tips.get(i), mouseX + xOffset + (Window.BORDER_SIZE - 1), mouseY + yOffset + (Window.BORDER_SIZE - 1) + (i * (fontRenderer.FONT_HEIGHT + 1)), currentTheme.getAsHex(currentTheme.font), false);
                 }
                 //            RendererHelper.drawColourOnScreen(34, 34, 34, 255, posX + BORDER_SIZE, posY + BORDER_SIZE, getWidth() - (BORDER_SIZE * 2), getHeight() - (BORDER_SIZE * 2), 0);
             }

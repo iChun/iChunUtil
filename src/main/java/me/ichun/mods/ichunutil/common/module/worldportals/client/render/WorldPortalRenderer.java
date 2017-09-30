@@ -190,10 +190,10 @@ public class WorldPortalRenderer
 
         if(mc.gameSettings.thirdPersonView == 0)
         {
-            ItemStack usable = ItemHandler.getUsableDualHandedItem(mc.thePlayer);
+            ItemStack usable = ItemHandler.getUsableDualHandedItem(mc.player);
             if(usable != null)
             {
-                mc.thePlayer.setActiveHand(usable.equals(mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND)) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
+                mc.player.setActiveHand(usable.equals(mc.player.getHeldItem(EnumHand.MAIN_HAND)) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
             }
         }
 
@@ -203,9 +203,9 @@ public class WorldPortalRenderer
 
         if(mc.gameSettings.thirdPersonView == 0)
         {
-            if(ItemHandler.getUsableDualHandedItem(mc.thePlayer) != null)
+            if(ItemHandler.getUsableDualHandedItem(mc.player) != null)
             {
-                mc.thePlayer.resetActiveHand();
+                mc.player.resetActiveHand();
             }
         }
 
@@ -236,15 +236,15 @@ public class WorldPortalRenderer
         }
         //Water render recursing portal fix end
 
-        TileEntityRendererDispatcher.instance.prepare(mc.theWorld, mc.getTextureManager(), mc.fontRendererObj, renderer, mc.objectMouseOver, partialTick);
-        mc.getRenderManager().cacheActiveRenderInfo(mc.theWorld, mc.fontRendererObj, renderer, mc.pointedEntity, mc.gameSettings, partialTick);
+        TileEntityRendererDispatcher.instance.prepare(mc.world, mc.getTextureManager(), mc.fontRenderer, renderer, mc.objectMouseOver, partialTick);
+        mc.getRenderManager().cacheActiveRenderInfo(mc.world, mc.fontRenderer, renderer, mc.pointedEntity, mc.gameSettings, partialTick);
         mc.getRenderManager().renderPosX = d0;
         mc.getRenderManager().renderPosY = d1;
         mc.getRenderManager().renderPosZ = d2;
         TileEntityRendererDispatcher.staticPlayerX = d0;
         TileEntityRendererDispatcher.staticPlayerY = d1;
         TileEntityRendererDispatcher.staticPlayerZ = d2;
-        ActiveRenderInfo.updateRenderInfo(mc.thePlayer, false); // view changes?
+        ActiveRenderInfo.updateRenderInfo(mc.player, false); // view changes?
         ClippingHelperPortal.getInstance();
         Particle.interpPosX = d0;
         Particle.interpPosY = d1;
@@ -277,7 +277,7 @@ public class WorldPortalRenderer
 
         setupCameraTransform(mc, mc.entityRenderer, entity, partialTick, 2);
 
-        ActiveRenderInfo.updateRenderInfo(mc.thePlayer, false);
+        ActiveRenderInfo.updateRenderInfo(mc.player, false);
         ClippingHelperPortal.getInstance();
 
         ICamera icamera = new Frustum();
@@ -304,13 +304,13 @@ public class WorldPortalRenderer
 
         if(entity.posY + (double)entity.getEyeHeight() < 128.0D)
         {
-            mc.entityRenderer.renderCloudsCheck(renderglobal, partialTick, 2);
+            mc.entityRenderer.renderCloudsCheck(renderglobal, partialTick, 2, d0, d1, d2);
         }
 
         mc.entityRenderer.setupFog(0, partialTick);
         mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         RenderHelper.disableStandardItemLighting();
-        renderglobal.setupTerrain(entity, (double)partialTick, icamera, frameCount++, mc.thePlayer.isSpectator());
+        renderglobal.setupTerrain(entity, (double)partialTick, icamera, frameCount++, mc.player.isSpectator());
 
         int j = Math.min(Minecraft.getDebugFPS(), mc.gameSettings.limitFramerate);
         j = Math.max(j, 60);
@@ -371,13 +371,13 @@ public class WorldPortalRenderer
             if(!queue.isEmpty())
             {
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
 
                 for(Particle particle : queue)
                 {
                     if(canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                     {
-                        particle.renderParticle(vertexbuffer, entity, partialTick, f1, f5, f2, f3, f4);
+                        particle.renderParticle(bufferbuilder, entity, partialTick, f1, f5, f2, f3, f4);
                     }
                 }
             }
@@ -423,14 +423,14 @@ public class WorldPortalRenderer
 
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     Tessellator tessellator = Tessellator.getInstance();
-                    VertexBuffer vertexbuffer = tessellator.getBuffer();
-                    vertexbuffer.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+                    BufferBuilder bufferbuilder = tessellator.getBuffer();
+                    bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 
                     for(final Particle particle : particlemanager.fxLayers[i][jj])
                     {
                         if(canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                         {
-                            particle.renderParticle(vertexbuffer, entity, partialTick, ff, ff4, ff1, ff2, ff3);
+                            particle.renderParticle(bufferbuilder, entity, partialTick, ff, ff4, ff1, ff2, ff3);
                         }
                     }
 
@@ -473,7 +473,7 @@ public class WorldPortalRenderer
 
         if(entity.posY + (double)entity.getEyeHeight() >= 128.0D)
         {
-            mc.entityRenderer.renderCloudsCheck(renderglobal, partialTick, 2);
+            mc.entityRenderer.renderCloudsCheck(renderglobal, partialTick, 2, d0, d1, d2);
         }
 
         net.minecraftforge.client.ForgeHooksClient.dispatchRenderLast(renderglobal, partialTick);
@@ -513,7 +513,7 @@ public class WorldPortalRenderer
 
         if(mc.gameSettings.viewBobbing)
         {
-            entityRenderer.setupViewBobbing(partialTicks);
+            entityRenderer.applyBobbing(partialTicks);
         }
 
         float eyeHeight = entity.getEyeHeight();
@@ -526,8 +526,8 @@ public class WorldPortalRenderer
             if(!mc.gameSettings.debugCamEnable)
             {
                 BlockPos blockpos = new BlockPos(entity);
-                IBlockState iblockstate = mc.theWorld.getBlockState(blockpos);
-                net.minecraftforge.client.ForgeHooksClient.orientBedCamera(mc.theWorld, blockpos, iblockstate, entity);
+                IBlockState iblockstate = mc.world.getBlockState(blockpos);
+                net.minecraftforge.client.ForgeHooksClient.orientBedCamera(mc.world, blockpos, iblockstate, entity);
                 //TODO does the bed camera affect the portal view? Is this required?
 
                 GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, -1.0F, 0.0F);
@@ -579,7 +579,7 @@ public class WorldPortalRenderer
                 EntityAnimal entityanimal = (EntityAnimal)entity;
                 yaw = entityanimal.prevRotationYawHead + (entityanimal.rotationYawHead - entityanimal.prevRotationYawHead) * partialTicks + 180.0F;
             }
-            IBlockState state = ActiveRenderInfo.getBlockStateAtEntityViewpoint(entityRenderer.mc.theWorld, entity, partialTicks);
+            IBlockState state = ActiveRenderInfo.getBlockStateAtEntityViewpoint(entityRenderer.mc.world, entity, partialTicks);
             net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup event = new net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup(entityRenderer, entity, state, partialTicks, yaw, pitch, roll);
             net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
             GlStateManager.rotate(event.getRoll(), 0.0F, 0.0F, 1.0F);
@@ -617,6 +617,6 @@ public class WorldPortalRenderer
 
     private static boolean canDrawParticle(Particle ent, EnumFacing face, BlockPos pos)
     {
-        return !(face.getFrontOffsetX() < 0 && ent.posX > pos.getX() + 2 || face.getFrontOffsetX() > 0 && ent.posX < pos.getX() - 1 || face.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > pos.getY() + 2 || face.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < pos.getY() - 1 || face.getFrontOffsetZ() < 0 && ent.posZ > pos.getZ() + 2 || face.getFrontOffsetZ() > 0 && ent.posZ < pos.getZ() - 1);
+        return !(face.getFrontOffsetX() < 0 && ent.posX > pos.getX() + 2 || face.getFrontOffsetX() > 0 && ent.posX < pos.getX() - 1 || face.getFrontOffsetY() < 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D > pos.getY() + 2 || face.getFrontOffsetY() > 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D < pos.getY() - 1 || face.getFrontOffsetZ() < 0 && ent.posZ > pos.getZ() + 2 || face.getFrontOffsetZ() > 0 && ent.posZ < pos.getZ() - 1);
     }
 }

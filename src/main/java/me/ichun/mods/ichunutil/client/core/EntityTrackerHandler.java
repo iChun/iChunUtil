@@ -14,7 +14,6 @@ import net.minecraft.client.model.ModelZombie;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.monster.ZombieType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -49,13 +48,13 @@ public class EntityTrackerHandler
             EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
             if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
             {
-                if(latchedRenderer.isDead || (latchedRenderer.worldObj.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher died/stopped updating, kill it replace with new one.
+                if(latchedRenderer.isDead || (latchedRenderer.world.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher died/stopped updating, kill it replace with new one.
                 {
                     latchedRenderer.setDead();
                     latchedRendererEntities.remove(i);
 
-                    EntityLatchedRenderer newLatchedRenderer = new EntityLatchedRenderer(latchedRenderer.latchedEnt.worldObj, latchedRenderer.latchedEnt);
-                    latchedRenderer.latchedEnt.worldObj.spawnEntityInWorld(newLatchedRenderer);
+                    EntityLatchedRenderer newLatchedRenderer = new EntityLatchedRenderer(latchedRenderer.latchedEnt.world, latchedRenderer.latchedEnt);
+                    latchedRenderer.latchedEnt.world.spawnEntity(newLatchedRenderer);
                     latchedRendererEntities.add(newLatchedRenderer);
                     newLatchedRenderer.maxDeathPersistTime = latchedRenderer.maxDeathPersistTime;
                     newLatchedRenderer.currentDeathPersistTime = latchedRenderer.currentDeathPersistTime;
@@ -86,10 +85,10 @@ public class EntityTrackerHandler
 
     public static void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(event.getEntity().worldObj.isRemote && (event.getEntity() instanceof EntityPlayer || event.getEntity() instanceof EntityZombie && angelZombies && ((EntityZombie)event.getEntity()).getZombieType() == ZombieType.NORMAL))
+        if(event.getEntity().world.isRemote && (event.getEntity() instanceof EntityPlayer || event.getEntity() instanceof EntityZombie && angelZombies))
         {
-            EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.getEntity().worldObj, event.getEntity());
-            event.getEntity().worldObj.spawnEntityInWorld(latchedRenderer);
+            EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.getEntity().world, event.getEntity());
+            event.getEntity().world.spawnEntity(latchedRenderer);
             latchedRendererEntities.add(latchedRenderer);
             if(event.getEntity() instanceof EntityZombie)
             {
@@ -115,16 +114,13 @@ public class EntityTrackerHandler
                 modelZombie.isChild = false;
             }
             EntityZombie zombie = (EntityZombie)event.ent.latchedEnt;
-            if(zombie.getZombieType() == ZombieType.NORMAL)
-            {
-                GlStateManager.pushMatrix();
+            GlStateManager.pushMatrix();
 
-                GlStateManager.translate(event.x, event.y, event.z);
+            GlStateManager.translate(event.x, event.y, event.z);
 
-                renderAngelicModel(zombie, event.ent, modelZombie, ResourceHelper.texZombie, -1F, event.partialTick);
+            renderAngelicModel(zombie, event.ent, modelZombie, ResourceHelper.texZombie, -1F, event.partialTick);
 
-                GlStateManager.popMatrix();
-            }
+            GlStateManager.popMatrix();
         }
     }
 
@@ -158,16 +154,16 @@ public class EntityTrackerHandler
         if(elytraFlying)
         {
             float f = (float)living.getTicksElytraFlying() + partialTick;
-            float f1 = MathHelper.clamp_float(f * f / 100.0F, 0.0F, 1.0F);
+            float f1 = MathHelper.clamp(f * f / 100.0F, 0.0F, 1.0F);
             GlStateManager.rotate(f1 * (-90.0F - living.rotationPitch), -1.0F, 0.0F, 0.0F);
             Vec3d vec3d = living.getLook(partialTick);
             double d0 = living.motionX * living.motionX + living.motionZ * living.motionZ;
-            double d1 = vec3d.xCoord * vec3d.xCoord + vec3d.zCoord * vec3d.zCoord;
+            double d1 = vec3d.x * vec3d.x + vec3d.z * vec3d.z;
 
             if(d0 > 0.0D && d1 > 0.0D)
             {
-                double d2 = (living.motionX * vec3d.xCoord + living.motionZ * vec3d.zCoord) / (Math.sqrt(d0) * Math.sqrt(d1));
-                double d3 = living.motionX * vec3d.zCoord - living.motionZ * vec3d.xCoord;
+                double d2 = (living.motionX * vec3d.x + living.motionZ * vec3d.z) / (Math.sqrt(d0) * Math.sqrt(d1));
+                double d3 = living.motionX * vec3d.z - living.motionZ * vec3d.x;
                 GlStateManager.rotate((float)(Math.signum(d3) * Math.acos(d2)) * 180.0F / (float)Math.PI, 0.0F, 1.0F, 0.0F);
             }
         }
@@ -187,7 +183,7 @@ public class EntityTrackerHandler
         GlStateManager.depthMask(true);
         GlStateManager.disableCull();
 
-        float progress = MathHelper.clamp_float((latched.currentDeathPersistTime - 40 + partialTick) / 60F, 0F, 1F);
+        float progress = MathHelper.clamp((latched.currentDeathPersistTime - 40 + partialTick) / 60F, 0F, 1F);
         float progressSin = alive ? 0F : (float)Math.sin(Math.toRadians(90F * progress));
 
         float pitch = (float)Math.toRadians(alive ? EntityHelper.interpolateRotation(living.prevRotationPitch, living.rotationPitch, partialTick) : -45F * progress);
@@ -199,7 +195,7 @@ public class EntityTrackerHandler
         {
             GlStateManager.translate(0F, -0.5F - 1.5F * progress, 0F);
 
-            GlStateManager.color(1F, 1F, 1F, 0.5F * (float)Math.sin(Math.toRadians(MathHelper.clamp_float(progress * 1.2F, 0F, 1F) * 180F)));
+            GlStateManager.color(1F, 1F, 1F, 0.5F * (float)Math.sin(Math.toRadians(MathHelper.clamp(progress * 1.2F, 0F, 1F) * 180F)));
 
             mc.getTextureManager().bindTexture(modelTex);
             modelBiped.isChild = false;

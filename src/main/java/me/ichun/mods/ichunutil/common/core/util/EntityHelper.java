@@ -12,19 +12,21 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.BossInfoClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
-import net.minecraft.world.BossInfoLerping;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -86,16 +88,16 @@ public class EntityHelper
         }
     }
 
-    public static final Map<UUID, BossInfoLerping> BOSS_INFO_STORE = Maps.newLinkedHashMap(); //These aren't even really necessary anymore, Clientside boss data doesn't store boss info and stuff like that, server does tracking.
+    public static final Map<UUID, BossInfoClient> BOSS_INFO_STORE = Maps.newLinkedHashMap(); //These aren't even really necessary anymore, Clientside boss data doesn't store boss info and stuff like that, server does tracking.
 
     @SideOnly(Side.CLIENT)
     public static void storeBossStatus()
     {
         BOSS_INFO_STORE.clear();
-        Iterator<Map.Entry<UUID, BossInfoLerping>> ite = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos.entrySet().iterator();
+        Iterator<Map.Entry<UUID, BossInfoClient>> ite = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos.entrySet().iterator();
         while(ite.hasNext())
         {
-            Map.Entry<UUID, BossInfoLerping> e = ite.next();
+            Map.Entry<UUID, BossInfoClient> e = ite.next();
             BOSS_INFO_STORE.put(e.getKey(), e.getValue());
             ite.remove();
         }
@@ -104,103 +106,78 @@ public class EntityHelper
     @SideOnly(Side.CLIENT)
     public static void restoreBossStatus()
     {
-        Map<UUID, BossInfoLerping> bossMap = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos;
-        Iterator<Map.Entry<UUID, BossInfoLerping>> ite = BOSS_INFO_STORE.entrySet().iterator();
+        Map<UUID, BossInfoClient> bossMap = Minecraft.getMinecraft().ingameGUI.getBossOverlay().mapBossInfos;
+        Iterator<Map.Entry<UUID, BossInfoClient>> ite = BOSS_INFO_STORE.entrySet().iterator();
         while(ite.hasNext())
         {
-            Map.Entry<UUID, BossInfoLerping> e = ite.next();
+            Map.Entry<UUID, BossInfoClient> e = ite.next();
             bossMap.put(e.getKey(), e.getValue());
             ite.remove();
         }
         BOSS_INFO_STORE.clear();
     }
 
-    public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item)
+    public static int countInInventory(IInventory inv, Item item, int damage)
     {
-        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item)
+        int totalCount = 0;
+
+        for(int i = 0; i < inv.getSizeInventory(); i++)
         {
-            if(--inventory.offHandInventory[0].stackSize <= 0)
+            ItemStack is = inv.getStackInSlot(i);
+            if(!is.isEmpty() && is.getItem() == item && (damage <= -1 || is.getMetadata() == damage))
             {
-                inventory.offHandInventory[0] = null;
-            }
-
-            inventory.markDirty();
-            return true;
-        }
-
-        for(int i = 0; i < inventory.mainInventory.length; ++i)
-        {
-            if(inventory.mainInventory[i] != null && inventory.mainInventory[i].getItem() == item)
-            {
-                if(--inventory.mainInventory[i].stackSize <= 0)
-                {
-                    inventory.mainInventory[i] = null;
-                }
-
-                inventory.markDirty();
-                return true;
+                totalCount += is.getCount();
             }
         }
 
-        return false;
+        return totalCount;
     }
 
-    public static boolean consumeInventoryItem(InventoryPlayer inventory, Item item, int damage, int amount)
+    public static boolean consumeInventoryItem(IInventory inventory, Item item)
     {
-        boolean offhand = false;
-        int found = 0;
-        if(inventory.offHandInventory[0] != null && inventory.offHandInventory[0].getItem() == item && (inventory.offHandInventory[0].getItemDamage() == damage || inventory.offHandInventory[0].getItemDamage() == Short.MAX_VALUE))
-        {
-            found += inventory.offHandInventory[0].stackSize;
-            offhand = true;
-        }
-        ItemStack[] stacks = Arrays.stream(inventory.mainInventory).filter(is -> is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE)).toArray(ItemStack[]::new);
-        for(ItemStack is : stacks)
-        {
-            found += is.stackSize;
-        }
-        if(found < amount)
+        return consumeInventoryItem(inventory, item, -1, 1);
+    }
+
+    public static boolean consumeInventoryItem(IInventory inventory, Item itemIn, int metadataIn, int removeCount)
+    {
+        if(removeCount > 0 && countInInventory(inventory, itemIn, metadataIn) < removeCount)
         {
             return false;
         }
-        if(offhand)
+
+        int i = 0;
+        for (int j = inventory.getSizeInventory() - 1; j >= 0; --j)
         {
-            while(amount > 0 && inventory.offHandInventory[0].stackSize > 0)
+            ItemStack itemstack = inventory.getStackInSlot(j);
+
+            if (!itemstack.isEmpty() && (itemIn == null || itemstack.getItem() == itemIn) && (metadataIn <= -1 || itemstack.getMetadata() == metadataIn))
             {
-                amount--;
-                if(--inventory.offHandInventory[0].stackSize <= 0)
+                int k = removeCount <= 0 ? itemstack.getCount() : Math.min(removeCount - i, itemstack.getCount());
+                i += k;
+
+                if (removeCount != 0)
                 {
-                    inventory.offHandInventory[0] = null;
-                }
-            }
-            for(int i = 0; i < inventory.mainInventory.length; i++)
-            {
-                ItemStack is = inventory.mainInventory[i];
-                if(is != null && is.getItem() == item && (is.getItemDamage() == damage || is.getItemDamage() == Short.MAX_VALUE))
-                {
-                    while(amount > 0 && is.stackSize > 0)
+                    itemstack.shrink(k);
+
+                    if (itemstack.isEmpty())
                     {
-                        amount--;
-                        if(--is.stackSize <= 0)
-                        {
-                            inventory.mainInventory[i] = null;
-                        }
+                        inventory.setInventorySlotContents(j, ItemStack.EMPTY);
                     }
-                }
-                if(amount <= 0)
-                {
-                    break;
+
+                    if (removeCount > 0 && i >= removeCount)
+                    {
+                        return true;
+                    }
                 }
             }
         }
-
 
         return true;
     }
 
     public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
     {
-        ent.worldObj.playSound(ent.worldObj.isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.thePlayer.
+        ent.getEntityWorld().playSound(ent.getEntityWorld().isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.player.
     }
 
     public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
@@ -247,6 +224,28 @@ public class EntityHelper
         return SoundEvents.ENTITY_GENERIC_DEATH;
     }
 
+    public static void setSize(Class clz, Entity ent, float width, float height)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfHelper.obfuscated() ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
+            m.setAccessible(true);
+            m.invoke(ent, width, height);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != Entity.class)
+            {
+                setSize(clz.getSuperclass(), ent, width, height);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
     public static float updateRotation(float oriRot, float intendedRot, float maxChange)
     {
         float var4 = MathHelper.wrapDegrees(intendedRot - oriRot);
@@ -275,7 +274,7 @@ public class EntityHelper
         double d1 = posZ - facer.posZ;
         double d2 = posY - (facer.posY + (double)facer.getEyeHeight());
 
-        double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+        double d3 = (double)MathHelper.sqrt(d0 * d0 + d1 * d1);
         float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
         float f3 = (float)(-(Math.atan2(d2, d3) * 180.0D / Math.PI));
         facer.rotationPitch = updateRotation(facer.rotationPitch, f3, maxPitch);
@@ -340,9 +339,9 @@ public class EntityHelper
     {
         Vec3d vec3 = getEntityPositionEyes(ent, renderTick);
         Vec3d vec31 = ent.getLook(renderTick);
-        Vec3d vec32 = vec3.addVector(vec31.xCoord * d, vec31.yCoord * d, vec31.zCoord * d);
+        Vec3d vec32 = vec3.addVector(vec31.x * d, vec31.y * d, vec31.z * d);
 
-        RayTraceResult rayTrace = rayTraceBlocks(ent.worldObj, d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
+        RayTraceResult rayTrace = rayTraceBlocks(ent.getEntityWorld(), d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
 
         if(!ignoreEntities)
         {
@@ -355,7 +354,7 @@ public class EntityHelper
             Entity entityTrace = null;
             Vec3d vec33 = null;
             float f = 1.0F;
-            List<Entity> list = ent.worldObj.getEntitiesInAABBexcluding(ent, ent.getEntityBoundingBox().addCoord(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist).expand((double)f, (double)f, (double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+            List<Entity> list = ent.getEntityWorld().getEntitiesInAABBexcluding(ent, ent.getEntityBoundingBox().expand(vec31.x * dist, vec31.y * dist, vec31.z * dist).grow((double)f), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
             {
                 public boolean apply(Entity p_apply_1_)
                 {
@@ -368,10 +367,10 @@ public class EntityHelper
             {
                 Entity entity1 = (Entity)list.get(j);
                 float f1 = entity1.getCollisionBorderSize();
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f1, (double)f1, (double)f1);
+                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow((double)f1);
                 RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
-                if(axisalignedbb.isVecInside(vec3))
+                if(axisalignedbb.contains(vec3))
                 {
                     if(d2 >= 0.0D)
                     {
@@ -416,16 +415,16 @@ public class EntityHelper
 
     public static RayTraceResult rayTraceBlocks(World world, double dist, Vec3d vec31, Vec3d vec32, boolean stopOnLiquid, boolean ignoreTransparentBlocks, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
     {
-        if(!Double.isNaN(vec31.xCoord) && !Double.isNaN(vec31.yCoord) && !Double.isNaN(vec31.zCoord))
+        if(!Double.isNaN(vec31.x) && !Double.isNaN(vec31.y) && !Double.isNaN(vec31.z))
         {
-            if(!Double.isNaN(vec32.xCoord) && !Double.isNaN(vec32.yCoord) && !Double.isNaN(vec32.zCoord))
+            if(!Double.isNaN(vec32.x) && !Double.isNaN(vec32.y) && !Double.isNaN(vec32.z))
             {
-                int i = MathHelper.floor_double(vec32.xCoord);
-                int j = MathHelper.floor_double(vec32.yCoord);
-                int k = MathHelper.floor_double(vec32.zCoord);
-                int l = MathHelper.floor_double(vec31.xCoord);
-                int i1 = MathHelper.floor_double(vec31.yCoord);
-                int j1 = MathHelper.floor_double(vec31.zCoord);
+                int i = MathHelper.floor(vec32.x);
+                int j = MathHelper.floor(vec32.y);
+                int k = MathHelper.floor(vec32.z);
+                int l = MathHelper.floor(vec31.x);
+                int i1 = MathHelper.floor(vec31.y);
+                int j1 = MathHelper.floor(vec31.z);
                 BlockPos blockpos = new BlockPos(l, i1, j1);
                 IBlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
@@ -445,7 +444,7 @@ public class EntityHelper
 
                 while(k1-- >= 0)
                 {
-                    if(Double.isNaN(vec31.xCoord) || Double.isNaN(vec31.yCoord) || Double.isNaN(vec31.zCoord))
+                    if(Double.isNaN(vec31.x) || Double.isNaN(vec31.y) || Double.isNaN(vec31.z))
                     {
                         return null;
                     }
@@ -504,23 +503,23 @@ public class EntityHelper
                     double d3 = 999.0D;
                     double d4 = 999.0D;
                     double d5 = 999.0D;
-                    double d6 = vec32.xCoord - vec31.xCoord;
-                    double d7 = vec32.yCoord - vec31.yCoord;
-                    double d8 = vec32.zCoord - vec31.zCoord;
+                    double d6 = vec32.x - vec31.x;
+                    double d7 = vec32.y - vec31.y;
+                    double d8 = vec32.z - vec31.z;
 
                     if(flag2)
                     {
-                        d3 = (d0 - vec31.xCoord) / d6;
+                        d3 = (d0 - vec31.x) / d6;
                     }
 
                     if(flag)
                     {
-                        d4 = (d1 - vec31.yCoord) / d7;
+                        d4 = (d1 - vec31.y) / d7;
                     }
 
                     if(flag1)
                     {
-                        d5 = (d2 - vec31.zCoord) / d8;
+                        d5 = (d2 - vec31.z) / d8;
                     }
 
                     if(d3 == -0.0D)
@@ -543,22 +542,22 @@ public class EntityHelper
                     if(d3 < d4 && d3 < d5)
                     {
                         enumfacing = i > l ? EnumFacing.WEST : EnumFacing.EAST;
-                        vec31 = new Vec3d(d0, vec31.yCoord + d7 * d3, vec31.zCoord + d8 * d3);
+                        vec31 = new Vec3d(d0, vec31.y + d7 * d3, vec31.z + d8 * d3);
                     }
                     else if(d4 < d5)
                     {
                         enumfacing = j > i1 ? EnumFacing.DOWN : EnumFacing.UP;
-                        vec31 = new Vec3d(vec31.xCoord + d6 * d4, d1, vec31.zCoord + d8 * d4);
+                        vec31 = new Vec3d(vec31.x + d6 * d4, d1, vec31.z + d8 * d4);
                     }
                     else
                     {
                         enumfacing = k > j1 ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                        vec31 = new Vec3d(vec31.xCoord + d6 * d5, vec31.yCoord + d7 * d5, d2);
+                        vec31 = new Vec3d(vec31.x + d6 * d5, vec31.y + d7 * d5, d2);
                     }
 
-                    l = MathHelper.floor_double(vec31.xCoord) - (enumfacing == EnumFacing.EAST ? 1 : 0);
-                    i1 = MathHelper.floor_double(vec31.yCoord) - (enumfacing == EnumFacing.UP ? 1 : 0);
-                    j1 = MathHelper.floor_double(vec31.zCoord) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
+                    l = MathHelper.floor(vec31.x) - (enumfacing == EnumFacing.EAST ? 1 : 0);
+                    i1 = MathHelper.floor(vec31.y) - (enumfacing == EnumFacing.UP ? 1 : 0);
+                    j1 = MathHelper.floor(vec31.z) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
                     blockpos = new BlockPos(l, i1, j1);
                     IBlockState iblockstate1 = world.getBlockState(blockpos);
                     Block block1 = iblockstate1.getBlock();
@@ -637,7 +636,7 @@ public class EntityHelper
 
             if(flag)
             {
-                for(double d6 = 0.05D; x != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
+                for(double d6 = 0.05D; x != 0.0D && ent.getEntityWorld().getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, 0.0D)).isEmpty(); d3 = x)
                 {
                     if(x < 0.05D && x >= -0.05D)
                     {
@@ -653,7 +652,7 @@ public class EntityHelper
                     }
                 }
 
-                for(; z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
+                for(; z != 0.0D && ent.getEntityWorld().getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(0.0D, -1.0D, z)).isEmpty(); d5 = z)
                 {
                     if(z < 0.05D && z >= -0.05D)
                     {
@@ -669,7 +668,7 @@ public class EntityHelper
                     }
                 }
 
-                for(; x != 0.0D && z != 0.0D && ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
+                for(; x != 0.0D && z != 0.0D && ent.getEntityWorld().getCollisionBoxes(ent, ent.getEntityBoundingBox().offset(x, -1.0D, z)).isEmpty(); d5 = z)
                 {
                     if(x < 0.05D && x >= -0.05D)
                     {
@@ -701,7 +700,7 @@ public class EntityHelper
                 }
             }
 
-            List<AxisAlignedBB> list1 = ent.worldObj.getCollisionBoxes(ent, ent.getEntityBoundingBox().addCoord(x, y, z));
+            List<AxisAlignedBB> list1 = ent.getEntityWorld().getCollisionBoxes(ent, ent.getEntityBoundingBox().expand(x, y, z));
             AxisAlignedBB axisalignedbb = ent.getEntityBoundingBox();
             int i = 0;
 
@@ -846,12 +845,12 @@ public class EntityHelper
 
     public static boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb)
     {
-        int i = MathHelper.floor_double(aabb.minX);
-        int j = MathHelper.floor_double(aabb.minY);
-        int k = MathHelper.floor_double(aabb.minZ);
-        int l = MathHelper.floor_double(aabb.maxX);
-        int i1 = MathHelper.floor_double(aabb.maxY);
-        int j1 = MathHelper.floor_double(aabb.maxZ);
+        int i = MathHelper.floor(aabb.minX);
+        int j = MathHelper.floor(aabb.minY);
+        int k = MathHelper.floor(aabb.minZ);
+        int l = MathHelper.floor(aabb.maxX);
+        int i1 = MathHelper.floor(aabb.maxY);
+        int j1 = MathHelper.floor(aabb.maxZ);
         boolean flag = false;
         boolean flag1 = false;
 
@@ -862,20 +861,20 @@ public class EntityHelper
                 for(int i2 = k; i2 <= j1; ++i2)
                 {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
-                    IBlockState iblockstate = ent.worldObj.getBlockState(blockpos);
-                    Block block = ent.worldObj.getBlockState(blockpos).getBlock();
+                    IBlockState iblockstate = ent.getEntityWorld().getBlockState(blockpos);
+                    Block block = ent.getEntityWorld().getBlockState(blockpos).getBlock();
 
-                    if(!block.isAir(iblockstate, ent.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
+                    if(!block.isAir(iblockstate, ent.getEntityWorld(), blockpos) && iblockstate.getMaterial() != Material.FIRE)
                     {
-                        if(!ent.worldObj.getGameRules().getBoolean("mobGriefing"))
+                        if(!ent.getEntityWorld().getGameRules().getBoolean("mobGriefing"))
                         {
                             flag = true;
                         }
-                        else if(block.canEntityDestroy(iblockstate, ent.worldObj, blockpos, ent))
+                        else if(block.canEntityDestroy(iblockstate, ent.getEntityWorld(), blockpos, ent))
                         {
                             if(block != Blocks.COMMAND_BLOCK && block != Blocks.REPEATING_COMMAND_BLOCK && block != Blocks.CHAIN_COMMAND_BLOCK && block != Blocks.IRON_BARS && block != Blocks.END_GATEWAY)
                             {
-                                flag1 = ent.worldObj.setBlockToAir(blockpos) || flag1;
+                                flag1 = ent.getEntityWorld().setBlockToAir(blockpos) || flag1;
                             }
                             else
                             {
@@ -893,10 +892,10 @@ public class EntityHelper
 
         if(flag1)
         {
-            double d0 = aabb.minX + (aabb.maxX - aabb.minX) * (double)ent.worldObj.rand.nextFloat();
-            double d1 = aabb.minY + (aabb.maxY - aabb.minY) * (double)ent.worldObj.rand.nextFloat();
-            double d2 = aabb.minZ + (aabb.maxZ - aabb.minZ) * (double)ent.worldObj.rand.nextFloat();
-            ent.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            double d0 = aabb.minX + (aabb.maxX - aabb.minX) * (double)ent.getEntityWorld().rand.nextFloat();
+            double d1 = aabb.minY + (aabb.maxY - aabb.minY) * (double)ent.getEntityWorld().rand.nextFloat();
+            double d2 = aabb.minZ + (aabb.maxZ - aabb.minZ) * (double)ent.getEntityWorld().rand.nextFloat();
+            ent.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
         }
 
         return flag;

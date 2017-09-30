@@ -7,10 +7,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -93,7 +93,7 @@ public class RendererHelper
                     f3 = f3 * 0.1F;
                     f4 = f4 * 0.1F;
                     f5 = f5 * 0.1F;
-                    RayTraceResult raytraceresult = mc.theWorld.rayTraceBlocks(new Vec3d(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3d(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
+                    RayTraceResult raytraceresult = mc.world.rayTraceBlocks(new Vec3d(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3d(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
 
                     if (raytraceresult != null)
                     {
@@ -135,7 +135,7 @@ public class RendererHelper
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-        if(model.isBuiltInRenderer() && stack != null)
+        if(model.isBuiltInRenderer())
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableRescaleNormal();
@@ -145,7 +145,7 @@ public class RendererHelper
         {
             renderModel(model, color, stack);
 
-            if(stack != null && stack.getItem() != null && stack.hasEffect())
+            if(stack.hasEffect())
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.depthFunc(GL11.GL_EQUAL);
@@ -188,22 +188,22 @@ public class RendererHelper
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
     }
 
-    private static void renderModel(IBakedModel model, int color, @Nullable ItemStack stack)
+    private static void renderModel(IBakedModel model, int color, ItemStack stack)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
 
         for(EnumFacing enumfacing : EnumFacing.values())
         {
-            renderQuads(vertexbuffer, model.getQuads((IBlockState)null, enumfacing, 0L), color, stack);
+            renderQuads(bufferbuilder, model.getQuads((IBlockState)null, enumfacing, 0L), color, stack);
         }
 
-        renderQuads(vertexbuffer, model.getQuads((IBlockState)null, (EnumFacing)null, 0L), color, stack);
+        renderQuads(bufferbuilder, model.getQuads((IBlockState)null, (EnumFacing)null, 0L), color, stack);
         tessellator.draw();
     }
 
-    private static void renderQuads(VertexBuffer renderer, List<BakedQuad> quads, int color, @Nullable ItemStack stack)
+    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack)
     {
         boolean flag = color == -1 && stack != null;
         int i = 0;
@@ -215,7 +215,7 @@ public class RendererHelper
 
             if(flag && bakedquad.hasTintIndex())
             {
-                k = Minecraft.getMinecraft().getItemColors().getColorFromItemstack(stack, bakedquad.getTintIndex());
+                k = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, bakedquad.getTintIndex());
 
                 if(EntityRenderer.anaglyphEnable)
                 {
@@ -236,19 +236,19 @@ public class RendererHelper
         float b = (clr & 0xff) / 255F;
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-        vertexbuffer.begin(4, DefaultVertexFormats.POSITION_COLOR); //GL_TRIANGLE_STRIP
+        bufferbuilder.begin(4, DefaultVertexFormats.POSITION_COLOR); //GL_TRIANGLE_STRIP
         float max = (float)distance * 10F;
         double halfSize = size / 2D;
         for(float f = 0F; f < max; f++)
         {
-            vertexbuffer.pos(-halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
-            vertexbuffer.pos(halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
+            bufferbuilder.pos(-halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
+            bufferbuilder.pos(halfSize, distance * (f / max), 0).color(r, g, b, 1F).endVertex();
         }
         tessellator.draw();
 
@@ -264,7 +264,7 @@ public class RendererHelper
         float b = (clr & 0xff) / 255F;
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
@@ -307,7 +307,7 @@ public class RendererHelper
                     d6 = 0D;
                 }
 
-                vertexbuffer.begin(5, DefaultVertexFormats.POSITION_COLOR);
+                bufferbuilder.begin(5, DefaultVertexFormats.POSITION_COLOR);
                 double d9 = 0.1D + (double)layers * layerSize;
 
                 d9 *= (double)i1 * 0.1D + 0.5D;
@@ -344,8 +344,8 @@ public class RendererHelper
                         d14 += d10 * 2.0D;
                     }
 
-                    vertexbuffer.pos(d13 + d5, y + (i1 * heightOfBend), d14 + d6).color(r * intensity, g * intensity, b * intensity, 0.3F).endVertex();
-                    vertexbuffer.pos(d11 + d7, y + ((i1 + 1) * heightOfBend), d12 + d8).color(r * intensity, g * intensity, b * intensity, 0.3F).endVertex();
+                    bufferbuilder.pos(d13 + d5, y + (i1 * heightOfBend), d14 + d6).color(r * intensity, g * intensity, b * intensity, 0.3F).endVertex();
+                    bufferbuilder.pos(d11 + d7, y + ((i1 + 1) * heightOfBend), d12 + d8).color(r * intensity, g * intensity, b * intensity, 0.3F).endVertex();
                 }
 
                 tessellator.draw();
@@ -382,12 +382,12 @@ public class RendererHelper
     public static void drawOnScreen(double posX, double posY, double width, double height, double zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos(posX, posY + height, zLevel).tex(0.0D, 1.0D).endVertex();
-        vertexbuffer.pos(posX + width, posY + height, zLevel).tex(1.0D, 1.0D).endVertex();
-        vertexbuffer.pos(posX + width, posY, zLevel).tex(1.0D, 0.0D).endVertex();
-        vertexbuffer.pos(posX, posY, zLevel).tex(0.0D, 0.0D).endVertex();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(posX, posY + height, zLevel).tex(0.0D, 1.0D).endVertex();
+        bufferbuilder.pos(posX + width, posY + height, zLevel).tex(1.0D, 1.0D).endVertex();
+        bufferbuilder.pos(posX + width, posY, zLevel).tex(1.0D, 0.0D).endVertex();
+        bufferbuilder.pos(posX, posY, zLevel).tex(0.0D, 0.0D).endVertex();
         tessellator.draw();
     }
 
@@ -407,12 +407,12 @@ public class RendererHelper
         }
         GlStateManager.disableTexture2D();
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        vertexbuffer.pos(posX, posY + height, zLevel).color(r, g, b, alpha).endVertex();
-        vertexbuffer.pos(posX + width, posY + height, zLevel).color(r, g, b, alpha).endVertex();
-        vertexbuffer.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
-        vertexbuffer.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.pos(posX, posY + height, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX + width, posY + height, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
     }
@@ -430,32 +430,32 @@ public class RendererHelper
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
 
         int alpha = (downLeft >> 24 & 0xff);
         int r = (downLeft >> 16 & 0xff);
         int g = (downLeft >> 8 & 0xff);
         int b = (downLeft & 0xff);
-        vertexbuffer.pos(posX, posY + height, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX, posY + height, zLevel).color(r, g, b, alpha).endVertex();
 
         alpha = (downRight >> 24 & 0xff);
         r = (downRight >> 16 & 0xff);
         g = (downRight >> 8 & 0xff);
         b = (downRight & 0xff);
-        vertexbuffer.pos(posX + width, posY + height, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX + width, posY + height, zLevel).color(r, g, b, alpha).endVertex();
 
         alpha = (upRight >> 24 & 0xff);
         r = (upRight >> 16 & 0xff);
         g = (upRight >> 8 & 0xff);
         b = (upRight & 0xff);
-        vertexbuffer.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
 
         alpha = (upLeft >> 24 & 0xff);
         r = (upLeft >> 16 & 0xff);
         g = (upLeft >> 8 & 0xff);
         b = (upLeft & 0xff);
-        vertexbuffer.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
 
         tessellator.draw();
 
@@ -480,15 +480,15 @@ public class RendererHelper
         double sHeight = height / 6D;
         int[][] colourArray = new int[][] { { 255, 0, 0 }, { 255, 0, 255 }, { 0, 0, 255 }, { 0, 255, 255 }, { 0, 255, 0 }, { 255, 255, 0 }, { 255, 0, 0 } };
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
 
         for(int i = 0; i < 6; i++)
         {
-            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-            vertexbuffer.pos(posX, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
-            vertexbuffer.pos(posX + width, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
-            vertexbuffer.pos(posX + width, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
-            vertexbuffer.pos(posX, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            bufferbuilder.pos(posX, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
+            bufferbuilder.pos(posX + width, posY + (sHeight * (i + 1)), zLevel).color(colourArray[i + 1][0], colourArray[i + 1][1], colourArray[i + 1][2], alpha).endVertex();
+            bufferbuilder.pos(posX + width, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
+            bufferbuilder.pos(posX, posY + (sHeight * i), zLevel).color(colourArray[i][0], colourArray[i][1], colourArray[i][2], alpha).endVertex();
             tessellator.draw();
         }
 

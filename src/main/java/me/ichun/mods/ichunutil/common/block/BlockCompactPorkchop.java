@@ -1,18 +1,12 @@
 package me.ichun.mods.ichunutil.common.block;
 
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
 import java.util.Random;
 
 public class BlockCompactPorkchop extends Block
@@ -35,16 +29,6 @@ public class BlockCompactPorkchop extends Block
 
         setRegistryName(new ResourceLocation("ichunutil", "compact_porkchop"));
         setUnlocalizedName("ichunutil.block.compactporkchop");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
-    {
-        if(iChunUtil.config.enableCompactPorkchop == 1)
-        {
-            list.add(new ItemStack(itemIn, 1, 0));
-        }
     }
 
     //For ObfHelper use to check

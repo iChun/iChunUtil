@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.10.2";
+    private static final String OBF_VERSION = "1.12.2";
 
     private static boolean isObfuscated;
 
@@ -32,6 +32,10 @@ public class ObfHelper
     //EntityLivingBase
     public static final String getDeathSoundObf = "func_188593_c";
     public static final String getDeathSoundDeobf = "getDeathSound";
+
+    //Entity
+    public static final String setSizeObf = "func_70105_a";
+    public static final String setSizeDeobf = "setSize";
 
     //RenderLivingEntity
     public static final String preRenderCallbackObf = "func_77041_b";

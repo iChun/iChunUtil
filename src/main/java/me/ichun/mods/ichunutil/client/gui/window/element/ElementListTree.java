@@ -106,7 +106,7 @@ public class ElementListTree extends Element
             {
                 sby1 += 10;
                 sby2 -= 10;
-                sliderProg = 1.0F - MathHelper.clamp_double((double)(sby2 - mouseY) / (double)(sby2 - sby1), 0.0D, 1.0D);
+                sliderProg = 1.0F - MathHelper.clamp((double)(sby2 - mouseY) / (double)(sby2 - sby1), 0.0D, 1.0D);
             }
         }
 
@@ -241,7 +241,7 @@ public class ElementListTree extends Element
         if(treeHeight1 > height)
         {
             sliderProg += 0.05D * -k;
-            sliderProg = MathHelper.clamp_double(sliderProg, 0.0D, 1.0D);
+            sliderProg = MathHelper.clamp(sliderProg, 0.0D, 1.0D);
         }
         return false;//return true to say you're interacted with
     }

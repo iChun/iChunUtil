@@ -33,7 +33,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
         if(side.isServer())
         {
             INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-            player = ((NetHandlerPlayServer)netHandler).playerEntity;
+            player = ((NetHandlerPlayServer)netHandler).player;
         }
         else
         {
@@ -80,7 +80,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
     @SideOnly(Side.CLIENT)
     public EntityPlayer getClientPlayer()
     {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override

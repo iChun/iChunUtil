@@ -435,8 +435,8 @@ public class ElementNumberInput extends Element implements ITextInput
         width = parent.width - spaceL - spaceR;
         for(int i = 0; i < textFields.size(); i++)
         {
-            textFields.get(i).xPosition = parent.posX + posX + 2 + ((width / textFields.size()) * i);
-            textFields.get(i).yPosition = parent.posY + posY + 2;
+            textFields.get(i).x = parent.posX + posX + 2 + ((width / textFields.size()) * i);
+            textFields.get(i).y = parent.posY + posY + 2;
             textFields.get(i).width = (width / textFields.size()) - 18;
             textFields.get(i).setCursorPositionZero();
         }

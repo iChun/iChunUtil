@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common.core.event;
 
+import me.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import me.ichun.mods.ichunutil.common.core.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
@@ -10,9 +11,13 @@ import me.ichun.mods.ichunutil.common.module.patron.PatronInfo;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketNewGrabbedEntityId;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketPatrons;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketUserShouldShowUpdates;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -104,7 +109,7 @@ public class EventHandlerServer
     @SubscribeEvent
     public void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(!event.getEntity().worldObj.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
+        if(!event.getEntity().world.isRemote && event.getEntity().getEntityData().hasKey("Grabbed-ID"))
         {
             Integer x = event.getEntity().getEntityData().getInteger("Grabbed-ID");
             if(event.getEntity().getEntityId() != x)
@@ -126,6 +131,19 @@ public class EventHandlerServer
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onRegisterBlock(RegistryEvent.Register<Block> event)
+    {
+        iChunUtil.blockCompactPorkchop = new BlockCompactPorkchop();
+        event.getRegistry().register(iChunUtil.blockCompactPorkchop);
+    }
+
+    @SubscribeEvent
+    public void onRegisterItem(RegistryEvent.Register<Item> event)
+    {
+        event.getRegistry().register(new ItemBlock(iChunUtil.blockCompactPorkchop).setRegistryName(iChunUtil.blockCompactPorkchop.getRegistryName()));
     }
 
     public void shuttingDownServer()

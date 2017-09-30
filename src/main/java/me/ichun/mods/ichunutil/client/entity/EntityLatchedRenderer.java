@@ -129,7 +129,7 @@ public class EntityLatchedRenderer extends Entity
 
         MinecraftForge.EVENT_BUS.post(new EntityLatchedRendererUpdateEvent(this));
 
-        lastUpdate = worldObj.getWorldTime();
+        lastUpdate = world.getWorldTime();
     }
 
     @Override
@@ -140,13 +140,13 @@ public class EntityLatchedRenderer extends Entity
 
     @Override
     @SideOnly(Side.CLIENT)
-    public int getBrightnessForRender(float par1)
+    public int getBrightnessForRender()
     {
         if(WorldPortalRenderer.renderLevel >= 1 && latchedEnt == Minecraft.getMinecraft().getRenderViewEntity())
         {
-            return super.getBrightnessForRender(par1);
+            return super.getBrightnessForRender();
         }
-        return latchedEnt.getBrightnessForRender(par1);
+        return latchedEnt.getBrightnessForRender();
     }
 
     @Override

@@ -68,7 +68,7 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
         VisGraph lvt_9_1_ = new VisGraph();
         HashSet lvt_10_1_ = Sets.newHashSet();
 
-        if(!this.region.extendedLevelsInChunkCache())
+        if(!this.worldView.isEmpty())
         {
             ++renderChunksUpdated;
             boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
@@ -78,7 +78,7 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
             {
                 boolean noRender = face.getFrontOffsetX() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getFrontOffsetX() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getFrontOffsetY() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getFrontOffsetY() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getFrontOffsetZ() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getFrontOffsetZ() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ();
 
-                IBlockState iblockstate = this.region.getBlockState(blockpos$mutableblockpos);
+                IBlockState iblockstate = this.worldView.getBlockState(blockpos$mutableblockpos);
                 Block block = iblockstate.getBlock();
 
                 if(iblockstate.isOpaqueCube())
@@ -88,11 +88,11 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
 
                 if(!noRender && block.hasTileEntity(iblockstate))
                 {
-                    TileEntity tileentity = this.region.getTileEntity(blockpos$mutableblockpos, Chunk.EnumCreateEntityType.CHECK);
+                    TileEntity tileentity = this.worldView.getTileEntity(blockpos$mutableblockpos, Chunk.EnumCreateEntityType.CHECK);
 
                     if (tileentity != null)
                     {
-                        TileEntitySpecialRenderer<TileEntity> tileentityspecialrenderer = TileEntityRendererDispatcher.instance.getSpecialRenderer(tileentity);
+                        TileEntitySpecialRenderer<TileEntity> tileentityspecialrenderer = TileEntityRendererDispatcher.instance.getRenderer(tileentity);
 
                         if (tileentityspecialrenderer != null)
                         {
@@ -117,15 +117,15 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
 
                     if(block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE)
                     {
-                        net.minecraft.client.renderer.VertexBuffer vertexbuffer = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
+                        net.minecraft.client.renderer.BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
 
                         if(!compiledchunk.isLayerStarted(blockrenderlayer1))
                         {
                             compiledchunk.setLayerStarted(blockrenderlayer1);
-                            this.preRenderBlocks(vertexbuffer, blockpos);
+                            this.preRenderBlocks(bufferbuilder, blockpos);
                         }
 
-                        if(!noRender && blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.region, vertexbuffer))
+                        if(!noRender && blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder))
                         {
                             aboolean[j] |= true;
                         }

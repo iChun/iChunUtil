@@ -6,9 +6,9 @@ import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -24,7 +24,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -36,7 +35,7 @@ import java.util.List;
 import static net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType.*;
 
 @SuppressWarnings("deprecation")
-public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
+public class ModelBaseWrapper implements IBakedModel
 {
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
@@ -124,8 +123,8 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
             lastStack = null;
             lastEntity = null;
 
-            VertexBuffer vertexBuffer = tessellator.getBuffer();
-            vertexBuffer.begin(7, defaultVertexFormat);
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(7, defaultVertexFormat);
         }
 
         return DUMMY_LIST;
@@ -173,7 +172,7 @@ public class ModelBaseWrapper implements IBakedModel, IPerspectiveAwareModel
             boolean isLeft = isLeftHand(cameraTransformType);
             if(isItemDualHanded && isFirstPerson(currentPerspective) && lastEntity instanceof EntityPlayer && ItemRenderingHelper.dualHandedAnimationRight > 0)
             {
-                float prog = (float)Math.sin(MathHelper.clamp_float((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
+                float prog = (float)Math.sin(MathHelper.clamp((isLeft ? EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationLeft, ItemRenderingHelper.dualHandedAnimationLeft, iChunUtil.eventHandlerClient.renderTick) : EntityHelper.interpolateValues(ItemRenderingHelper.prevDualHandedAnimationRight, ItemRenderingHelper.dualHandedAnimationRight, iChunUtil.eventHandlerClient.renderTick)) / (float)ItemRenderingHelper.dualHandedAnimationTime, 0F, 1F) * Math.PI / 4F);
                 GlStateManager.rotate(30F * prog, -1F, 0F, 0F);
                 GlStateManager.translate(0F, -0.1F * prog, 0.3F * prog);
                 GlStateManager.rotate((isLeft ? -35F : 35F) * prog, 0F, 1F, 0F);

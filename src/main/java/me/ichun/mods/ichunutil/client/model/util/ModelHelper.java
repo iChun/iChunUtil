@@ -111,7 +111,7 @@ public class ModelHelper
 
         PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
 
-        info.txMirror = (((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
+        info.txMirror = (((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
 
         info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
         info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
@@ -134,7 +134,7 @@ public class ModelHelper
             }
         }
 
-        info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.yCoord - vertices[info.txMirror ? 3 : 0].vector3D.yCoord) - info.dimensions[1]) / 2;
+        info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2;
 
         return info;
     }

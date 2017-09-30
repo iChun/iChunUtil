@@ -39,6 +39,10 @@ public class ItemHandler
 
     public static boolean isItemDualHanded(ItemStack is)
     {
+        if(is.isEmpty())
+        {
+            return false;
+        }
         for(Map.Entry<Class<? extends Item>, DualHandedItemCallback> e : dualHandedItems.entrySet())
         {
             if(e.getKey().isInstance(is.getItem()))
@@ -51,22 +55,22 @@ public class ItemHandler
 
     public static boolean canItemBeUsed(EntityLivingBase living, ItemStack is)
     {
-        return is != null && (!isItemDualHanded(is) || getDualHandedItemCallback(is).canItemBeUsed(is, living) && (living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND) == null || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND) == null));
+        return is != null && (!isItemDualHanded(is) || getDualHandedItemCallback(is).canItemBeUsed(is, living) && (living.getHeldItem(EnumHand.MAIN_HAND) == is && living.getHeldItem(EnumHand.OFF_HAND).isEmpty() || living.getHeldItem(EnumHand.OFF_HAND) == is && living.getHeldItem(EnumHand.MAIN_HAND).isEmpty()));
     }
 
     public static ItemStack getUsableDualHandedItem(EntityLivingBase living) //returns null if item cannot be used.
     {
         ItemStack is = living.getHeldItem(EnumHand.MAIN_HAND);
-        if(is != null && isItemDualHanded(is) && canItemBeUsed(living, is))
+        if(isItemDualHanded(is) && canItemBeUsed(living, is))
         {
             return is;
         }
         is = living.getHeldItem(EnumHand.OFF_HAND);
-        if(is != null && isItemDualHanded(is) && canItemBeUsed(living, is))
+        if(isItemDualHanded(is) && canItemBeUsed(living, is))
         {
             return is;
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     public static EnumHandSide getHandSide(EntityLivingBase living, ItemStack is)

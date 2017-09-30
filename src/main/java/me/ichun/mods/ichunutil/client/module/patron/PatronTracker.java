@@ -29,8 +29,8 @@ public class PatronTracker implements EntityTrackerRegistry.IAdditionalTrackerIn
         {
             EntityPlayer player = (EntityPlayer)info.tracked;
             float speed = 7.5F;
-            pitchChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
-            yawChange = player.worldObj.rand.nextFloat() * (speed * 2F) - speed;
+            pitchChange = player.getEntityWorld().rand.nextFloat() * (speed * 2F) - speed;
+            yawChange = player.getEntityWorld().rand.nextFloat() * (speed * 2F) - speed;
 
             canRender = false;
             for(PatronInfo info1 : PatronEffectRenderer.patrons)
@@ -50,13 +50,13 @@ public class PatronTracker implements EntityTrackerRegistry.IAdditionalTrackerIn
             {
                 if(MorphApi.getApiImpl().hasMorph(player.getName(), Side.CLIENT))
                 {
-                    if(MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getName(), Side.CLIENT) instanceof AbstractClientPlayer))
+                    if(MorphApi.getApiImpl().morphProgress(player.getName(), Side.CLIENT) < 1.0F || !(MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) instanceof AbstractClientPlayer))
                     {
                         canRender = false;
                     }
-                    if(MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getName(), Side.CLIENT) instanceof AbstractClientPlayer)
+                    if(MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT) instanceof AbstractClientPlayer)
                     {
-                        txLocation = ((AbstractClientPlayer)MorphApi.getApiImpl().getMorphEntity(player.worldObj, player.getName(), Side.CLIENT)).getLocationSkin();
+                        txLocation = ((AbstractClientPlayer)MorphApi.getApiImpl().getMorphEntity(player.getEntityWorld(), player.getName(), Side.CLIENT)).getLocationSkin();
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class PatronTracker implements EntityTrackerRegistry.IAdditionalTrackerIn
                 if(motionY < 0.0D)
                 {
                     Vec3d vec3d = (new Vec3d(motionX, motionY, motionZ)).normalize();
-                    f4 = 1.0F - (float)Math.pow(-vec3d.yCoord, 1.5D);
+                    f4 = 1.0F - (float)Math.pow(-vec3d.y, 1.5D);
                 }
 
                 f = f4 * 0.34906584F + (1.0F - f4) * f;
