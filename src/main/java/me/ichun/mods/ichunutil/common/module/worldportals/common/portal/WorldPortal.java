@@ -147,6 +147,10 @@ public abstract class WorldPortal
             firstUpdate = false;
         }
         time++;
+        if(!canTeleportEntities())
+        {
+            return;
+        }
         Iterator<Map.Entry<Entity, Integer>> ite = teleportCooldown.entrySet().iterator();
         while(ite.hasNext())
         {
@@ -503,6 +507,11 @@ public abstract class WorldPortal
             return flatPlane.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
         }
         return flatPlane;
+    }
+
+    public boolean canTeleportEntities()
+    {
+        return true;
     }
 
     public HashSet<AxisAlignedBB> getCollisionBoundaries()
