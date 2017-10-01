@@ -6,8 +6,7 @@ public class HeadMagmaCube extends HeadBase<EntityMagmaCube>
 {
     public HeadMagmaCube()
     {
-        headJoint = new float[]{ 0F, -19F/16F, 0F };
-        eyeOffset = new float[]{ 0F, 0F, 4F/16F };
+        eyeOffset = new float[]{ 0F, -19F/16F, 4F/16F };
     }
 
     @Override
@@ -30,24 +29,12 @@ public class HeadMagmaCube extends HeadBase<EntityMagmaCube>
         float squishFactor = living.prevSquishFactor + (living.squishFactor - living.prevSquishFactor) * partialTick;
         if(squishFactor <= 0F)
         {
-            return headJoint;
+            return super.getHeadJointOffset(living, partialTick, eye);
         }
         else
         {
-            return new float[]{ 0F, -(19F - squishFactor * 2.5F)/16F, 0F };
+            return new float[]{ 0F, -(0 - squishFactor * 2.5F)/16F, 0F };
         }
-    }
-
-    @Override
-    public float getHeadYaw(EntityMagmaCube living, float partialTick, int eye)
-    {
-        return 0F;
-    }
-
-    @Override
-    public float getHeadPitch(EntityMagmaCube living, float partialTick, int eye)
-    {
-        return 0F;
     }
 
     @Override

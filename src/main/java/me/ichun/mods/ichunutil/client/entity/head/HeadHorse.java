@@ -6,7 +6,6 @@ public class HeadHorse extends HeadBase<AbstractHorse>
 {
     public HeadHorse()
     {
-        headJoint = new float[] { 0F, -11F/16F, -9F/16F };
         eyeOffset = new float[] { 0F, 6F/16F, 5F/16F };
         halfInterpupillaryDistance = 3F/16F;
         eyeScale = 0.9F;

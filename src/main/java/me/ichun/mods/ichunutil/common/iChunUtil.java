@@ -14,28 +14,16 @@ import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.registries.ForgeRegistry;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.List;
 
 @Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,

@@ -7,7 +7,6 @@ public class HeadRabbit extends HeadBase<EntityRabbit>
 {
     public HeadRabbit()
     {
-        headJoint = new float[]{ 0F, -16F/16F, 1F/16F };
         eyeOffset = new float[]{ 0F, 3F/16F, 5F/16F };
         halfInterpupillaryDistance = 1F / 16F;
         eyeScale = 0.6F;
@@ -27,6 +26,6 @@ public class HeadRabbit extends HeadBase<EntityRabbit>
             GlStateManager.scale(0.6F, 0.6F, 0.6F);
             GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
         }
-        return headJoint;
+        return super.getHeadJointOffset(living, partialTick, eye);
     }
 }

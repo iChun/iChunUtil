@@ -6,7 +6,6 @@ public class HeadGuardian extends HeadBase<EntityGuardian>
 {
     public HeadGuardian()
     {
-        headJoint = new float[]{ 0F, 0F, 0F };
         eyeOffset = new float[]{ 0F, -16F/16F, 8F/16F };
         irisColour = new float[] { 214F / 255F, 211F / 255F, 203F / 255F };
         pupilColour = new float[] { 101F / 255F, 35F / 255F, 31F / 255F };

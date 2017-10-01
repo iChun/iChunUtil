@@ -7,7 +7,6 @@ public class HeadShulker extends HeadBase<EntityShulker>
 {
     public HeadShulker()
     {
-        headJoint = new float[] { 0F, -12F/16F, 0F };
         eyeOffset = new float[] { 0F, -3.5F/16F, 3F/16F };
         halfInterpupillaryDistance = 2F/16F;
         eyeScale = 0.6F;
@@ -56,7 +55,7 @@ public class HeadShulker extends HeadBase<EntityShulker>
                 GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
                 GlStateManager.translate(0.0F, -2.0F, 0.0F);
         }
-        return headJoint;
+        return super.getHeadJointOffset(living, partialTick, eye);
     }
 
     @Override

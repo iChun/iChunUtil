@@ -10,15 +10,14 @@ public class HeadWolf extends HeadBase<EntityWolf>
 
     public HeadWolf()
     {
-        headJoint = new float[] { 1F/16F, -13.5F/16F, 7F/16F };
         eyeOffset = new float[] { -1F/16F, 0.5F/16F, 2F/16F };
         eyeScale = 0.65F;
     }
 
     @Override
-    public float getHeadRoll(EntityWolf living, float partialTick, int eye)
+    public float getHeadRollForTracker(EntityWolf living, int eye)
     {
-        return (float)Math.toDegrees(living.getInterestedAngle(partialTick) + living.getShakeAngle(partialTick, 0.0F));
+        return (float)Math.toDegrees(living.getInterestedAngle(1F) + living.getShakeAngle(1F, 0.0F));
     }
 
     @Override

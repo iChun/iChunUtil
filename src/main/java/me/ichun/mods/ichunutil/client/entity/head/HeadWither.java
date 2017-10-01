@@ -117,7 +117,7 @@ public class HeadWither extends HeadBase<EntityWither>
     {
         if(eye <= 1)
         {
-            return headJoint;
+            return super.getHeadJointOffset(living, partialTick, eye);
         }
         else if(eye <= 3)
         {

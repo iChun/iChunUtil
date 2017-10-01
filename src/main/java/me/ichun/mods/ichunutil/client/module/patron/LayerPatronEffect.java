@@ -31,7 +31,7 @@ public class LayerPatronEffect implements LayerRenderer<EntityPlayer>
     {
         PatronInfo info = PatronEffectRenderer.getPatronInfo(player);
 
-        if(!player.isInvisible()) //special casing for pig snout effect
+        if(!player.isInvisible() && !player.isSpectator()) //special casing for pig snout effect
         {
             if(EventCalendar.isAFDay() || info != null && info.showEffect && info.effectType == PatronEffectRenderer.EnumEffect.PIG_SNOUT.getId())
             {

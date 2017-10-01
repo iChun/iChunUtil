@@ -5,7 +5,6 @@ import net.minecraft.entity.monster.EntityPigZombie;
 
 public class HeadPigZombie extends HeadBase<EntityPigZombie>
 {
-    public float[] headJointSneak = new float[] { 0F, -1F/16F, 0F };
     public float[] eyeOffsetSkin = new float[]{ -0.35F/16F, 4.5F/16F, 4.5F/16F };
     public float eyeScaleSkin = 0.65F;
 
@@ -43,8 +42,7 @@ public class HeadPigZombie extends HeadBase<EntityPigZombie>
         if(living.isSneaking())
         {
             GlStateManager.translate(0.0F, 0.2F, 0.0F);
-            return headJointSneak;
         }
-        return headJoint;
+        return super.getHeadJointOffset(living, partialTick, eye);
     }
 }

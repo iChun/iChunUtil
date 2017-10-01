@@ -136,7 +136,7 @@ public class PatronEffectRenderer
         {
             AbstractClientPlayer parent = (AbstractClientPlayer)event.ent.latchedEnt;
 
-            if(!(parent.getName().equals(Minecraft.getMinecraft().getRenderViewEntity().getName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && WorldPortalRenderer.renderLevel <= 0))
+            if(!(parent.getName().equals(Minecraft.getMinecraft().getRenderViewEntity().getName()) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && WorldPortalRenderer.renderLevel <= 0) && !parent.isSpectator())
             {
                 GlStateManager.pushMatrix();
 

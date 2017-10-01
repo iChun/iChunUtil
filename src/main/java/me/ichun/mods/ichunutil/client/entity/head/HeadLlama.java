@@ -6,16 +6,9 @@ public class HeadLlama extends HeadHorse
 {
     public HeadLlama()
     {
-        headJoint = new float[] { 0F, -5F/16F, -2F/16F };
         eyeOffset = new float[] { 0F, 2F/16F, 8F/16F };
         halfInterpupillaryDistance = 3F/16F;
         eyeScale = 0.9F;
-    }
-
-    @Override
-    public float[] getHeadJointOffset(AbstractHorse living, float partialTick, int eye)
-    {
-        return headJoint;
     }
 
     @Override

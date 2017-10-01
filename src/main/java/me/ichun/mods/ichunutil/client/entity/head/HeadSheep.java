@@ -7,29 +7,8 @@ public class HeadSheep extends HeadBase<EntitySheep>
 {
     public HeadSheep()
     {
-        headJoint = new float[]{ 0F, -6F/16F, 8F/16F };
         eyeOffset = new float[]{ 0F, 1.5F/16F, 6F/16F };
         eyeScale = 0.65F;
-    }
-
-    @Override
-    public float[] getHeadJointOffset(EntitySheep living, float partialTick, int eye)
-    {
-        float offset = living.getHeadRotationPointY(partialTick) * 9.0F;
-        if(offset <= 0F)
-        {
-            return headJoint;
-        }
-        else
-        {
-            return new float[]{ 0F, -(6F + offset)/16F, 8F/16F };
-        }
-    }
-
-    @Override
-    public float getHeadPitch(EntitySheep living, float partialTick, int eye)
-    {
-        return (float)Math.toDegrees(living.getHeadRotationAngleX(partialTick));
     }
 
     @Override

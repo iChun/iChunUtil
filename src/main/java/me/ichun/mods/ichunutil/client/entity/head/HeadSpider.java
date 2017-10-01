@@ -11,7 +11,6 @@ public class HeadSpider extends HeadBase<EntitySpider>
 
     public HeadSpider()
     {
-        headJoint = new float[] { 0F, -15F/16F, 3F/16F };
         eyeOffset = new float[] { 0F, 0F, 8F / 16F };
         irisColour = new float[] { 0.8F, 0F, 0F };
         halfInterpupillaryDistance = 1F / 16F;

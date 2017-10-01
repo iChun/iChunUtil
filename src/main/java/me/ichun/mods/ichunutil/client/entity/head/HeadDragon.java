@@ -28,7 +28,7 @@ public class HeadDragon extends HeadBase<EntityDragon>
     }
 
     @Override
-    public float getHeadRoll(EntityDragon living, float partialTick, int eye)
+    public float getHeadRollForTracker(EntityDragon living, int eye)
     {
         return roll;
     }
