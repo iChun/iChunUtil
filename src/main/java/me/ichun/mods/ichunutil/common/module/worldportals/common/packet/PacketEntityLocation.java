@@ -105,7 +105,7 @@ public class PacketEntityLocation extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         Entity ent = player.getEntityWorld().getEntityByID(id);
         if(ent != null && !(player.getEntityWorld().isRemote && player == ent))
@@ -180,7 +180,6 @@ public class PacketEntityLocation extends AbstractPacket
                 }
             }
         }
-        return null;
     }
 
     @Override

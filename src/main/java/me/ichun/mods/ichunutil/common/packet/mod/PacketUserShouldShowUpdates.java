@@ -34,7 +34,7 @@ public class PacketUserShouldShowUpdates extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         for(UpdateChecker.ModVersionInfo info : UpdateChecker.getModsWithUpdates())
         {
@@ -49,7 +49,6 @@ public class PacketUserShouldShowUpdates extends AbstractPacket
         {
             handleClient(notifyUpdate);
         }
-        return null;
     }
 
     @SideOnly(Side.CLIENT)

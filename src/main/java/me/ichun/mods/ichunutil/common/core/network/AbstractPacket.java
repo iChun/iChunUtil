@@ -19,7 +19,7 @@ public abstract class AbstractPacket
     /**
      * Execute your packet here. Return a packet to reply with if you'd like.
      */
-    public abstract AbstractPacket execute(Side side, EntityPlayer player);
+    public abstract void execute(Side side, EntityPlayer player);
 
     /**
      * @return The side that will be receiving the packet, null for both sides.

@@ -153,7 +153,7 @@ public class PacketSession extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         for(ConfigBase conf : ConfigHandler.configs)
         {
@@ -179,7 +179,6 @@ public class PacketSession extends AbstractPacket
                 break;
             }
         }
-        return null;
     }
 
     @Override

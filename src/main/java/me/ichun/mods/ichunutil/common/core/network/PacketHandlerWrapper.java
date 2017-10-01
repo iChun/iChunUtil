@@ -60,21 +60,7 @@ public class PacketHandlerWrapper<REQ extends AbstractPacket> extends SimpleChan
 
     public void executeMessage(AbstractPacket msg, EntityPlayer player, Side side, ChannelHandlerContext ctx)
     {
-        AbstractPacket result = msg.execute(side, player);
-        if(result != null)//TODO remove in 1.11
-        {
-            if(side.isServer()) //server recieved the packet, send reply to client.
-            {
-                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-            }
-            else
-            {
-                ctx.channel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-                ctx.writeAndFlush(result).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-            }
-        }
+        msg.execute(side, player);
     }
 
     @SideOnly(Side.CLIENT)

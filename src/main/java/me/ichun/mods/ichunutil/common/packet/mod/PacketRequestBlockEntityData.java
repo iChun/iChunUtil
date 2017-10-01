@@ -32,7 +32,7 @@ public class PacketRequestBlockEntityData extends AbstractPacket
     }
 
     @Override
-    public AbstractPacket execute(Side side, EntityPlayer player)
+    public void execute(Side side, EntityPlayer player)
     {
         Entity ent = player.getEntityWorld().getEntityByID(id);
         AbstractPacket packet = null;
@@ -42,7 +42,6 @@ public class PacketRequestBlockEntityData extends AbstractPacket
             ent.writeToNBT(tag);
             packet = new PacketBlockEntityData(id, tag);
         }
-        return packet;
     }
 
     @Override
