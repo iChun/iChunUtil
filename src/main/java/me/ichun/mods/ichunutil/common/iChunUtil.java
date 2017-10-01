@@ -94,6 +94,11 @@ public class iChunUtil
         public int enableStencils = 1;
 
         //Modules
+        //Compact Porkchop module
+        @ConfigProp(module = "compactPorkchop", category = "block", useSession = true)
+        @IntBool
+        public int enableCompactPorkchop = 1;
+
         //EULA module
         @ConfigProp(module = "eula")
         public String eulaAcknowledged = "";

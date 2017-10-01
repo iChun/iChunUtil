@@ -109,6 +109,8 @@ public class ProxyCommon
         return null;
     }
 
+    public void rebuildRecipeTable(){}
+
     @SideOnly(Side.CLIENT)
     public KeyBind registerKeyBind(KeyBind bind, KeyBind replacing) { return bind; }
 
