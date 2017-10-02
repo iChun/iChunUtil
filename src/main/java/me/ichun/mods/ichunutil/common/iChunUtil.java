@@ -31,16 +31,17 @@ import java.util.List;
         guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
         dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
-        acceptedMinecraftVersions = "[1.12,1.13)"
+        acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
 {
     //Stuff to bump every updateWorldPortal
     public static final String VERSION_OF_MC = "1.12.2";
+    public static final String MC_VERSION_RANGE = "[1.12,1.13)";
     public static final int VERSION_MAJOR = 7;
     public static final int VERSION_MINOR = 0;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
