@@ -361,7 +361,7 @@ public abstract class WorldPortal
 
                     float offset = (float)Math.abs((particle.prevPosX - particle.posX) * faceOn.getFrontOffsetX() * 1.5D + (particle.prevPosY - particle.posY) * faceOn.getFrontOffsetY() * 1.5D + (particle.prevPosZ - particle.posZ) * faceOn.getFrontOffsetZ() * 1.5D);
                     boolean isRain = particle instanceof ParticleRain && faceOn == EnumFacing.UP && scanRange.contains(particlePos);
-                    if(isRain || !scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(particlePos) && portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(newParticlePos))
+                    if(isRain || !portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).intersects(particle.getBoundingBox()) && portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).intersects(particle.getBoundingBox().offset(particle.motionX, particle.motionY, particle.motionZ)))
                     {
                         AxisAlignedBB teleportPlane = getTeleportPlane(offset);
 

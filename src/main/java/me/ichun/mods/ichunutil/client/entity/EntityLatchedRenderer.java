@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity;
 
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.worldportals.client.render.WorldPortalRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -24,7 +25,7 @@ public class EntityLatchedRenderer extends Entity
     {
         super(par1World);
         setSize(0.1F, 0.1F);
-        lastUpdate = par1World.getWorldTime();
+        lastUpdate = iChunUtil.eventHandlerClient.ticks;
         maxDeathPersistTime = currentDeathPersistTime = 0;
     }
 
@@ -34,7 +35,7 @@ public class EntityLatchedRenderer extends Entity
         setSize(ent.width * 0.75F, ent.height * 0.75F);
         latchedEnt = ent;
         setLocationAndAngles(latchedEnt.posX, latchedEnt.posY, latchedEnt.posZ, latchedEnt.rotationYaw, latchedEnt.rotationPitch);
-        lastUpdate = par1World.getWorldTime();
+        lastUpdate = iChunUtil.eventHandlerClient.ticks;
     }
 
     public EntityLatchedRenderer setIgnoreFrustumCheck()
@@ -129,7 +130,7 @@ public class EntityLatchedRenderer extends Entity
 
         MinecraftForge.EVENT_BUS.post(new EntityLatchedRendererUpdateEvent(this));
 
-        lastUpdate = world.getWorldTime();
+        lastUpdate = iChunUtil.eventHandlerClient.ticks;
     }
 
     @Override

@@ -55,19 +55,16 @@ public final class ShaderHelper
 
     public static void useShader(int shader)
     {
-
         useShader(shader, null);
     }
 
     public static void releaseShader()
     {
-
         useShader(0);
     }
 
     public static boolean supportsShaders()
     {
-
         return OpenGlHelper.shadersSupported;
     }
 

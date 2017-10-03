@@ -94,7 +94,7 @@ public class ModelBaseWrapper implements IBakedModel
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
     {
-        if(side != null)
+        if(side != null || !Tessellator.getInstance().getBuffer().isDrawing) //we're not drawing right now... don't do anything.
         {
             return DUMMY_LIST;
         }

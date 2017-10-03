@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.common.core.tracker.EntityTrackerRegistry;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.core.util.ResourceHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelZombie;
@@ -48,7 +49,7 @@ public class EntityTrackerHandler
             EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
             if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
             {
-                if(latchedRenderer.isDead || (latchedRenderer.world.getWorldTime() - latchedRenderer.lastUpdate) > 10L)//latcher died/stopped updating, kill it replace with new one.
+                if(latchedRenderer.isDead || (iChunUtil.eventHandlerClient.ticks - latchedRenderer.lastUpdate) > 10)//latcher died/stopped updating, kill it replace with new one.
                 {
                     latchedRenderer.setDead();
                     latchedRendererEntities.remove(i);

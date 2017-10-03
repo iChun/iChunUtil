@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.common.packet.mod;
 import io.netty.buffer.ByteBuf;
 import me.ichun.mods.ichunutil.common.core.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,12 +36,11 @@ public class PacketRequestBlockEntityData extends AbstractPacket
     public void execute(Side side, EntityPlayer player)
     {
         Entity ent = player.getEntityWorld().getEntityByID(id);
-        AbstractPacket packet = null;
         if(ent instanceof EntityBlock)
         {
             NBTTagCompound tag = new NBTTagCompound();
             ent.writeToNBT(tag);
-            packet = new PacketBlockEntityData(id, tag);
+            iChunUtil.channel.sendTo(new PacketBlockEntityData(id, tag), player);
         }
     }
 
