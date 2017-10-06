@@ -48,6 +48,11 @@ ichunutil.config.prop.versionNotificationTypes.comment=How will the CLIENT be no
 ichunutil.config.prop.versionNotificationFrequency.comment=How often will you be notified of the update?(Client config)\n0 = Never (This just hides notifications. The mod will still check for updates and print out to the console)\n1 = Once you connect to server\n2 = Once a day
 ichunutil.config.prop.versionSave.comment=Don't change this.
 
+ichunutil.config.cat.module.headTracking.name=Head Model Tracking
+ichunutil.config.cat.module.headTracking.comment=Head Model Tracking related configs.\nUsed by Googly Eyes and eventually Hats.
+ichunutil.config.prop.aggressiveHeadTracking.name=Aggressive Head Tracking
+ichunutil.config.prop.aggressiveHeadTracking.comment=Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?
+
 ichunutil.config.cat.module.worldPortals.name=World Portals
 ichunutil.config.cat.module.worldPortals.comment=World Portals related configs.
 ichunutil.config.prop.maxRecursion.name=Maximum Recursion
@@ -90,3 +95,5 @@ window.saveAs.confirmOverwrite=File already exists! Confirm overwrite?
 window.saveAs.failed=Failed to save file.
 
 tile.ichunutil.block.compactporkchop.name=Compact Raw Porkchop
+
+entity.EntityBlock.name=Block Entity

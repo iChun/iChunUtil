@@ -28,7 +28,7 @@ import java.util.List;
 
 @Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
-        guiFactory = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory",
+        guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
         acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE
@@ -41,7 +41,7 @@ public class iChunUtil
     public static final String MC_VERSION_RANGE = "[1.12,1.13)";
     public static final int VERSION_MAJOR = 7;
     public static final int VERSION_MINOR = 0;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".2";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
@@ -52,6 +52,8 @@ public class iChunUtil
     public static final int REQ_FORGE_BUILD = 2151;
 
     public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
+
+    public static final String GUI_CONFIG_FACTORY = "me.ichun.mods.ichunutil.common.core.config.GenericModGuiFactory";
 
     @Mod.Instance(MOD_ID)
     public static iChunUtil instance;
@@ -113,6 +115,11 @@ public class iChunUtil
         @ConfigProp(module = "versionCheck", side = Side.CLIENT)
         @IntMinMax(min = 0, max = 35)
         public int versionSave = 0;
+
+        //Head model tracking module
+        @ConfigProp(module = "headTracking", side = Side.CLIENT, hidden = true)
+        @IntBool
+        public int aggressiveHeadTracking = 0;
 
         //World Portals module
         @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)

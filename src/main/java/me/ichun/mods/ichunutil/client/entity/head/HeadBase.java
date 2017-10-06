@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -111,7 +112,7 @@ public class HeadBase<E extends EntityLivingBase>
             }
             return 0.3F + ((float)Math.sin(Math.toRadians((living.ticksExisted + partialTick) / acidTime[eye] * 360F)) + 1F) / 2F;
         }
-        return 1F;
+        return 1F + (0.35F * (living.deathTime + partialTick) / 20F);
     }
 
     public float[] getIrisColours(E living, float partialTick, int eye)
@@ -261,11 +262,15 @@ public class HeadBase<E extends EntityLivingBase>
 
     public static void setHeadModel(HeadBase helper, RenderLivingBase renderer)
     {
-        if(helper.headModel == null)
+        if(helper.headModel == null || iChunUtil.config.aggressiveHeadTracking == 1)
         {
             ModelBase model = renderer.getMainModel();
             helper.headModel = new ModelRenderer[1];
-            if(model instanceof ModelHorse)
+            if(model instanceof ModelBiped)
+            {
+                helper.headModel[0] = ((ModelBiped)model).bipedHead;
+            }
+            else if(model instanceof ModelHorse)
             {
                 helper.headModel[0] = ((ModelHorse)model).body;
             }
@@ -276,10 +281,6 @@ public class HeadBase<E extends EntityLivingBase>
             else if(model instanceof ModelIllager)
             {
                 helper.headModel[0] = ((ModelIllager)model).head;
-            }
-            else if(model instanceof ModelBiped)
-            {
-                helper.headModel[0] = ((ModelBiped)model).bipedHead;
             }
             else if(model instanceof ModelBat)
             {

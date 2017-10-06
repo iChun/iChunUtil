@@ -16,7 +16,7 @@ import java.util.TreeSet;
 @SideOnly(Side.CLIENT)
 public class GuiUpdateNotifier extends Gui
 {
-    private static final ResourceLocation achievementBg = new ResourceLocation("textures/gui/achievement/achievement_background.png");
+    private static final ResourceLocation achievementBg = new ResourceLocation("textures/gui/toasts.png");
     private Minecraft mc;
 
     private static GuiUpdateNotifier instance;
@@ -114,7 +114,7 @@ public class GuiUpdateNotifier extends Gui
                 GlStateManager.enableTexture2D();
                 this.mc.getTextureManager().bindTexture(achievementBg);
                 GlStateManager.disableLighting();
-                this.drawTexturedModalRect(i, j, 96, 202, 160, 32);
+                this.drawTexturedModalRect(i, j, 0, 0, 160, 32);
 
                 this.mc.fontRenderer.drawString(I18n.translateToLocal("ichunutil.gui.newUpdate"), i + 10, j + 7, -256);
                 this.mc.fontRenderer.drawString(info.modName + " - " + info.modVersionNew, i + 15, j + 18, -1);
