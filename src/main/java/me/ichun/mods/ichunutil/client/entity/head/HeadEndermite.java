@@ -7,7 +7,7 @@ public class HeadEndermite extends HeadBase<EntityEndermite>
 {
     public HeadEndermite()
     {
-        eyeOffset = new float[]{ 0F, 0F, 2F/16F };
+        eyeOffset = new float[]{ 0F, 0F, 1F/16F };
         irisColour = new float[] { 87F/255F, 23F/255F, 50F/255F };
         halfInterpupillaryDistance = 0F;
     }

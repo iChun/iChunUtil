@@ -71,7 +71,6 @@ public class iChunUtil
 
     public static Block blockCompactPorkchop;
     public static List<ItemStack> oreDictBlockCompactRawPorkchop;
-    private static boolean isCompactPorkchopRecipeAdded;
 
     private static boolean hasPostInit;
     private static boolean hasMorphMod;
@@ -188,7 +187,7 @@ public class iChunUtil
     public void onPostInit(FMLPostInitializationEvent event)
     {
         hasPostInit = true;
-        hasMorphMod = Loader.isModLoaded("Morph");
+        hasMorphMod = Loader.isModLoaded("morph");
 
         proxy.postInit();
 
