@@ -29,6 +29,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -52,6 +54,36 @@ public class EntityHelper
     public static GameProfile getDummyGameProfile()
     {
         return dummyProfile;
+    }
+
+    public static GameProfile getGameProfile(@Nonnull UUID uuid, @Nullable String playerName)
+    {
+        if(playerName != null && gameProfileCache.containsKey(playerName))
+        {
+            return gameProfileCache.get(playerName);
+        }
+
+        if(profileCache == null || sessionService == null)
+        {
+            iChunUtil.proxy.setGameProfileLookupService();
+        }
+
+        GameProfile gameprofile = profileCache.getProfileByUUID(uuid);
+
+        if(gameprofile == null)
+        {
+            gameprofile = sessionService.fillProfileProperties(new GameProfile(uuid, null), true);
+        }
+
+        Property property = Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
+
+        if(property == null)
+        {
+            gameprofile = sessionService.fillProfileProperties(gameprofile, true);
+            gameProfileCache.put(gameprofile.getName(), gameprofile);
+        }
+
+        return gameprofile;
     }
 
     public static GameProfile getGameProfile(String playerName)
@@ -178,19 +210,19 @@ public class EntityHelper
         ent.getEntityWorld().playSound(ent.getEntityWorld().isRemote ? iChunUtil.proxy.getMcPlayer() : null, ent.posX, ent.posY + ent.getEyeHeight(), ent.posZ, soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.player.
     }
 
-    public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz)
+    public static <T extends EntityLivingBase> SoundEvent getHurtSound(T ent, Class clz, DamageSource source)
     {
         try
         {
-            Method m = clz.getDeclaredMethod(ObfHelper.obfuscated() ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf);
+            Method m = clz.getDeclaredMethod(ObfHelper.obfuscated() ? ObfHelper.getHurtSoundObf : ObfHelper.getHurtSoundDeobf, DamageSource.class);
             m.setAccessible(true);
-            return (SoundEvent)m.invoke(ent);
+            return (SoundEvent)m.invoke(ent, source);
         }
         catch(NoSuchMethodException e)
         {
             if(clz != EntityLivingBase.class)
             {
-                return getHurtSound(ent, clz.getSuperclass());
+                return getHurtSound(ent, clz.getSuperclass(), source);
             }
         }
         catch(Exception e)
