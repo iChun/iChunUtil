@@ -20,26 +20,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkWorldPortal
 {
-    public BlockPos pos;
-    public EnumFacing face;
+    public ArrayList<BlockPos> poses;
+    public ArrayList<EnumFacing> faces;
 
     public RenderChunkWorldPortal(World worldIn, RenderGlobal renderGlobalIn, int indexIn)
     {
         super(worldIn, renderGlobalIn, indexIn);
-        this.pos = BlockPos.ORIGIN;
-        this.face = EnumFacing.UP;
+        this.poses = new ArrayList<>();
+        this.poses.add(BlockPos.ORIGIN);
+        this.faces = new ArrayList<>();
+        this.faces.add(EnumFacing.UP);
     }
 
     @Override
-    public void setCurrentPositionAndFace(BlockPos pos, EnumFacing face)
+    public void setCurrentPositionsAndFaces(ArrayList<BlockPos> poses, ArrayList<EnumFacing> faces)
     {
-        this.pos = pos;
-        this.face = face;
+        this.poses = poses;
+        this.faces = faces;
     }
 
     @Override
@@ -76,7 +79,17 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
 
             for(BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1))
             {
-                boolean noRender = face.getFrontOffsetX() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getFrontOffsetX() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getFrontOffsetY() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getFrontOffsetY() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getFrontOffsetZ() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getFrontOffsetZ() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ();
+                boolean noRender = true;
+                for(int i1 = 0; i1 < faces.size(); i1++)
+                {
+                    BlockPos pos = poses.get(i1);
+                    EnumFacing face = faces.get(i1);
+                    if(!(face.getFrontOffsetX() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getFrontOffsetX() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getFrontOffsetY() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getFrontOffsetY() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getFrontOffsetZ() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getFrontOffsetZ() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ())) // this means noRender = true
+                    {
+                        noRender = false;
+                        break;
+                    }
+                }
 
                 IBlockState iblockstate = this.worldView.getBlockState(blockpos$mutableblockpos);
                 Block block = iblockstate.getBlock();

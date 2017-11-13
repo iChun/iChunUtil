@@ -23,6 +23,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 
@@ -187,7 +188,7 @@ public class RenderGlobalProxy extends RenderGlobal
         {
             if(renderChunk instanceof IRenderChunkWorldPortal)
             {
-                ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionAndFace(pm.getPos(), pm.getFaceOn());
+                ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionsAndFaces(pm.getPoses(), pm.getFacesOn());
             }
         }
     }
@@ -525,10 +526,31 @@ public class RenderGlobalProxy extends RenderGlobal
 
     public boolean shouldRenderEntity(Entity ent, WorldPortal portal)
     {
-        return !(portal.getFaceOn().getFrontOffsetX() < 0 && ent.posX > portal.getFlatPlane().minX || portal.getFaceOn().getFrontOffsetX() > 0 && ent.posX < portal.getFlatPlane().minX ||
-                portal.getFaceOn().getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
-                portal.getFaceOn().getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
-                portal.getFaceOn().getFrontOffsetZ() < 0 && ent.posZ > portal.getFlatPlane().minZ || portal.getFaceOn().getFrontOffsetZ() > 0 && ent.posZ < portal.getFlatPlane().minZ);
+        ArrayList<EnumFacing> faces = portal.getFacesOn();
+        if(faces.size() == 1)
+        {
+            EnumFacing faceOn = faces.get(0);
+            return !(faceOn.getFrontOffsetX() < 0 && ent.posX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.posX < portal.getFlatPlane().minX ||
+                    faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
+                    faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
+                    faceOn.getFrontOffsetZ() < 0 && ent.posZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.posZ < portal.getFlatPlane().minZ);
+        }
+        else
+        {
+            for(int i = 0; i < faces.size(); i++)
+            {
+                EnumFacing faceOn = faces.get(i);
+                Vec3d vec = portal.getPositions().get(i);
+                if(!(faceOn.getFrontOffsetX() < 0 && ent.posX > vec.x || faceOn.getFrontOffsetX() > 0 && ent.posX < vec.x ||
+                        faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > vec.y ||
+                        faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < vec.y ||
+                        faceOn.getFrontOffsetZ() < 0 && ent.posZ > vec.z || faceOn.getFrontOffsetZ() > 0 && ent.posZ < vec.z))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -29,8 +29,8 @@ import java.util.*;
 
 public abstract class WorldPortal
 {
-    private EnumFacing faceOn; //The face that shows the world portal.
-    private EnumFacing upDir; //Upwards direction of the portal.
+    private ArrayList<EnumFacing> facesOn;
+    private ArrayList<EnumFacing> upDirs; //Upwards direction of the portal.
 
     private QuaternionFormula quaternionFormula; //used to calculate the rotation and the positional offset (as well as motion)
 
@@ -42,8 +42,8 @@ public abstract class WorldPortal
     private float width;
     private float height;
 
-    private Vec3d position;
-    private BlockPos posBlock;
+    private ArrayList<Vec3d> positions;
+    private ArrayList<BlockPos> posBlocks;
 
     private HashSet<AxisAlignedBB> collisions;
 
@@ -59,11 +59,15 @@ public abstract class WorldPortal
     public WorldPortal(World world)
     {
         this.world = world;
-        this.position = new Vec3d(0,0,0);
-        this.posBlock = new BlockPos(position);
+        this.positions = new ArrayList<>();
+        this.positions.add(new Vec3d(0,0,0));
+        this.posBlocks = new ArrayList<>();
+        this.posBlocks.add(new BlockPos(this.positions.get(0)));
 
-        this.faceOn = EnumFacing.NORTH;
-        this.upDir = EnumFacing.UP;
+        this.facesOn = new ArrayList<>();
+        this.facesOn.add(EnumFacing.NORTH);
+        this.upDirs = new ArrayList<>();
+        this.upDirs.add(EnumFacing.UP);
 
         this.time = 0;
         this.firstUpdate = true;
@@ -72,11 +76,15 @@ public abstract class WorldPortal
     public WorldPortal(World world, Vec3d position, EnumFacing faceOn, EnumFacing upDir, float width, float height)
     {
         this.world = world;
-        this.position = position;
-        this.posBlock = new BlockPos(position);
+        this.positions = new ArrayList<>();
+        this.positions.add(position);
+        this.posBlocks = new ArrayList<>();
+        this.posBlocks.add(new BlockPos(this.positions.get(0)));
 
-        this.faceOn = faceOn;
-        this.upDir = upDir;
+        this.facesOn = new ArrayList<>();
+        this.facesOn.add(faceOn);
+        this.upDirs = new ArrayList<>();
+        this.upDirs.add(upDir);
 
         this.width = width;
         this.height = height;
@@ -98,24 +106,48 @@ public abstract class WorldPortal
 
     public void setFace(EnumFacing faceOut, EnumFacing upDir)
     {
-        this.faceOn = faceOut;
-        this.upDir = upDir;
+        facesOn.clear();
+        facesOn.add(faceOut);
+        upDirs.clear();
+        upDirs.add(upDir);
         setupAABBs();
+    }
+
+    public void addFace(EnumFacing faceOut, EnumFacing upDir, Vec3d position) //TODO positions?
+    {
+        if(!facesOn.contains(faceOut))
+        {
+            facesOn.add(faceOut);
+            upDirs.add(upDir);
+            positions.add(position);
+            posBlocks.add(new BlockPos(position));
+            setupAABBs();
+        }
+    }
+
+    public ArrayList<EnumFacing> getFacesOn()
+    {
+        return facesOn;
     }
 
     public EnumFacing getFaceOn()
     {
-        return faceOn;
+        return facesOn.get(0);
     }
 
     public EnumFacing getUpDir()
     {
-        return upDir;
+        return upDirs.get(0);
+    }
+
+    public ArrayList<BlockPos> getPoses()
+    {
+        return posBlocks;
     }
 
     public BlockPos getPos()
     {
-        return posBlock;
+        return posBlocks.get(0);
     }
 
     public float getWidth()
@@ -167,6 +199,7 @@ public abstract class WorldPortal
             return;
         }
 
+        EnumFacing faceOn = getFaceOn();
         List<Entity> entitiesInRange = world.getEntitiesWithinAABB(Entity.class, scanRange);
         for(int i = entitiesInRange.size() - 1; i >= 0; i--)
         {
@@ -235,7 +268,7 @@ public abstract class WorldPortal
 
                     ent.setPosition(ent.posX, ent.posY, ent.posZ);
                     double maxWidthHeight = Math.max(ent.width, ent.height);
-                    EntityHelper.putEntityWithinAABB(ent, pair.scanRange.expand(pair.faceOn.getFrontOffsetX() * -maxWidthHeight, pair.faceOn.getFrontOffsetY() * -maxWidthHeight, pair.faceOn.getFrontOffsetZ() * -maxWidthHeight));
+                    EntityHelper.putEntityWithinAABB(ent, pair.scanRange.expand(pair.getFaceOn().getFrontOffsetX() * -maxWidthHeight, pair.getFaceOn().getFrontOffsetY() * -maxWidthHeight, pair.getFaceOn().getFrontOffsetZ() * -maxWidthHeight));
 
                     ent.motionX = appliedMotion[0];
                     ent.motionY = appliedMotion[1];
@@ -350,6 +383,7 @@ public abstract class WorldPortal
         Minecraft mc = Minecraft.getMinecraft();
 
         //TODO a config for this?
+        EnumFacing faceOn = getFaceOn();
         for (int i = 0; i < 4; ++i)
         {
             for (int j = 0; j < 2; ++j)
@@ -414,6 +448,7 @@ public abstract class WorldPortal
             {
                 if(ent.getEntityBoundingBox().intersects(portalInsides))
                 {
+                    EnumFacing faceOn = getFaceOn();
                     EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
                     ent.setPosition(ent.posX, ent.posY, ent.posZ);
                 }
@@ -442,6 +477,7 @@ public abstract class WorldPortal
         firstUpdate = true;
     }
 
+    //Only for WorldPortals that can teleport
     public boolean isAgainstWall() //you have world, pos, faceOn, etc all to check. This is to remove the collision behind the portal.
     {
         return false;
@@ -449,7 +485,7 @@ public abstract class WorldPortal
 
     private AxisAlignedBB createPlaneAround(double size)
     {
-        return createPlaneAround(position, size);
+        return createPlaneAround(getPosition(), size);
     }
 
     private AxisAlignedBB createPlaneAround(Vec3d pos, double size)
@@ -458,17 +494,19 @@ public abstract class WorldPortal
         double halfH = height / 2D;
 
         AxisAlignedBB plane = new AxisAlignedBB(pos.x - halfW, pos.y - halfH, pos.z - size, pos.x + halfW, pos.y + halfH, pos.z + size);
+        EnumFacing faceOn = getFaceOn();
         if(faceOn.getAxis() == EnumFacing.Axis.Y)
         {
             plane = EntityHelper.rotateAABB(EnumFacing.Axis.X, plane, faceOn == EnumFacing.UP ? -90F : 90F, pos.x, pos.y, pos.z);
         }
-        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : faceOn.getAxis() == EnumFacing.Axis.Y && upDir.getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.x, pos.y, pos.z).offset(faceOn.getFrontOffsetX() * getPlaneOffset(), faceOn.getFrontOffsetY() * getPlaneOffset(), faceOn.getFrontOffsetZ() * getPlaneOffset());
+        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : faceOn.getAxis() == EnumFacing.Axis.Y && getUpDir().getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.x, pos.y, pos.z).offset(faceOn.getFrontOffsetX() * getPlaneOffset(), faceOn.getFrontOffsetY() * getPlaneOffset(), faceOn.getFrontOffsetZ() * getPlaneOffset());
         return plane;
     }
 
     public AxisAlignedBB getCollisionRemovalAabbForEntity(Entity ent)
     {
         double max = Math.max(Math.max(ent.width, ent.height) + Math.sqrt(ent.motionX * ent.motionX + ent.motionY * ent.motionY + ent.motionZ * ent.motionZ), 1D);
+        EnumFacing faceOn = getFaceOn();
         return flatPlane.expand(faceOn.getFrontOffsetX() * -max, faceOn.getFrontOffsetY() * -max, faceOn.getFrontOffsetZ() * -max);
     }
 
@@ -476,6 +514,7 @@ public abstract class WorldPortal
     {
         if(isAgainstWall() && ent instanceof EntityPlayer)
         {
+            EnumFacing faceOn = getFaceOn();
             float offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
             return portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
         }
@@ -489,6 +528,7 @@ public abstract class WorldPortal
 
     private void setupAABBs()
     {
+        EnumFacing faceOn = getFaceOn();
         plane = createPlaneAround(0.0125D);
         flatPlane = createPlaneAround(0);
         scanRange = flatPlane.expand(faceOn.getFrontOffsetX() * getScanDistance(), faceOn.getFrontOffsetY() * getScanDistance(), faceOn.getFrontOffsetZ() * getScanDistance());
@@ -504,6 +544,7 @@ public abstract class WorldPortal
     {
         if(offset != 0F)
         {
+            EnumFacing faceOn = getFaceOn();
             return flatPlane.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
         }
         return flatPlane;
@@ -511,7 +552,7 @@ public abstract class WorldPortal
 
     public boolean canTeleportEntities()
     {
-        return true;
+        return facesOn.size() == 1;
     }
 
     public HashSet<AxisAlignedBB> getCollisionBoundaries()
@@ -547,7 +588,7 @@ public abstract class WorldPortal
 
     public boolean hasPair()
     {
-        return pair != null && pair.position.y > 0D;
+        return pair != null && pair.positions.get(0).y > 0D;
     }
 
     public void setPair(WorldPortal portal)
@@ -557,7 +598,7 @@ public abstract class WorldPortal
             pair = portal;
             if(pair != null)
             {
-                quaternionFormula = QuaternionFormula.createFromPlanes(faceOn, upDir, pair.faceOn, pair.upDir);
+                quaternionFormula = QuaternionFormula.createFromPlanes(getFaceOn(), getUpDir(), pair.getFaceOn(), pair.getUpDir());
             }
         }
     }
@@ -569,14 +610,21 @@ public abstract class WorldPortal
 
     public void setPosition(Vec3d v)
     {
-        this.position = v;
-        this.posBlock = new BlockPos(v);
+        this.positions.clear();
+        this.positions.add(v);
+        this.posBlocks.clear();
+        this.posBlocks.add(new BlockPos(v));
         setupAABBs();
     }
 
     public Vec3d getPosition() //position of the world portal, pre-offset
     {
-        return position;
+        return positions.get(0);
+    }
+
+    public ArrayList<Vec3d> getPositions()
+    {
+        return positions;
     }
 
     public QuaternionFormula getQuaternionFormula()
@@ -594,12 +642,21 @@ public abstract class WorldPortal
         tag.setFloat("width", width);
         tag.setFloat("height", height);
 
-        tag.setInteger("faceOn", faceOn.getIndex());
-        tag.setInteger("up", upDir.getIndex());
+        tag.setInteger("facesOn", facesOn.size());
+        for(int i = 0; i < facesOn.size(); i++)
+        {
+            tag.setInteger("faceOn_" + i, facesOn.get(i).getIndex());
+            tag.setInteger("up_" + i, upDirs.get(i).getIndex());
+        }
 
-        tag.setDouble("posX", position.x);
-        tag.setDouble("posY", position.y);
-        tag.setDouble("posZ", position.z);
+        tag.setInteger("positions", positions.size());
+        for(int i = 0; i < positions.size(); i++)
+        {
+            Vec3d position = positions.get(i);
+            tag.setDouble("posX_" + i, position.x);
+            tag.setDouble("posY_" + i, position.y);
+            tag.setDouble("posZ_" + i, position.z);
+        }
 
         tag.setInteger("time", time);
 
@@ -624,8 +681,30 @@ public abstract class WorldPortal
     public void readSelf(NBTTagCompound tag)
     {
         setSize(tag.getFloat("width"), tag.getFloat("height"));
-        setFace(EnumFacing.getFront(tag.getInteger("faceOn")), EnumFacing.getFront(tag.getInteger("up")));
-        setPosition(new Vec3d(tag.getDouble("posX"), tag.getDouble("posY"), tag.getDouble("posZ")));
+        if(tag.hasKey("faceOn"))//old stuff TODO deprecate/remove in 1.13
+        {
+            setFace(EnumFacing.getFront(tag.getInteger("faceOn")), EnumFacing.getFront(tag.getInteger("up")));
+        }
+        else
+        {
+            int facesOnCount = tag.getInteger("facesOn");
+            for(int i = 0; i < facesOnCount; i++)
+            {
+                if(i == 0)
+                {
+                    setFace(EnumFacing.getFront(tag.getInteger("faceOn_" + i)), EnumFacing.getFront(tag.getInteger("up_" + i)));
+                    setPosition(new Vec3d(tag.getDouble("posX_" + i), tag.getDouble("posY_" + i), tag.getDouble("posZ_" + i)));
+                }
+                else
+                {
+                    addFace(EnumFacing.getFront(tag.getInteger("faceOn_" + i)), EnumFacing.getFront(tag.getInteger("up_" + i)), new Vec3d(tag.getDouble("posX_" + i), tag.getDouble("posY_" + i), tag.getDouble("posZ_" + i)));
+                }
+            }
+        }
+        if(tag.hasKey("posX"))//old stuff TODO deprecate/remove in 1.13
+        {
+            setPosition(new Vec3d(tag.getDouble("posX"), tag.getDouble("posY"), tag.getDouble("posZ")));
+        }
 
         time = tag.getInteger("time");
 
@@ -656,10 +735,16 @@ public abstract class WorldPortal
     public boolean shouldRenderFront(Entity viewer, float partialTicks) //TODO THIS
     {
         Vec3d position = RendererHelper.getCameraPosition(viewer, partialTicks);
-        return faceOn.getFrontOffsetX() < 0 && position.x < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.x > flatPlane.minX ||
-                faceOn.getFrontOffsetY() < 0 && position.y < flatPlane.minY || faceOn.getFrontOffsetY() > 0 && position.y > flatPlane.minY ||
-                faceOn.getFrontOffsetZ() < 0 && position.z < flatPlane.minZ || faceOn.getFrontOffsetZ() > 0 && position.z > flatPlane.minZ
-                ;
+        for(EnumFacing faceOn : facesOn)
+        {
+            if(faceOn.getFrontOffsetX() < 0 && position.x < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.x > flatPlane.minX ||
+                    faceOn.getFrontOffsetY() < 0 && position.y < flatPlane.minY || faceOn.getFrontOffsetY() > 0 && position.y > flatPlane.minY ||
+                    faceOn.getFrontOffsetZ() < 0 && position.z < flatPlane.minZ || faceOn.getFrontOffsetZ() > 0 && position.z > flatPlane.minZ)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
