@@ -23,7 +23,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 
@@ -190,10 +189,14 @@ public class RenderGlobalProxy extends RenderGlobal
         viewFrustum = vf;
         for(RenderChunk renderChunk : viewFrustum.renderChunks)
         {
-//            renderChunk.setNeedsUpdate(false);
+            //            renderChunk.setNeedsUpdate(false);
             if(renderChunk instanceof IRenderChunkWorldPortal)
             {
-                ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionsAndFaces(pm.getPoses(), pm.getFacesOn());
+                ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionsAndFaces(pm.getPos(), pm.getFaceOn());
+                if(pm.getPair() != null)
+                {
+                    ((IRenderChunkWorldPortal)renderChunk).setNoCull(pm.getPair().renderAll);
+                }
             }
         }
     }
@@ -265,7 +268,7 @@ public class RenderGlobalProxy extends RenderGlobal
             for(int i = 0; i < this.world.weatherEffects.size(); ++i)
             {
                 Entity entity1 = this.world.weatherEffects.get(i);
-                if(pair != null && !shouldRenderEntity(entity1, pair) || !entity1.shouldRenderInPass(pass))
+                if(pair != null && (portal != null && !portal.renderAll || !shouldRenderEntity(entity1, pair)) || !entity1.shouldRenderInPass(pass))
                 {
                     continue;
                 }
@@ -363,7 +366,7 @@ public class RenderGlobalProxy extends RenderGlobal
                             GlStateManager.popMatrix();
                         }
 
-                        if(pair != null && !shouldRenderEntity(entity2, pair) || !entity2.shouldRenderInPass(pass))
+                        if(pair != null && (portal != null && !portal.renderAll || !shouldRenderEntity(entity2, pair)) || !entity2.shouldRenderInPass(pass))
                         {
                             continue;
                         }
@@ -531,31 +534,11 @@ public class RenderGlobalProxy extends RenderGlobal
 
     public boolean shouldRenderEntity(Entity ent, WorldPortal portal)
     {
-        ArrayList<EnumFacing> faces = portal.getFacesOn();
-        if(faces.size() == 1)
-        {
-            EnumFacing faceOn = faces.get(0);
-            return !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
-                    faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
-                    faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
-                    faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
-        }
-        else
-        {
-            for(int i = 0; i < faces.size(); i++)
-            {
-                EnumFacing faceOn = faces.get(i);
-                Vec3d vec = portal.getPositions().get(i);
-                if(!(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > vec.x || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < vec.x ||
-                        faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > vec.y ||
-                        faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < vec.y ||
-                        faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > vec.z || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < vec.z))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        EnumFacing faceOn = portal.getFaceOn();
+        return !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
+                faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
+                faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
+                faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
     }
 
     @Override

@@ -7,5 +7,6 @@ import java.util.ArrayList;
 
 public interface IRenderChunkWorldPortal
 {
-    void setCurrentPositionsAndFaces(ArrayList<BlockPos> poses, ArrayList<EnumFacing> face);
+    void setCurrentPositionsAndFaces(BlockPos pos, EnumFacing face);
+    void setNoCull(boolean flag);
 }

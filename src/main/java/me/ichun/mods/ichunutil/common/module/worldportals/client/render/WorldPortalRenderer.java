@@ -376,7 +376,7 @@ public class WorldPortalRenderer
 
                 for(Particle particle : queue)
                 {
-                    if(canDrawParticle(particle, pair.getFacesOn(), pair.getPoses()))
+                    if(portal.renderAll || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                     {
                         particle.renderParticle(bufferbuilder, entity, partialTick, f1, f5, f2, f3, f4);
                     }
@@ -429,7 +429,7 @@ public class WorldPortalRenderer
 
                     for(final Particle particle : particlemanager.fxLayers[i][jj])
                     {
-                        if(canDrawParticle(particle, pair.getFacesOn(), pair.getPoses()))
+                        if(portal.renderAll || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                         {
                             particle.renderParticle(bufferbuilder, entity, partialTick, ff, ff4, ff1, ff2, ff3);
                         }
@@ -616,17 +616,8 @@ public class WorldPortalRenderer
         }
     }
 
-    private static boolean canDrawParticle(Particle ent, ArrayList<EnumFacing> faces, ArrayList<BlockPos> poses)
+    private static boolean canDrawParticle(Particle ent, EnumFacing face, BlockPos pos)
     {
-        for(int i = 0; i < faces.size(); i++)
-        {
-            EnumFacing face = faces.get(i);
-            BlockPos pos = poses.get(i);
-            if(!(face.getFrontOffsetX() < 0 && ent.posX > pos.getX() + 2 || face.getFrontOffsetX() > 0 && ent.posX < pos.getX() - 1 || face.getFrontOffsetY() < 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D > pos.getY() + 2 || face.getFrontOffsetY() > 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D < pos.getY() - 1 || face.getFrontOffsetZ() < 0 && ent.posZ > pos.getZ() + 2 || face.getFrontOffsetZ() > 0 && ent.posZ < pos.getZ() - 1))
-            {
-                return true;
-            }
-        }
-        return false;
+        return !(face.getFrontOffsetX() < 0 && ent.posX > pos.getX() + 2 || face.getFrontOffsetX() > 0 && ent.posX < pos.getX() - 1 || face.getFrontOffsetY() < 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D > pos.getY() + 2 || face.getFrontOffsetY() > 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D < pos.getY() - 1 || face.getFrontOffsetZ() < 0 && ent.posZ > pos.getZ() + 2 || face.getFrontOffsetZ() > 0 && ent.posZ < pos.getZ() - 1);
     }
 }
