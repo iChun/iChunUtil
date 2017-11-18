@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -495,6 +496,18 @@ public class RendererHelper
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
+    }
+
+    public static int getRandomColourFromString(String s)
+    {
+        Random rand = new Random();
+        rand.setSeed(Math.abs(s.hashCode() * 1000));
+        int clr = Math.round(0xffffff * rand.nextFloat());
+        float[] hsb = new float[3];
+        Color.RGBtoHSB(clr >> 16 & 0xff, clr >> 8 & 0xff, clr & 0xff, hsb);
+        hsb[2] = 0.65F + 0.25F * hsb[2];
+        clr = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+        return clr;
     }
 
     public static void startGlScissor(int x, int y, int width, int height)//From top left corner, like how Minecraft guis are. Don't forget to call endGlScissor after rendering

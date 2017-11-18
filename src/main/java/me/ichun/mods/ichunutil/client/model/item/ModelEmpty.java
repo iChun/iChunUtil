@@ -15,7 +15,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class ModelEmpty implements IBakedModel
 {
-    public static ModelEmpty INSTANCE = new ModelEmpty();
+    public static final ModelEmpty INSTANCE = new ModelEmpty();
 
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 

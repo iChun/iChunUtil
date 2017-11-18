@@ -73,7 +73,6 @@ public class ModelHelper
         }
         else
         {
-
             ArrayList<ModelRenderer> list = new ArrayList<>();
 
             for(int i = 0; i < modelList.size(); i++)

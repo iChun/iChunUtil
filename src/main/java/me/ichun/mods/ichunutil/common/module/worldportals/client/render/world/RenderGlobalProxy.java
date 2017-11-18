@@ -530,10 +530,10 @@ public class RenderGlobalProxy extends RenderGlobal
         if(faces.size() == 1)
         {
             EnumFacing faceOn = faces.get(0);
-            return !(faceOn.getFrontOffsetX() < 0 && ent.posX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.posX < portal.getFlatPlane().minX ||
+            return !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
                     faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
                     faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
-                    faceOn.getFrontOffsetZ() < 0 && ent.posZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.posZ < portal.getFlatPlane().minZ);
+                    faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
         }
         else
         {
@@ -541,10 +541,10 @@ public class RenderGlobalProxy extends RenderGlobal
             {
                 EnumFacing faceOn = faces.get(i);
                 Vec3d vec = portal.getPositions().get(i);
-                if(!(faceOn.getFrontOffsetX() < 0 && ent.posX > vec.x || faceOn.getFrontOffsetX() > 0 && ent.posX < vec.x ||
+                if(!(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > vec.x || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < vec.x ||
                         faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > vec.y ||
                         faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < vec.y ||
-                        faceOn.getFrontOffsetZ() < 0 && ent.posZ > vec.z || faceOn.getFrontOffsetZ() > 0 && ent.posZ < vec.z))
+                        faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > vec.z || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < vec.z))
                 {
                     return true;
                 }

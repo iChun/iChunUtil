@@ -115,7 +115,7 @@ public abstract class WorldPortal
 
     public void addFace(EnumFacing faceOut, EnumFacing upDir, Vec3d position) //TODO positions?
     {
-        if(!facesOn.contains(faceOut))
+//        if(!facesOn.contains(faceOut))
         {
             facesOn.add(faceOut);
             upDirs.add(upDir);

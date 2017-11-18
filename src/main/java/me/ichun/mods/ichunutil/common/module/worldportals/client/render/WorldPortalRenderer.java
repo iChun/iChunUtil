@@ -181,6 +181,7 @@ public class WorldPortalRenderer
         mc.renderGlobal = WorldPortals.eventHandlerClient.renderGlobalProxy;
         WorldPortals.eventHandlerClient.renderGlobalProxy.cloudTickCounter = global.cloudTickCounter;
         WorldPortals.eventHandlerClient.renderGlobalProxy.bindViewFrustum(pair); //binds to the View Frustum for this TE.
+        WorldPortals.eventHandlerClient.renderGlobalProxy.displayListEntitiesDirty = true;
         WorldPortals.eventHandlerClient.renderGlobalProxy.storePlayerInfo();
 
         AxisAlignedBB pairFlatPlane = pair.getFlatPlane();
@@ -191,7 +192,7 @@ public class WorldPortalRenderer
         if(mc.gameSettings.thirdPersonView == 0)
         {
             ItemStack usable = ItemHandler.getUsableDualHandedItem(mc.player);
-            if(usable != null)
+            if(!usable.isEmpty())
             {
                 mc.player.setActiveHand(usable.equals(mc.player.getHeldItem(EnumHand.MAIN_HAND)) ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
             }
@@ -203,7 +204,7 @@ public class WorldPortalRenderer
 
         if(mc.gameSettings.thirdPersonView == 0)
         {
-            if(ItemHandler.getUsableDualHandedItem(mc.player) != null)
+            if(!ItemHandler.getUsableDualHandedItem(mc.player).isEmpty())
             {
                 mc.player.resetActiveHand();
             }
