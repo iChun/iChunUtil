@@ -115,7 +115,7 @@ public abstract class WorldPortal
 
     public void addFace(EnumFacing faceOut, EnumFacing upDir, Vec3d position) //TODO positions?
     {
-//        if(!facesOn.contains(faceOut))
+        //        if(!facesOn.contains(faceOut))
         {
             facesOn.add(faceOut);
             upDirs.add(upDir);
@@ -299,10 +299,10 @@ public abstract class WorldPortal
                     }
                     teleportCooldown.put(ent, 3);
                     lastScanEntities.remove(ent);
-//                    if(isAgainstWall()) //now removed by the teleport cooldown
-//                    {
-//                        WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
-//                    }
+                    //                    if(isAgainstWall()) //now removed by the teleport cooldown
+                    //                    {
+                    //                        WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
+                    //                    }
 
                     handleSpecialEntities(ent);
 

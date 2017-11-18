@@ -180,12 +180,17 @@ public class RenderGlobalProxy extends RenderGlobal
                 if(entity != null)
                 {
                     vf.updateChunkPositions(entity.posX, entity.posZ);
+                    for(RenderChunk renderChunk : vf.renderChunks)
+                    {
+                        renderChunk.setNeedsUpdate(false);
+                    }
                 }
             }
         }
         viewFrustum = vf;
         for(RenderChunk renderChunk : viewFrustum.renderChunks)
         {
+//            renderChunk.setNeedsUpdate(false);
             if(renderChunk instanceof IRenderChunkWorldPortal)
             {
                 ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionsAndFaces(pm.getPoses(), pm.getFacesOn());

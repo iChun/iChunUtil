@@ -84,7 +84,11 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
             for(BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1))
             {
                 boolean noRender = true;
-                for(int i1 = 0; i1 < faces.size(); i1++)
+                if(faces.size() != poses.size())
+                {
+                    setNeedsUpdate(false);
+                }
+                for(int i1 = 0; i1 < faces.size() && i1 < poses.size(); i1++)
                 {
                     BlockPos pos = poses.get(i1);
                     EnumFacing face = faces.get(i1);
