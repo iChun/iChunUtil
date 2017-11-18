@@ -18,7 +18,7 @@ compileJava {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-version = "1.12.2-7.0.3"
+version = "1.12.2-7.1.0"
 group = "me.ichun"
 archivesBaseName = "iChunUtil"
 
