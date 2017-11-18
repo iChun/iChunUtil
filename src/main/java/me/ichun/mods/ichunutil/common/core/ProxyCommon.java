@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.common.core.event.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.core.network.PacketChannel;
 import me.ichun.mods.ichunutil.common.core.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.core.util.EventCalendar;
+import me.ichun.mods.ichunutil.common.core.util.ObfHelper;
 import me.ichun.mods.ichunutil.common.entity.EntityBlock;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.*;
@@ -54,7 +55,7 @@ public class ProxyCommon
             cfg.setup();
         }
 
-        if(FMLCommonHandler.instance().getSide().isServer() && !iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true"))
+        if(ObfHelper.obfuscated() && !iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true"))
         {
             iChunUtil.LOGGER.info("=============================================================");
             iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.message"));
