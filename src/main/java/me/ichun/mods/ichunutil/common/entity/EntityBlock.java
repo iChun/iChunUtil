@@ -137,6 +137,8 @@ public class EntityBlock extends Entity
         blocks = new IBlockState[countX][countY][countZ];
         tileEntityNBTs = new NBTTagCompound[countX][countY][countZ];
         mobSpawners = new TileEntityMobSpawner[countX][countY][countZ];
+
+        world.restoringBlockSnapshots = true; //disables spawning of items from silly code dropping items on breakBlock
         for(BlockPos pos : poses)
         {
             IBlockState state = world.getBlockState(pos);
@@ -166,6 +168,7 @@ public class EntityBlock extends Entity
 
             world.setBlockState(pos, Blocks.DIRT.getDefaultState(), 2);
         }
+        world.restoringBlockSnapshots = false;
 
         for(BlockPos pos : poses)
         {
