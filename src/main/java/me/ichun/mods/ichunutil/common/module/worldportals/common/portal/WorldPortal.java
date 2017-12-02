@@ -56,6 +56,8 @@ public abstract class WorldPortal
 
     private boolean firstUpdate;
 
+//    private boolean cullRender = true;
+
     public boolean renderAll = false;
 
     public WorldPortal(World world)
@@ -520,9 +522,15 @@ public abstract class WorldPortal
         return flatPlane;
     }
 
-    public boolean cullRender()
+    public boolean getCullRender()
     {
-        return !renderAll;
+        return !renderAll; //cullRender;
+    }
+
+    public void setCullRender(boolean flag)
+    {
+        //cullRender = flag;
+        renderAll = !flag;
     }
 
     public boolean canTeleportEntities()
@@ -672,7 +680,7 @@ public abstract class WorldPortal
     public boolean shouldRenderFront(Entity viewer, float partialTicks) //TODO THIS
     {
         Vec3d position = RendererHelper.getCameraPosition(viewer, partialTicks);
-        return renderAll || faceOn.getFrontOffsetX() < 0 && position.x < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.x > flatPlane.minX ||
+        return !getCullRender() || faceOn.getFrontOffsetX() < 0 && position.x < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.x > flatPlane.minX ||
                 faceOn.getFrontOffsetY() < 0 && position.y < flatPlane.minY || faceOn.getFrontOffsetY() > 0 && position.y > flatPlane.minY ||
                 faceOn.getFrontOffsetZ() < 0 && position.z < flatPlane.minZ || faceOn.getFrontOffsetZ() > 0 && position.z > flatPlane.minZ;
     }

@@ -376,7 +376,7 @@ public class WorldPortalRenderer
 
                 for(Particle particle : queue)
                 {
-                    if(portal.renderAll || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
+                    if(!portal.getCullRender() || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                     {
                         particle.renderParticle(bufferbuilder, entity, partialTick, f1, f5, f2, f3, f4);
                     }
@@ -429,7 +429,7 @@ public class WorldPortalRenderer
 
                     for(final Particle particle : particlemanager.fxLayers[i][jj])
                     {
-                        if(portal.renderAll || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
+                        if(!portal.getCullRender() || canDrawParticle(particle, pair.getFaceOn(), pair.getPos()))
                         {
                             particle.renderParticle(bufferbuilder, entity, partialTick, ff, ff4, ff1, ff2, ff3);
                         }

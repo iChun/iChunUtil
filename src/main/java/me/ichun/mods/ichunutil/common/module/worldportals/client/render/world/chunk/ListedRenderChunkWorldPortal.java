@@ -34,6 +34,7 @@ public class ListedRenderChunkWorldPortal extends ListedRenderChunk implements I
     public BlockPos pos;
     public EnumFacing face;
     public boolean noCull;
+    public boolean wasCulled;
 
     public ListedRenderChunkWorldPortal(World worldIn, RenderGlobal renderGlobalIn, int indexIn)
     {
@@ -52,12 +53,17 @@ public class ListedRenderChunkWorldPortal extends ListedRenderChunk implements I
     @Override
     public void setNoCull(boolean flag)
     {
+        if(flag && noCull != flag && wasCulled == flag)
+        {
+            setNeedsUpdate(false);
+        }
         this.noCull = flag;
     }
 
     @Override
     public void rebuildChunk(float x, float y, float z, ChunkCompileTaskGenerator generator)
     {
+        wasCulled = false;
         CompiledChunk compiledchunk = new CompiledChunk();
         int i = 1;
         BlockPos blockpos = this.position;
@@ -91,6 +97,10 @@ public class ListedRenderChunkWorldPortal extends ListedRenderChunk implements I
             for(BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1))
             {
                 boolean noRender = !noCull && (face.getFrontOffsetX() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getFrontOffsetX() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getFrontOffsetY() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getFrontOffsetY() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getFrontOffsetZ() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getFrontOffsetZ() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ());
+                if(noRender)
+                {
+                    wasCulled = true;
+                }
                 IBlockState iblockstate = worldView.getBlockState(blockpos$mutableblockpos);
                 Block block = iblockstate.getBlock();
 

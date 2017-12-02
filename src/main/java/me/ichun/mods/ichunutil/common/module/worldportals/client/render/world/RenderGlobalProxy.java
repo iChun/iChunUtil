@@ -195,7 +195,7 @@ public class RenderGlobalProxy extends RenderGlobal
                 ((IRenderChunkWorldPortal)renderChunk).setCurrentPositionsAndFaces(pm.getPos(), pm.getFaceOn());
                 if(pm.getPair() != null)
                 {
-                    ((IRenderChunkWorldPortal)renderChunk).setNoCull(pm.getPair().renderAll);
+                    ((IRenderChunkWorldPortal)renderChunk).setNoCull(!pm.getPair().getCullRender());
                 }
             }
         }
@@ -535,7 +535,7 @@ public class RenderGlobalProxy extends RenderGlobal
     public boolean shouldRenderEntity(Entity ent, WorldPortal portal)
     {
         EnumFacing faceOn = portal.getFaceOn();
-        return portal.getPair() != null && portal.getPair().renderAll || !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
+        return portal.getPair() != null && !portal.getPair().getCullRender() || !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
                 faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
                 faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
                 faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
