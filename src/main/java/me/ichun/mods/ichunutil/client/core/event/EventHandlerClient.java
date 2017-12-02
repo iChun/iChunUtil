@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.core.EntityTrackerHandler;
 import me.ichun.mods.ichunutil.client.entity.EntityLatchedRenderer;
 import me.ichun.mods.ichunutil.client.gui.config.GuiConfigs;
 import me.ichun.mods.ichunutil.client.keybind.KeyBind;
+import me.ichun.mods.ichunutil.client.module.eula.GuiEulaNotifier;
 import me.ichun.mods.ichunutil.client.module.patron.LayerPatronEffect;
 import me.ichun.mods.ichunutil.client.module.patron.PatronEffectRenderer;
 import me.ichun.mods.ichunutil.client.module.update.GuiUpdateNotifier;
@@ -94,6 +95,7 @@ public class EventHandlerClient
         {
             e.getValue().addLayer(new LayerPatronEffect(e.getValue()));
         }
+        GuiEulaNotifier.createIfRequired();
     }
 
     @SubscribeEvent
@@ -159,6 +161,7 @@ public class EventHandlerClient
         {
             ScaledResolution reso = new ScaledResolution(mc);
             GuiUpdateNotifier.update();
+            GuiEulaNotifier.update();
 
             if(mc.currentScreen instanceof GuiControls && !keyBindList.isEmpty())
             {

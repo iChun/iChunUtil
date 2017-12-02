@@ -55,7 +55,7 @@ public class ProxyCommon
             cfg.setup();
         }
 
-        if(ObfHelper.obfuscated() && !iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true"))
+        if(!(iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true") || iChunUtil.config.eulaAcknowledged.equalsIgnoreCase(getPlayerName())))
         {
             iChunUtil.LOGGER.info("=============================================================");
             iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.message"));
@@ -67,6 +67,11 @@ public class ProxyCommon
     public String getPlayerId()
     {
         return EntityHelper.uuidExample.toString().replaceAll("-", "");
+    }
+
+    public String getPlayerName()
+    {
+        return "Server";
     }
 
     public void setGameProfileLookupService()

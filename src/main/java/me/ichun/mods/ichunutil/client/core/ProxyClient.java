@@ -84,6 +84,12 @@ public class ProxyClient extends ProxyCommon
     }
 
     @Override
+    public String getPlayerName()
+    {
+        return Minecraft.getMinecraft().getSession().getUsername();
+    }
+
+    @Override
     public void setGameProfileLookupService()
     {
         YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Minecraft.getMinecraft().getProxy(), UUID.randomUUID().toString());
