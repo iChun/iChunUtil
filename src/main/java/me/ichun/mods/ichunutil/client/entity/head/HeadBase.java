@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
@@ -262,7 +263,7 @@ public class HeadBase<E extends EntityLivingBase>
 
     public static void setHeadModel(HeadBase helper, RenderLivingBase renderer)
     {
-        if(helper.headModel == null || iChunUtil.config.aggressiveHeadTracking == 1)
+        if(helper.headModel == null || iChunUtil.config.aggressiveHeadTracking == 1 || iChunUtil.config.aggressiveHeadTracking == 2 && renderer instanceof RenderPlayer)
         {
             ModelBase model = renderer.getMainModel();
             helper.headModel = new ModelRenderer[1];
@@ -373,6 +374,14 @@ public class HeadBase<E extends EntityLivingBase>
             else if(model instanceof ModelWolf)
             {
                 helper.headModel[0] = ((ModelWolf)model).wolfHeadMain;
+            }
+            for(ModelRenderer head : helper.headModel)
+            {
+                if(head == null)
+                {
+                    helper.headModel = null;
+                    break;
+                }
             }
         }
     }

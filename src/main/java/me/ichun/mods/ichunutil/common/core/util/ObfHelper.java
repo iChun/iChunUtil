@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -111,6 +112,7 @@ public class ObfHelper
     }
 
     @SideOnly(Side.CLIENT)
+    @Nullable
     public static <T extends Render<V>, V extends Entity> ResourceLocation getEntityTexture(T rend, Class clz, V ent)
     {
         try
@@ -130,6 +132,6 @@ public class ObfHelper
         {
             e.printStackTrace();
         }
-        return DefaultPlayerSkin.getDefaultSkinLegacy();
+        return null;
     }
 }

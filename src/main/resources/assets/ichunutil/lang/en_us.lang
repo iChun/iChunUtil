@@ -51,7 +51,7 @@ ichunutil.config.prop.versionSave.comment=Don't change this.
 ichunutil.config.cat.module.headTracking.name=Head Model Tracking
 ichunutil.config.cat.module.headTracking.comment=Head Model Tracking related configs.\nUsed by Googly Eyes and eventually Hats.
 ichunutil.config.prop.aggressiveHeadTracking.name=Aggressive Head Tracking
-ichunutil.config.prop.aggressiveHeadTracking.comment=Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?
+ichunutil.config.prop.aggressiveHeadTracking.comment=Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?\n1 = All Entities\n2 = Players Only
 
 ichunutil.config.cat.module.worldPortals.name=World Portals
 ichunutil.config.cat.module.worldPortals.comment=World Portals related configs.
