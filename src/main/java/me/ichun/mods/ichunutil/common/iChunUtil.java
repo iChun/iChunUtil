@@ -117,7 +117,7 @@ public class iChunUtil
 
         //Head model tracking module
         @ConfigProp(module = "headTracking", side = Side.CLIENT, hidden = true)
-        @IntBool
+        @IntMinMax(min = 0, max = 2)
         public int aggressiveHeadTracking = 0;
 
         //World Portals module
