@@ -13,7 +13,7 @@ ichunutil.config.cat.clientOnly.comment=These options affect only the client tha
 ichunutil.config.cat.block.comment=These options affect the blocks in the mod.
 
 ichunutil.config.cat.keybind.name=Key Binds
-ichunutil.config.cat.keybind.comment=If you're reading this in the config file, I would strongly recommend changing the keybinds in-game.\niChunUtil uses custom keybinds. Go to the options page and hit O to show other options.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt.
+ichunutil.config.cat.keybind.comment=If you're reading this in the config file, I would strongly recommend changing the keybinds in-game.\niChunUtil uses custom keybinds. Go to the controls/keybinds page and click on the bottom right corner.\n\nIf you really have to edit the config file, the format is <key code>, and append either ":SHIFT", ":CTRL", or ":ALT" for keys you want to hold down at the same time.\nFor key codes go to: http://minecraft.gamepedia.com/Key_codes \nExample: 48:SHIFT:ALT will bind to the B key when you hold Shift and Alt (On a QWERTY keyboard).
 ichunutil.config.cat.keybind.tip1=These key binds allow a combination of Shift/Ctrl/Alt
 ichunutil.config.cat.keybind.tip2=Try holding those down when setting a key bind
 ichunutil.config.cat.keybind.tip3=If you want to bind Shift/Ctrl/Alt, hold them for 3 seconds. Last key held will be bound.
