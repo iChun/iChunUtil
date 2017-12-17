@@ -191,7 +191,7 @@ public class iChunUtil
 
         proxy.postInit();
 
-//                me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen.generate();
+        //                me.ichun.mods.ichunutil.common.module.update.UpdateVersionGen.generate();
         //        System.out.println(EntityHelper.getGameProfile("pahimar").getId());
     }
 
@@ -206,6 +206,26 @@ public class iChunUtil
     {
         eventHandlerServer.shuttingDownServer();
         WorldPortals.onServerStopping();
+    }
+
+    @Mod.EventHandler
+    public void onIMCMessage(FMLInterModComms.IMCEvent event)
+    {
+        for(FMLInterModComms.IMCMessage message : event.getMessages())
+        {
+            if(message.key.equalsIgnoreCase("update") && message.isStringMessage())
+            {
+                String[] split = message.getStringValue().split(">");
+                if(split.length != 4)
+                {
+                    LOGGER.info("Invalid update checker string " + message.getStringValue() + ". Invalid argument count!");
+                }
+                else //Mod name, MC version, mod version, clientSideOnly
+                {
+                    UpdateChecker.registerMod(new UpdateChecker.ModVersionInfo(split[0], split[1], split[2], split[3].equalsIgnoreCase("true")));
+                }
+            }
+        }
     }
 
     public static boolean hasPostInit()

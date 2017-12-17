@@ -108,33 +108,35 @@ public class ModelHelper
 
         info.scale[0] = info.scale[1] = info.scale[2] = 1.0F;
 
-        PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
-
-        info.txMirror = (((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
-
-        info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
-        info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
-
-        if(vertices[info.txMirror ? 2 : 1].texturePositionY > vertices[info.txMirror ? 1 : 2].texturePositionY) //Check to correct the texture offset on the y axis to fix some minecraft models
+        if(box.quadList != null)
         {
-            info.txMirror = !info.txMirror;
+            PositionTextureVertex[] vertices = box.quadList[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
+
+            info.txMirror = (((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
 
             info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
             info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
-        }
 
-        if(box.boxName != null)
-        {
-            TextureOffset textureoffset = rend.baseModel.getTextureOffset(box.boxName);
-            if(textureoffset != null)
+            if(vertices[info.txMirror ? 2 : 1].texturePositionY > vertices[info.txMirror ? 1 : 2].texturePositionY) //Check to correct the texture offset on the y axis to fix some minecraft models
             {
-                info.txOffset[0] = textureoffset.textureOffsetX;
-                info.txOffset[1] = textureoffset.textureOffsetY;
+                info.txMirror = !info.txMirror;
+
+                info.txOffset[0] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionX * rend.textureWidth);
+                info.txOffset[1] = (int)(vertices[info.txMirror ? 2 : 1].texturePositionY * rend.textureHeight) - info.dimensions[2];
             }
+
+            if(box.boxName != null)
+            {
+                TextureOffset textureoffset = rend.baseModel.getTextureOffset(box.boxName);
+                if(textureoffset != null)
+                {
+                    info.txOffset[0] = textureoffset.textureOffsetX;
+                    info.txOffset[1] = textureoffset.textureOffsetY;
+                }
+            }
+
+            info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2;
         }
-
-        info.mcScale = ((vertices[info.txMirror ? 1 : 2].vector3D.y - vertices[info.txMirror ? 3 : 0].vector3D.y) - info.dimensions[1]) / 2;
-
         return info;
     }
 
@@ -150,7 +152,7 @@ public class ModelHelper
 
         for(int j = 0; j < original.cubeList.size(); j++)
         {
-            ModelBox box = (ModelBox)original.cubeList.get(j);
+            ModelBox box = original.cubeList.get(j);
             CubeInfo info = createCubeInfoFromModelBox(original, box, box.boxName != null ? (box.boxName.substring(box.boxName.lastIndexOf(".") + 1)) : "");
 
             cubeCopy.mirror = info.txMirror;
@@ -167,7 +169,7 @@ public class ModelHelper
             }
             else
             {
-                ModelBox randBox = (ModelBox)original.cubeList.get(rand.nextInt(original.cubeList.size()));
+                ModelBox randBox = original.cubeList.get(rand.nextInt(original.cubeList.size()));
 
                 float x = randBox.posX1 + ((randBox.posX2 - randBox.posX1) > 0F ? rand.nextInt(((int)(randBox.posX2 - randBox.posX1) > 0) ? (int)(randBox.posX2 - randBox.posX1) : 1) : 0F);
                 float y = randBox.posY1 + ((randBox.posY2 - randBox.posY1) > 0F ? rand.nextInt(((int)(randBox.posY2 - randBox.posY1) > 0) ? (int)(randBox.posY2 - randBox.posY1) : 1) : 0F);
