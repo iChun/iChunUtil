@@ -27,6 +27,7 @@ public class EntityLatchedRenderer extends Entity
         setSize(0.1F, 0.1F);
         lastUpdate = iChunUtil.eventHandlerClient.ticks;
         maxDeathPersistTime = currentDeathPersistTime = 0;
+        setInvisible(true);
     }
 
     public EntityLatchedRenderer(World par1World, Entity ent)
@@ -36,6 +37,7 @@ public class EntityLatchedRenderer extends Entity
         latchedEnt = ent;
         setLocationAndAngles(latchedEnt.posX, latchedEnt.posY, latchedEnt.posZ, latchedEnt.rotationYaw, latchedEnt.rotationPitch);
         lastUpdate = iChunUtil.eventHandlerClient.ticks;
+        setInvisible(true);
     }
 
     public EntityLatchedRenderer setIgnoreFrustumCheck()
