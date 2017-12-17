@@ -36,6 +36,12 @@ public class ConditionalRecipe extends ShapedRecipes
         return isConditionMet.getAsBoolean() && super.matches(inv, worldIn);
     }
 
+    @Override
+    public boolean canFit(int width, int height)
+    {
+        return isConditionMet.getAsBoolean() && super.canFit(width, height);
+    }
+
     //    @Override
     //    public boolean isDynamic()
     //    {

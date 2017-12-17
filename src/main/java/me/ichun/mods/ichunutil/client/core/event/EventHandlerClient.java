@@ -31,7 +31,9 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -198,6 +200,10 @@ public class EventHandlerClient
                 if(connectingToServer)
                 {
                     connectingToServer = false;
+                    if(((net.minecraftforge.registries.ForgeRegistry<IRecipe>)net.minecraftforge.fml.common.registry.ForgeRegistries.RECIPES).getID(new ResourceLocation("ichunutil", "compact_porkchop")) == -1)
+                    {
+                        iChunUtil.config.enableCompactPorkchop = 0;
+                    }
                     MinecraftForge.EVENT_BUS.post(new ServerPacketableEvent());
                 }
                 if(patronUpdateServerAsPatron)

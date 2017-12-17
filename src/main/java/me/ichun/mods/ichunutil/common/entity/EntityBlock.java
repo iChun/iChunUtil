@@ -676,8 +676,16 @@ public class EntityBlock extends Entity
         setCanRotate(tag.getBoolean("canRotate"));
         setBehaviour(tag.getInteger("behaviour"));
 
-        blocks = new IBlockState[tag.getInteger("lengthX")][tag.getInteger("lengthY")][tag.getInteger("lengthZ")];
-        tileEntityNBTs = new NBTTagCompound[tag.getInteger("lengthX")][tag.getInteger("lengthY")][tag.getInteger("lengthZ")];
+        if(tag.getInteger("lengthX") <= 0 || tag.getInteger("lengthY") <= 0 || tag.getInteger("lengthZ") <= 0)
+        {
+            blocks = new IBlockState[][][] { new IBlockState[][] { new IBlockState[] { Blocks.AIR.getDefaultState() } } };
+            tileEntityNBTs = new NBTTagCompound[1][1][1];
+        }
+        else
+        {
+            blocks = new IBlockState[tag.getInteger("lengthX")][tag.getInteger("lengthY")][tag.getInteger("lengthZ")];
+            tileEntityNBTs = new NBTTagCompound[tag.getInteger("lengthX")][tag.getInteger("lengthY")][tag.getInteger("lengthZ")];
+        }
 
         for(int i = 0; i < blocks.length; i++)
         {
