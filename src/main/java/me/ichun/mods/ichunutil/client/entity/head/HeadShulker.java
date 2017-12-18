@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.monster.EntityShulker;
 
@@ -63,11 +64,4 @@ public class HeadShulker extends HeadBase<EntityShulker>
     {
         return 0F;
     }
-
-    @Override
-    public float getHeadPitchForTracker(EntityShulker living)
-    {
-        return 0F;
-    }
-
 }

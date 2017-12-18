@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.boss.EntityDragon;
 
@@ -23,24 +24,6 @@ public class HeadDragon extends HeadBase<EntityDragon>
 
     @Override
     public float getHeadPitch(EntityDragon living, float partialTick, int eye)
-    {
-        return pitch;
-    }
-
-    @Override
-    public float getHeadRollForTracker(EntityDragon living, int eye)
-    {
-        return roll;
-    }
-
-    @Override
-    public float getHeadYawForTracker(EntityDragon living)
-    {
-        return yaw;
-    }
-
-    @Override
-    public float getHeadPitchForTracker(EntityDragon living)
     {
         return pitch;
     }

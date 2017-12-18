@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.boss.EntityWither;
 
 public class HeadWither extends HeadBase<EntityWither>
@@ -53,32 +54,6 @@ public class HeadWither extends HeadBase<EntityWither>
         if(eye <= 1)
         {
             return super.getHeadPitch(living, partialTick, eye);
-        }
-        else
-        {
-            return living.getHeadXRotation(eye <= 3 ? 1 : 0);
-        }
-    }
-
-    @Override
-    public float getHeadYawForTracker(EntityWither living, int eye)
-    {
-        if(eye <= 1)
-        {
-            return super.getHeadYawForTracker(living, eye);
-        }
-        else
-        {
-            return living.getHeadYRotation(eye <= 3 ? 1 : 0);
-        }
-    }
-
-    @Override
-    public float getHeadPitchForTracker(EntityWither living, int eye)
-    {
-        if(eye <= 1)
-        {
-            return super.getHeadPitchForTracker(living);
         }
         else
         {

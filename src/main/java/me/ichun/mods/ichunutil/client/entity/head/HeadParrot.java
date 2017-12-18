@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.util.math.MathHelper;
 
 public class HeadParrot extends HeadBase<EntityParrot>
 {
@@ -16,16 +16,6 @@ public class HeadParrot extends HeadBase<EntityParrot>
     public float getEyeRotation(EntityParrot living, float partialTick, int eye)
     {
         return eye == 0 ? 90F : - 90F;
-    }
-
-    @Override
-    public float getHeadRollForTracker(EntityParrot living, int eye)
-    {
-        if(living.isPartying())
-        {
-            return (float)Math.toDegrees(MathHelper.sin((float)living.ticksExisted) * 0.4F);
-        }
-        return super.getHeadRollForTracker(living, eye);
     }
 
     @Override

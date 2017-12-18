@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.monster.EntityGhast;
 
 public class HeadGhast extends HeadBase<EntityGhast>
@@ -18,18 +19,6 @@ public class HeadGhast extends HeadBase<EntityGhast>
         {
             return eyeScale;
         }
-        return 0F;
-    }
-
-    @Override
-    public float getHeadYawForTracker(EntityGhast living)
-    {
-        return living.renderYawOffset;
-    }
-
-    @Override
-    public float getHeadPitchForTracker(EntityGhast living)
-    {
         return 0F;
     }
 }

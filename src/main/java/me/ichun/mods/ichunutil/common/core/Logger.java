@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.common.core;
 
-import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 

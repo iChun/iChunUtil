@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.passive.EntityBat;
 
 public class HeadBat extends HeadBase<EntityBat>

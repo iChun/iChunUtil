@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.monster.EntitySnowman;
 
 public class HeadSnowman extends HeadBase<EntitySnowman>

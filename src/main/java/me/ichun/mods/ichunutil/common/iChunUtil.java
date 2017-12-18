@@ -40,8 +40,8 @@ public class iChunUtil
     public static final String VERSION_OF_MC = "1.12.2";
     public static final String MC_VERSION_RANGE = "[1.12,1.13)";
     public static final int VERSION_MAJOR = 7;
-    public static final int VERSION_MINOR = 1;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".4";
+    public static final int VERSION_MINOR = 2;
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
@@ -119,6 +119,10 @@ public class iChunUtil
         @ConfigProp(module = "headTracking", side = Side.CLIENT, hidden = true)
         @IntMinMax(min = 0, max = 2)
         public int aggressiveHeadTracking = 0;
+
+        @ConfigProp(module = "headTracking", side = Side.CLIENT, hidden = true)
+        @IntBool
+        public int horseEasterEgg = 1;
 
         //World Portals module
         @ConfigProp(module = "worldPortals", side = Side.CLIENT, hidden = true)

@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.EntityLivingBase;
 
 public class HeadTesting extends HeadBase<EntityLivingBase>

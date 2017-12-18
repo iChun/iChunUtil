@@ -1,5 +1,8 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.passive.EntityWolf;
 
 public class HeadWolf extends HeadBase<EntityWolf>
@@ -12,12 +15,6 @@ public class HeadWolf extends HeadBase<EntityWolf>
     {
         eyeOffset = new float[] { -1F/16F, 0.5F/16F, 2F/16F };
         eyeScale = 0.65F;
-    }
-
-    @Override
-    public float getHeadRollForTracker(EntityWolf living, int eye)
-    {
-        return (float)Math.toDegrees(living.getInterestedAngle(1F) + living.getShakeAngle(1F, 0.0F));
     }
 
     @Override
@@ -60,4 +57,13 @@ public class HeadWolf extends HeadBase<EntityWolf>
         return pupilColour;
     }
 
+    @Override
+    public void preChildEntHeadRenderCalls(EntityWolf living, RenderLivingBase render)
+    {
+        if(living.isChild()) //I don't like this if statement any more than you do.
+        {
+            float modelScale = 0.0625F;
+            GlStateManager.translate(0.0F, 5.0F * modelScale, 2.0F * modelScale);
+        }
+    }
 }

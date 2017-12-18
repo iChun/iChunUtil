@@ -1,8 +1,10 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
+import me.ichun.mods.ichunutil.client.model.util.ModelHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.module.tabula.project.components.CubeInfo;
 import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,192 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Random;
-import java.util.function.BooleanSupplier;
 
-public class HeadBase<E extends EntityLivingBase>
+public class HeadHandler
 {
-    public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
-    public static BooleanSupplier horseHeadIsBody = () -> true;
-
-    public ModelRenderer[] headModel = null;
-
-    //Defaults. Works on Bipeds
-    public float[] headJoint = new float[3];
-    public float[] eyeOffset = new float[] { 0F, 4F/16F, 4F/16F }; //I love that I can use Tabula for this.
-    public float[] irisColour = new float[] { 0.9F, 0.9F, 0.9F };
-    public float[] pupilColour = new float[] { 0.0F, 0.0F, 0.0F };
-    public float halfInterpupillaryDistance = 2F/16F;
-    public float eyeScale = 0.75F;
-
-    public Random livingRand = new Random();
-    public int[] acidTime;
-
-    public HeadBase setHeadJoint(float jointX, float jointY, float jointZ)
-    {
-        headJoint = new float[] { jointX, jointY, jointZ };
-        return this;
-    }
-
-    public HeadBase setEyeOffset(float offsetX, float offsetY, float offsetZ)
-    {
-        eyeOffset = new float[] { offsetX, offsetY, offsetZ };
-        return this;
-    }
-
-    public HeadBase setHalfInterpupillaryDistance(float dist)
-    {
-        halfInterpupillaryDistance = dist;
-        return this;
-    }
-
-    public HeadBase setEyeScale(float scale)
-    {
-        eyeScale = scale;
-        return this;
-    }
-
-    public float[] getHeadJointOffset(E living, float partialTick, int eye)
-    {
-        headJoint[0] = -(headModel[0].rotationPointX / 16F);
-        headJoint[1] = -(headModel[0].rotationPointY / 16F);
-        headJoint[2] = -(headModel[0].rotationPointZ / 16F);
-        return headJoint;
-    }
-
-    public float[] getEyeOffsetFromJoint(E living, float partialTick, int eye)
-    {
-        return eyeOffset;
-    }
-
-    public int getEyeCount(E living)
-    {
-        return 2;
-    }
-
-    public float maxEyeSizeGrowth(E living, int eye)
-    {
-        return 0F;
-    }
-
-    public float getEyeSideOffset(E living, float partialTick, int eye)
-    {
-        return eye == 0 ? halfInterpupillaryDistance : -halfInterpupillaryDistance;
-    }
-
-    public float getEyeScale(E living, float partialTick, int eye)
-    {
-        return eyeScale;
-    }
-
-    public float getEyeRotation(E living, float partialTick, int eye)
-    {
-        return 0F;
-    }
-
-    public float getPupilScale(E living, float partialTick, int eye)
-    {
-        if(acidEyesBooleanSupplier.getAsBoolean() || living.getDataManager().get(EntityLivingBase.POTION_EFFECTS) > 0)
-        {
-            livingRand.setSeed(Math.abs(living.hashCode()) * 1000);
-            int eyeCount = getEyeCount(living);
-            if(acidTime == null || acidTime.length < eyeCount)
-            {
-                acidTime = new int[eyeCount];
-            }
-            for(int i = 0; i < eyeCount; i++)
-            {
-                acidTime[i] = 20 + livingRand.nextInt(20);
-            }
-            return 0.3F + ((float)Math.sin(Math.toRadians((living.ticksExisted + partialTick) / acidTime[eye] * 360F)) + 1F) / 2F;
-        }
-        return 1F + (0.35F * (living.deathTime + partialTick) / 20F);
-    }
-
-    public float[] getIrisColours(E living, float partialTick, int eye)
-    {
-        return irisColour;
-    }
-
-    public float[] getPupilColours(E living, float partialTick, int eye)
-    {
-        return pupilColour;
-    }
-
-    public float getHeadYaw(E living, float partialTick, int eye)
-    {
-        return (float)Math.toDegrees(headModel[0].rotateAngleY);
-    }
-
-    public float getHeadPitch(E living, float partialTick, int eye)
-    {
-        return (float)Math.toDegrees(headModel[0].rotateAngleX);
-    }
-
-    public float getHeadRoll(E living, float partialTick, int eye)
-    {
-        return (float)Math.toDegrees(headModel[0].rotateAngleZ);
-    }
-
-    public boolean affectedByInvisibility(E living, int eye)
-    {
-        return true;
-    }
-
-    public boolean doesEyeGlow(E living, int eye)
-    {
-        return false;
-    }
-
-    public float getHeadYawForTracker(E living, int eye)
-    {
-        return getHeadYawForTracker(living);
-    }
-
-    public float getHeadPitchForTracker(E living, int eye)
-    {
-        return getHeadPitchForTracker(living);
-    }
-
-    public float getHeadRollForTracker(E living, int eye)
-    {
-        return getHeadRollForTracker(living);
-    }
-
-    public float getHeadYawForTracker(E living)
-    {
-        return living.rotationYawHead;
-    }
-
-    public float getHeadPitchForTracker(E living)
-    {
-        return living.rotationPitch;
-    }
-
-    public float getHeadRollForTracker(E living)
-    {
-        return 0F;
-    }
-
-
-    public HeadBase clone()
-    {
-        try
-        {
-            HeadBase clone = this.getClass().newInstance();
-            for(int i = 0; i < 3; i++)
-            {
-                clone.headJoint[i] = this.headJoint[i];
-                clone.eyeOffset[i] = this.eyeOffset[i];
-            }
-            clone.halfInterpupillaryDistance = this.halfInterpupillaryDistance;
-            clone.eyeScale = this.eyeScale;
-            return clone;
-        }
-        catch(Exception e){}
-        return new HeadBase();
-    }
-
     public static HashMap<Class<? extends EntityLivingBase>, HeadBase> modelOffsetHelpers = new HashMap<Class<? extends EntityLivingBase>, HeadBase>() {{
         put(AbstractHorse.class, new HeadHorse());
         put(AbstractIllager.class, new HeadBase().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
@@ -228,11 +47,11 @@ public class HeadBase<E extends EntityLivingBase>
         put(EntityRabbit.class, new HeadRabbit());
         put(EntitySheep.class, new HeadSheep());
         put(EntityShulker.class, new HeadShulker());
-        put(EntitySilverfish.class, new HeadSilverfish());
-        put(EntitySlime.class, new HeadSlime());
+        put(EntitySilverfish.class, new HeadBase().setEyeOffset(0F, 0F, 1F/16F).setHalfInterpupillaryDistance(1F/16F).setEyeScale(0.5F));
+        put(EntitySlime.class, new HeadBase().setEyeOffset(0F, -19F/16F, 4F/16F));
         put(EntitySnowman.class, new HeadSnowman());
         put(EntitySpider.class, new HeadSpider());
-        put(EntitySquid.class, new HeadSquid());
+        put(EntitySquid.class, new HeadBase().setEyeOffset(0F, 1F/16F, 6F/16F).setHalfInterpupillaryDistance(3F/16F));
         put(EntityVex.class, new HeadBiped());
         put(EntityVillager.class, new HeadBase().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
         put(EntityWitch.class, new HeadBase().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
@@ -273,11 +92,11 @@ public class HeadBase<E extends EntityLivingBase>
             }
             else if(model instanceof ModelHorse)
             {
-                helper.headModel[0] = ((ModelHorse)model).body;
+                helper.headModel[0] = iChunUtil.config.horseEasterEgg == 1 ? ((ModelHorse)model).body : ((ModelHorse)model).head;
             }
             else if(model instanceof ModelLlama)
             {
-                helper.headModel[0] = ((ModelLlama)model).body;
+                helper.headModel[0] = iChunUtil.config.horseEasterEgg == 1 ? ((ModelLlama)model).body : ((ModelLlama)model).head;
             }
             else if(model instanceof ModelIllager)
             {
@@ -386,46 +205,14 @@ public class HeadBase<E extends EntityLivingBase>
         }
     }
 
-    public static void preChildHeadRenderCalls(EntityLivingBase living, RenderLivingBase render)
+    @Nullable
+    public static CubeInfo getHeadInfo(HeadBase helper)
     {
-        if(living.isChild()) //I don't like this if statement any more than you do.
+        if(helper.headInfo == null && helper.headModel != null && !helper.headModel[0].cubeList.isEmpty())
         {
-            float modelScale = 0.0625F;
-            ModelBase model = render.getMainModel();
-            if(model instanceof ModelBiped)
-            {
-                GlStateManager.scale(0.75F, 0.75F, 0.75F);
-                GlStateManager.translate(0.0F, 16.0F * modelScale, 0.0F);
-            }
-            else if(model instanceof ModelLlama)
-            {
-                GlStateManager.scale(0.625F, 0.45454544F, 0.45454544F);
-                GlStateManager.translate(0.0F, 33.0F * modelScale, 0.0F);
-            }
-            else if(model instanceof ModelQuadruped)
-            {
-                if(model instanceof ModelPolarBear)
-                {
-                    GlStateManager.scale(0.6666667F, 0.6666667F, 0.6666667F);
-                }
-                GlStateManager.translate(0.0F, ((ModelQuadruped)model).childYOffset * modelScale, ((ModelQuadruped)model).childZOffset * modelScale);
-            }
-            else if(model instanceof ModelChicken || model instanceof ModelWolf)
-            {
-                GlStateManager.translate(0.0F, 5.0F * modelScale, 2.0F * modelScale);
-            }
-            else if(model instanceof ModelOcelot)
-            {
-                GlStateManager.scale(0.75F, 0.75F, 0.75F);
-                GlStateManager.translate(0.0F, 10.0F * modelScale, 4.0F * modelScale);
-            }
-            else if(model instanceof ModelHorse && living instanceof AbstractHorse)
-            {
-                float f1 = ((AbstractHorse)living).getHorseSize();
-
-                GlStateManager.scale(f1, f1, f1);
-                GlStateManager.translate(0.0F, 1.35F * (1.0F - f1), 0.0F);
-            }
+            ModelBox box = helper.headModel[0].cubeList.get(0);
+            helper.headInfo = ModelHelper.createCubeInfoFromModelBox(helper.headModel[0], box, box.boxName != null ? (box.boxName.substring(box.boxName.lastIndexOf(".") + 1)) : "");
         }
+        return (CubeInfo)helper.headInfo;
     }
 }

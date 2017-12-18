@@ -1,5 +1,8 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.passive.EntityOcelot;
 
 public class HeadOcelot extends HeadBase<EntityOcelot>
@@ -23,5 +26,16 @@ public class HeadOcelot extends HeadBase<EntityOcelot>
     {
         livingRand.setSeed(Math.abs(living.hashCode()) * 1231);
         return pupilColourAssortment[livingRand.nextInt(3)];
+    }
+
+    @Override
+    public void preChildEntHeadRenderCalls(EntityOcelot living, RenderLivingBase render)
+    {
+        if(living.isChild()) //I don't like this if statement any more than you do.
+        {
+            float modelScale = 0.0625F;
+            GlStateManager.scale(0.75F, 0.75F, 0.75F);
+            GlStateManager.translate(0.0F, 10.0F * modelScale, 4.0F * modelScale);
+        }
     }
 }

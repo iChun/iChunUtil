@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.common.block.BlockCompactPorkchop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;

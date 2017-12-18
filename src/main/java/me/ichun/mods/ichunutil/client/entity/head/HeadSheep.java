@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.item.EnumDyeColor;
 
@@ -9,12 +10,6 @@ public class HeadSheep extends HeadBase<EntitySheep>
     {
         eyeOffset = new float[]{ 0F, 1.5F/16F, 6F/16F };
         eyeScale = 0.65F;
-    }
-
-    @Override
-    public float getHeadPitchForTracker(EntitySheep living)
-    {
-        return (float)Math.toDegrees(living.getHeadRotationAngleX(1F));
     }
 
     @Override

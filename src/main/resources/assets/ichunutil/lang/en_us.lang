@@ -52,6 +52,8 @@ ichunutil.config.cat.module.headTracking.name=Head Model Tracking
 ichunutil.config.cat.module.headTracking.comment=Head Model Tracking related configs.\nUsed by Googly Eyes and eventually Hats.
 ichunutil.config.prop.aggressiveHeadTracking.name=Aggressive Head Tracking
 ichunutil.config.prop.aggressiveHeadTracking.comment=Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?\n1 = All Entities\n2 = Players Only
+ichunutil.config.prop.horseEasterEgg.name=Enable Horse/Llama Easter Egg?
+ichunutil.config.prop.horseEasterEgg.comment=Enable the easter egg where the horse/llama's "head" is its behind. This is an easter egg on how Hats puts hats on Horses.
 
 ichunutil.config.cat.module.worldPortals.name=World Portals
 ichunutil.config.cat.module.worldPortals.comment=World Portals related configs.

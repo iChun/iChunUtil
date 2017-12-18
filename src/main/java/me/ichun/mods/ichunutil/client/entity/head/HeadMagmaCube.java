@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.entity.head;
 
+import me.ichun.mods.ichunutil.api.client.head.HeadBase;
 import net.minecraft.entity.monster.EntityMagmaCube;
 
 public class HeadMagmaCube extends HeadBase<EntityMagmaCube>
@@ -35,17 +36,5 @@ public class HeadMagmaCube extends HeadBase<EntityMagmaCube>
         {
             return new float[]{ 0F, -(0 - squishFactor * 2.5F)/16F, 0F };
         }
-    }
-
-    @Override
-    public float getHeadYawForTracker(EntityMagmaCube living)
-    {
-        return living.renderYawOffset;
-    }
-
-    @Override
-    public float getHeadPitchForTracker(EntityMagmaCube living)
-    {
-        return 0F;
     }
 }

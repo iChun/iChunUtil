@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.client.module.eula;
 
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -11,8 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.TreeSet;
 
 @SideOnly(Side.CLIENT)
 public class GuiEulaNotifier extends Gui
