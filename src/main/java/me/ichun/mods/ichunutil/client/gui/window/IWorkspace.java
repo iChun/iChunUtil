@@ -9,7 +9,7 @@ import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -210,7 +210,7 @@ public abstract class IWorkspace extends GuiScreen
                 tips = new ArrayList<>(tipss.size() > tips.size() ? tipss : tips);
                 if(tips.size() == 1)
                 {
-                    tips.add(I18n.translateToLocal(tips.get(0)));
+                    tips.add(new TextComponentTranslation(tips.get(0)).getFormattedText());
                     tips.remove(0);
                 }
                 int xOffset = 5;

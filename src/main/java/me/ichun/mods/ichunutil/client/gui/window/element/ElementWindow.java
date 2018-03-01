@@ -4,7 +4,7 @@ import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.gui.window.WindowTabs;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class ElementWindow extends Element
 {
@@ -29,7 +29,7 @@ public class ElementWindow extends Element
     @Override
     public void draw(int mouseX, int mouseY, boolean hover)
     {
-        String titleToRender = I18n.translateToLocal(mountedWindow.titleLocale);
+        String titleToRender = new TextComponentTranslation(mountedWindow.titleLocale).getFormattedText();
         while(titleToRender.length() > 1 && parent.workspace.getFontRenderer().getStringWidth(titleToRender) > width)
         {
             if(titleToRender.startsWith("... "))
@@ -87,7 +87,7 @@ public class ElementWindow extends Element
             int totalSpace = 0;
             for(ElementWindow tab1 : tab.tabs)
             {
-                totalSpace += tab.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(tab1.mountedWindow.titleLocale) + " ");
+                totalSpace += tab.workspace.getFontRenderer().getStringWidth(new TextComponentTranslation(tab1.mountedWindow.titleLocale).getFormattedText() + " ");
             }
             if(totalSpace > space)
             {
@@ -101,10 +101,10 @@ public class ElementWindow extends Element
                 posX = tab.BORDER_SIZE;
                 for(int i = 0; i < id; i++)
                 {
-                    posX += tab.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(tab.tabs.get(i).mountedWindow.titleLocale) + " ");
+                    posX += tab.workspace.getFontRenderer().getStringWidth(new TextComponentTranslation(tab.tabs.get(i).mountedWindow.titleLocale).getFormattedText() + " ");
                 }
                 posY = 0;
-                width = tab.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(mountedWindow.titleLocale) + " ");
+                width = tab.workspace.getFontRenderer().getStringWidth(new TextComponentTranslation(mountedWindow.titleLocale).getFormattedText() + " ");
                 height = 12;
             }
             mountedWindow.docked = parent.docked;
@@ -120,7 +120,7 @@ public class ElementWindow extends Element
     @Override
     public String tooltip()
     {
-        String titleToRender = I18n.translateToLocal(mountedWindow.titleLocale);
+        String titleToRender = new TextComponentTranslation(mountedWindow.titleLocale).getFormattedText();
         if(parent.workspace.getFontRenderer().getStringWidth(titleToRender) > width)
         {
             return mountedWindow.titleLocale;

@@ -7,7 +7,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -110,8 +110,8 @@ public class GuiEulaNotifier extends Gui
             GlStateManager.disableLighting();
             this.drawTexturedModalRect(i, j, 0, 0, 160, 32);
 
-            this.mc.fontRenderer.drawString(I18n.translateToLocal("ichunutil.eula.toast1"), i + 10, j + 7, -1);
-            this.mc.fontRenderer.drawString(I18n.translateToLocal("ichunutil.eula.toast2"), i + 15, j + 18, -1);
+            this.mc.fontRenderer.drawString(new TextComponentTranslation("ichunutil.eula.toast1").getFormattedText(), i + 10, j + 7, -1);
+            this.mc.fontRenderer.drawString(new TextComponentTranslation("ichunutil.eula.toast2").getFormattedText(), i + 15, j + 18, -1);
 
             RenderHelper.enableGUIStandardItemLighting();
 

@@ -12,7 +12,7 @@ import me.ichun.mods.ichunutil.common.module.tabula.project.components.CubeInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.lwjgl.input.Mouse;
 
 import java.io.File;
@@ -476,7 +476,7 @@ public class ElementListTree extends Element
                 else if(attachedObject instanceof IListable)
                 {
                     IListable info = (IListable)attachedObject;
-                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.localizable() ? I18n.translateToLocal(info.getName()) : info.getName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
+                    parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.localizable() ? new TextComponentTranslation(info.getName()).getFormattedText() : info.getName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
                 }
 
                 boolean found = false;

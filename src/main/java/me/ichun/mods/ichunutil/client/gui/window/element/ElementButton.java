@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.window.element;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.lwjgl.input.Mouse;
 
 public class ElementButton extends Element
@@ -62,7 +62,7 @@ public class ElementButton extends Element
         }
         if(!(this instanceof ElementButtonTextured))
         {
-            parent.workspace.getFontRenderer().drawString(I18n.translateToLocal(text), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(I18n.translateToLocal(text)) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
+            parent.workspace.getFontRenderer().drawString(new TextComponentTranslation(text).getFormattedText(), getPosX() + (width / 2) - (parent.workspace.getFontRenderer().getStringWidth(new TextComponentTranslation(text).getFormattedText()) / 2), getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
         }
     }
 
