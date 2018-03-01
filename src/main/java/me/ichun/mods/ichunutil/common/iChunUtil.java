@@ -15,7 +15,6 @@ import me.ichun.mods.ichunutil.common.module.update.UpdateChecker;
 import me.ichun.mods.ichunutil.common.module.worldportals.common.WorldPortals;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -28,7 +27,9 @@ import java.util.List;
 
 @Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
-        guiFactory = iChunUtil.GUI_CONFIG_FACTORY
+        guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
+        acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE,
+        dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + "; "
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
