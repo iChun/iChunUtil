@@ -29,7 +29,7 @@ import java.util.List;
         version = iChunUtil.VERSION,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         acceptedMinecraftVersions = iChunUtil.MC_VERSION_RANGE,
-        dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + "; "
+        dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + "]; "
 )
 //hashmap.put(Type.SKIN, new MinecraftProfileTexture(String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] { StringUtils.stripControlCodes(p_152790_1_.getName()) }), null));
 public class iChunUtil
