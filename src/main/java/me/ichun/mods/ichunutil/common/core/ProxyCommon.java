@@ -16,7 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -57,8 +57,8 @@ public class ProxyCommon
         if(!(iChunUtil.config.eulaAcknowledged.equalsIgnoreCase("true") || iChunUtil.config.eulaAcknowledged.equalsIgnoreCase(getPlayerName())))
         {
             iChunUtil.LOGGER.info("=============================================================");
-            iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.message"));
-            iChunUtil.LOGGER.info(I18n.translateToLocal("ichunutil.eula.messageServer"));
+            iChunUtil.LOGGER.info(new TextComponentTranslation("ichunutil.eula.message").getFormattedText());
+            iChunUtil.LOGGER.info(new TextComponentTranslation("ichunutil.eula.messageServer").getFormattedText());
             iChunUtil.LOGGER.info("=============================================================");
         }
     }

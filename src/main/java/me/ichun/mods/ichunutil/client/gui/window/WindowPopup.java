@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.window;
 import me.ichun.mods.ichunutil.client.gui.Theme;
 import me.ichun.mods.ichunutil.client.gui.window.element.Element;
 import me.ichun.mods.ichunutil.client.gui.window.element.ElementButton;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class WindowPopup extends Window
 {
@@ -23,7 +23,7 @@ public class WindowPopup extends Window
         super.draw(mouseX, mouseY);
         if(!minimized)
         {
-            workspace.getFontRenderer().drawString(I18n.translateToLocal(message), posX + 11, posY + 20, Theme.getAsHex(workspace.currentTheme.font), false);
+            workspace.getFontRenderer().drawString(new TextComponentTranslation(message).getFormattedText(), posX + 11, posY + 20, Theme.getAsHex(workspace.currentTheme.font), false);
         }
     }
 

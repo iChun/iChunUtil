@@ -6,7 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.window.element.ElementMinimize;
 import me.ichun.mods.ichunutil.client.gui.window.element.ElementTitle;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
 
@@ -167,7 +167,7 @@ public class Window
         if(hasTitle)
         {
             RendererHelper.drawColourOnScreen(workspace.currentTheme.windowBorder[0], workspace.currentTheme.windowBorder[1], workspace.currentTheme.windowBorder[2], 255, posX + 1, posY + 1, getWidth() - 2, 12, 0);
-            String titleToRender = I18n.translateToLocal(titleLocale);
+            String titleToRender = new TextComponentTranslation(titleLocale).getFormattedText();
             while(titleToRender.length() > 1 && workspace.getFontRenderer().getStringWidth(titleToRender) > getWidth() - (BORDER_SIZE * 2) - workspace.getFontRenderer().getStringWidth("  _"))
             {
                 if(titleToRender.startsWith("..."))

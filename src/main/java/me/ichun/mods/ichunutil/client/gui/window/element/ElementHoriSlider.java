@@ -5,7 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.window.Window;
 import me.ichun.mods.ichunutil.client.render.RendererHelper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.lwjgl.input.Mouse;
 
 public class ElementHoriSlider extends Element
@@ -47,7 +47,7 @@ public class ElementHoriSlider extends Element
 
         if(!label.isEmpty())
         {
-            parent.workspace.getFontRenderer().drawString(I18n.translateToLocal(label), (float)(getPosX() + ((x2 - parent.workspace.getFontRenderer().getStringWidth(label)) - x1) * sliderProg) + 4F, getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
+            parent.workspace.getFontRenderer().drawString(new TextComponentTranslation(label).getFormattedText(), (float)(getPosX() + ((x2 - parent.workspace.getFontRenderer().getStringWidth(label)) - x1) * sliderProg) + 4F, getPosY() + height - (height / 2) - (parent.workspace.getFontRenderer().FONT_HEIGHT / 2), Theme.getAsHex(parent.workspace.currentTheme.font), false);
         }
 
         if(parent.workspace.elementDragged == this && Mouse.isButtonDown(0) && mouseX >= posX && mouseX <= posX + width && mouseY >= posY && mouseY <= posY + height)

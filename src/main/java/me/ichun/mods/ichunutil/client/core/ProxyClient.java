@@ -22,7 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -46,17 +46,17 @@ public class ProxyClient extends ProxyCommon
         ConfigHandler.configKeybind = new Configuration(file);
         ConfigHandler.configKeybind.load();
 
-        List cms = Splitter.on("\\n").splitToList(I18n.translateToLocal("ichunutil.config.cat.keybind.comment"));
-        String cm = "";
+        List cms = Splitter.on("\\n").splitToList(new TextComponentTranslation("ichunutil.config.cat.keybind.comment").getFormattedText());
+        StringBuilder cm = new StringBuilder();
         for(int ll = 0; ll < cms.size(); ll++)
         {
-            cm = cm + cms.get(ll);
+            cm.append(cms.get(ll));
             if(ll != cms.size() - 1)
             {
-                cm = cm + "\n";
+                cm.append("\n");
             }
         }
-        ConfigHandler.configKeybind.addCustomCategoryComment("keybinds", cm);
+        ConfigHandler.configKeybind.addCustomCategoryComment("keybinds", cm.toString());
 
         EntityHelper.injectMinecraftPlayerGameProfile();
 

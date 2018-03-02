@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -167,7 +167,7 @@ public class EventHandlerClient
 
             if(mc.currentScreen instanceof GuiControls && !keyBindList.isEmpty())
             {
-                String s = I18n.translateToLocal("ichunutil.config.controls.moreKeys");
+                String s = new TextComponentTranslation("ichunutil.config.controls.moreKeys").getFormattedText();
                 int width = Math.round(mc.fontRenderer.getStringWidth(s) / 2F);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(reso.getScaledWidth() - width - 2, (reso.getScaledHeight() - (mc.fontRenderer.FONT_HEIGHT / 2D) - 2), 0);

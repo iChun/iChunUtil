@@ -14,7 +14,7 @@ import me.ichun.mods.ichunutil.common.core.config.types.NestedIntArray;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.packet.mod.PacketSession;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -124,23 +124,23 @@ public abstract class ConfigBase implements Comparable<ConfigBase>, IIdentifiabl
             fields = new ArrayList<>();
             categories.put(info, fields);
         }
-        String comment = propInfo.comment().equals("undefined") ? I18n.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".comment") : I18n.translateToLocal(propInfo.comment());
+        String comment = propInfo.comment().equals("undefined") ? new TextComponentTranslation(getModId().toLowerCase() + ".config.prop." + field.getName() + ".comment").getFormattedText() : new TextComponentTranslation(propInfo.comment()).getFormattedText();
         if(Splitter.on(".").splitToList(comment).size() >= 2 && !comment.contains(" ") && !setup) //localized but no comment?
         {
             iChunUtil.LOGGER.warn("Config property " + field.getName() + " from mod " + getModName() + " may not be localized!");
         }
-        String commentLocal = I18n.translateToLocal(comment);
+        String commentLocal = new TextComponentTranslation(comment).getFormattedText();
         List cms = Splitter.on("\\n").splitToList(commentLocal);
-        String cm = "";
+        StringBuilder cm = new StringBuilder();
         for(int ll = 0; ll < cms.size(); ll++)
         {
-            cm = cm + cms.get(ll);
+            cm.append(cms.get(ll));
             if(ll != cms.size() - 1)
             {
-                cm = cm + "\n";
+                cm.append("\n");
             }
         }
-        comment = cm;
+        comment = cm.toString();
         try
         {
             String category = !propInfo.module().isEmpty() ? "module." + propInfo.module() + "." + propInfo.category() : propInfo.category();
@@ -286,7 +286,7 @@ public abstract class ConfigBase implements Comparable<ConfigBase>, IIdentifiabl
             {
                 return;
             }
-            PropInfo propInfo1 = new PropInfo(!propInfo.nameOverride().isEmpty() ? propInfo.nameOverride() : I18n.translateToLocal(getModId().toLowerCase() + ".config.prop." + field.getName() + ".name"), comment, field);
+            PropInfo propInfo1 = new PropInfo(!propInfo.nameOverride().isEmpty() ? propInfo.nameOverride() : new TextComponentTranslation(getModId().toLowerCase() + ".config.prop." + field.getName() + ".name").getFormattedText(), comment, field);
             if(!fields.contains(propInfo1))
             {
                 fields.add(propInfo1);
@@ -315,13 +315,13 @@ public abstract class ConfigBase implements Comparable<ConfigBase>, IIdentifiabl
             String comment;
             if(cat.equals("general") || cat.equals("gameplay") || cat.equals("globalOptions") || cat.equals("serverOptions") || cat.equals("clientOnly") || cat.equals("keybind") || cat.equals("block"))
             {
-                info.name = I18n.translateToLocal(String.format("ichunutil.config.cat.%s.name", cat));
-                comment = I18n.translateToLocal(String.format("ichunutil.config.cat.%s.comment", cat));
+                info.name = new TextComponentTranslation(String.format("ichunutil.config.cat.%s.name", cat)).getFormattedText();
+                comment = new TextComponentTranslation(String.format("ichunutil.config.cat.%s.comment", cat)).getFormattedText();
             }
             else
             {
-                info.name = I18n.translateToLocal(getModId().toLowerCase() + ".config.cat." + cat + ".name");
-                comment = I18n.translateToLocal(getModId().toLowerCase() + ".config.cat." + cat + ".comment");
+                info.name = new TextComponentTranslation(getModId().toLowerCase() + ".config.cat." + cat + ".name").getFormattedText();
+                comment = new TextComponentTranslation(getModId().toLowerCase() + ".config.cat." + cat + ".comment").getFormattedText();
             }
             info.comment = comment;
             config.setCategoryComment(cat, comment);
