@@ -93,7 +93,7 @@ public class RenderChunkWorldPortal extends RenderChunk implements IRenderChunkW
 
             for(BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1))
             {
-                boolean noRender = !noCull && (face.getFrontOffsetX() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getFrontOffsetX() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getFrontOffsetY() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getFrontOffsetY() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getFrontOffsetZ() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getFrontOffsetZ() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ());
+                boolean noRender = !noCull && (face.getXOffset() < 0 && blockpos$mutableblockpos.getX() > pos.getX() || face.getXOffset() > 0 && blockpos$mutableblockpos.getX() < pos.getX() || face.getYOffset() < 0 && blockpos$mutableblockpos.getY() > pos.getY() || face.getYOffset() > 0 && blockpos$mutableblockpos.getY() < pos.getY() || face.getZOffset() < 0 && blockpos$mutableblockpos.getZ() > pos.getZ() || face.getZOffset() > 0 && blockpos$mutableblockpos.getZ() < pos.getZ());
                 if(noRender)
                 {
                     wasCulled = true;

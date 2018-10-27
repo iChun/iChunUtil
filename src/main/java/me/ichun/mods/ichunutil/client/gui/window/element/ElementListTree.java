@@ -58,6 +58,9 @@ public class ElementListTree extends Element
         spacerD = parent.height - y - height;
         selectedIdentifier = "";
         canDrag = drag;
+
+        lmbDown = true;
+        rmbDown = true;
     }
 
     @Override
@@ -336,6 +339,32 @@ public class ElementListTree extends Element
                     scrollHeight = (height - totalHeight) * sliderProg;
                 }
                 boolean realBorder = mouseX >= posX && mouseX < posX + width && mouseY >= posY + treeHeight + scrollHeight && mouseY < posY + treeHeight + scrollHeight + theHeight;
+
+                boolean found = false;
+                boolean obstructed = false;
+
+                for(int i = parent.workspace.levels.size() - 1; i >= 0; i--)
+                {
+                    if(found)
+                    {
+                        break;
+                    }
+                    for(int j = 0; j < parent.workspace.levels.get(i).size(); j++)
+                    {
+                        Window window = parent.workspace.levels.get(i).get(j);
+                        if(window == parent)
+                        {
+                            found = true;
+                            break;
+                        }
+                        if(parent.posX + mouseX >= window.posX && parent.posX + mouseX <= window.posX + window.getWidth() && parent.posY + mouseY >= window.posY && parent.posY + mouseY <= window.posY + window.getHeight() && !(window instanceof WindowTopDockBase))
+                        {
+                            obstructed = true;
+                            break;
+                        }
+                    }
+                }
+
                 int offX = 0;
                 int offY = 0;
                 if(dragDraw)
@@ -349,7 +378,7 @@ public class ElementListTree extends Element
                 {
                     RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeItemBgSelect[0], parent.workspace.currentTheme.elementTreeItemBgSelect[1], parent.workspace.currentTheme.elementTreeItemBgSelect[2], 255, getPosX() + offX + 1, getPosY() + offY + treeHeight + 1, width - 2, theHeight - 2, 0);
                 }
-                else if(realBorder)
+                else if(realBorder && !obstructed)
                 {
                     RendererHelper.drawColourOnScreen(parent.workspace.currentTheme.elementTreeItemBgHover[0], parent.workspace.currentTheme.elementTreeItemBgHover[1], parent.workspace.currentTheme.elementTreeItemBgHover[2], 255, getPosX() + offX + 1, getPosY() + offY + treeHeight + 1, width - 2, theHeight - 2, 0);
                 }
@@ -477,31 +506,6 @@ public class ElementListTree extends Element
                 {
                     IListable info = (IListable)attachedObject;
                     parent.workspace.getFontRenderer().drawString(parent.workspace.reString(info.localizable() ? I18n.translateToLocal(info.getName()) : info.getName(), width), getPosX() + offX + 4, getPosY() + offY + ((theHeight - parent.workspace.getFontRenderer().FONT_HEIGHT) / 2) + treeHeight, Theme.getAsHex(parent.workspace.currentTheme.font), false);
-                }
-
-                boolean found = false;
-                boolean obstructed = false;
-
-                for(int i = parent.workspace.levels.size() - 1; i >= 0; i--)
-                {
-                    if(found)
-                    {
-                        break;
-                    }
-                    for(int j = 0; j < parent.workspace.levels.get(i).size(); j++)
-                    {
-                        Window window = parent.workspace.levels.get(i).get(j);
-                        if(window == parent)
-                        {
-                            found = true;
-                            break;
-                        }
-                        if(mouseX >= window.posX && mouseX <= window.posX + window.getWidth() && mouseY >= window.posY && mouseY <= window.posY + window.getHeight() && !(window instanceof WindowTopDockBase))
-                        {
-                            obstructed = true;
-                            break;
-                        }
-                    }
                 }
 
                 if(realBorder && clicking && !obstructed)

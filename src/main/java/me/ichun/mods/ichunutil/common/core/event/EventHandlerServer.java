@@ -74,7 +74,7 @@ public class EventHandlerServer
             }
         }
         iChunUtil.channel.sendTo(new PacketPatrons(null), event.player);
-        iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && ((EntityPlayerMP)event.player).mcServer.getPlayerList().canSendCommands(event.player.getGameProfile()))), event.player);
+        iChunUtil.channel.sendTo(new PacketUserShouldShowUpdates(iChunUtil.config.versionNotificationTypes == 0 || (iChunUtil.config.versionNotificationTypes == 1 && ((EntityPlayerMP)event.player).server.getPlayerList().canSendCommands(event.player.getGameProfile()))), event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

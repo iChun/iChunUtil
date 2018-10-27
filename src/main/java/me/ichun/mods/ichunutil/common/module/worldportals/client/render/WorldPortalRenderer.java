@@ -618,6 +618,6 @@ public class WorldPortalRenderer
 
     private static boolean canDrawParticle(Particle ent, EnumFacing face, BlockPos pos)
     {
-        return !(face.getFrontOffsetX() < 0 && ent.posX > pos.getX() + 2 || face.getFrontOffsetX() > 0 && ent.posX < pos.getX() - 1 || face.getFrontOffsetY() < 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D > pos.getY() + 2 || face.getFrontOffsetY() > 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D < pos.getY() - 1 || face.getFrontOffsetZ() < 0 && ent.posZ > pos.getZ() + 2 || face.getFrontOffsetZ() > 0 && ent.posZ < pos.getZ() - 1);
+        return !(face.getXOffset() < 0 && ent.posX > pos.getX() + 2 || face.getXOffset() > 0 && ent.posX < pos.getX() - 1 || face.getYOffset() < 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D > pos.getY() + 2 || face.getYOffset() > 0 && (ent.getBoundingBox().maxY + ent.getBoundingBox().minY) / 2D < pos.getY() - 1 || face.getZOffset() < 0 && ent.posZ > pos.getZ() + 2 || face.getZOffset() > 0 && ent.posZ < pos.getZ() - 1);
     }
 }

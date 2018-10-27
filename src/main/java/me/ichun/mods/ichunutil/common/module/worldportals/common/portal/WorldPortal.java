@@ -198,9 +198,9 @@ public abstract class WorldPortal
             float offset = 0.0F; //should I test player width specifically?
             if(isAgainstWall() && ent instanceof EntityPlayer)
             {
-                offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
-                if(!scanRange.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(newEntPos) &&
-                        portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).contains(newEntPos) &&
+                offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getXOffset() + (flatPlane.minY - ent.posY) * faceOn.getYOffset() + (flatPlane.minZ - ent.posZ) * faceOn.getZOffset()));
+                if(!scanRange.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset).contains(newEntPos) &&
+                        portalInsides.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset).contains(newEntPos) &&
                         (faceOn.getAxis().isHorizontal() && ent.getEntityBoundingBox().minY >= flatPlane.minY && ent.getEntityBoundingBox().maxY <= flatPlane.maxY || faceOn.getAxis().isVertical()  && ent.getEntityBoundingBox().minX >= flatPlane.minX && ent.getEntityBoundingBox().maxX <= flatPlane.maxX  && ent.getEntityBoundingBox().minZ >= flatPlane.minZ && ent.getEntityBoundingBox().maxZ <= flatPlane.maxZ) // special casing cause of pushOutOfBlocks for player
                         )
                 {
@@ -240,7 +240,7 @@ public abstract class WorldPortal
 
                     ent.setPosition(ent.posX, ent.posY, ent.posZ);
                     double maxWidthHeight = Math.max(ent.width, ent.height);
-                    EntityHelper.putEntityWithinAABB(ent, pair.scanRange.expand(pair.getFaceOn().getFrontOffsetX() * -maxWidthHeight, pair.getFaceOn().getFrontOffsetY() * -maxWidthHeight, pair.getFaceOn().getFrontOffsetZ() * -maxWidthHeight));
+                    EntityHelper.putEntityWithinAABB(ent, pair.scanRange.expand(pair.getFaceOn().getXOffset() * -maxWidthHeight, pair.getFaceOn().getYOffset() * -maxWidthHeight, pair.getFaceOn().getZOffset() * -maxWidthHeight));
 
                     ent.motionX = appliedMotion[0];
                     ent.motionY = appliedMotion[1];
@@ -365,9 +365,9 @@ public abstract class WorldPortal
                     Vec3d particlePos = new Vec3d(particle.prevPosX, particle.prevPosY, particle.prevPosZ); //motion isn't accessible.
                     Vec3d newParticlePos = new Vec3d(particle.posX, particle.posY, particle.posZ);
 
-                    float offset = (float)Math.abs((particle.prevPosX - particle.posX) * faceOn.getFrontOffsetX() * 1.5D + (particle.prevPosY - particle.posY) * faceOn.getFrontOffsetY() * 1.5D + (particle.prevPosZ - particle.posZ) * faceOn.getFrontOffsetZ() * 1.5D);
+                    float offset = (float)Math.abs((particle.prevPosX - particle.posX) * faceOn.getXOffset() * 1.5D + (particle.prevPosY - particle.posY) * faceOn.getYOffset() * 1.5D + (particle.prevPosZ - particle.posZ) * faceOn.getZOffset() * 1.5D);
                     boolean isRain = particle instanceof ParticleRain && faceOn == EnumFacing.UP && scanRange.contains(particlePos);
-                    if(isRain || !portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).intersects(particle.getBoundingBox()) && portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset).intersects(particle.getBoundingBox().offset(particle.motionX, particle.motionY, particle.motionZ)))
+                    if(isRain || !portalInsides.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset).intersects(particle.getBoundingBox()) && portalInsides.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset).intersects(particle.getBoundingBox().offset(particle.motionX, particle.motionY, particle.motionZ)))
                     {
                         AxisAlignedBB teleportPlane = getTeleportPlane(offset);
 
@@ -421,7 +421,7 @@ public abstract class WorldPortal
                 if(ent.getEntityBoundingBox().intersects(portalInsides))
                 {
                     EnumFacing faceOn = getFaceOn();
-                    EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getFrontOffsetX() * 0.5D, faceOn.getFrontOffsetY() * 0.5D, faceOn.getFrontOffsetZ() * 0.5D));
+                    EntityHelper.putEntityWithinAABB(ent, flatPlane.offset(faceOn.getXOffset() * 0.5D, faceOn.getYOffset() * 0.5D, faceOn.getZOffset() * 0.5D));
                     ent.setPosition(ent.posX, ent.posY, ent.posZ);
                 }
                 WorldPortals.eventHandler.removeMonitoredEntity(ent, this);
@@ -471,7 +471,7 @@ public abstract class WorldPortal
         {
             plane = EntityHelper.rotateAABB(EnumFacing.Axis.X, plane, faceOn == EnumFacing.UP ? -90F : 90F, pos.x, pos.y, pos.z);
         }
-        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : faceOn.getAxis() == EnumFacing.Axis.Y && getUpDir().getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.x, pos.y, pos.z).offset(faceOn.getFrontOffsetX() * getPlaneOffset(), faceOn.getFrontOffsetY() * getPlaneOffset(), faceOn.getFrontOffsetZ() * getPlaneOffset());
+        plane = EntityHelper.rotateAABB(EnumFacing.Axis.Y, plane, faceOn.getAxis() == EnumFacing.Axis.X ? 90F : faceOn.getAxis() == EnumFacing.Axis.Y && getUpDir().getAxis() == EnumFacing.Axis.X ? 90F : 0F, pos.x, pos.y, pos.z).offset(faceOn.getXOffset() * getPlaneOffset(), faceOn.getYOffset() * getPlaneOffset(), faceOn.getZOffset() * getPlaneOffset());
         return plane;
     }
 
@@ -479,7 +479,7 @@ public abstract class WorldPortal
     {
         double max = Math.max(Math.max(ent.width, ent.height) + Math.sqrt(ent.motionX * ent.motionX + ent.motionY * ent.motionY + ent.motionZ * ent.motionZ), 1D);
         EnumFacing faceOn = getFaceOn();
-        return flatPlane.expand(faceOn.getFrontOffsetX() * -max, faceOn.getFrontOffsetY() * -max, faceOn.getFrontOffsetZ() * -max);
+        return flatPlane.expand(faceOn.getXOffset() * -max, faceOn.getYOffset() * -max, faceOn.getZOffset() * -max);
     }
 
     public AxisAlignedBB getPortalInsides(Entity ent)
@@ -487,8 +487,8 @@ public abstract class WorldPortal
         if(isAgainstWall() && ent instanceof EntityPlayer)
         {
             EnumFacing faceOn = getFaceOn();
-            float offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getFrontOffsetX() + (flatPlane.minY - ent.posY) * faceOn.getFrontOffsetY() + (flatPlane.minZ - ent.posZ) * faceOn.getFrontOffsetZ()));
-            return portalInsides.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
+            float offset = Math.min(0.05F, (float)Math.abs((flatPlane.minX - ent.posX) * faceOn.getXOffset() + (flatPlane.minY - ent.posY) * faceOn.getYOffset() + (flatPlane.minZ - ent.posZ) * faceOn.getZOffset()));
+            return portalInsides.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset);
         }
         return portalInsides;
     }
@@ -503,8 +503,8 @@ public abstract class WorldPortal
         EnumFacing faceOn = getFaceOn();
         plane = createPlaneAround(0.0125D);
         flatPlane = createPlaneAround(0);
-        scanRange = flatPlane.expand(faceOn.getFrontOffsetX() * getScanDistance(), faceOn.getFrontOffsetY() * getScanDistance(), faceOn.getFrontOffsetZ() * getScanDistance());
-        portalInsides = flatPlane.expand(faceOn.getFrontOffsetX() * -100D, faceOn.getFrontOffsetY() * -100D, faceOn.getFrontOffsetZ() * -100D);
+        scanRange = flatPlane.expand(faceOn.getXOffset() * getScanDistance(), faceOn.getYOffset() * getScanDistance(), faceOn.getZOffset() * getScanDistance());
+        portalInsides = flatPlane.expand(faceOn.getXOffset() * -100D, faceOn.getYOffset() * -100D, faceOn.getZOffset() * -100D);
     }
 
     public AxisAlignedBB getFlatPlane()
@@ -517,7 +517,7 @@ public abstract class WorldPortal
         if(offset != 0F)
         {
             EnumFacing faceOn = getFaceOn();
-            return flatPlane.offset(faceOn.getFrontOffsetX() * offset, faceOn.getFrontOffsetY() * offset, faceOn.getFrontOffsetZ() * offset);
+            return flatPlane.offset(faceOn.getXOffset() * offset, faceOn.getYOffset() * offset, faceOn.getZOffset() * offset);
         }
         return flatPlane;
     }
@@ -648,7 +648,7 @@ public abstract class WorldPortal
     public void readSelf(NBTTagCompound tag)
     {
         setSize(tag.getFloat("width"), tag.getFloat("height"));
-        setFace(EnumFacing.getFront(tag.getInteger("faceOn")), EnumFacing.getFront(tag.getInteger("up")));
+        setFace(EnumFacing.byIndex(tag.getInteger("faceOn")), EnumFacing.byIndex(tag.getInteger("up")));
         setPosition(new Vec3d(tag.getDouble("posX"), tag.getDouble("posY"), tag.getDouble("posZ")));
 
         time = tag.getInteger("time");
@@ -680,9 +680,9 @@ public abstract class WorldPortal
     public boolean shouldRenderFront(Entity viewer, float partialTicks) //TODO THIS
     {
         Vec3d position = RendererHelper.getCameraPosition(viewer, partialTicks);
-        return !getCullRender() || faceOn.getFrontOffsetX() < 0 && position.x < flatPlane.minX || faceOn.getFrontOffsetX() > 0 && position.x > flatPlane.minX ||
-                faceOn.getFrontOffsetY() < 0 && position.y < flatPlane.minY || faceOn.getFrontOffsetY() > 0 && position.y > flatPlane.minY ||
-                faceOn.getFrontOffsetZ() < 0 && position.z < flatPlane.minZ || faceOn.getFrontOffsetZ() > 0 && position.z > flatPlane.minZ;
+        return !getCullRender() || faceOn.getXOffset() < 0 && position.x < flatPlane.minX || faceOn.getXOffset() > 0 && position.x > flatPlane.minX ||
+                faceOn.getYOffset() < 0 && position.y < flatPlane.minY || faceOn.getYOffset() > 0 && position.y > flatPlane.minY ||
+                faceOn.getZOffset() < 0 && position.z < flatPlane.minZ || faceOn.getZOffset() > 0 && position.z > flatPlane.minZ;
     }
 
     @SideOnly(Side.CLIENT)

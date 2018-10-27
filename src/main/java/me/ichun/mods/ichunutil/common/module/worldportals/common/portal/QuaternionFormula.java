@@ -30,7 +30,7 @@ public class QuaternionFormula
 
     public static Quaternion getVerticalQuaternion(EnumFacing in)
     {
-        float vertAngle = in.getFrontOffsetY() * 90F * 0.99F;
+        float vertAngle = in.getYOffset() * 90F * 0.99F;
         Quaternion quat = verticalQuats.get(vertAngle);
         if(quat == null)
         {

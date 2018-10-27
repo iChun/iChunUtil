@@ -317,7 +317,7 @@ public class RenderGlobalProxy extends RenderGlobal
 
             for(RenderGlobal.ContainerLocalRenderInformation renderglobal$containerlocalrenderinformation : this.renderInfos)
             {
-                Chunk chunk = this.world.getChunkFromBlockCoords(renderglobal$containerlocalrenderinformation.renderChunk.getPosition());
+                Chunk chunk = this.world.getChunk(renderglobal$containerlocalrenderinformation.renderChunk.getPosition());
                 ClassInheritanceMultiMap<Entity> classinheritancemultimap = chunk.getEntityLists()[renderglobal$containerlocalrenderinformation.renderChunk.getPosition().getY() / 16];
 
                 if(!classinheritancemultimap.isEmpty())
@@ -535,10 +535,10 @@ public class RenderGlobalProxy extends RenderGlobal
     public boolean shouldRenderEntity(Entity ent, WorldPortal portal)
     {
         EnumFacing faceOn = portal.getFaceOn();
-        return portal.getPair() != null && !portal.getPair().getCullRender() || !(faceOn.getFrontOffsetX() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getFrontOffsetX() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
-                faceOn.getFrontOffsetY() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
-                faceOn.getFrontOffsetY() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
-                faceOn.getFrontOffsetZ() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getFrontOffsetZ() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
+        return portal.getPair() != null && !portal.getPair().getCullRender() || !(faceOn.getXOffset() < 0 && ent.getEntityBoundingBox().minX > portal.getFlatPlane().minX || faceOn.getXOffset() > 0 && ent.getEntityBoundingBox().maxX < portal.getFlatPlane().minX ||
+                faceOn.getYOffset() < 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D > portal.getFlatPlane().minY ||
+                faceOn.getYOffset() > 0 && (ent.getEntityBoundingBox().maxY + ent.getEntityBoundingBox().minY) / 2D < portal.getFlatPlane().minY ||
+                faceOn.getZOffset() < 0 && ent.getEntityBoundingBox().minZ > portal.getFlatPlane().minZ || faceOn.getZOffset() > 0 && ent.getEntityBoundingBox().maxZ < portal.getFlatPlane().minZ);
     }
 
     @Override

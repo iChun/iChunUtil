@@ -32,9 +32,9 @@ public class ResourceHelper
     @SideOnly(Side.CLIENT)
     public static void init()
     {
-        fileAssets = new File(Minecraft.getMinecraft().mcDataDir, "assets");
-        fileMods = new File(Minecraft.getMinecraft().mcDataDir, "mods");
-        fileConfig = new File(Minecraft.getMinecraft().mcDataDir, "config");
+        fileAssets = new File(Minecraft.getMinecraft().gameDir, "assets");
+        fileMods = new File(Minecraft.getMinecraft().gameDir, "mods");
+        fileConfig = new File(Minecraft.getMinecraft().gameDir, "config");
     }
 
     /**

@@ -325,7 +325,7 @@ public class ProjectInfo
                 InputStream inputstream = null;
                 try
                 {
-                    IResource iresource = Minecraft.getMinecraft().mcResourceManager.getResource(model.texture);
+                    IResource iresource = Minecraft.getMinecraft().resourceManager.getResource(model.texture);
                     inputstream = iresource.getInputStream();
                     bufferedTexture = ImageIO.read(inputstream);
 

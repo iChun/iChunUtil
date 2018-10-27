@@ -110,7 +110,7 @@ public class RendererHelper
                 {
                     GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 }
-                position = position.addVector(-d4, -d6, -d5);
+                position = position.add(-d4, -d6, -d5);
             }
         }
         return position;

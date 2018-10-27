@@ -369,7 +369,7 @@ public class EntityHelper
     {
         Vec3d vec3 = getEntityPositionEyes(ent, renderTick);
         Vec3d vec31 = ent.getLook(renderTick);
-        Vec3d vec32 = vec3.addVector(vec31.x * d, vec31.y * d, vec31.z * d);
+        Vec3d vec32 = vec3.add(vec31.x * d, vec31.y * d, vec31.z * d);
 
         RayTraceResult rayTrace = rayTraceBlocks(ent.getEntityWorld(), d, vec3, vec32, !ignoreLiquid, ignoreTransparentBlocks, false, true);
 

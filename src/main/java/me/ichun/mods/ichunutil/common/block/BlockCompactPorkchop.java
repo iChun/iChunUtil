@@ -28,7 +28,7 @@ public class BlockCompactPorkchop extends Block
         setHardness(0.8F);
 
         setRegistryName(new ResourceLocation("ichunutil", "compact_porkchop"));
-        setUnlocalizedName("ichunutil.block.compactporkchop");
+        setTranslationKey("ichunutil.block.compactporkchop");
     }
 
     //For ObfHelper use to check

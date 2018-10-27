@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.common.core.util;
 
 import me.ichun.mods.ichunutil.common.iChunUtil;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.security.MessageDigest;
