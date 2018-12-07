@@ -88,7 +88,7 @@ public class CubeInfo
         {
             child.modelCube = new ModelRenderer(base, child.txOffset[0], child.txOffset[1]);
             child.modelCube.mirror = child.txMirror;
-            child.modelCube.addBox((float)child.offset[0], (float)child.offset[1], (float)child.offset[2], child.dimensions[0], child.dimensions[1], child.dimensions[2]);
+            child.modelCube.addBox((float)child.offset[0], (float)child.offset[1], (float)child.offset[2], child.dimensions[0], child.dimensions[1], child.dimensions[2], (float)child.mcScale);
             child.modelCube.setRotationPoint((float)child.position[0], (float)child.position[1], (float)child.position[2]);
             child.modelCube.rotateAngleX = (float)Math.toRadians(child.rotation[0]);
             child.modelCube.rotateAngleY = (float)Math.toRadians(child.rotation[1]);
