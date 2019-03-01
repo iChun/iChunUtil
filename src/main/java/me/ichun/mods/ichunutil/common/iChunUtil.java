@@ -83,6 +83,10 @@ public class iChunUtil
         @IntBool
         public int enableStencils = 1;
 
+        @ConfigProp(category = "clientOnly", side = Side.CLIENT)
+        @IntBool
+        public int enableLatchedRendererSpawn = 1;
+
         //Modules
         //Compact Porkchop module
         @ConfigProp(module = "compactPorkchop", category = "block", useSession = true)

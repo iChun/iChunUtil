@@ -79,7 +79,7 @@ public class EntityLatchedRenderer extends Entity
     @Override
     public boolean isInRangeToRenderDist(double distance)
     {
-        return latchedEnt.isInRangeToRenderDist(distance);
+        return latchedEnt != null && latchedEnt.isInRangeToRenderDist(distance);
     }
 
     public void updatePos()

@@ -49,7 +49,7 @@ public class EntityTrackerHandler
             EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
             if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
             {
-                if(latchedRenderer.isDead || (iChunUtil.eventHandlerClient.ticks - latchedRenderer.lastUpdate) > 10)//latcher died/stopped updating, kill it replace with new one.
+                if(latchedRenderer.isDead || (iChunUtil.eventHandlerClient.ticks - latchedRenderer.lastUpdate) > 10 && !Minecraft.getMinecraft().isGamePaused())//latcher died/stopped updating, kill it replace with new one.
                 {
                     latchedRenderer.setDead();
                     latchedRendererEntities.remove(i);
@@ -59,6 +59,8 @@ public class EntityTrackerHandler
                     latchedRendererEntities.add(newLatchedRenderer);
                     newLatchedRenderer.maxDeathPersistTime = latchedRenderer.maxDeathPersistTime;
                     newLatchedRenderer.currentDeathPersistTime = latchedRenderer.currentDeathPersistTime;
+
+                    latchedRenderer.latchedEnt = null;
                 }
                 else
                 {
@@ -69,6 +71,8 @@ public class EntityTrackerHandler
             {
                 latchedRenderer.setDead();
                 latchedRendererEntities.remove(i);
+
+                latchedRenderer.latchedEnt = null;
             }
         }
     }
@@ -86,7 +90,7 @@ public class EntityTrackerHandler
 
     public static void onEntitySpawn(EntityJoinWorldEvent event)
     {
-        if(event.getEntity().world.isRemote && (event.getEntity() instanceof EntityPlayer || event.getEntity() instanceof EntityZombie && angelZombies))
+        if(iChunUtil.config.enableLatchedRendererSpawn == 1 && event.getEntity().world.isRemote && (event.getEntity() instanceof EntityPlayer || event.getEntity() instanceof EntityZombie && angelZombies))
         {
             EntityLatchedRenderer latchedRenderer = new EntityLatchedRenderer(event.getEntity().world, event.getEntity());
             event.getEntity().world.spawnEntity(latchedRenderer);
