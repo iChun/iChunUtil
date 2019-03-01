@@ -28,6 +28,7 @@ import java.util.List;
 
 @Mod(modid = iChunUtil.MOD_ID, name = iChunUtil.MOD_NAME,
         version = iChunUtil.VERSION,
+        certificateFingerprint = iChunUtil.CERT_FINGERPRINT,
         guiFactory = iChunUtil.GUI_CONFIG_FACTORY,
         dependencies = "required-after:forge@[" + iChunUtil.REQ_FORGE_MAJOR + "." + iChunUtil.REQ_FORGE_MINOR + "." + iChunUtil.REQ_FORGE_REVISION + "." + iChunUtil.REQ_FORGE_BUILD + ",99999." + (iChunUtil.REQ_FORGE_MINOR + 1) + ".0.0)",
         acceptableRemoteVersions = "[" + iChunUtil.VERSION_MAJOR + "." + iChunUtil.VERSION_MINOR + ".0," + iChunUtil.VERSION_MAJOR + "." + (iChunUtil.VERSION_MINOR + 1) + ".0)",
@@ -45,6 +46,8 @@ public class iChunUtil
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
+
+    public static final String CERT_FINGERPRINT = "4db5c2bd1b556f252a5b8b54b256d381b2a0a6b8";
 
     public static final int REQ_FORGE_MAJOR = 12;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;

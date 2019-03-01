@@ -78,5 +78,20 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 
+// sign jar
+task signJar(type: SignJar, dependsOn: reobfJar) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+
+    keyStore = project.properties.keyStore
+    alias = project.properties.keyStoreAlias
+    storePass = project.properties.keyStorePass
+    keyPass = project.properties.keyStoreKeyPass
+}
+
 // make sure all of these happen when we run build
-build.dependsOn sourceJar, deobfJar, apiJar
+build.dependsOn sourceJar, deobfJar, apiJar, signJar
