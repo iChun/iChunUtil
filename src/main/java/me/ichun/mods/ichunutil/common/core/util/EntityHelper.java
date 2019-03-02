@@ -225,7 +225,7 @@ public class EntityHelper
                 return getHurtSound(ent, clz.getSuperclass(), source);
             }
         }
-        catch(Exception e)
+        catch(Throwable e)
         {
             e.printStackTrace();
         }
@@ -247,7 +247,7 @@ public class EntityHelper
                 return getDeathSound(ent, clz.getSuperclass());
             }
         }
-        catch(Exception e)
+        catch(Throwable e)
         {
             e.printStackTrace();
         }
@@ -269,7 +269,7 @@ public class EntityHelper
                 setSize(clz.getSuperclass(), ent, width, height);
             }
         }
-        catch(Exception e)
+        catch(Throwable e)
         {
             e.printStackTrace();
         }

@@ -78,7 +78,6 @@ public class EventHandlerServer
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    //TODO NOTE THAT THIS DOES NOT TRIGGER FOR WHEN CLIENT LEAVES THE END. FIX IS ONLY IN 1.11
     public void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
     {
         ArrayList<GrabHandler> handlers = GrabHandler.getHandlers(event.player, Side.SERVER);

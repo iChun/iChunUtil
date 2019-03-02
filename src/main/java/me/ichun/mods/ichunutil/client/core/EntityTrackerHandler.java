@@ -47,7 +47,7 @@ public class EntityTrackerHandler
         for(int i = latchedRendererEntities.size() - 1; i >= 0; i--) //Check the latched renderers
         {
             EntityLatchedRenderer latchedRenderer = latchedRendererEntities.get(i);
-            if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
+            if(latchedRenderer.latchedEnt != null && (!latchedRenderer.latchedEnt.isDead && latchedRenderer.latchedEnt.addedToChunk || !latchedRenderer.latchedEnt.isEntityAlive() && latchedRenderer.maxDeathPersistTime > 0 && latchedRenderer.currentDeathPersistTime < latchedRenderer.maxDeathPersistTime)) //latched ent exists and is alive and well, or is persisting post-death
             {
                 if(latchedRenderer.isDead || (iChunUtil.eventHandlerClient.ticks - latchedRenderer.lastUpdate) > 10 && !Minecraft.getMinecraft().isGamePaused())//latcher died/stopped updating, kill it replace with new one.
                 {
