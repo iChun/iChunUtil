@@ -94,7 +94,7 @@ public class ModelBaseWrapper implements IBakedModel
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
     {
-        if(side != null || !Tessellator.getInstance().getBuffer().isDrawing) //we're not drawing right now... don't do anything.
+        if(side != null || !Tessellator.getInstance().getBuffer().isDrawing && !net.minecraftforge.common.ForgeModContainer.allowEmissiveItems) //we're not drawing right now... don't do anything.
         {
             return DUMMY_LIST;
         }
@@ -103,10 +103,14 @@ public class ModelBaseWrapper implements IBakedModel
 
         if(!disableRender)
         {
-            //Render the model
             Tessellator tessellator = Tessellator.getInstance();
-            tessellator.draw();
+            boolean isDrawing = tessellator.getBuffer().isDrawing;
+            if(isDrawing) //terminate the drawing of the tessellator
+            {
+                tessellator.draw();
+            }
 
+            //Render the model
             GlStateManager.pushMatrix();
             GlStateManager.translate(0.5D, 0.5D, 0.5D);
             GlStateManager.scale(-1.0F, -1.0F, 1.0F);
@@ -123,8 +127,11 @@ public class ModelBaseWrapper implements IBakedModel
             lastStack = null;
             lastEntity = null;
 
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(7, defaultVertexFormat);
+            if(isDrawing) //restart the drawing of the tessellator
+            {
+                BufferBuilder bufferbuilder = tessellator.getBuffer();
+                bufferbuilder.begin(7, defaultVertexFormat);
+            }
         }
 
         return DUMMY_LIST;

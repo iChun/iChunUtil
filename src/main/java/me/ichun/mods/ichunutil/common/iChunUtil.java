@@ -42,17 +42,17 @@ public class iChunUtil
     public static final String MC_VERSION_RANGE = "[1.12,1.13)";
     public static final int VERSION_MAJOR = 7;
     public static final int VERSION_MINOR = 2;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".0";
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
 
     public static final String CERT_FINGERPRINT = "4db5c2bd1b556f252a5b8b54b256d381b2a0a6b8";
 
-    public static final int REQ_FORGE_MAJOR = 12;
+    public static final int REQ_FORGE_MAJOR = 14;
     public static final int REQ_FORGE_MINOR = ForgeVersion.minorVersion;
-    public static final int REQ_FORGE_REVISION = 2;
-    public static final int REQ_FORGE_BUILD = 2151;
+    public static final int REQ_FORGE_REVISION = 5;
+    public static final int REQ_FORGE_BUILD = 2781;
 
     public static final Logger LOGGER = Logger.createLogger(MOD_NAME);
 
