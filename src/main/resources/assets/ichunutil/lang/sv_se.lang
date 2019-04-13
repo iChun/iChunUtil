@@ -1,0 +1,105 @@
+ichunutil.config.cat.general.name=Allmänna alternativ
+ichunutil.config.cat.gameplay.name=Spelbeteende
+ichunutil.config.cat.globalOptions.name=Globala alternativ
+ichunutil.config.cat.serverOptions.name=Serveralternativ
+ichunutil.config.cat.clientOnly.name=Klientalternativ
+ichunutil.config.cat.block.name=Block
+
+ichunutil.config.cat.general.comment=Dessa inställningar är allmänna alternativ\nsom inte passar in i någon annan kategori.
+ichunutil.config.cat.gameplay.comment=Dessa inställningar påverkar spelets beteende när modden används.
+ichunutil.config.cat.globalOptions.comment=Dessa inställningar påverkar både servrar och klienter som läser in modden.
+ichunutil.config.cat.serverOptions.comment=Dessa inställningar påverkar endast servern som läser in modden.
+ichunutil.config.cat.clientOnly.comment=Dessa inställningar påverkar endast klienten som läser in modden.\nOm du letar efter kortkommandon, finns de i ichunutil_keybinds.cfg.
+ichunutil.config.cat.block.comment=Dessa inställningar påverkar moddens block.
+
+ichunutil.config.cat.keybind.name=Kortkommandon
+ichunutil.config.cat.keybind.comment=Om du läser detta i konfigurationsfilen skulle jag rekommendera att\ndu ändrar kortkommandon i spelet. iChunUtil använder anpassade\nkortkommandon. Gå till sidan Kontroller och klicka längst ned till höger.\n\nOm du verkligen måste redigera konfigurationsfilen är formatet\n<tangentkod> följt av antingen ":SHIFT", ":CTRL" eller ":ALT" för\ntangenter du vill hålla ned samtidigt.\nFör tangentkoder, gå till: http://minecraft.gamepedia.com/Key_codes \nT.ex.: 48:SHIFT:ALT kommer binda till tangenten B när du håller ned\nShift och Alt (på ett QWERTY-tangentbord).
+ichunutil.config.cat.keybind.tip1=Dessa kortkommandon kan kombinera Shift, Ctrl och Alt
+ichunutil.config.cat.keybind.tip2=Försök att hålla ned dem när du ändrar ett kortkommando
+ichunutil.config.cat.keybind.tip3=Om du vill binda Shift/Ctrl/Alt, håll ned dem i 3 sekunder. Den sista tangenten som hålls ned kommer att bindas.
+
+ichunutil.config.prop.enableStencils.name=Aktivera stenciler
+ichunutil.config.prop.enableLatchedRendererSpawn.name=LatchedRendererSpawn
+
+ichunutil.config.prop.enableStencils.comment=Ändra detta till 0 om du kraschar när spelet startas\neftersom du inte har aktiverat stenciler.
+ichunutil.config.prop.enableLatchedRendererSpawn.comment=Ändra detta till 0 om du upplever att iChunUtil skapar många\ninstanser av dessa entiteter och orsakar lagg. Kan påverka\nnågra av mina moddar. Jag har inte kunnat lokalisera\nproblemet, men ignorera denna inställning om du inte får\nnågra minnesrelaterade fel.
+
+ichunutil.config.cat.module.compactPorkchop.name=Kompakt fläskkotlett
+ichunutil.config.cat.module.compactPorkchop.comment=Konfigurationer för modulen till det kompakta fläskkotlettsblocket i iChunUtil.
+ichunutil.config.prop.enableCompactPorkchop.name=Aktivera recept
+ichunutil.config.prop.enableCompactPorkchop.comment=Om receptet för det kompakta råa fläskkotlettsblocket ska aktiveras.
+
+ichunutil.config.cat.module.eula.name=Licensvillkor
+ichunutil.config.cat.module.eula.comment=Licensvillkorsinställningar.
+ichunutil.config.prop.eulaAcknowledged.name=Licensvillkorsgodkännande
+ichunutil.config.prop.eulaAcknowledged.comment=Sträng som berättar om du har godkänt licensvillkoren.\nOm denna konfiguration gäller för en server, ändra detta till "true".
+
+ichunutil.config.cat.module.patreon.name=Patreon
+ichunutil.config.cat.module.patreon.comment=Patreon-relaterade konfigurationer.
+ichunutil.config.prop.showPatronReward.name=Visa Patron-belöning
+ichunutil.config.prop.patronRewardType.name=Patron-belöningstyp
+ichunutil.config.prop.showPatronReward.comment=Om din Patron-belöning ska synas för andra spelare.
+ichunutil.config.prop.patronRewardType.comment=Vilken Patron-belöning vill du se?\n1 = Voxelaura\n2 = Gristryne\n3 = Spökpartiklar\n4 = Bi som surrar runtomkring ditt huvud (hyllning till Bee Barker)\n5 = Eldpartiklar med överdriven sprint, eldspår när du flyger med elytra\n6 = Änglalik
+
+ichunutil.config.cat.module.versionCheck.name=Uppdateringskontroll
+ichunutil.config.cat.module.versionCheck.comment=Dessa konfigurationer är till för att leta\nefter nya modversioner i iChuns moddar.
+ichunutil.config.prop.versionNotificationTypes.name=Notifikationstyp
+ichunutil.config.prop.versionNotificationFrequency.name=Notifikationsfrekvens
+ichunutil.config.prop.versionSave.name=Uppdateringssparande
+ichunutil.config.prop.versionNotificationTypes.comment=Hur ofta KLIENTEN ska meddela om uppdateringar.\n(Servrar kommer alltid få uppdateringsmeddelanden\ni konsolen. Enspelarläge innebär att du själv ansluter\ntill en server som körs på din dator)\n0 = Meddela om uppdateringar oavsett spelarstatus.\n1 = Meddela endast kommandoskickare om uppdateringar\n(Endast moduppdateringar för klientsidan kommer\nfortfarande visas)\n2 = Meddela inte
+ichunutil.config.prop.versionNotificationFrequency.comment=Hur ofta man ska meddelas om uppdateringen. (Klientkonfiguration)\n0 = Aldrig (Detta döljer bara notifikationer. Modden kommer\nfortfarande leta efter uppdateringar och skriva det i konsolen)\n1 = När man ansluter till servern\n2 = En gång per dag
+ichunutil.config.prop.versionSave.comment=Ändra inte detta.
+
+ichunutil.config.cat.module.headTracking.name=Huvudmodellspårning
+ichunutil.config.cat.module.headTracking.comment=Konfigurationer för spårning av huvudmodell.\nAnvänds av Googly Eyes och så småningom Hats.
+ichunutil.config.prop.aggressiveHeadTracking.name=Aggressiv huvudspårning
+ichunutil.config.prop.aggressiveHeadTracking.comment=Om huvudmodellen ska spåras aggressivt för att försöka åtgärda\nfelaktig huvudspårning som kan orsakas av konflikterande moddar.\n1 = Alla entiteter\n2 = Endast spelare
+ichunutil.config.prop.horseEasterEgg.name=Aktivera påskägg
+ichunutil.config.prop.horseEasterEgg.comment=Aktiverar påskägget där Hats sätter hattar på bakdelen för hästar och lamor.
+
+ichunutil.config.cat.module.worldPortals.name=Världsportaler
+ichunutil.config.cat.module.worldPortals.comment=Världsportalsrelaterade konfigurationer.
+ichunutil.config.prop.maxRecursion.name=Maximal rekursion
+ichunutil.config.prop.stencilValue.name=Stencilvärde
+ichunutil.config.prop.renderDistanceChunks.name=Renderingsavstånd (datablock)
+ichunutil.config.prop.maxRendersPerTick.name=Max. antal renderingar per bildruta
+ichunutil.config.prop.maxRecursion.comment=Maximal rekursion för världsportaler. Ändra till 0 för att inaktivera världsportalsrendering.\n\nVarning! Ju högre detta är, desto mer rekursion och försämrad bildfrekvens!
+ichunutil.config.prop.stencilValue.comment=Stenciler använder ett specifikt värde för att se om renderingen är vår eller inte.\n\nOm du upplever renderingsfel och det hjälper inte att ändra detta, kanske en mod ligger i konflikt med denna. Ta reda på vilken mod det är och informera författaren bakom denna mod och mig (iChun).
+ichunutil.config.prop.renderDistanceChunks.comment=Ändrar renderingsavståndet för varje världsportal (efter datablock) om det inte överskrids av världsportalen.\n\nNär detta är 0 används Minecrafts standardinställningar.
+ichunutil.config.prop.maxRendersPerTick.comment=Maximalt antal världsportalsrenderingar per bildruta.\nDetta kommer att begränsa antalet renderingar per tick trots inställningen maxRecursion.\nDet är här som man hoppas att din bildfrekvens inte sjunker om du råkar vara på fel plats vid fel tidpunkt.
+
+ichunutil.gui.newUpdate=Moduppdatering tillgänglig!
+
+ichunutil.config.gui.options=Alternativ
+ichunutil.config.gui.needsRestart=En del ändringar kräver att klienten startar om eller återansluter till servern
+ichunutil.config.gui.setKeyBind=Ändra kortkommando
+ichunutil.config.gui.hitKeys=Ändrar tangent...  Det är valfritt att hålla ned SHIFT/CTRL/ALT
+ichunutil.config.gui.setStringArray=Ändra strängarray
+ichunutil.config.gui.setIntArray=Ändra heltalsarray
+ichunutil.config.gui.setNestedIntArray=Ändra listformad heltalsarray
+
+ichunutil.config.controls.moreKeys=Kortkommandon för iChunUtil - Klicka här
+
+ichunutil.eula.message=Genom att använda iChunUtil samtycker du alltså till moddens licensvillkor. Den finns i moddens jar-fil. Den senaste versionen kommer att vara tillgänglig på iChuns webbplats eller på GitHub.
+ichunutil.eula.messageServer=Du kan inaktivera detta konsolmeddelande genom att gå till konfigurationen för iChunUtil och ändra "eulaAcknowledged" till "true" (utan citationstecken).
+ichunutil.eula.toast1=Genom att använda iChunUtil
+ichunutil.eula.toast2=samtycker du till dessa licensvillkor
+
+element.minimize=Minimera
+element.expand=Utvidga
+
+element.button.ok=OK
+element.button.cancel=Avbryt
+element.button.clear=Rensa
+
+window.popup.title=Observera!
+
+window.saveAs.title=Spara som
+window.saveAs.fileName=Filnamn
+window.saveAs.overwrite=Vill du skriva över?
+window.saveAs.confirmOverwrite=Filen finns redan! Vill du skriva över?
+window.saveAs.failed=Misslyckades att spara filen.
+
+tile.ichunutil.block.compactporkchop.name=Kompakt rå fläskkotlett 
+
+entity.EntityBlock.name=Blockentitet
