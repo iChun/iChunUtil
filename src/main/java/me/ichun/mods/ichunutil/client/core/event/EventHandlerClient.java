@@ -301,7 +301,7 @@ public class EventHandlerClient
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post event)
     {
-        if(!hasShownFirstGui)
+        if(iChunUtil.hasPostInit() && !hasShownFirstGui) //TODO do we still need this event even? can't we just call our stuff at post-init?
         {
             hasShownFirstGui = true;
             MinecraftForge.EVENT_BUS.post(new RendererSafeCompatibilityEvent());
