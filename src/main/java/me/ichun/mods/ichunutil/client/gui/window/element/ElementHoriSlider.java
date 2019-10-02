@@ -52,6 +52,11 @@ public class ElementHoriSlider extends Element
 
         if(parent.workspace.elementDragged == this && Mouse.isButtonDown(0) && mouseX >= posX && mouseX <= posX + width && mouseY >= posY && mouseY <= posY + height)
         {
+            if(parent.workspace.elementSelected != null && parent.workspace.elementSelected != this)
+            {
+                parent.workspace.elementSelected.deselected();
+            }
+
             double sx1 = posX + 4;
             double sx2 = posX + width - 8;
             sliderProg = MathHelper.clamp((double)(mouseX - sx1) / (double)(sx2 - sx1), 0.0D, 1.0D);

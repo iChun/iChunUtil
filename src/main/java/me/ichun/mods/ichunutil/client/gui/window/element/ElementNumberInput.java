@@ -126,7 +126,7 @@ public class ElementNumberInput extends Element implements ITextInput
 
                 if(id == 1)
                 {
-                    textFields.get(selectedTextField).setText("");
+                    textFields.get(selectedTextField).setText(""); //TODO make is so you can do getNumber rather than getText
                 }
                 break;
             }
