@@ -18,12 +18,12 @@ compileJava {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-version = "1.12.2-7.2.1"
+version = "1.12.2-7.2.2"
 group = "me.ichun"
 archivesBaseName = "iChunUtil"
 
 minecraft {
-    version = "1.12.2-14.23.5.2815"
+    version = "1.12.2-14.23.5.2847"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.

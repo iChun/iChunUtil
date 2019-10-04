@@ -42,7 +42,7 @@ public class iChunUtil
     public static final String MC_VERSION_RANGE = "[1.12,1.13)";
     public static final int VERSION_MAJOR = 7;
     public static final int VERSION_MINOR = 2;
-    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".1";
+    public static final String VERSION = VERSION_MAJOR + "." + VERSION_MINOR + ".2";
 
     public static final String MOD_NAME = "iChunUtil";
     public static final String MOD_ID = "ichunutil";
@@ -236,6 +236,15 @@ public class iChunUtil
                     UpdateChecker.registerMod(new UpdateChecker.ModVersionInfo(split[0], split[1], split[2], split[3].equalsIgnoreCase("true")));
                 }
             }
+        }
+    }
+
+    @Mod.EventHandler
+    public void onFingerprintViolation(FMLFingerprintViolationEvent event)
+    {
+        if(event.getSource() != null && event.getSource().isFile())
+        {
+            LOGGER.warn("The file " + event.getSource().getName() + " has been modified. Support for the mod will not be provided.");
         }
     }
 
