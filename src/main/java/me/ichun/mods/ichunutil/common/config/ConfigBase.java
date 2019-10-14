@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.common.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -21,7 +20,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public abstract class ConfigBase
-    implements Comparable<ConfigBase>
+        implements Comparable<ConfigBase>
 {
     @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER.
     public static final Set<ConfigBase> configs = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
@@ -31,6 +30,11 @@ public abstract class ConfigBase
     private final @Nonnull HashSet<String> reveal = new HashSet<>();
 
     private ModConfig config; //our mod config
+
+    public ConfigBase()
+    {
+        this(ModLoadingContext.get().getActiveContainer().getModId() + ".toml");
+    }
 
     public ConfigBase(@Nonnull String pathName)
     {
@@ -52,7 +56,7 @@ public abstract class ConfigBase
             }
         }
 
-        if(!lastCat[0].isEmpty()) //we pushed a category. I needs to be popped.
+        if(!lastCat[0].isEmpty()) //we pushed a name. I needs to be popped.
         {
             configBuilder.pop();
         }
@@ -101,14 +105,30 @@ public abstract class ConfigBase
         if(field.isAnnotationPresent(CategoryDivider.class))
         {
             CategoryDivider divider =  field.getAnnotation(CategoryDivider.class);
-            if(!divider.category().isEmpty())
+            if(!divider.name().isEmpty())
             {
                 if(!lastCat[0].isEmpty())
                 {
                     builder.pop();
                 }
-                lastCat[0] = divider.category();
-                builder.comment(divider.comment()).push(lastCat[0]);
+                lastCat[0] = divider.name();
+                if(!divider.comment().equals("undefined")) //not undefined //TODO if ever localizable, localize these
+                {
+                    builder.comment(divider.comment());
+                }
+                else if(divider.name().equals("general")) //undefined, but we're in a set category, default to generics
+                {
+                    builder.comment("These options are general options that don't fit any other category.");
+                }
+                else if(divider.name().equals("gameplay")) //undefined, but we're in a set category, default to generics
+                {
+                    builder.comment("These options affect the gameplay while using the mod.");
+                }
+                builder.push(lastCat[0]);
+            }
+            else
+            {
+                throw new RuntimeException("WHY are you defining AN EMPTY CATEGORY?!");
             }
         }
 
@@ -147,6 +167,10 @@ public abstract class ConfigBase
         if(!props.comment().equals("undefined"))
         {
             builder.comment(props.comment());
+        }
+        else if(iChunUtil.isDevEnvironemnt())
+        {
+            iChunUtil.LOGGER.warn("Property is not commented: " + fieldName); //TODO switch this over to localization?
         }
         builder.translation("config." + getModId() + ".prop." + fieldName + ".desc");
 
@@ -248,26 +272,39 @@ public abstract class ConfigBase
 
     public abstract @Nonnull String getModId();
     public abstract @Nonnull String getConfigName();
-    public ModConfig.Type getConfigType()
+    public @Nonnull ModConfig.Type getConfigType()
     {
         return ModConfig.Type.COMMON;
     }
 
     private void onConfigLoad(ModConfig.Loading event)
     {
-        if(event.getConfig().getFileName().equals(fileName));
+        if(event.getConfig().getFileName().equals(fileName))
         {
             checkForChanges();
+            onConfigLoaded();
         }
     }
 
     private void onConfigReload(ModConfig.ConfigReloading event)
     {
-        if(event.getConfig().getFileName().equals(fileName));
+        if(event.getConfig().getFileName().equals(fileName))
         {
             checkForChanges();
+            onConfigLoaded();
         }
     }
+
+    /**
+     * @param file true if changes were from file
+     * @param name name of the config/field
+     * @param field our field that was changed
+     * @param oldObj old config object
+     * @param newObj new config object
+     */
+    public void onConfigChanged(boolean file, String name, Field field, Object oldObj, Object newObj){}
+
+    public void onConfigLoaded(){}
 
     private void checkForChanges()
     {
@@ -323,9 +360,11 @@ public abstract class ConfigBase
             {
                 try
                 {
+                    Object old = lastObj;
                     lastObj = configValue.get();
                     field.setAccessible(true);
                     field.set(parent, lastObj);
+                    parent.onConfigChanged(true, field.getName(), field, old, lastObj);
                 }
                 catch(IllegalAccessException e)
                 {
@@ -342,8 +381,10 @@ public abstract class ConfigBase
                 Object o = field.get(parent);
                 if(o != lastObj)
                 {
+                    Object old = lastObj;
                     lastObj = (T)o;
                     configValue.set(lastObj);
+                    parent.onConfigChanged(false, field.getName(), field, old, lastObj);
                     return configValue;
                 }
             }

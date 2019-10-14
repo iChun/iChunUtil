@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface CategoryDivider
 {
-    String category() default "general"; //localization defaults to config.<modid>.cat.<category>.desc
+    String name() default "general"; //localization defaults to config.<modid>.cat.<name>.desc
 
     String comment() default "undefined"; //Unlocalized comment
 }
