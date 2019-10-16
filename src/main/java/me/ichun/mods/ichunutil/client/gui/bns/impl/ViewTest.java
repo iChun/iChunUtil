@@ -38,6 +38,12 @@ public class ViewTest extends View<WindowTest>
         e.setConstraint(new Constraint(e).top(this, Constraint.Property.Type.TOP, 40).bottom(this, Constraint.Property.Type.BOTTOM, 40));
         elements.add(e);
 
-        //TODO test both constraints on one axis
+        e = new ElementTextField(this).setDefaultText("TEstText");
+        e.setWidth(100);
+        e.setConstraint(new Constraint(e).left(this, Constraint.Property.Type.LEFT, 30)
+                .right(this, Constraint.Property.Type.RIGHT, 30).bottom(this, Constraint.Property.Type.BOTTOM, 20)
+//                .top(this, Constraint.Property.Type.TOP, 40)
+        );
+        elements.add(e);
     }
 }

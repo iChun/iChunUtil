@@ -125,6 +125,11 @@ public abstract class Fragment<M extends Fragment>
         RenderHelper.endGlScissor();
     }
 
+    public void fill(int[] colours, int border)
+    {
+        RenderHelper.drawColour(colours[0], colours[1], colours[2], 255, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
+    }
+
     public @Nullable String tooltip(double mouseX, double mouseY)
     {
         return null;
@@ -171,6 +176,11 @@ public abstract class Fragment<M extends Fragment>
     @Override
     public void setFocused(@Nullable IGuiEventListener iGuiEventListener)
     {
+        IGuiEventListener lastFocused = getFocused();
+        if(lastFocused instanceof Fragment && iGuiEventListener != lastFocused)
+        {
+            ((Fragment)lastFocused).unfocus(iGuiEventListener);
+        }
         focused = iGuiEventListener;
     }
 
@@ -196,7 +206,11 @@ public abstract class Fragment<M extends Fragment>
     {
         if(isMouseOver(mouseX, mouseY)) //only return true if we're clicking on us
         {
-            INestedGuiEventHandler.super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
+            boolean hasElement = INestedGuiEventHandler.super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
+            if(!hasElement && getFocused() instanceof Fragment)
+            {
+                setFocused(null);
+            }
             return true;
         }
         return false;

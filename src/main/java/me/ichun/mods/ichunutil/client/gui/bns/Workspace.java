@@ -104,13 +104,18 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void tick()
     {
-        windows.forEach(window -> window.tick());
+        windows.forEach(Fragment::tick);
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
+        boolean oldStyle = renderMinecraftStyle;
         renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
+        if(oldStyle != renderMinecraftStyle)
+        {
+            windows.forEach(window -> window.resize(minecraft, width, height));
+        }
 
         GlStateManager.enableAlphaTest();
         renderBackground();

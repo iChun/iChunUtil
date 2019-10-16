@@ -134,7 +134,7 @@ public abstract class Window<M extends IWindows> extends Fragment
         }
         else
         {
-            RenderHelper.drawColour(getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, getLeft(), getTop(), width, height, 0);
+            fill(getTheme().windowBorder, 0);
         }
     }
 
@@ -238,6 +238,7 @@ public abstract class Window<M extends IWindows> extends Fragment
                 }
                 resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
             }
+            return true; //drag is handled
         }
         return super.mouseDragged(mouseX, mouseY, button, distX, distY);
     }

@@ -47,7 +47,7 @@ public class ElementCheckbox extends ElementClickable<View>
         }
         else
         {
-            RenderHelper.drawColour(getTheme().elementButtonBorder[0], getTheme().elementButtonBorder[1], getTheme().elementButtonBorder[2], 255, getLeft(), getTop(), width, height, 0);
+            fill(getTheme().elementButtonBorder, 0);
             int[] colour;
             if(parentFragment.isDragging() && parentFragment.getFocused() == this)
             {
@@ -61,7 +61,7 @@ public class ElementCheckbox extends ElementClickable<View>
             {
                 colour = getTheme().elementButtonBackgroundInactive;
             }
-            RenderHelper.drawColour(colour[0], colour[1], colour[2], 255, getLeft() + 1, getTop() + 1, width - 2, height - 2, 0);
+            fill(colour, 1);
         }
         if(toggleState)
         {

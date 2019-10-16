@@ -45,10 +45,7 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
-    {
-
-    }
+    public void render(int mouseX, int mouseY, float partialTick){}
 
     public void resize(Minecraft mc, int width, int height)
     {

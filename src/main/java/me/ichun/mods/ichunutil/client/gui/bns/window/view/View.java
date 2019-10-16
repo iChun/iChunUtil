@@ -64,7 +64,7 @@ public abstract class View<M extends Window> extends Fragment
         {
             int width = getRight() - getLeft();
             int height = getBottom() - getTop();
-            RenderHelper.drawColour(getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, getLeft(), getTop(), width, height, 0);
+            fill(getTheme().windowBackground, 0);
         }
         //render attached elements
         for(Element element : elements)
