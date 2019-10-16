@@ -80,4 +80,19 @@ public abstract class View<M extends Window> extends Fragment
         constraint.apply();
         elements.forEach(element -> element.resize(mc, this.width, this.height));
     }
+
+    @Override
+    public boolean changeFocus(boolean direction)
+    {
+        if(parentFragment.getFocused() == this)
+        {
+            boolean flag = super.changeFocus(direction);
+            if(!flag)
+            {
+                flag = super.changeFocus(direction);
+            }
+            return flag;
+        }
+        return false; //we're not focused anyway, so, nah
+    }
 }

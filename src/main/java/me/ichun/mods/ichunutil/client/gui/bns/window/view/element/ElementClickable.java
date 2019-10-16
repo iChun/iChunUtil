@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundEvents;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,30 +25,46 @@ public abstract class ElementClickable<M extends View> extends Element<M> //we r
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        hover = isMouseOver(mouseX, mouseY);
+        hover = isMouseOver(mouseX, mouseY) || parentFragment.getFocused() == this;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) //TODO does this mean you can click with RMB
+    public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
+        super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
         parentFragment.setFocused(null); //we're a one time click, stop focusing on us
-        if(isMouseOver(mouseX, mouseY))
+        if(isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
-            if(renderMinecraftStyle())
-            {
-                Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            }
-            onClickRelease();
-            callback.accept(this);
+            trigger();
         }
         return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
+    }
+
+    private void trigger()
+    {
+        if(renderMinecraftStyle())
+        {
+            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        }
+        onClickRelease();
+        callback.accept(this);
     }
 
     public abstract void onClickRelease();
 
     @Override
-    public @Nullable
-    String tooltip(double mouseX, double mouseY)
+    public boolean keyPressed(int key, int scancode, int listener)
+    {
+        if(key == GLFW.GLFW_KEY_SPACE || key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER)
+        {
+            trigger();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public @Nullable String tooltip(double mouseX, double mouseY)
     {
         return tooltip;
     }

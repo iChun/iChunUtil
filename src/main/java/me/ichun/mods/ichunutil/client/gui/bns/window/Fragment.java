@@ -18,13 +18,16 @@ import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class Fragment<M extends Fragment> implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
+public abstract class Fragment<M extends Fragment>
+        implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
 {
     public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 
     public M parentFragment;
     public @Nonnull Constraint constraint = Constraint.NONE;
+    public @Nullable String id;
+
     public Fragment(M parentFragment)
     {
         this.parentFragment = parentFragment;
@@ -47,6 +50,11 @@ public abstract class Fragment<M extends Fragment> implements IConstrainable, IC
     }
 
     public abstract void init();
+
+    public void tick()
+    {
+        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment)child).tick());
+    }
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY)
@@ -150,7 +158,7 @@ public abstract class Fragment<M extends Fragment> implements IConstrainable, IC
     @Override
     public void setDragging(boolean b)
     {
-        this.isDragging = true;
+        this.isDragging = b;
     }
 
     @Nullable

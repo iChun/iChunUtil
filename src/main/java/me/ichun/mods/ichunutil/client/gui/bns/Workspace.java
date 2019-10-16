@@ -95,10 +95,16 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public void bringToFront(Window window)
     {
-        if(windows.remove(window))
+        if(window.canBringToFront() && windows.remove(window))
         {
             addWindow(window);
         }
+    }
+
+    @Override
+    public void tick()
+    {
+        windows.forEach(window -> window.tick());
     }
 
     @Override
@@ -351,6 +357,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         return renderMinecraftStyle;
     }
+
+    //TODO do we want to pass in escape??
 
 
     @Override

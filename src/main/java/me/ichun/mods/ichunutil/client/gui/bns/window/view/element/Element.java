@@ -64,4 +64,10 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
         }
         return false;
     }
+
+    @Override
+    public boolean changeFocus(boolean direction)
+    {
+        return parentFragment.getFocused() != this; //focus on us if we're not focused
+    }
 }

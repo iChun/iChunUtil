@@ -2,10 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.impl;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButtonTextured;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementToggle;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -22,8 +19,7 @@ public class ViewTest extends View<WindowTest>
         );
         elements.add(e);
 
-        e = new ElementButton(this, "test string 2");
-        e.setWidth(40);
+        e = new ElementCheckbox(this, "test string 2", (button) -> {});
         e.setConstraint(new Constraint(e).left(this, Constraint.Property.Type.LEFT, 20).bottom(this, Constraint.Property.Type.BOTTOM, 20));
         elements.add(e);
 

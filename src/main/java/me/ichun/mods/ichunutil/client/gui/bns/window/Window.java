@@ -87,6 +87,11 @@ public abstract class Window<M extends IWindows> extends Fragment
         return true;
     }
 
+    public boolean canBringToFront()
+    {
+        return true;
+    }
+
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
@@ -241,6 +246,16 @@ public abstract class Window<M extends IWindows> extends Fragment
     public boolean mouseScrolled(double mouseY, double mouseZ, double amount)
     {
         return super.mouseScrolled(mouseY, mouseZ, amount);
+    }
+
+    @Override
+    public boolean changeFocus(boolean direction)
+    {
+        if(parent.getFocused() == this)
+        {
+            return super.changeFocus(direction); //TODO make sure our children is just the current view
+        }
+        return false; //we're not focused anyway, so, nah
     }
 
     //Parent is not fragment. We gotta override these.
