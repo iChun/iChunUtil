@@ -21,10 +21,10 @@ public abstract class View<M extends Window> extends Fragment
     public View(@Nonnull M parent)
     {
         super(parent);
-        constraint = Constraint.matchParent(this, parent, parent.borderSize);
+        constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get());
         if(parent.hasTitle())
         {
-            constraint.top(parent, Constraint.Property.Type.TOP, parent.titleSize);
+            constraint.top(parent, Constraint.Property.Type.TOP, (Integer)parent.titleSize.get());
         }
     }
 

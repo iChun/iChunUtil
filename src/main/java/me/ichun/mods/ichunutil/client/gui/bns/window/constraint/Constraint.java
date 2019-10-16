@@ -1,19 +1,29 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
+import java.util.function.Supplier;
+
 public class Constraint
 {
     public static final Constraint NONE = new Constraint(null);
 
-    private IConstrained parent;
+    private final IConstrained parent;
     private Property left;
     private Property right;
     private Property top;
     private Property bottom;
+    private Supplier<Integer> minWidth;
+    private Supplier<Integer> minHeight;
+    private Supplier<Integer> maxWidth;
+    private Supplier<Integer> maxHeight;
 
     public Constraint(IConstrained parent)
     {
         this.parent = parent;
         left = right = top = bottom = Property.NONE;
+        minWidth = () -> 1;
+        minHeight = () -> 1;
+        maxWidth = () -> 1000000;
+        maxHeight = () -> 1000000;
     }
 
     public Constraint left(IConstrainable c, Property.Type type, int i)
@@ -37,6 +47,20 @@ public class Constraint
     public Constraint bottom(IConstrainable c, Property.Type type, int i)
     {
         bottom = c == null ? Property.NONE : new Property(c, Property.Type.BOTTOM, type, i);
+        return this;
+    }
+
+    public Constraint min(Supplier<Integer> minWidth, Supplier<Integer> minHeight)
+    {
+        this.minWidth = minWidth;
+        this.minHeight = minHeight;
+        return this;
+    }
+
+    public Constraint max(Supplier<Integer> maxWidth, Supplier<Integer> maxHeight)
+    {
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
         return this;
     }
 
@@ -71,6 +95,16 @@ public class Constraint
 
     public void apply()
     {
+        //check our size first to make sure we're set up and non-zero
+        if(parent != null)
+        {
+            //contract if we're above max dimensions
+            parent.contractX(maxWidth.get());
+            parent.contractY(maxHeight.get());
+            //expand if we're below minimum dimensions
+            parent.expandX(minWidth.get());
+            parent.expandY(minHeight.get());
+        }
         if(!(left.apply(this) | right.apply(this)))
         {
             if(hasTop() || hasBottom())
@@ -98,6 +132,15 @@ public class Constraint
                 //parent is free floating. set to middle on Y axis
                 parent.setPosY((parent.getParentHeight() - parent.getHeight()) / 2);
             }
+        }
+        if(parent != null)
+        {
+            //contract if we're above max dimensions
+            parent.contractX(maxWidth.get());
+            parent.contractY(maxHeight.get());
+            //expand if we're below minimum dimensions
+            parent.expandX(minWidth.get());
+            parent.expandY(minHeight.get());
         }
     }
 

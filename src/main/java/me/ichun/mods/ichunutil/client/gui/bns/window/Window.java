@@ -12,13 +12,14 @@ import net.minecraft.client.resources.I18n;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public abstract class Window<M extends Workspace> extends Fragment
         implements IRenderable
 {
-    public int borderSize = 3;
-    public int titleSize = borderSize + 10;
+    public Supplier<Integer> borderSize = () -> renderMinecraftStyle() ? 4 : 3;
+    public Supplier<Integer> titleSize = () -> renderMinecraftStyle() ? 0 : borderSize.get() + 10;
 
     //TODO how to handle unfocusing
     public @Nonnull final M parent;
@@ -34,11 +35,6 @@ public abstract class Window<M extends Workspace> extends Fragment
         this.parent = parent;
         this.title = I18n.format(s);
         this.views = new ArrayList<>();
-
-        if(renderMinecraftStyle())
-        {
-            borderSize = 4;
-        }
     }
 
     public <T extends Window> T setPos(int x, int y)
@@ -101,7 +97,7 @@ public abstract class Window<M extends Workspace> extends Fragment
         renderBackground();
         if(hasTitle())
         {
-            drawString(title, getLeft() + borderSize + 1, getTop() + (renderMinecraftStyle() ? borderSize : 3), Theme.getAsHex(getTheme().font));
+            drawString(title, getLeft() + borderSize.get() + 1, getTop() + (renderMinecraftStyle() ? borderSize.get() : 3), Theme.getAsHex(getTheme().font));
         }
 
         //render the current view
@@ -151,11 +147,11 @@ public abstract class Window<M extends Workspace> extends Fragment
             if(canDrag() || canDragResize())
             {
                 EdgeGrab grab = new EdgeGrab(
-                        isMouseBetween(mouseX, getLeft(), getLeft() + borderSize),
-                        isMouseBetween(mouseX, getRight() - borderSize, getRight()),
-                        isMouseBetween(mouseY, getTop(), getTop() + borderSize),
-                        isMouseBetween(mouseY, getBottom() - borderSize, getBottom()),
-                        isMouseBetween(mouseY, getTop() + borderSize, getTop() + titleSize) && hasTitle(),
+                        isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
+                        isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
+                        isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
+                        isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
+                        isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
                         (int)mouseX,
                         (int)mouseY
                 );

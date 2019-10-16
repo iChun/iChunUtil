@@ -15,7 +15,6 @@ public class ButtonElement extends Element<View>
     {
         super(parent);
         text = I18n.format(s);
-        height = renderMinecraftStyle() ? 20 : 16;
     }
 
     @Override

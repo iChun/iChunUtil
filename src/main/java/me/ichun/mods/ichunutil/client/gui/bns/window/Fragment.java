@@ -182,6 +182,50 @@ public abstract class Fragment<M extends Fragment> implements IConstrainable, IC
     }
 
     @Override
+    public void expandX(int width) //expands to minimum
+    {
+        if(this.width < width)
+        {
+            int lack = width - this.width;
+            this.posX -= (lack / 2) + lack % 2;
+            this.width = width;
+        }
+    }
+
+    @Override
+    public void expandY(int height)
+    {
+        if(this.height < height)
+        {
+            int lack = height - this.height;
+            this.posY -= (lack / 2) + lack % 2;
+            this.height = height;
+        }
+    }
+
+    @Override
+    public void contractX(int width) //contracts to max
+    {
+        if(this.width > width)
+        {
+            int lack = this.width - width;
+            this.posX += (lack / 2) + lack % 2;
+            this.width = width;
+        }
+    }
+
+    @Override
+    public void contractY(int height)
+    {
+        if(this.height > height)
+        {
+            int lack = this.height - height;
+            this.posY += (lack / 2) + lack % 2;
+            this.height = height;
+        }
+    }
+
+    @Override
     public int getWidth()
     {
         return width;
