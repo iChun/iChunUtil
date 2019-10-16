@@ -1,13 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IRenderable;
-import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -15,25 +12,21 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class Window<M extends Workspace> extends Fragment
-        implements IRenderable
+public abstract class Window<M extends IWindows> extends Fragment
 {
     public Supplier<Integer> borderSize = () -> renderMinecraftStyle() ? 4 : 3;
-    public Supplier<Integer> titleSize = () -> renderMinecraftStyle() ? 0 : borderSize.get() + 10;
+    public Supplier<Integer> titleSize = () -> borderSize.get() + 10;
 
-    //TODO how to handle unfocusing
     public @Nonnull final M parent;
-    public @Nonnull final String title;
     public @Nonnull List<View> views;
     public @Nonnull View currentView;
 
     public EdgeGrab edgeGrab; //set if a corner is grabbed
 
-    public Window(M parent, String s)
+    public Window(M parent)
     {
         super(null);
         this.parent = parent;
-        this.title = I18n.format(s);
         this.views = new ArrayList<>();
     }
 
@@ -54,7 +47,8 @@ public abstract class Window<M extends Workspace> extends Fragment
     @Override
     public void init()
     {
-        //TODO constraints applying?
+        //TODO check for special constraints
+        //TODO constraints should only apply to docked windows
         views.forEach(Fragment::init);
     }
 
@@ -70,16 +64,24 @@ public abstract class Window<M extends Workspace> extends Fragment
         this.currentView = v;
     }
 
-    public boolean hasTitle()
+    public boolean canShowTitle()
     {
-        return !title.isEmpty();
+        return true;
     }
 
+    public boolean hasTitle()
+    {
+        return canShowTitle() && !currentView.title.isEmpty();
+    }
+
+    //TODO drag title or double click to undock (top bars cannot undock)
+    //TODO docked?
     public boolean canDrag()
     {
         return true;
     }
 
+    //TODO docked?
     public boolean canDragResize()
     {
         return true;
@@ -88,22 +90,19 @@ public abstract class Window<M extends Workspace> extends Fragment
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        int width = getRight() - getLeft();
-        int height = getBottom() - getTop();
-
-        RenderHelper.startGlScissor(getLeft(), getTop(), width, height);
+        setScissor();
 
         //render our background
         renderBackground();
         if(hasTitle())
         {
-            drawString(title, getLeft() + borderSize.get() + 1, getTop() + (renderMinecraftStyle() ? borderSize.get() : 3), Theme.getAsHex(getTheme().font));
+            drawString(currentView.title, getLeft() + borderSize.get() + 1, getTop() + (renderMinecraftStyle() ? borderSize.get() : 3));
         }
 
         //render the current view
         currentView.render(mouseX, mouseY, partialTick);
 
-        RenderHelper.endGlScissor();
+        endScissor();
     }
 
     public void renderBackground()
@@ -111,7 +110,7 @@ public abstract class Window<M extends Workspace> extends Fragment
         if(renderMinecraftStyle())
         {
             //draw the corners
-            parent.getMinecraft().getTextureManager().bindTexture(Fragment.VANILLA_TABS);
+            bindTexture(Fragment.VANILLA_TABS);
 
             //fill space
             RenderHelper.draw(getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 4D/256D, 24D/256D, 36D/256D, 60D/256D); //fill space
@@ -142,9 +141,9 @@ public abstract class Window<M extends Workspace> extends Fragment
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isInBounds(mouseX, mouseY))
+        if(isMouseOver(mouseX, mouseY)) //only return true if we're clicking on us
         {
-            if(canDrag() || canDragResize())
+            if(button == 0 && (canDrag() || canDragResize())) //dragging
             {
                 EdgeGrab grab = new EdgeGrab(
                         isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
@@ -159,12 +158,18 @@ public abstract class Window<M extends Workspace> extends Fragment
                 if(grab.isActive())
                 {
                     edgeGrab = grab;
+                    setDragging(true);
                 }
+            }
+
+            if(edgeGrab == null) //we're not grabbing the window
+            {
+                super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
             }
 
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return false;
     }
 
     @Override
@@ -226,7 +231,7 @@ public abstract class Window<M extends Workspace> extends Fragment
                     height = 20;
                     setTop(top);
                 }
-                resize(Minecraft.getInstance(), parent.width, parent.height);
+                resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
             }
         }
         return super.mouseDragged(mouseX, mouseY, button, distX, distY);
@@ -290,13 +295,13 @@ public abstract class Window<M extends Workspace> extends Fragment
     @Override
     public int getParentWidth()
     {
-        return parent.width;
+        return parent.getWidth();
     }
 
     @Override
     public int getParentHeight()
     {
-        return parent.height;
+        return parent.getHeight();
     }
 
     @Override
@@ -308,7 +313,7 @@ public abstract class Window<M extends Workspace> extends Fragment
     @Override
     public boolean renderMinecraftStyle()
     {
-        return parent.renderMinecraftStyle;
+        return parent.renderMinecraftStyle();
     }
 
     @Override

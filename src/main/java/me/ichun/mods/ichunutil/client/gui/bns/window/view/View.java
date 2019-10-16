@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IRenderable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -14,15 +13,16 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public abstract class View<M extends Window> extends Fragment
-        implements IRenderable
 {
     public ArrayList<Element> elements = new ArrayList<>();
+    public @Nonnull String title; //all titles are already localized
 
-    public View(@Nonnull M parent)
+    public View(@Nonnull M parent, @Nonnull String s)
     {
         super(parent);
+        title = s;
         constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get());
-        if(parent.hasTitle())
+        if(parent.canShowTitle() && !s.isEmpty())
         {
             constraint.top(parent, Constraint.Property.Type.TOP, (Integer)parent.titleSize.get());
         }
@@ -58,6 +58,7 @@ public abstract class View<M extends Window> extends Fragment
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
+        setScissor();
         //render our background
         if(!renderMinecraftStyle())
         {
@@ -70,6 +71,8 @@ public abstract class View<M extends Window> extends Fragment
         {
             element.render(mouseX, mouseY, partialTick);
         }
+
+        parentFragment.setScissor();
     }
 
     public void resize(Minecraft mc, int width, int height)

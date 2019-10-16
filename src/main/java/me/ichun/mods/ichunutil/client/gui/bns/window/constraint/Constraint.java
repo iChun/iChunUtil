@@ -1,7 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
-import java.util.function.Supplier;
-
 public class Constraint
 {
     public static final Constraint NONE = new Constraint(null);
@@ -11,19 +9,11 @@ public class Constraint
     private Property right;
     private Property top;
     private Property bottom;
-    private Supplier<Integer> minWidth;
-    private Supplier<Integer> minHeight;
-    private Supplier<Integer> maxWidth;
-    private Supplier<Integer> maxHeight;
 
-    public Constraint(IConstrained parent)
+    public Constraint(IConstrained parent) //TODO several elements constrained to each other then back to the same parent?
     {
         this.parent = parent;
         left = right = top = bottom = Property.NONE;
-        minWidth = () -> 1;
-        minHeight = () -> 1;
-        maxWidth = () -> 1000000;
-        maxHeight = () -> 1000000;
     }
 
     public Constraint left(IConstrainable c, Property.Type type, int i)
@@ -47,20 +37,6 @@ public class Constraint
     public Constraint bottom(IConstrainable c, Property.Type type, int i)
     {
         bottom = c == null ? Property.NONE : new Property(c, Property.Type.BOTTOM, type, i);
-        return this;
-    }
-
-    public Constraint min(Supplier<Integer> minWidth, Supplier<Integer> minHeight)
-    {
-        this.minWidth = minWidth;
-        this.minHeight = minHeight;
-        return this;
-    }
-
-    public Constraint max(Supplier<Integer> maxWidth, Supplier<Integer> maxHeight)
-    {
-        this.maxWidth = maxWidth;
-        this.maxHeight = maxHeight;
         return this;
     }
 
@@ -99,11 +75,11 @@ public class Constraint
         if(parent != null)
         {
             //contract if we're above max dimensions
-            parent.contractX(maxWidth.get());
-            parent.contractY(maxHeight.get());
+            parent.contractX(parent.getMaxWidth().get());
+            parent.contractY(parent.getMaxHeight().get());
             //expand if we're below minimum dimensions
-            parent.expandX(minWidth.get());
-            parent.expandY(minHeight.get());
+            parent.expandX(parent.getMinWidth().get());
+            parent.expandY(parent.getMinHeight().get());
         }
         if(!(left.apply(this) | right.apply(this)))
         {
@@ -136,11 +112,11 @@ public class Constraint
         if(parent != null)
         {
             //contract if we're above max dimensions
-            parent.contractX(maxWidth.get());
-            parent.contractY(maxHeight.get());
+            parent.contractX(parent.getMaxWidth().get());
+            parent.contractY(parent.getMaxHeight().get());
             //expand if we're below minimum dimensions
-            parent.expandX(minWidth.get());
-            parent.expandY(minHeight.get());
+            parent.expandX(parent.getMinWidth().get());
+            parent.expandY(parent.getMinHeight().get());
         }
     }
 
@@ -230,7 +206,7 @@ public class Constraint
                     }
                     else
                     {
-                        c.parent.setTop(type.get(reference) - dist - c.parent.getWidth()); //move the entire thing to the right
+                        c.parent.setTop(type.get(reference) - dist - c.parent.getHeight()); //move the entire thing down
                     }
                     return true;
                 }
