@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
 public abstract class Element<M extends View> extends Fragment //TODO handle narration?
 {
     public final static List<Element> INFERTILE = Collections.emptyList();
+
+    public String tooltip;
 
     public Element(@Nonnull M parent) //TODO Make aligned element, which counts the gaps between elements and equally distributes widht/height to each
     {
@@ -47,6 +50,7 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
     @Override
     public void render(int mouseX, int mouseY, float partialTick){}
 
+    @Override
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();
@@ -66,5 +70,17 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
     public boolean changeFocus(boolean direction)
     {
         return parentFragment.getFocused() != this; //focus on us if we're not focused
+    }
+
+    @Override
+    public @Nullable
+    String tooltip(double mouseX, double mouseY)
+    {
+        return tooltip;
+    }
+
+    public void setTooltip(String s)
+    {
+        tooltip = s;
     }
 }

@@ -7,14 +7,12 @@ import net.minecraft.util.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public abstract class ElementClickable<M extends View> extends Element<M> //we reset our focus when we're clicked.
 {
     public @Nonnull Consumer<ElementClickable> callback;
     public boolean hover; //for rendering //TODO changeFocus to this? enter key to press
-    public String tooltip;
 
     public ElementClickable(@Nonnull M parent, Consumer<ElementClickable> callback)
     {
@@ -61,17 +59,6 @@ public abstract class ElementClickable<M extends View> extends Element<M> //we r
             return true;
         }
         return false;
-    }
-
-    @Override
-    public @Nullable String tooltip(double mouseX, double mouseY)
-    {
-        return tooltip;
-    }
-
-    public void setTooltip(String s)
-    {
-        tooltip = s;
     }
 
     @Override

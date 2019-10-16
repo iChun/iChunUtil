@@ -22,6 +22,7 @@ public abstract class Fragment<M extends Fragment>
         implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
 {
     public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+    public static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 
     public M parentFragment;
@@ -50,6 +51,11 @@ public abstract class Fragment<M extends Fragment>
     }
 
     public abstract void init();
+
+    public Workspace getWorkspace()
+    {
+        return parentFragment.getWorkspace();
+    }
 
     public void tick()
     {
@@ -216,7 +222,9 @@ public abstract class Fragment<M extends Fragment>
         return false;
     }
 
-            //IConstrainable
+    public void resize(Minecraft mc, int width, int height){}
+
+    //IConstrainable
     public int posX;
     public int posY;
     public int width;

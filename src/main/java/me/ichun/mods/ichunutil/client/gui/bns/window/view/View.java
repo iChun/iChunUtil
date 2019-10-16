@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
@@ -75,6 +74,7 @@ public abstract class View<M extends Window> extends Fragment
         parentFragment.setScissor();
     }
 
+    @Override
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();

@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -113,6 +113,7 @@ public class ElementTextField extends Element<View>
             widget.setEnableBackgroundDrawing(false);
             widget.render(mouseX, mouseY, partialTick);
         }
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
     }
 
     @Override

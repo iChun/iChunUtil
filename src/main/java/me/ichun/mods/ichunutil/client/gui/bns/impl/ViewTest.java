@@ -45,5 +45,19 @@ public class ViewTest extends View<WindowTest>
 //                .top(this, Constraint.Property.Type.TOP, 40)
         );
         elements.add(e);
+
+//        e = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F, (e1) -> {});
+//        e.setConstraint(new Constraint(e).top(this, Constraint.Property.Type.TOP, 0)
+//                .bottom(this, Constraint.Property.Type.BOTTOM, 0)
+//                .right(this, Constraint.Property.Type.RIGHT, 0)
+//        );
+//        elements.add(e);
+
+        e = new ElementScrollBar(this, ElementScrollBar.Orientation.HORIZONTAL, 0.6F, (e1) -> {});
+        e.setConstraint(new Constraint(e).left(this, Constraint.Property.Type.LEFT, 0)
+                .bottom(this, Constraint.Property.Type.BOTTOM, 0)
+                .right(this, Constraint.Property.Type.RIGHT, 0)
+        );
+        elements.add(e);
     }
 }

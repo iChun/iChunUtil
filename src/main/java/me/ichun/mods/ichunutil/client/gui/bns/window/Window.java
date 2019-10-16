@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
+import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -138,6 +139,13 @@ public abstract class Window<M extends IWindows> extends Fragment
         }
     }
 
+    @Override
+    public Workspace getWorkspace()
+    {
+        return (Workspace)parent;
+    }
+
+    @Override
     public void resize(Minecraft mc, int width, int height)
     {
         currentView.resize(mc, this.width, this.height);
