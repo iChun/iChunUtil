@@ -1,6 +1,10 @@
 package me.ichun.mods.ichunutil.common;
 
 import cpw.mods.modlauncher.api.INameMappingService;
+import me.ichun.mods.ichunutil.client.core.ConfigClient;
+import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -21,15 +25,17 @@ public class iChunUtil //TODO update forge dependency to build 41
     private static ModLoadingStage loadingStage = ModLoadingStage.ERROR;
     private static boolean devEnvironemnt;
 
+    public static ConfigClient configClient;
+
     public iChunUtil()
     {
-        //HMM since everything is loaded concurrently, is it safe to do long thread/io reads in mod constructor?
         loadingStage = ModLoadingStage.CONSTRUCT;
         devEnvironemnt = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
 
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> configClient = new ConfigClient().init());
+
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
-
     }
 
     private void init(final FMLCommonSetupEvent event)
@@ -41,6 +47,9 @@ public class iChunUtil //TODO update forge dependency to build 41
     private void finishLoading(FMLLoadCompleteEvent event)
     {
         loadingStage = ModLoadingStage.COMPLETE;
+        ConfigBase.configs.forEach(c -> {
+            if(!c.hasInit()) throw new RuntimeException("Config class created but never initialized: " + c.getConfigName());
+        });
     }
 
     public static ModLoadingStage getLoadingStage()

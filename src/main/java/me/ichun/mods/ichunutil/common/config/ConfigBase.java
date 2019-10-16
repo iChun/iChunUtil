@@ -29,6 +29,7 @@ public abstract class ConfigBase
     private final @Nonnull HashSet<ValueWrapper> values = new HashSet<>();
     private final @Nonnull HashSet<String> reveal = new HashSet<>();
 
+    private boolean init;
     private ModConfig config; //our mod config
 
     public ConfigBase()
@@ -39,10 +40,13 @@ public abstract class ConfigBase
     public ConfigBase(@Nonnull String pathName)
     {
         this.fileName = pathName;
+        configs.add(this);
     }
 
     public <T extends ConfigBase> T init()
     {
+        init = true;
+
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
 
         Field[] fields = this.getClass().getDeclaredFields();
@@ -68,8 +72,6 @@ public abstract class ConfigBase
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigReload);
 
-        configs.add(this);
-
         loadConfig();
 
         return (T)this;
@@ -81,7 +83,7 @@ public abstract class ConfigBase
         return (T)this;
     }
 
-    private void loadConfig() //massive reflective method here.
+    private void loadConfig() //massive reflective method here. Sorry cpw!
     {
         if(iChunUtil.getLoadingStage().ordinal() > ModLoadingStage.CONSTRUCT.ordinal() && getConfigType() != ModConfig.Type.SERVER)
         {
@@ -302,7 +304,7 @@ public abstract class ConfigBase
      * @param oldObj old config object
      * @param newObj new config object
      */
-    public void onConfigChanged(boolean file, String name, Field field, Object oldObj, Object newObj){}
+    public void onPropertyChanged(boolean file, String name, Field field, Object oldObj, Object newObj){}
 
     public void onConfigLoaded(){}
 
@@ -311,20 +313,21 @@ public abstract class ConfigBase
         values.forEach(ValueWrapper::checkForChange);
     }
 
+    public boolean hasInit()
+    {
+        return init;
+    }
+
     public void save()
     {
-        ForgeConfigSpec.ConfigValue configValue = null;
+        boolean save = false;
         for(ValueWrapper value : values)
         {
-            ForgeConfigSpec.ConfigValue valueValue = value.save();
-            if(valueValue != null)
-            {
-                configValue = valueValue;
-            }
+            save = value.save() || save;
         }
-        if(configValue != null)
+        if(save)
         {
-            configValue.save();
+            config.getSpec().save();
         }
     }
 
@@ -364,7 +367,7 @@ public abstract class ConfigBase
                     lastObj = configValue.get();
                     field.setAccessible(true);
                     field.set(parent, lastObj);
-                    parent.onConfigChanged(true, field.getName(), field, old, lastObj);
+                    parent.onPropertyChanged(true, field.getName(), field, old, lastObj);
                 }
                 catch(IllegalAccessException e)
                 {
@@ -373,7 +376,7 @@ public abstract class ConfigBase
             }
         }
 
-        private ForgeConfigSpec.ConfigValue save()
+        private boolean save() //returns true if the value has changed
         {
             try
             {
@@ -384,16 +387,15 @@ public abstract class ConfigBase
                     Object old = lastObj;
                     lastObj = (T)o;
                     configValue.set(lastObj);
-                    parent.onConfigChanged(false, field.getName(), field, old, lastObj);
-                    return configValue;
+                    parent.onPropertyChanged(false, field.getName(), field, old, lastObj);
+                    return true;
                 }
             }
             catch(IllegalAccessException e)
             {
                 e.printStackTrace();
             }
-            return null;
+            return false;
         }
     }
-
 }

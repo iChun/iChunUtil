@@ -9,7 +9,6 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import org.apache.logging.log4j.Logger;
 
 public class PacketChannel
 {
@@ -28,26 +27,26 @@ public class PacketChannel
 
         channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, protocolVersion::equals, protocolVersion::equals);
         channel.registerMessage(0, PacketHolder.class,
-        (packet, buffer) -> {
-            buffer.writeByte(clzToId.get(packet.packet.getClass()));
-            packet.packet.writeTo(buffer);
-        },
-        (buffer) -> {
-            Class<? extends AbstractPacket> clz = idToClz.get(buffer.readByte());
-            AbstractPacket packet = null;
-            try
-            {
-                packet = clz.newInstance();
-                packet.readFrom(buffer);
-            }
-            catch(InstantiationException | IllegalAccessException ignored){}
-            return new PacketHolder(packet);
-        },
-        (packet, contextSupplier) -> {
-            NetworkEvent.Context context = contextSupplier.get();
-            packet.packet.process(context);
-            context.setPacketHandled(true);
-        });
+                (packet, buffer) -> {
+                    buffer.writeByte(clzToId.get(packet.packet.getClass()));
+                    packet.packet.writeTo(buffer);
+                },
+                (buffer) -> {
+                    Class<? extends AbstractPacket> clz = idToClz.get(buffer.readByte());
+                    AbstractPacket packet = null;
+                    try
+                    {
+                        packet = clz.newInstance();
+                        packet.readFrom(buffer);
+                    }
+                    catch(InstantiationException | IllegalAccessException ignored){}
+                    return new PacketHolder(packet);
+                },
+                (packet, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    packet.packet.process(context);
+                    context.setPacketHandled(true);
+                });
     }
 
     public void sendToServer(AbstractPacket packet)

@@ -24,6 +24,9 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
 
     public UUID parentUUID;
 
+    public int maxPersistAfterDeath = 0; //parent death, not this entity
+    public int timeAfterDeath = 0; //parent death, not this entity
+
     public LatchedEntity(EntityType<?> type, World world)
     {
         super(type, world);
@@ -35,7 +38,21 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     {
         this.parent = parent;
         setParentId(parent.getEntityId());
-        this.setPositionAndRotation(parent.posX, parent.posY, parent.posZ, parent.rotationYaw, parent.rotationPitch);
+        setPositionAndRotation(parent.posX, parent.posY, parent.posZ, parent.rotationYaw, parent.rotationPitch);
+        size = parent.size;
+        setBoundingBox(parent.getBoundingBox()); // match the parent's size for rendering
+        return (T)this;
+    }
+
+    public <T extends LatchedEntity> T setPersistAfterDeath(int i)
+    {
+        maxPersistAfterDeath = i;
+        return (T)this;
+    }
+
+    public <T extends LatchedEntity> T ignoreFrustumCheck()
+    {
+        ignoreFrustumCheck = true;
         return (T)this;
     }
 
@@ -85,11 +102,7 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
 
                     if(ent != null)
                     {
-                        parent = (M)ent;
-                        setParentId(parent.getEntityId());
-                        setPositionAndRotation(parent.posX, parent.posY, parent.posZ, parent.rotationYaw, parent.rotationPitch);
-                        size = parent.size;
-                        setBoundingBox(parent.getBoundingBox()); // match the parent's size for rendering
+                        setParent((M)ent);
                     }
                     else if(ticksExisted > 201) //10 seconds
                     {
@@ -104,10 +117,22 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
                 return;
             }
         }
-        else if(parent.removed) //parent has been removed from the world
+        else if(!parent.isAlive())
         {
-            unableToFindParent(true);
-            return;
+            if(maxPersistAfterDeath > 0)
+            {
+                if(timeAfterDeath >= maxPersistAfterDeath)
+                {
+                    unableToFindParent(true);
+                    return;
+                }
+                timeAfterDeath++;
+            }
+            else if(parent.removed)
+            {
+                unableToFindParent(true);
+                return;
+            }
         }
         else if(!parent.dimension.equals(dimension))
         {
