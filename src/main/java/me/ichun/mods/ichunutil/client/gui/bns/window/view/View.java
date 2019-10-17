@@ -20,7 +20,7 @@ public abstract class View<M extends Window> extends Fragment
     {
         super(parent);
         title = s;
-        constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get());
+        constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get()); //TODO might have to redo
         if(parent.canShowTitle() && !s.isEmpty())
         {
             constraint.top(parent, Constraint.Property.Type.TOP, (Integer)parent.titleSize.get());

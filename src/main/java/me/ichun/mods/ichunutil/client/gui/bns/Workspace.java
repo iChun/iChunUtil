@@ -34,10 +34,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
     private boolean renderMinecraftStyle;
     private boolean hasInit;
 
-    public Workspace(ITextComponent title) //TODO window latching on sides
+    public Workspace(ITextComponent title, boolean mcStyle) //TODO window latching on sides
     {
         super(title);
-        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
+        renderMinecraftStyle = mcStyle;
     }
 
     public <T extends Workspace> T setTheme(Theme theme)
@@ -111,7 +111,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void render(int mouseX, int mouseY, float partialTick)
     {
         boolean oldStyle = renderMinecraftStyle;
-        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
+//        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
         if(oldStyle != renderMinecraftStyle)
         {
             windows.forEach(window -> window.resize(minecraft, width, height));

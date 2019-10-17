@@ -24,6 +24,7 @@ public abstract class Fragment<M extends Fragment>
     public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     public static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
+    public static final ResourceLocation VANILLA_STATS_ICON = new ResourceLocation("textures/gui/container/stats_icons.png");
 
     public M parentFragment;
     public @Nonnull Constraint constraint = Constraint.NONE;
@@ -93,11 +94,6 @@ public abstract class Fragment<M extends Fragment>
     public int getMinecraftFontColour()
     {
         return 16777215;
-    }
-
-    public void bindTexture(ResourceLocation rl)
-    {
-        Minecraft.getInstance().getTextureManager().bindTexture(rl);
     }
 
     public @Nullable Fragment getTopMostFragment(double mouseX, double mouseY)
@@ -393,5 +389,12 @@ public abstract class Fragment<M extends Fragment>
     public Supplier<Integer> getMaxHeight()
     {
         return () -> 1000000;
+    }
+
+
+
+    public static void bindTexture(ResourceLocation rl)
+    {
+        Minecraft.getInstance().getTextureManager().bindTexture(rl);
     }
 }

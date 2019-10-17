@@ -29,28 +29,7 @@ public class ElementButton extends ElementClickable<View>
         super.render(mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
-            bindTexture(Fragment.VANILLA_WIDGETS);
-
-            //min width = 15
-            //draw middle if required
-            //draw ends (15 each)
-            //46 = clicked
-            //66 = idle
-            //86 = hover
-            int yOffset = parentFragment.isDragging() && parentFragment.getFocused() == this ? 0 : hover ? 2 : 1;
-
-            int i = width - 28;
-            int x = getLeft() + 14;
-            while(i > 0)
-            {
-                int dist = Math.min(i, 172);
-                RenderHelper.draw(x, getTop(), dist, 20, 0, 14D / 256D, (14 + dist) / 256D, (46 + yOffset * 20) / 256D, (66 + yOffset * 20) / 256D); //draw body
-                i -= dist;
-                x += dist;
-            }
-
-            RenderHelper.draw(getLeft(), getTop(), 14, 20, 0, 0D/256D, 14D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
-            RenderHelper.draw(getRight() - 14, getTop(), 14, 20, 0, 186D/256D, 200D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
+            renderMinecraftStyleButton(getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
         }
         else
         {
@@ -85,12 +64,6 @@ public class ElementButton extends ElementClickable<View>
     @Override
     public Supplier<Integer> getMinHeight()
     {
-        return () -> renderMinecraftStyle() ? 20 : 16;
-    }
-
-    @Override
-    public Supplier<Integer> getMaxHeight()
-    {
-        return () -> renderMinecraftStyle() ? 20 : 10000;
+        return () -> 16;
     }
 }

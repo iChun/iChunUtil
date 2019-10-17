@@ -30,20 +30,7 @@ public class ElementCheckbox extends ElementClickable<View>
         super.render(mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
-            bindTexture(Fragment.VANILLA_WIDGETS);
-
-            //min width = 15
-            //draw middle if required
-            //draw ends (15 each)
-            //46 = clicked
-            //66 = idle
-            //86 = hover
-            int yOffset = (parentFragment.isDragging() && parentFragment.getFocused() == this) ? 0 : (hover ? 2 : 1);
-
-            RenderHelper.draw(getLeft(), getBottom() - 5, 5, 5, 0, 0D/256D, 5D/256D, (61 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw bottomLeft
-            RenderHelper.draw(getLeft(), getTop(), 5, 5, 0, 0D/256D, 5D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topLeft
-            RenderHelper.draw(getRight() - 5, getTop(), 5, 5, 0, 195D/256D, 200D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topRight
-            RenderHelper.draw(getRight() - 5, getBottom() - 5, 5, 5, 0, 195D/256D, 200D/256D, (61 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+            renderMinecraftStyleButton(getLeft(), getTop(), width, height, (parentFragment.isDragging() && parentFragment.getFocused() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));
         }
         else
         {

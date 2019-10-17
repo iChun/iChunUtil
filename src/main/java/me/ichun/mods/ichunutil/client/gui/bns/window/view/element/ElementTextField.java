@@ -11,17 +11,62 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ElementTextField extends Element<View>
 {
+    public static final Predicate<String> INTEGERS = (s) ->
+    {
+        if(s.isEmpty())
+        {
+            return true;
+        }
+        try
+        {
+            if(s.contains("."))
+            {
+                return false; //integers only
+            }
+            Integer.parseInt(s);
+            return true;
+        }
+        catch(NumberFormatException e)
+        {
+            return false;
+        }
+    };
+    public static final Predicate<String> NUMBERS = (s) ->
+    {
+        if(s.isEmpty())
+        {
+            return true;
+        }
+        try
+        {
+            if(s.contains("f") || s.contains("d") || s.contains("F") || s.contains("D"))
+            {
+                return false;
+            }
+            Double.parseDouble(s);
+            return true;
+        }
+        catch(NumberFormatException e)
+        {
+            return false;
+        }
+    };
+
     private List<IGuiEventListener> children = Lists.newArrayList();
-    private TextFieldWidget widget;
+    protected TextFieldWidget widget;
     private String defaultText = "";
     private int maxStringLength = 256;
     private Predicate<String> validator = s -> true;
+    private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> {
+        return s;
+    };
     private @Nullable Consumer<String> responder;
 
     private int lastLeft;
@@ -56,6 +101,12 @@ public class ElementTextField extends Element<View>
         return this;
     }
 
+    public ElementTextField setTextFormatter(BiFunction<String, Integer, String> textFormatter)
+    {
+        this.textFormatter = textFormatter;
+        return this;
+    }
+
     @Override
     public void init()
     {
@@ -65,6 +116,7 @@ public class ElementTextField extends Element<View>
         widget.setMaxStringLength(maxStringLength);
         widget.setValidator(validator);
         widget.func_212954_a(responder);
+        widget.setTextFormatter(textFormatter);
         children.add(widget);
         adjustWidget();
 
@@ -92,6 +144,11 @@ public class ElementTextField extends Element<View>
             lastTop = getTop();
         }
 
+        drawTextBox(mouseX, mouseY, partialTick);
+    }
+
+    public void drawTextBox(int mouseX, int mouseY, float partialTick)
+    {
         if(renderMinecraftStyle())
         {
             widget.setEnableBackgroundDrawing(true);
@@ -151,6 +208,7 @@ public class ElementTextField extends Element<View>
         {
             setFocused(widget);
             widget.setFocused2(true);
+            widget.mouseClicked(mouseX, mouseY, button);
             return true;
         }
         return false;

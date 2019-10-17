@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public abstract class ElementClickable<M extends View> extends Element<M> //we reset our focus when we're clicked.
 {
     public @Nonnull Consumer<ElementClickable> callback;
-    public boolean hover; //for rendering //TODO changeFocus to this? enter key to press
+    public boolean hover; //for rendering
 
     public ElementClickable(@Nonnull M parent, Consumer<ElementClickable> callback)
     {
