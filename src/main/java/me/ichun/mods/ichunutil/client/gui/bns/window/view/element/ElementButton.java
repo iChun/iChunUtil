@@ -1,12 +1,9 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ElementButton extends ElementClickable<View>
 {
@@ -56,14 +53,14 @@ public class ElementButton extends ElementClickable<View>
     public void onClickRelease() {} //we don't do anything, we're a static button
 
     @Override
-    public Supplier<Integer> getMinWidth()
+    public int getMinWidth()
     {
-        return () -> 15;
+        return 15;
     }
 
     @Override
-    public Supplier<Integer> getMinHeight()
+    public int getMinHeight()
     {
-        return () -> 16;
+        return 16;
     }
 }

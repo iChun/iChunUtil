@@ -75,11 +75,11 @@ public class Constraint
         if(parent != null)
         {
             //contract if we're above max dimensions
-            parent.contractX(parent.getMaxWidth().get());
-            parent.contractY(parent.getMaxHeight().get());
+            parent.contractX(parent.getMaxWidth());
+            parent.contractY(parent.getMaxHeight());
             //expand if we're below minimum dimensions
-            parent.expandX(parent.getMinWidth().get());
-            parent.expandY(parent.getMinHeight().get());
+            parent.expandX(parent.getMinWidth());
+            parent.expandY(parent.getMinHeight());
         }
         if(!(left.apply(this) | right.apply(this)))
         {
@@ -112,11 +112,11 @@ public class Constraint
         if(parent != null)
         {
             //contract if we're above max dimensions
-            parent.contractX(parent.getMaxWidth().get());
-            parent.contractY(parent.getMaxHeight().get());
+            parent.contractX(parent.getMaxWidth());
+            parent.contractY(parent.getMaxHeight());
             //expand if we're below minimum dimensions
-            parent.expandX(parent.getMinWidth().get());
-            parent.expandY(parent.getMinHeight().get());
+            parent.expandX(parent.getMinWidth());
+            parent.expandY(parent.getMinHeight());
         }
     }
 

@@ -68,6 +68,14 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
         return false;
     }
 
+    /**
+     * This is here to bypass our mouseClicked and use Fragment's
+     */
+    public boolean defaultMouseClicked(double mouseX, double mouseY, int button)
+    {
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     @Override
     public boolean changeFocus(boolean direction)
     {

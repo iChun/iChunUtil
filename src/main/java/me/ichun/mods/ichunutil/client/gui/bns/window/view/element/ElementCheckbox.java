@@ -1,12 +1,9 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ElementCheckbox extends ElementClickable<View>
 {
@@ -63,25 +60,25 @@ public class ElementCheckbox extends ElementClickable<View>
     }
 
     @Override
-    public Supplier<Integer> getMinWidth()
+    public int getMinWidth()
     {
-        return () -> 9;
+        return 9;
     }
 
     @Override
-    public Supplier<Integer> getMinHeight()
-    {
-        return this.getMinWidth();
-    }
-
-    @Override
-    public Supplier<Integer> getMaxWidth()
+    public int getMinHeight()
     {
         return this.getMinWidth();
     }
 
     @Override
-    public Supplier<Integer> getMaxHeight()
+    public int getMaxWidth()
+    {
+        return this.getMinWidth();
+    }
+
+    @Override
+    public int getMaxHeight()
     {
         return this.getMinWidth();
     }

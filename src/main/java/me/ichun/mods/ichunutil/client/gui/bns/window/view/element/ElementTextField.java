@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ElementTextField extends Element<View>
 {
@@ -255,8 +254,8 @@ public class ElementTextField extends Element<View>
     }
 
     @Override
-    public Supplier<Integer> getMinHeight()
+    public int getMinHeight()
     {
-        return () -> 12;
+        return 12;
     }
 }

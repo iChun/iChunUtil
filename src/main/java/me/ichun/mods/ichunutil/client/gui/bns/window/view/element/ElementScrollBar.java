@@ -11,7 +11,6 @@ import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ElementScrollBar extends Element<View>
 {
@@ -268,27 +267,27 @@ public class ElementScrollBar extends Element<View>
     }
 
     @Override
-    public Supplier<Integer> getMinWidth()
+    public int getMinWidth()
     {
-        return () -> orientation == Orientation.VERTICAL && scrollBarSize < 1F ? 14 : 0;
+        return orientation == Orientation.VERTICAL && scrollBarSize < 1F ? 14 : 0;
     }
 
     @Override
-    public Supplier<Integer> getMinHeight()
+    public int getMinHeight()
     {
-        return () -> orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : 0;
+        return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : 0;
     }
 
     @Override
-    public Supplier<Integer> getMaxWidth()
+    public int getMaxWidth()
     {
-        return () -> orientation == Orientation.VERTICAL && scrollBarSize < 1F ? 14 : orientation == Orientation.HORIZONTAL ? 10000 : 0;
+        return orientation == Orientation.VERTICAL && scrollBarSize < 1F ? 14 : orientation == Orientation.HORIZONTAL ? 10000 : 0;
     }
 
     @Override
-    public Supplier<Integer> getMaxHeight()
+    public int getMaxHeight()
     {
-        return () -> orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
+        return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
     public static void draw(double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)

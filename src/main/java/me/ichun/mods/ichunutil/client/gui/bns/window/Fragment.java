@@ -15,7 +15,6 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public abstract class Fragment<M extends Fragment>
@@ -368,27 +367,27 @@ public abstract class Fragment<M extends Fragment>
     }
 
     @Override
-    public Supplier<Integer> getMinWidth()
+    public int getMinWidth()
     {
-        return () -> 1;
+        return 1;
     }
 
     @Override
-    public Supplier<Integer> getMinHeight()
+    public int getMinHeight()
     {
-        return () -> 1;
+        return 1;
     }
 
     @Override
-    public Supplier<Integer> getMaxWidth()
+    public int getMaxWidth()
     {
-        return () -> 1000000;
+        return 1000000;
     }
 
     @Override
-    public Supplier<Integer> getMaxHeight()
+    public int getMaxHeight()
     {
-        return () -> 1000000;
+        return 1000000;
     }
 
 

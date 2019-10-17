@@ -1,8 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.google.common.base.Predicates;
 import com.mojang.blaze3d.platform.GlStateManager;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -14,7 +12,6 @@ import net.minecraft.util.SoundEvents;
 import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ElementNumberInput extends ElementTextField
 {
@@ -303,8 +300,8 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public Supplier<Integer> getMinWidth()
+    public int getMinWidth()
     {
-        return () -> 20;
+        return 20;
     }
 }

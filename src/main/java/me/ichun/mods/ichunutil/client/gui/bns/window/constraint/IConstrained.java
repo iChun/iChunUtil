@@ -1,7 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
-import java.util.function.Supplier;
-
 public interface IConstrained
 {
     void setLeft(int x);
@@ -20,8 +18,8 @@ public interface IConstrained
     int getHeight();
     int getParentWidth();
     int getParentHeight();
-    Supplier<Integer> getMinWidth();
-    Supplier<Integer> getMinHeight();
-    Supplier<Integer> getMaxWidth();
-    Supplier<Integer> getMaxHeight();
+    int getMinWidth();
+    int getMinHeight();
+    int getMaxWidth();
+    int getMaxHeight();
 }
