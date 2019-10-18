@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Element<M extends View> extends Fragment //TODO handle narration?
+public abstract class Element<M extends Fragment> extends Fragment //TODO handle narration?
 {
     public final static List<Element> INFERTILE = Collections.emptyList();
 
@@ -176,6 +176,18 @@ public abstract class Element<M extends View> extends Fragment //TODO handle nar
             RenderHelper.draw(posX, posY, 5, 5, 0, 0D/256D, 5D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topLeft
             RenderHelper.draw(posX + width - 5, posY, 5, 5, 0, 195D/256D, 200D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topRight
             RenderHelper.draw(posX + width - 5, posY + height - 5, 5, 5, 0, 195D/256D, 200D/256D, (61 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+        }
+    }
+
+    public class MousePos
+    {
+        int x;
+        int y;
+
+        public MousePos(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
         }
     }
 }

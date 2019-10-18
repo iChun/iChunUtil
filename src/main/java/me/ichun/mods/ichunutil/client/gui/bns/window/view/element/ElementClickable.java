@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.SoundEvents;
@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public abstract class ElementClickable<M extends View> extends Element<M> //we reset our focus when we're clicked.
+public abstract class ElementClickable<M extends Fragment> extends Element<M> //we reset our focus when we're clicked.
 {
     public @Nonnull Consumer<ElementClickable> callback;
     public boolean hover; //for rendering

@@ -267,6 +267,18 @@ public abstract class Window<M extends IWindows> extends Fragment
         return false; //we're not focused anyway, so, nah
     }
 
+    @Override
+    public boolean requireScissor()
+    {
+        return true;
+    }
+
+    @Override
+    public void resetScissorToParent()
+    {
+        endScissor();
+    }
+
     //Parent is not fragment. We gotta override these.
     @Override
     public int getLeft()

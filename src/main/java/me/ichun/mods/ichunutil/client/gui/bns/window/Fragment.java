@@ -116,6 +116,23 @@ public abstract class Fragment<M extends Fragment>
         return null;
     }
 
+    public boolean requireScissor()
+    {
+        return false;
+    }
+
+    public void resetScissorToParent()
+    {
+        if(!parentFragment.requireScissor())
+        {
+            parentFragment.resetScissorToParent();
+        }
+        else
+        {
+            parentFragment.setScissor();
+        }
+    }
+
     public void setScissor()
     {
         RenderHelper.startGlScissor(getLeft(), getTop(), width, height);

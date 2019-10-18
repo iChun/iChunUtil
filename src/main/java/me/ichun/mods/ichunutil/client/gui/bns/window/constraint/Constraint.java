@@ -1,10 +1,12 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
+import javax.annotation.Nonnull;
+
 public class Constraint
 {
     public static final Constraint NONE = new Constraint(null);
 
-    private final IConstrained parent;
+    protected final IConstrained parent;
     private Property left;
     private Property right;
     private Property top;
@@ -60,13 +62,29 @@ public class Constraint
         return bottom != Property.NONE;
     }
 
-    public static Constraint matchParent(IConstrained c1, IConstrainable c, int i)
+    public static Constraint matchParent(@Nonnull IConstrained c1, @Nonnull IConstrainable c, int i)
     {
         return new Constraint(c1)
                 .left(c, Property.Type.LEFT, i)
                 .right(c, Property.Type.RIGHT, i)
                 .top(c, Property.Type.TOP, i)
                 .bottom(c, Property.Type.BOTTOM, i);
+    }
+
+    public static Constraint sizeOnly(@Nonnull IConstrained c)
+    {
+        return new Constraint(c) {
+            @Override
+            public void apply()
+            {
+                //contract if we're above max dimensions
+                parent.contractX(parent.getMaxWidth());
+                parent.contractY(parent.getMaxHeight());
+                //expand if we're below minimum dimensions
+                parent.expandX(parent.getMinWidth());
+                parent.expandY(parent.getMinHeight());
+            }
+        };
     }
 
     public void apply()

@@ -12,7 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementScrollBar extends Element<View>
+public class ElementScrollBar extends Element<Fragment>
 {
     public enum Orientation
     {
@@ -24,26 +24,37 @@ public class ElementScrollBar extends Element<View>
     private float scrollBarSize;
     public Consumer<ElementScrollBar> callback;
     public float scrollProg;
+    public boolean resizing;
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull View parent, Orientation orientation, float scrollBarSize, Consumer<ElementScrollBar> callback)
+    public ElementScrollBar(@Nonnull View parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;
         this.scrollBarSize = scrollBarSize;
+    }
+
+    public ElementScrollBar setCallback(Consumer<ElementScrollBar> callback)
+    {
         this.callback = callback;
+        return this;
     }
 
     public void setScrollBarSize(float f)
     {
+        f = Math.min(f, 1.01F);
+
+        float oldSize = scrollBarSize;
+
+        scrollBarSize = f;
         float size = (orientation == Orientation.VERTICAL ? height : width) * f;
         if(size < 4) // less than 4 pixels
         {
             scrollBarSize = 4F / getDistance();
         }
 
-        updateSize();
+        updateSize(oldSize);
     }
 
     public void setScrollProg(float f)
@@ -52,13 +63,16 @@ public class ElementScrollBar extends Element<View>
         if(scroll != scrollProg)
         {
             scrollProg = scroll;
-            callback.accept(this);
+            if(callback != null)
+            {
+                callback.accept(this);
+            }
         }
     }
 
-    public void updateSize()
+    private void updateSize(float oldSize)
     {
-        if(scrollBarSize > 1)
+        if(scrollBarSize > 1F)
         {
             switch(orientation)
             {
@@ -73,11 +87,25 @@ public class ElementScrollBar extends Element<View>
                     break;
                 }
             }
+            setScrollProg(0F);
+        }
+        else
+        {
+            setScrollProg(scrollProg / oldSize * scrollBarSize); //oldScrollProg / oldSize = newScrollProg / newSize //TODO test this
         }
 
-        constraint.apply();
+        if(!resizing && (oldSize <= 1F && scrollBarSize > 1F || scrollBarSize <= 1F && oldSize > 1F))
+        {
+            //            System.out.println("HMM");
+            //            System.out.println(oldSize <= 1F && scrollBarSize > 1F);
+            //            System.out.println(scrollBarSize <= 1F && oldSize > 1F);
 
-        parentFragment.resize(getWorkspace().getMinecraft(), parentFragment.getParentWidth(), parentFragment.getParentHeight());
+            resizing = true;
+            constraint.apply();
+
+            parentFragment.resize(getWorkspace().getMinecraft(), parentFragment.getParentWidth(), parentFragment.getParentHeight());
+            resizing = false;
+        }
     }
 
     @Override
@@ -230,6 +258,7 @@ public class ElementScrollBar extends Element<View>
 
             pos.x = (int)mouseX;
             pos.y = (int)mouseY;
+            return true;
         }
         return false;
     }
@@ -245,10 +274,16 @@ public class ElementScrollBar extends Element<View>
             }
             else
             {
-                setScrollProg(scrollProg + (float)(dist * -(1 / 10D)));
+                secondHandScroll(dist);
             }
+            return true;
         }
         return false;
+    }
+
+    public void secondHandScroll(double dist)
+    {
+        setScrollProg(scrollProg + (float)(dist * -(1 / 10D)));
     }
 
     @Override
@@ -261,7 +296,7 @@ public class ElementScrollBar extends Element<View>
     }
 
     @Override
-    public boolean changeFocus(boolean direction) //we can't focus on this
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
         return false;
     }
@@ -300,17 +335,5 @@ public class ElementScrollBar extends Element<View>
         bufferbuilder.pos(posX + width, posY, zLevel)         .tex(u1, v2).endVertex();
         bufferbuilder.pos(posX, posY, zLevel)                 .tex(u1, v1).endVertex();
         tessellator.draw();
-    }
-
-    public class MousePos
-    {
-        int x;
-        int y;
-
-        public MousePos(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
     }
 }

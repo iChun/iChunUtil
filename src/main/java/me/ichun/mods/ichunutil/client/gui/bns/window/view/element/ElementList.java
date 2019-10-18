@@ -1,18 +1,31 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
+import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
-public class ElementList extends ElementFertile<View>
+public class ElementList extends ElementFertile<Fragment>
 {
-    public List<ElementListItem> items = new ArrayList<>();
-    public @Nullable ElementScrollBar scrollVert;
-    public @Nullable ElementScrollBar scrollHori;
+    public List<Item> items = new ArrayList<>();
+    private @Nullable ElementScrollBar scrollVert;
+    private @Nullable ElementScrollBar scrollHori;
+    private @Nullable BiConsumer<Item, Item> dragHandler;
+    private @Nullable BiConsumer<Item, Integer> rearrangeHandler;
+
+    public boolean hasInit;
+    private MousePosItem pos;
 
     public ElementList(@Nonnull View parent)
     {
@@ -22,38 +35,60 @@ public class ElementList extends ElementFertile<View>
     public ElementList setScrollVertical(ElementScrollBar scroll)
     {
         scrollVert = scroll;
+        scrollVert.setCallback((scr) -> alignItems());
         return this;
     }
 
     public ElementList setScrollHorizontal(ElementScrollBar scroll)
     {
         scrollHori = scroll;
+        scrollHori.setCallback((scr) -> alignItems());
         return this;
     }
 
-    public ElementList addItem(ElementListItem item)
+    public ElementList setDragHandler(BiConsumer<Item, Item> dragHandler)
     {
-        items.add(item);
+        this.dragHandler = dragHandler;
         return this;
+    }
+
+    public ElementList setRearrangeHandler(BiConsumer<Item, Integer> rearrangeHandler)
+    {
+        this.rearrangeHandler = rearrangeHandler;
+        return this;
+    }
+
+    public Item addItem(Object o)
+    {
+        Item item = new Item(this, o);
+        items.add(item);
+        item.constraint = Constraint.sizeOnly(item);
+        if(hasInit)
+        {
+            alignItems();
+            updateScrollBarSizes();
+        }
+        return item;
     }
 
     public boolean removeItemWithObject(Object o)
     {
         for(int i = items.size() - 1; i >= 0; i--)
         {
-            ElementListItem item = items.get(i);
+            Item item = items.get(i);
             if(item.getObject().equals(o))
             {
                 items.remove(item);
+                updateScrollBarSizes();
                 return true;
             }
         }
         return false;
     }
 
-    public @Nullable ElementListItem getItemWithObject(Object o)
+    public @Nullable Item getItemWithObject(Object o)
     {
-        for(ElementListItem item : items)
+        for(Item item : items)
         {
             if(item.getObject().equals(o))
             {
@@ -63,9 +98,9 @@ public class ElementList extends ElementFertile<View>
         return null;
     }
 
-    public List<ElementListItem> getSelectedItems()
+    public List<Item> getSelectedItems()
     {
-        List<ElementListItem> listItems = new ArrayList<>();
+        List<Item> listItems = new ArrayList<>();
         items.forEach(item -> {
             if(item.selected)
             {
@@ -75,22 +110,252 @@ public class ElementList extends ElementFertile<View>
         return listItems;
     }
 
+    @Override
+    public void init()
+    {
+        super.init();
+        hasInit = true;
+        alignItems();
+        updateScrollBarSizes();
+    }
+
+    @Override
+    public void resize(Minecraft mc, int width, int height)
+    {
+        super.resize(mc, width, height);
+        alignItems();
+        updateScrollBarSizes();
+    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        //TODO scissor?
+        setScissor();
+        items.forEach(item -> item.render(mouseX, mouseY, partialTick));
+
+        if(getFocused() instanceof Item)
+        {
+            ((Item)getFocused()).render(mouseX, mouseY, partialTick);
+        }
+
+        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
+        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
+        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
+        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+
+        resetScissorToParent();
     }
 
-    public void updateScrollBars()
+    public Item getItemAt(double mouseX, double mouseY)
     {
-        //TODO this
+        Optional<IGuiEventListener> child = getEventListenerForPos(mouseX, mouseY);
+        if(child.isPresent() && child.get() instanceof Item)
+        {
+            return (Item)child.get();
+        }
+        return null;
+    }
+
+    public int getMouseRelation(double mouseX, double mouseY, Item item)
+    {
+        if(rearrangeHandler != null)
+        {
+            if(mouseY < item.getTop() + 3)
+            {
+                return -1;
+            }
+            else if(mouseY > item.getBottom() - 3)
+            {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    {
+        if(isMouseOver(mouseX, mouseY) && dragHandler != null && button == 0) // check for if we can drag or nah
+        {
+            boolean hasElement = defaultMouseClicked(mouseX, mouseY, button); //this calls setDragging();
+            if(hasElement) //we clicked an element. let's drag it
+            {
+                pos = new MousePosItem((int)mouseX, (int)mouseY, getItemAt(mouseX, mouseY));
+            }
+            else if(getFocused() instanceof Fragment)
+            {
+                setFocused(null);
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double distX, double distY)
+    {
+        return pos != null;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    {
+        if(pos != null)
+        {
+            Item item = getItemAt(mouseX, mouseY);
+            Item draggedItem = pos.item;
+            if(draggedItem != null && item != draggedItem)
+            {
+                if(item != null)
+                {
+                    int relation = getMouseRelation(mouseX, mouseY, item);
+                    if(relation != 0)
+                    {
+                        int itemIndex = items.indexOf(item);
+                        int draggedIndex = items.indexOf(pos.item);
+                        if(!(itemIndex == draggedIndex - 1 && relation == 1 || itemIndex == draggedIndex + 1 && relation == -1))
+                        {
+                            int newIndex = relation > 0 ? itemIndex + 1 : itemIndex;
+                            if(draggedIndex < newIndex)
+                            {
+                                newIndex--;
+                            }
+                            items.remove(draggedItem);
+                            items.add(newIndex, draggedItem);
+                            rearrangeHandler.accept(draggedItem, draggedIndex);
+                        }
+                    }
+                    else
+                    {
+                        dragHandler.accept(draggedItem, item); //pos will only be set if dragHandler isn't null
+                    }
+                }
+                else if(rearrangeHandler != null)
+                {
+                    int draggedIndex = items.indexOf(pos.item);
+                    items.remove(draggedItem);
+                    items.add(draggedItem);
+                    rearrangeHandler.accept(draggedItem, draggedIndex);
+                }
+                alignItems();
+            }
+            pos = null;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double dist)
+    {
+        if(isMouseOver(mouseX, mouseY))
+        {
+            if(Screen.hasShiftDown())
+            {
+                if(scrollHori != null)
+                {
+                    scrollHori.secondHandScroll(dist);
+                    return true;
+                }
+            }
+            else
+            {
+                if(scrollVert != null)
+                {
+                    scrollVert.secondHandScroll(dist);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void alignItems()
+    {
+        int itemHeight = getTotalItemHeight();
+        int itemWidth = getMinItemWidth();
+
+        int offsetY = 0;
+        if(scrollVert != null)
+        {
+            offsetY = (int)(Math.max(0, itemHeight - (height - 2)) * scrollVert.scrollProg);
+        }
+        int offsetX = 0;
+        if(scrollHori != null)
+        {
+            offsetX = (int)(Math.max(0, itemWidth - (width - 2)) * scrollHori.scrollProg);
+        }
+
+        int currentWidth = 1; // we draw a 1px border
+        int currentHeight = 1; // we draw a 1px border
+        for(Item item : items)
+        {
+            item.posX = currentWidth - offsetX;
+            item.posY = currentHeight - offsetY;
+            currentHeight += item.getHeight();
+
+            if(item.width != (width - 2))
+            {
+                item.width = Math.max(itemWidth, (width - 2));
+
+                item.constraint.apply(); // make sure we're not too big or small
+            }
+        }
+    }
+
+    public void updateScrollBarSizes()
+    {
+        if(scrollVert != null)
+        {
+            //set the height
+            int itemHeight = getTotalItemHeight();
+            scrollVert.setScrollBarSize(height / (float)itemHeight); //if items height is higher than ours, scroll bar should appear
+        }
+        if(scrollHori != null)
+        {
+            //set the width
+            int itemWidth = getMinItemWidth();
+            scrollHori.setScrollBarSize(width / (float)itemWidth); //if items height is higher than ours, scroll bar should appear
+        }
+    }
+
+    public int getTotalItemHeight()
+    {
+        int itemHeight = 0;
+        for(Item item : items)
+        {
+            itemHeight += item.height;
+        }
+        return itemHeight;
+    }
+
+    public int getMinItemWidth()
+    {
+        int itemWidth = 0;
+        for(Item item : items)
+        {
+            if(item.getMinWidth() > itemWidth)
+            {
+                itemWidth = item.getMinWidth();
+            }
+        }
+        return itemWidth;
     }
 
     @Override
     public List<? extends IGuiEventListener> children()
     {
         return items;
+    }
+
+    @Override
+    public boolean requireScissor()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean changeFocus(boolean direction) //we can't change focus on this
+    {
+        return false;
     }
 
     @Override
@@ -113,20 +378,20 @@ public class ElementList extends ElementFertile<View>
         return super.getMinHeight();
     }
 
-    public static class ElementListItem<M> extends ElementFertile<View>
+    public static class Item<M> extends ElementFertile<Fragment>
     {
-        private final @Nonnull M heldObject; //height 13?
+        protected final @Nonnull M heldObject; //height 13?
         private List<Element> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
         public boolean selected;
 
-        public ElementListItem(@Nonnull View parent, @Nonnull M heldObject)
+        public Item(@Nonnull Fragment parent, @Nonnull M heldObject)
         {
             super(parent);
             this.heldObject = heldObject;
         }
 
-        public ElementListItem staySelectedOnDefocus()
+        public Item staySelectedOnDefocus()
         {
             deselectOnUnfocus = false;
             return this;
@@ -135,6 +400,95 @@ public class ElementList extends ElementFertile<View>
         public M getObject()
         {
             return heldObject;
+        }
+
+        @Override
+        public void render(int mouseX, int mouseY, float partialTick)
+        {
+            if(shouldRender())
+            {
+                int zLevel = 0;
+                int[] borderColour = getTheme().elementTreeItemBorder;
+
+                boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && ((ElementList)parentFragment).pos != null;
+                if(draggingUs)
+                {
+                    GlStateManager.pushMatrix();
+                    ElementList list = (ElementList)parentFragment;
+                    MousePosItem pos = list.pos;
+                    double x = (mouseX - pos.x);
+                    double y = (mouseY - pos.y);
+                    GlStateManager.translated(x, y, 0D);
+
+                    zLevel = 200;
+
+                    if(list.rearrangeHandler != null)
+                    {
+                        Item item = list.getItemAt(mouseX, mouseY);
+                        Item draggedItem = pos.item;
+                        if(draggedItem != null && item != draggedItem)
+                        {
+                            if(item != null)
+                            {
+                                int relation = list.getMouseRelation(mouseX, mouseY, item);
+                                if(relation != 0)
+                                {
+                                    int itemIndex = list.items.indexOf(item);
+                                    int draggedIndex = list.items.indexOf(pos.item);
+                                    if(!(itemIndex == draggedIndex - 1 && relation == 1 || itemIndex == draggedIndex + 1 && relation == -1))
+                                    {
+                                        borderColour = getTheme().elementTreeItemBgHover;
+                                    }
+                                }
+                            }
+                            else if(list.rearrangeHandler != null)
+                            {
+                                borderColour = getTheme().elementTreeItemBgHover;
+                            }
+                        }
+                    }
+                }
+
+                //RENDER
+                fill(borderColour, 0);
+                fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, 1);
+
+                elements.forEach(element -> element.render(mouseX, mouseY, partialTick));
+
+                if(heldObject instanceof String)
+                {
+                    drawString((String)heldObject, getLeft() + 4, getTop() + 4);
+                }
+
+                if(draggingUs)
+                {
+                    GlStateManager.popMatrix();
+                }
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button)
+        {
+            if(super.mouseClicked(mouseX, mouseY, button)) // clicking this
+            {
+                if(button == 0)
+                {
+                    selected = true;
+                }
+                else if(button == 1) //RMB
+                {
+                    selected = false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public boolean shouldRender()
+        {
+            return getRight() > parentFragment.getLeft() && getLeft() < parentFragment.getRight() && getBottom() > parentFragment.getTop() && getTop() < parentFragment.getBottom() ||
+                    parentFragment.isDragging() && parentFragment.getFocused() == this && ((ElementList)parentFragment).pos != null;
         }
 
         @Override
@@ -151,6 +505,26 @@ public class ElementList extends ElementFertile<View>
             {
                 selected = false;
             }
+        }
+
+        @Override
+        public int getMinHeight()
+        {
+            return 14;
+        }
+    }
+
+    public class MousePosItem
+    {
+        int x;
+        int y;
+        Item item;
+
+        public MousePosItem(int x, int y, Item item)
+        {
+            this.x = x;
+            this.y = y;
+            this.item = item;
         }
     }
 }

@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
@@ -15,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ElementTextField extends Element<View>
+public class ElementTextField extends Element<Fragment>
 {
     public static final Predicate<String> INTEGERS = (s) ->
     {

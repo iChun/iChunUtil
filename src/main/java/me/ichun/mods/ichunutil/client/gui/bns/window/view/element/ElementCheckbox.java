@@ -1,11 +1,12 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementCheckbox extends ElementClickable<View>
+public class ElementCheckbox extends ElementClickable<Fragment>
 {
     public boolean toggleState;
 

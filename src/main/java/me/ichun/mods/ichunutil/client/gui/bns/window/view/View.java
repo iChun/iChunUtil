@@ -71,7 +71,7 @@ public abstract class View<M extends Window> extends Fragment
             element.render(mouseX, mouseY, partialTick);
         }
 
-        parentFragment.setScissor();
+        resetScissorToParent();
     }
 
     @Override
@@ -94,5 +94,11 @@ public abstract class View<M extends Window> extends Fragment
             return flag;
         }
         return false; //we're not focused anyway, so, nah
+    }
+
+    @Override
+    public boolean requireScissor()
+    {
+        return true;
     }
 }

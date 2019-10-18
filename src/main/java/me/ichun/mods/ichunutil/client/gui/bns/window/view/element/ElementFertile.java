@@ -11,7 +11,7 @@ import java.util.ListIterator;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public abstract class ElementFertile<M extends View> extends Element<M>
+public abstract class ElementFertile<M extends Fragment> extends Element<M>
 {
     public ElementFertile(@Nonnull M parent)
     {
@@ -96,36 +96,59 @@ public abstract class ElementFertile<M extends View> extends Element<M>
     @Override
     public int getMinWidth()
     {
-        int min = 5;
+        int left = width;
+        int right = 0;
+
         for(IGuiEventListener child : children())
         {
-            if(child instanceof Element)
+            if(child instanceof Fragment)
             {
-                if(((Element)child).getMinWidth() > min)
+                Fragment fragment = (Fragment)child;
+                if(fragment.getLeft() < left)
                 {
-                    min = ((Element)child).getMinWidth();
+                    left = fragment.getLeft();
+                }
+                if(fragment.getRight() > right)
+                {
+                    right = fragment.getRight();
                 }
             }
         }
 
-        return min;
+        if(right - left >= 0) // we have elements
+        {
+            return (right - left) + 4;
+        }
+        return 6;
     }
 
     @Override
     public int getMinHeight()
     {
-        int min = 13;
+        int top = height;
+        int bottom = 0;
+
         for(IGuiEventListener child : children())
         {
-            if(child instanceof Element)
+            if(child instanceof Fragment)
             {
-                if(((Element)child).getMinHeight() > min)
+                Fragment fragment = (Fragment)child;
+                if(fragment.getTop() < top)
                 {
-                    min = ((Element)child).getMinHeight();
+                    top = fragment.getTop();
+                }
+                if(fragment.getBottom() > bottom)
+                {
+                    bottom = fragment.getBottom();
                 }
             }
         }
-        return min;
+
+        if(bottom - top >= 0) // we have elements
+        {
+            return (bottom - top) + 4;
+        }
+        return 6;
     }
 }
 
