@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -444,6 +445,15 @@ public class ElementList extends ElementFertile<Fragment>
         public Item staySelectedOnDefocus()
         {
             deselectOnUnfocus = false;
+            return this;
+        }
+
+        public Item setDefaultAppearance()
+        {
+            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Arrays.asList(heldObject.toString().split("\n")));
+            wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+            elements.add(wrapper);
+
             return this;
         }
 

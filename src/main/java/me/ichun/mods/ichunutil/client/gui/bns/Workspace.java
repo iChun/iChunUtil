@@ -389,7 +389,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 return window != window1;
             }
         }
-        return false;
+        return true; //our window isn't even here! pretend we're obstructed
     }
 
     @Override
