@@ -145,7 +145,7 @@ public class Constraint
             @Override
             public boolean apply(Constraint c)
             {
-                return false;
+                return true;
             }
         };
 

@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,6 +22,7 @@ public class ElementList extends ElementFertile<Fragment>
     public List<Item> items = new ArrayList<>();
     private @Nullable ElementScrollBar scrollVert;
     private @Nullable ElementScrollBar scrollHori;
+    private @Nullable TriConsumer<ElementList, Object, Boolean> selectionHandler;
     private @Nullable BiConsumer<Item, Item> dragHandler;
     private @Nullable BiConsumer<Item, Integer> rearrangeHandler;
 
@@ -43,6 +45,12 @@ public class ElementList extends ElementFertile<Fragment>
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());
+        return this;
+    }
+
+    public ElementList setSelectionHandler(TriConsumer<ElementList, Object, Boolean> selectionHandler)
+    {
+        this.selectionHandler = selectionHandler;
         return this;
     }
 
@@ -181,6 +189,11 @@ public class ElementList extends ElementFertile<Fragment>
     }
 
     @Override
+    public void unfocus(@Nullable IGuiEventListener guiReplacing)
+    {
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
         if(isMouseOver(mouseX, mouseY) && dragHandler != null && button == 0) // check for if we can drag or nah
@@ -305,14 +318,24 @@ public class ElementList extends ElementFertile<Fragment>
         {
             item.posX = currentWidth - offsetX;
             item.posY = currentHeight - offsetY;
-            currentHeight += item.getHeight();
 
+            boolean flag = false;
             if(item.width != (width - 2))
             {
                 item.width = Math.max(itemWidth, (width - 2));
-
+                flag = true;
+            }
+            if(item.height != item.getMinHeight())
+            {
+                item.height = item.getMinHeight();
+                flag = true;
+            }
+            if(flag)
+            {
                 item.constraint.apply(); // make sure we're not too big or small
             }
+
+            currentHeight += item.getHeight();
         }
     }
 
@@ -418,6 +441,11 @@ public class ElementList extends ElementFertile<Fragment>
             return this;
         }
 
+        public void addElement(Element e)
+        {
+            elements.add(e);
+        }
+
         public M getObject()
         {
             return heldObject;
@@ -517,11 +545,6 @@ public class ElementList extends ElementFertile<Fragment>
 
                 elements.forEach(element -> element.render(mouseX, mouseY, partialTick));
 
-                if(heldObject instanceof String)
-                {
-                    drawString((String)heldObject, getLeft() + 4, getTop() + 4);
-                }
-
                 if(draggingUs)
                 {
                     GlStateManager.popMatrix();
@@ -542,9 +565,19 @@ public class ElementList extends ElementFertile<Fragment>
                 {
                     selected = false;
                 }
+                if(((ElementList)parentFragment).selectionHandler != null)
+                {
+                    ((ElementList)parentFragment).selectionHandler.accept(((ElementList)parentFragment), heldObject, selected);
+                }
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public boolean isMouseOver(double mouseX, double mouseY)
+        {
+            return parentFragment.isMouseOver(mouseX, mouseY) && super.isMouseOver(mouseX, mouseY);
         }
 
         public boolean shouldRender()
@@ -566,13 +599,11 @@ public class ElementList extends ElementFertile<Fragment>
             if(deselectOnUnfocus)
             {
                 selected = false;
+                if(((ElementList)parentFragment).selectionHandler != null)
+                {
+                    ((ElementList)parentFragment).selectionHandler.accept(((ElementList)parentFragment), heldObject, selected);
+                }
             }
-        }
-
-        @Override
-        public int getMinHeight()
-        {
-            return 14;
         }
     }
 

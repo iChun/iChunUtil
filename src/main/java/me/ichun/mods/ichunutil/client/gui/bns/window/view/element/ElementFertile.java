@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 
@@ -96,59 +95,37 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
     @Override
     public int getMinWidth()
     {
-        int left = width;
-        int right = 0;
-
+        int min = 0;
         for(IGuiEventListener child : children())
         {
             if(child instanceof Fragment)
             {
                 Fragment fragment = (Fragment)child;
-                if(fragment.getLeft() < left)
+                if(fragment.getMinWidth() > min)
                 {
-                    left = fragment.getLeft();
-                }
-                if(fragment.getRight() > right)
-                {
-                    right = fragment.getRight();
+                    min = fragment.getMinWidth();
                 }
             }
         }
-
-        if(right - left >= 0) // we have elements
-        {
-            return (right - left) + 4;
-        }
-        return 6;
+        return min > 0 ? min + 2 : 6;
     }
 
     @Override
     public int getMinHeight()
     {
-        int top = height;
-        int bottom = 0;
-
+        int min = 0;
         for(IGuiEventListener child : children())
         {
             if(child instanceof Fragment)
             {
                 Fragment fragment = (Fragment)child;
-                if(fragment.getTop() < top)
+                if(fragment.getMinHeight() > min)
                 {
-                    top = fragment.getTop();
-                }
-                if(fragment.getBottom() > bottom)
-                {
-                    bottom = fragment.getBottom();
+                    min = fragment.getMinHeight();
                 }
             }
         }
-
-        if(bottom - top >= 0) // we have elements
-        {
-            return (bottom - top) + 4;
-        }
-        return 6;
+        return min > 0 ? min + 2 : 6;
     }
 }
 

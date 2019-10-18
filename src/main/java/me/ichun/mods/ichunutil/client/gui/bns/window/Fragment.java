@@ -41,6 +41,12 @@ public abstract class Fragment<M extends Fragment>
         return (T)this;
     }
 
+    public <T extends Fragment> T setId(String id)
+    {
+        this.id = id;
+        return (T)this;
+    }
+
     public Theme getTheme()
     {
         return parentFragment.getTheme();
@@ -61,6 +67,23 @@ public abstract class Fragment<M extends Fragment>
     public void tick()
     {
         children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment)child).tick());
+    }
+
+    public @Nullable <T extends Fragment> T getById(@Nonnull String id)
+    {
+        if(id.equals(this.id))
+        {
+            return (T)this;
+        }
+        Fragment o = null;
+        for(IGuiEventListener child : children())
+        {
+            if(o == null && child instanceof Fragment)
+            {
+                o = ((Fragment)child).getById(id);
+            }
+        }
+        return (T)o;
     }
 
     @Override

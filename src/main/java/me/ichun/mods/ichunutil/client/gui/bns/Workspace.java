@@ -391,7 +391,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             bringToFront((Window)gui);
         }
-        //TODO do I have to let the Fragments know they are focused? eg in ChangeFocus
         super.setFocused(gui);
     }
 

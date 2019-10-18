@@ -2,10 +2,13 @@ package me.ichun.mods.ichunutil.client.gui.bns.impl;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
-import net.minecraft.util.ResourceLocation;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 public class ViewTest extends View<WindowTest>
 {
@@ -81,6 +84,10 @@ public class ViewTest extends View<WindowTest>
                 .top(this, Constraint.Property.Type.TOP, 0)
                 .right(sv, Constraint.Property.Type.LEFT, 0)
         );
+        ElementList.Item item = list.addItem("Test");
+        ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(Arrays.asList(("<lululandd> farLurk farHype farLork\n" + "<lululandd> jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile\n" + "<lululandd> damn son\n" + "<lululandd> ok bye").split("\n")));
+        wrapper.setConstraint(Constraint.matchParent(wrapper, item, 0).top(item, Constraint.Property.Type.TOP, 0).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+        item.addElement(wrapper);
         for(int i = 1; i <= 12; i++)
         {
             list.addItem("Item numbah " + i);
