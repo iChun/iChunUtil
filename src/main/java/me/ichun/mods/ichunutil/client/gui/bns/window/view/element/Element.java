@@ -36,6 +36,18 @@ public abstract class Element<M extends Fragment> extends Fragment //TODO handle
         return (T)this;
     }
 
+    public <T extends Element> T setTooltip(String s)
+    {
+        tooltip = s;
+        return (T)this;
+    }
+
+    @Override
+    public @Nullable String tooltip(double mouseX, double mouseY)
+    {
+        return tooltip;
+    }
+
     @Override
     public void init()
     {
@@ -79,18 +91,6 @@ public abstract class Element<M extends Fragment> extends Fragment //TODO handle
     public boolean changeFocus(boolean direction)
     {
         return parentFragment.getFocused() != this; //focus on us if we're not focused
-    }
-
-    @Override
-    public @Nullable
-    String tooltip(double mouseX, double mouseY)
-    {
-        return tooltip;
-    }
-
-    public void setTooltip(String s)
-    {
-        tooltip = s;
     }
 
     public enum ButtonState

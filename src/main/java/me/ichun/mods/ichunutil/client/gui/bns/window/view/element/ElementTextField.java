@@ -58,6 +58,23 @@ public class ElementTextField extends Element<Fragment>
             return false;
         }
     };
+    public static final Predicate<String> FILE_SAFE = (s) ->
+    {
+        if(s.isEmpty())
+        {
+            return true;
+        }
+        String[] invalidChars = new String[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" };
+        for(String c : invalidChars)
+        {
+            if(s.contains(c))
+            {
+                return false;
+            }
+        }
+        return !s.startsWith(".");
+    };
+
 
     private List<IGuiEventListener> children = Lists.newArrayList();
     protected TextFieldWidget widget;

@@ -14,6 +14,8 @@ public class ElementTextWrapper extends Element<Fragment>
     private boolean doNotWrap;
     private int longestLine;
 
+    //TODO text formatter?
+
     public ElementTextWrapper(@Nonnull Fragment parent)
     {
         super(parent);
@@ -115,6 +117,18 @@ public class ElementTextWrapper extends Element<Fragment>
             String line = textWrapped.get(lineNumber);
             drawString(line, (float)textX, (float)textY);
             textY += 10;
+        }
+    }
+
+    public int getRandomColourForName(String s)
+    {
+        if(s.equalsIgnoreCase("System"))
+        {
+            return 0xffcc00;
+        }
+        else
+        {
+            return Math.abs(s.hashCode()) & 0xffffff;
         }
     }
 
