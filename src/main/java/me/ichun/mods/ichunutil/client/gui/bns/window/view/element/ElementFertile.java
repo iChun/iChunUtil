@@ -92,6 +92,8 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
         }
     }
 
+    public abstract int getBorderSize();
+
     @Override
     public int getMinWidth()
     {
@@ -107,7 +109,7 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
                 }
             }
         }
-        return min > 0 ? min + 2 : 6;
+        return min > 0 ? min + (getBorderSize() * 2) : 4;
     }
 
     @Override
@@ -125,7 +127,7 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
                 }
             }
         }
-        return min > 0 ? min + 2 : 6;
+        return min > 0 ? min + (getBorderSize() * 2) : 4;
     }
 }
 

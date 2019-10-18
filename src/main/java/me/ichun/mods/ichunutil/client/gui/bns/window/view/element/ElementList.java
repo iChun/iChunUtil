@@ -422,6 +422,12 @@ public class ElementList extends ElementFertile<Fragment>
         return super.getMinHeight();
     }
 
+    @Override
+    public int getBorderSize()
+    {
+        return 1;
+    }
+
     public static class Item<M> extends ElementFertile<Fragment>
     {
         protected final @Nonnull M heldObject; //height 13?
@@ -604,6 +610,12 @@ public class ElementList extends ElementFertile<Fragment>
                     ((ElementList)parentFragment).selectionHandler.accept(((ElementList)parentFragment), heldObject, selected);
                 }
             }
+        }
+
+        @Override
+        public int getBorderSize()
+        {
+            return 1;
         }
     }
 

@@ -11,7 +11,8 @@ public class ElementTextWrapper extends Element<Fragment>
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
-
+    private boolean doNotWrap;
+    private int longestLine;
 
     public ElementTextWrapper(@Nonnull Fragment parent)
     {
@@ -21,6 +22,12 @@ public class ElementTextWrapper extends Element<Fragment>
     public ElementTextWrapper setText(List<String> text)
     {
         this.text = text;
+        return this;
+    }
+
+    public ElementTextWrapper setNoWrap()
+    {
+        this.doNotWrap = true;
         return this;
     }
 
@@ -65,6 +72,13 @@ public class ElementTextWrapper extends Element<Fragment>
             {
                 tooltipTextWidth = textLineWidth;
             }
+        }
+
+        if(doNotWrap)
+        {
+            textWrapped = text;
+            longestLine = tooltipTextWidth;
+            return textWrapped.size() != lines;
         }
 
         boolean needsWrap = false;
@@ -119,7 +133,7 @@ public class ElementTextWrapper extends Element<Fragment>
     @Override
     public int getMinWidth()
     {
-        return 4;
+        return doNotWrap ? longestLine : 4;
     }
 
     @Override

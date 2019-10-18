@@ -86,7 +86,7 @@ public class ViewTest extends View<WindowTest>
         );
         ElementList.Item item = list.addItem("Test");
         ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(Arrays.asList(("<lululandd> farLurk farHype farLork\n" + "<lululandd> jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile jasjawSmile\n" + "<lululandd> jasjawSmile\n" + "<lululandd> damn son\n" + "<lululandd> ok bye").split("\n")));
-        wrapper.setConstraint(Constraint.matchParent(wrapper, item, 0).top(item, Constraint.Property.Type.TOP, 0).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+        wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
         item.addElement(wrapper);
         for(int i = 1; i <= 12; i++)
         {
