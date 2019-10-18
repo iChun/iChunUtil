@@ -580,12 +580,6 @@ public class ElementList extends ElementFertile<Fragment>
             return false;
         }
 
-        @Override
-        public boolean isMouseOver(double mouseX, double mouseY)
-        {
-            return parentFragment.isMouseOver(mouseX, mouseY) && super.isMouseOver(mouseX, mouseY);
-        }
-
         public boolean shouldRender()
         {
             return getRight() > parentFragment.getLeft() && getLeft() < parentFragment.getRight() && getBottom() > parentFragment.getTop() && getTop() < parentFragment.getBottom() ||

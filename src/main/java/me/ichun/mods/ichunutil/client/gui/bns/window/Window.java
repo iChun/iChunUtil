@@ -258,6 +258,12 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
+    public boolean isMouseOver(double mouseX, double mouseY)
+    {
+        return !parent.isObstructed(this, mouseX, mouseY) && isMouseBetween(mouseX, getLeft(), getLeft() + width) && isMouseBetween(mouseY, getTop(), getTop() + height);
+    }
+
+    @Override
     public boolean changeFocus(boolean direction)
     {
         if(parent.getFocused() == this)

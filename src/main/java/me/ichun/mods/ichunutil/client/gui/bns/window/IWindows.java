@@ -11,4 +11,5 @@ public interface IWindows extends INestedGuiEventHandler
     Theme getTheme();
     boolean renderMinecraftStyle();
     FontRenderer getFontRenderer();
+    boolean isObstructed(Window mWindow, double mouseX, double mouseY);
 }

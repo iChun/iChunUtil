@@ -380,6 +380,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
+    public boolean isObstructed(Window window, double mouseX, double mouseY)
+    {
+        for(Window window1 : windows)
+        {
+            if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
+            {
+                return window != window1;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void setFocused(@Nullable IGuiEventListener gui)
     {
         IGuiEventListener lastFocused = getFocused();

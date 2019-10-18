@@ -89,10 +89,10 @@ public abstract class Fragment<M extends Fragment>
     @Override
     public boolean isMouseOver(double mouseX, double mouseY)
     {
-        return isMouseBetween(mouseX, getLeft(), getLeft() + width) && isMouseBetween(mouseY, getTop(), getTop() + height);
+        return parentFragment.isMouseOver(mouseX, mouseY) && isMouseBetween(mouseX, getLeft(), getLeft() + width) && isMouseBetween(mouseY, getTop(), getTop() + height);
     }
 
-    public boolean isMouseBetween(double mousePos, double p1, double p2)
+    public static boolean isMouseBetween(double mousePos, double p1, double p2)
     {
         return mousePos >= p1 && mousePos < p2;
     }
