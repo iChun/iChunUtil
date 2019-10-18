@@ -130,6 +130,19 @@ public class ElementList extends ElementFertile<Fragment>
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
+        if(renderMinecraftStyle())
+        {
+            bindTexture(Fragment.VANILLA_HORSE);
+            cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+        }
+        else
+        {
+            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
+            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
+            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
+            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+        }
+
         setScissor();
         items.forEach(item -> item.render(mouseX, mouseY, partialTick));
 
@@ -137,11 +150,6 @@ public class ElementList extends ElementFertile<Fragment>
         {
             ((Item)getFocused()).render(mouseX, mouseY, partialTick);
         }
-
-        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
-        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
-        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
-        RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
 
         resetScissorToParent();
     }
@@ -233,7 +241,14 @@ public class ElementList extends ElementFertile<Fragment>
                 {
                     int draggedIndex = items.indexOf(pos.item);
                     items.remove(draggedItem);
-                    items.add(draggedItem);
+                    if(mouseY < getTop())
+                    {
+                        items.add(0, draggedItem);
+                    }
+                    else
+                    {
+                        items.add(draggedItem);
+                    }
                     rearrangeHandler.accept(draggedItem, draggedIndex);
                 }
                 alignItems();
@@ -347,6 +362,12 @@ public class ElementList extends ElementFertile<Fragment>
     }
 
     @Override
+    public void setScissor()
+    {
+        RenderHelper.startGlScissor(getLeft() + 1, getTop() + 1, width - 2, height - 2);
+    }
+
+    @Override
     public boolean requireScissor()
     {
         return true;
@@ -407,22 +428,63 @@ public class ElementList extends ElementFertile<Fragment>
         {
             if(shouldRender())
             {
-                int zLevel = 0;
-                int[] borderColour = getTheme().elementTreeItemBorder;
-
                 boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && ((ElementList)parentFragment).pos != null;
+                ElementList list = (ElementList)parentFragment;
+                MousePosItem pos = list.pos;
+
                 if(draggingUs)
                 {
                     GlStateManager.pushMatrix();
-                    ElementList list = (ElementList)parentFragment;
-                    MousePosItem pos = list.pos;
                     double x = (mouseX - pos.x);
                     double y = (mouseY - pos.y);
                     GlStateManager.translated(x, y, 0D);
+                }
 
-                    zLevel = 200;
+                if(renderMinecraftStyle())
+                {
+                    bindTexture(Fragment.VANILLA_HORSE);
+                    boolean canRearrange = false;
 
-                    if(list.rearrangeHandler != null)
+                    if(draggingUs && list.rearrangeHandler != null)
+                    {
+                        Item item = list.getItemAt(mouseX, mouseY);
+                        Item draggedItem = pos.item;
+                        if(draggedItem != null && item != draggedItem)
+                        {
+                            if(item != null)
+                            {
+                                int relation = list.getMouseRelation(mouseX, mouseY, item);
+                                if(relation != 0)
+                                {
+                                    int itemIndex = list.items.indexOf(item);
+                                    int draggedIndex = list.items.indexOf(pos.item);
+                                    if(!(itemIndex == draggedIndex - 1 && relation == 1 || itemIndex == draggedIndex + 1 && relation == -1))
+                                    {
+                                        canRearrange = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                canRearrange = true;
+                            }
+                        }
+                    }
+
+                    if(canRearrange)
+                    {
+                        cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+                    }
+                    else
+                    {
+                        cropAndStitch(getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256);
+                    }
+                }
+                else
+                {
+                    int[] borderColour = getTheme().elementTreeItemBorder;
+
+                    if(draggingUs && list.rearrangeHandler != null)
                     {
                         Item item = list.getItemAt(mouseX, mouseY);
                         Item draggedItem = pos.item;
@@ -441,17 +503,17 @@ public class ElementList extends ElementFertile<Fragment>
                                     }
                                 }
                             }
-                            else if(list.rearrangeHandler != null)
+                            else
                             {
                                 borderColour = getTheme().elementTreeItemBgHover;
                             }
                         }
                     }
-                }
 
-                //RENDER
-                fill(borderColour, 0);
-                fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, 1);
+                    //RENDER
+                    fill(borderColour, 0);
+                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, 1);
+                }
 
                 elements.forEach(element -> element.render(mouseX, mouseY, partialTick));
 

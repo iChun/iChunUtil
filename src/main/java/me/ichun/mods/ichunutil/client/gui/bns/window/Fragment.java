@@ -24,6 +24,7 @@ public abstract class Fragment<M extends Fragment>
     public static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
     public static final ResourceLocation VANILLA_STATS_ICON = new ResourceLocation("textures/gui/container/stats_icons.png");
+    public static final ResourceLocation VANILLA_HORSE = new ResourceLocation("textures/gui/container/horse.png");
 
     public M parentFragment;
     public @Nonnull Constraint constraint = Constraint.NONE;

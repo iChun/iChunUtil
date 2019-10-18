@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.impl;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
+import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -46,7 +47,7 @@ public class ViewTest extends View<WindowTest>
 //        e.setWidth(100);
 //        e.setConstraint(new Constraint(e).left(this, Constraint.Property.Type.LEFT, 30)
 //                .right(this, Constraint.Property.Type.RIGHT, 30).bottom(this, Constraint.Property.Type.BOTTOM, 20)
-//                .top(this, Constraint.Property.Type.TOP, 40)
+////                .top(this, Constraint.Property.Type.TOP, 40)
 //        );
 //        elements.add(e);
 //
@@ -80,7 +81,7 @@ public class ViewTest extends View<WindowTest>
                 .top(this, Constraint.Property.Type.TOP, 0)
                 .right(sv, Constraint.Property.Type.LEFT, 0)
         );
-        for(int i = 1; i <= 15; i++)
+        for(int i = 1; i <= 12; i++)
         {
             list.addItem("Item numbah " + i);
         }

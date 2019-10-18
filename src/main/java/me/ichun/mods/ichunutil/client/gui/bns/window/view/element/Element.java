@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,51 +133,57 @@ public abstract class Element<M extends Fragment> extends Fragment //TODO handle
         }
         else //big bois
         {
-            int ii = width - 10;
-            int xx = posX + 5;
-            while(ii > 0)
-            {
-                int jj = height - 10;
-                int yy = posY + 5;
-                int distx = Math.min(ii, 190);
-                while(jj > 0)
-                {
-                    int disty = Math.min(jj, 14);
-                    RenderHelper.draw(xx, yy, distx, disty, 0, 5D / 256D, (5 + distx) / 256D, (49 + yOffset * 20) / 256D, (49 + disty + yOffset * 20) / 256D); //draw body
-                    jj -= disty;
-                    yy += disty;
-                }
-                ii -= distx;
-                xx += distx;
-            }
-
-            int i = width - 10;
-            int x = posX + 5;
-            while(i > 0)
-            {
-                int dist = Math.min(i, 190);
-                RenderHelper.draw(x, posY, dist, 5, 0, 5D / 256D, (5 + dist) / 256D, (46 + yOffset * 20) / 256D, (46 + 5 + yOffset * 20) / 256D); //draw body
-                RenderHelper.draw(x, posY + height - 5, dist, 5, 0, 5D / 256D, (5 + dist) / 256D, (61 + yOffset * 20) / 256D, (61 + 5 + yOffset * 20) / 256D); //draw body
-                i -= dist;
-                x += dist;
-            }
-
-            i = height - 6;
-            x = posY + 3;
-            while(i > 0)
-            {
-                int dist = Math.min(i, 14);
-                RenderHelper.draw(posX, x, 5, dist, 0, 0D / 256D, 5D / 256D, (46 + 3 + yOffset * 20) / 256D, (46 + 3 + dist + yOffset * 20) / 256D); //draw body
-                RenderHelper.draw(posX + width - 5, x, 5, dist, 0, 195D / 256D, 200D / 256D, (46 + 3 + yOffset * 20) / 256D, (46 + 3 + dist + yOffset * 20) / 256D); //draw body
-                i -= dist;
-                x += dist;
-            }
-
-            RenderHelper.draw(posX, posY + height - 5, 5, 5, 0, 0D/256D, 5D/256D, (61 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw bottomLeft
-            RenderHelper.draw(posX, posY, 5, 5, 0, 0D/256D, 5D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topLeft
-            RenderHelper.draw(posX + width - 5, posY, 5, 5, 0, 195D/256D, 200D/256D, (46 + yOffset * 20)/256D, (51 + yOffset * 20)/256D); //draw topRight
-            RenderHelper.draw(posX + width - 5, posY + height - 5, 5, 5, 0, 195D/256D, 200D/256D, (61 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+            cropAndStitch(posX, posY, width, height, 4, 0D, 46 + (yOffset * 20), 200, 20, 256, 256);
         }
+    }
+
+    public static void cropAndStitch(int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
+    {
+        int ii = width - (borderSize * 2);
+        int xx = posX + borderSize;
+        while(ii > 0)
+        {
+            int jj = height - (borderSize * 2);
+            int yy = posY + borderSize;
+            int distx = Math.min(ii, uLength - (borderSize * 2));
+            while(jj > 0)
+            {
+                int disty = Math.min(jj, vLength - (borderSize * 2));
+                RenderHelper.draw(xx, yy, distx, disty, 0, (u + borderSize)/texWidth, ((u + borderSize) + distx)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + disty)/texWidth); //draw body
+                jj -= disty;
+                yy += disty;
+            }
+            ii -= distx;
+            xx += distx;
+        }
+
+
+        int i = width - (borderSize * 2);
+        int x = posX + borderSize;
+        while(i > 0)
+        {
+            int dist = Math.min(i, uLength - (borderSize * 2));
+            RenderHelper.draw(x, posY, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw top bar
+            RenderHelper.draw(x, posY + height - borderSize, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottom bar
+            i -= dist;
+            x += dist;
+        }
+
+        i = height - (borderSize * 2);
+        x = posY + borderSize;
+        while(i > 0)
+        {
+            int dist = Math.min(i, vLength - (borderSize * 2));
+            RenderHelper.draw(posX, x, borderSize, dist, 0, u/texWidth, (u + borderSize)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            RenderHelper.draw(posX + width - borderSize, x, borderSize, dist, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            i -= dist;
+            x += dist;
+        }
+
+        RenderHelper.draw(posX, posY + height - borderSize, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomLeft
+        RenderHelper.draw(posX, posY, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topLeft
+        RenderHelper.draw(posX + width - borderSize, posY, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topRight
+        RenderHelper.draw(posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
     }
 
     public class MousePos

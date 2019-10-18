@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -108,7 +109,7 @@ public class ElementNumberInput extends ElementTextField
             renderMinecraftStyleButton(getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE); //top half
 
             int size = 4;
-            bindTexture(new ResourceLocation("textures/gui/container/stats_icons.png"));
+            bindTexture(Fragment.VANILLA_STATS_ICON);
             RenderHelper.draw(getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, 40D/128D, 51D/128D, 3D/128D, 14D/128D); //up icon
             RenderHelper.draw(getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, 22D/128D, 33D/128D, 3D/128D, 14D/128D); //down icon
         }
