@@ -22,8 +22,8 @@ import java.util.*;
 public abstract class ConfigBase
         implements Comparable<ConfigBase>
 {
-    @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER.
-    public static final Set<ConfigBase> configs = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
+    @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER. This provides the default Prop settings.
+    public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
 
     private final @Nonnull String fileName;
     private final @Nonnull HashSet<ValueWrapper> values = new HashSet<>();
@@ -40,7 +40,7 @@ public abstract class ConfigBase
     public ConfigBase(@Nonnull String pathName)
     {
         this.fileName = pathName;
-        configs.add(this);
+        CONFIGS.add(this);
     }
 
     public <T extends ConfigBase> T init()
@@ -349,6 +349,10 @@ public abstract class ConfigBase
     @Override
     public int compareTo(ConfigBase o)
     {
+        if(getConfigName().equals(o.getConfigName()))
+        {
+            return Integer.compare(getConfigType().ordinal(), o.getConfigType().ordinal());
+        }
         return getConfigName().compareTo(o.getConfigName());
     }
 

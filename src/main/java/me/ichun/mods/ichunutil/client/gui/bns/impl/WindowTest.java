@@ -10,8 +10,8 @@ public class WindowTest extends Window<WorkspaceTest>
     {
         super(parent);
         setView(new ViewTest(this, I18n.format("config.ichunutil.prop.easterEgg.name")));
-        setPos(25, 25);
-        setSize(400, 100);
+        pos(25, 25);
+        size(400, 100);
         setConstraint(new Constraint(this).left(parent, Constraint.Property.Type.LEFT, 25).top(parent, Constraint.Property.Type.TOP, 25));
     }
 }

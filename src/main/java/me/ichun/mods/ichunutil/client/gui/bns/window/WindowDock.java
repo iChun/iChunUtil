@@ -6,9 +6,11 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public WindowDock(M parent)
     {
         super(parent);
-        setSize(parent.getWidth(), parent.getHeight());
+        size(parent.getWidth(), parent.getHeight());
         if(parent instanceof IConstrainable)
         {
             setConstraint(Constraint.matchParent(this, (IConstrainable)parent, 0));
@@ -73,6 +75,10 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public void init()
     {
         constraint.apply();
+        docked.keySet().forEach(window -> {
+            window.constraint.apply();
+            window.resize(Minecraft.getInstance(), this.width, this.height);
+        });
     }
 
     @Override
@@ -123,7 +129,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
             }
         }
 
-        if(getWorkspace().getFocused() instanceof Window && getWorkspace().isDragging() && !getWorkspace().isDocked((Window)getWorkspace().getFocused()))
+        if(getWorkspace().getFocused() instanceof Window && getWorkspace().isDragging() && ((Window)getWorkspace().getFocused()).canBeDocked() && !getWorkspace().isDocked((Window)getWorkspace().getFocused()))
         {
             int dockSnap = 4;
             boolean draw = (mouseY >= top && mouseY < bottom && (mouseX >= left && mouseX < left + dockSnap || mouseX >= right - dockSnap && mouseX < right)) || (mouseX >= left && mouseX < right && (mouseY >= top && mouseY < top + dockSnap || mouseY >= bottom - dockSnap && bottom < right));
@@ -196,48 +202,20 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();
+        docked.keySet().forEach(window -> {
+            window.constraint.apply();
+            window.resize(mc, this.width, this.height);
+        });
     }
 
     @Override
     public void tick()
     {
-        docked.keySet().forEach(Fragment::tick);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isMouseOver(mouseX, mouseY)) //only return true if we're clicking on us
-        {
-            Window windowOver = getWindowOver(mouseX, mouseY);
-            if(windowOver != null)
-            {
-                clickedWindow = windowOver;
-                if(button == 0) //dragging
-                {
-                    Constraint.Property.Type dockType = docked.get(windowOver);
-                    EdgeGrab grab = new EdgeGrab(dockType.getOpposite() == LEFT && isMouseBetween(mouseX, windowOver.getLeft(), windowOver.getLeft() + (Integer)windowOver.borderSize.get())
-                            , dockType.getOpposite() == RIGHT && isMouseBetween(mouseX, windowOver.getRight() - (Integer)windowOver.borderSize.get(), windowOver.getRight())
-                            , dockType.getOpposite() == TOP && isMouseBetween(mouseY, windowOver.getTop(), windowOver.getTop() + (Integer)windowOver.borderSize.get())
-                            , dockType.getOpposite() == BOTTOM && isMouseBetween(mouseY, windowOver.getBottom() - (Integer)windowOver.borderSize.get(), windowOver.getBottom())
-                            , isMouseBetween(mouseY, windowOver.getTop() + (Integer)windowOver.borderSize.get(), windowOver.getTop() + (Integer)windowOver.titleSize.get()) && hasTitle()
-                            , (int)mouseX, (int)mouseY);
-
-                    if(grab.isActive())
-                    {
-                        windowOver.edgeGrab = grab;
-                        windowOver.setDragging(true);
-                    }
-                }
-
-                if(windowOver.edgeGrab == null) //we're not grabbing the window
-                {
-                    windowOver.mouseClicked(mouseX, mouseY, button);
-                }
-
-                return true;
-            }
-        }
         return false;
     }
 
@@ -271,6 +249,27 @@ public class WindowDock<M extends IWindows> extends Window<M>
     }
 
     //TODO test changeFocus!
+
+    @Override
+    public @Nullable Fragment getTopMostFragment(double mouseX, double mouseY)
+    {
+        if(isMouseOver(mouseX, mouseY))
+        {
+            Fragment fragment = this;
+            for(Window window : this.docked.keySet())
+            {
+                Fragment fragment1 = window.getTopMostFragment(mouseX, mouseY);
+                if(fragment1 != null)
+                {
+                    fragment = fragment1;
+                }
+            }
+            return fragment;
+        }
+        return null;
+    }
+
+
 
     public Constraint.Property.Type dockType(double mouseX, double mouseY)
     {
@@ -376,7 +375,10 @@ public class WindowDock<M extends IWindows> extends Window<M>
         docked.put(window, type);
         window.setConstraint(constraint);
         window.constraint.apply();
-        window.resize(Minecraft.getInstance(), this.width, this.height);
+        if(getWorkspace().hasInit())
+        {
+            window.resize(Minecraft.getInstance(), this.width, this.height);
+        }
     }
 
     public void removeFromDock(Window window)

@@ -2,9 +2,12 @@ package me.ichun.mods.ichunutil.common;
 
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
+import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -32,7 +35,10 @@ public class iChunUtil //TODO update forge dependency to build 41
         loadingStage = ModLoadingStage.CONSTRUCT;
         devEnvironemnt = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> configClient = new ConfigClient().init());
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            configClient = new ConfigClient().init();
+            ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
+        });
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
@@ -47,7 +53,7 @@ public class iChunUtil //TODO update forge dependency to build 41
     private void finishLoading(FMLLoadCompleteEvent event)
     {
         loadingStage = ModLoadingStage.COMPLETE;
-        ConfigBase.configs.forEach(c -> {
+        ConfigBase.CONFIGS.forEach(c -> {
             if(!c.hasInit()) throw new RuntimeException("Config class created but never initialized: " + c.getConfigName());
         });
     }

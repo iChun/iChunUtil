@@ -8,7 +8,7 @@ public class WorkspaceTest extends Workspace
 {
     public WorkspaceTest(ITextComponent title)
     {
-        super(title, Screen.hasControlDown());
+        super(null, title, Screen.hasControlDown());
         addWindow(new WindowTest(this));
     }
 }

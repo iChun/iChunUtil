@@ -1,9 +1,11 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class ElementTextWrapper extends Element<Fragment> //TODO image element
     private List<String> textWrapped = new ArrayList<>();
     private boolean doNotWrap;
     private int longestLine;
+    public @Nullable Integer color;
 
     //TODO text formatter?
 
@@ -27,11 +30,25 @@ public class ElementTextWrapper extends Element<Fragment> //TODO image element
         return this;
     }
 
+    public ElementTextWrapper setText(String text)
+    {
+        this.text.clear();
+        this.text.add(text);
+        return this;
+    }
+
     public ElementTextWrapper setNoWrap()
     {
         this.doNotWrap = true;
         return this;
     }
+
+    public ElementTextWrapper setColor(Integer clr)
+    {
+        this.color = clr;
+        return this;
+    }
+
 
     public List<String> getText()
     {
@@ -117,6 +134,19 @@ public class ElementTextWrapper extends Element<Fragment> //TODO image element
             String line = textWrapped.get(lineNumber);
             drawString(line, (float)textX, (float)textY);
             textY += 10;
+        }
+    }
+
+    @Override
+    public void drawString(String s, float posX, float posY)
+    {
+        if(renderMinecraftStyle())
+        {
+            getFontRenderer().drawStringWithShadow(s, posX, posY, color != null ? color : getMinecraftFontColour());
+        }
+        else
+        {
+            getFontRenderer().drawString(s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
         }
     }
 

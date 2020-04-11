@@ -26,6 +26,13 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public EdgeGrab edgeGrab; //set if a corner is grabbed
 
+    //docked stuff
+    private boolean showTitle = true;
+    private boolean canDrag = true;
+    private boolean canDragResize = true;
+    private boolean canBringToFront = true;
+    private boolean canBeDocked = true;
+    private boolean canBeUndocked = true;
     //TODO ID for remembering docked windows and positions?
 
     public Window(M parent)
@@ -36,17 +43,53 @@ public abstract class Window<M extends IWindows> extends Fragment
         borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() ? 4 : 3);
     }
 
-    public <T extends Window> T setPos(int x, int y)
+    public <T extends Window> T pos(int x, int y)
     {
         posX = x;
         posY = y;
         return (T)this;
     }
 
-    public <T extends Window> T setSize(int width, int height)
+    public <T extends Window> T size(int width, int height)
     {
         this.width = width;
         this.height = height;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableTitle()
+    {
+        showTitle = false;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableDrag()
+    {
+        canDrag = false;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableDragResize()
+    {
+        canDragResize = false;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableBringToFront()
+    {
+        canBringToFront = false;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableDocking()
+    {
+        canBeDocked = false;
+        return (T)this;
+    }
+
+    public <T extends Window> T disableUndocking()
+    {
+        canBeUndocked = false;
         return (T)this;
     }
 
@@ -71,7 +114,7 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public boolean canShowTitle()
     {
-        return true;
+        return showTitle;
     }
 
     public boolean hasTitle()
@@ -81,22 +124,22 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public boolean canDrag()
     {
-        return true;
+        return canDrag;
     }
 
     public boolean canDragResize()
     {
-        return true;
+        return canDragResize;
     }
 
     public boolean canBringToFront()
     {
-        return true;
+        return canBringToFront;
     }
 
-    public boolean canBeDocked() { return true; }
+    public boolean canBeDocked() { return canBeDocked; }
 
-    public boolean canBeUndocked() { return true; }
+    public boolean canBeUndocked() { return canBeUndocked; }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
@@ -195,7 +238,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     {
         if(edgeGrab != null)
         {
-            if(edgeGrab.titleGrab && !parent.isDocked(this))
+            if(edgeGrab.titleGrab && canBeDocked() && !parent.isDocked(this))
             {
                 Constraint.Property.Type dockType = parent.dockType(mouseX, mouseY);
                 if(dockType != null)
@@ -217,7 +260,7 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 if(canDrag())
                 {
-                    if(parent.isDocked(this))
+                    if(parent.isDocked(this) && canBeUndocked())
                     {
                         parent.removeFromDock(this);
                     }

@@ -12,7 +12,7 @@ public interface IWindows extends INestedGuiEventHandler
     Theme getTheme();
     boolean renderMinecraftStyle();
     FontRenderer getFontRenderer();
-    void addWindow(Window window);
+    Window addWindow(Window window);
     void removeWindow(Window window);
     boolean isObstructed(Window mWindow, double mouseX, double mouseY);
     default boolean canDockWindows() { return false; }

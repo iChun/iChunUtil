@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
@@ -34,9 +33,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
 {
     public static final String ELLIPSIS = "…";
 
-    private static HashMap<Class, Function<Object, List<String>>> objectInterpreter = new HashMap<>();
+    private static HashMap<Class, Function<Object, List<String>>> OBJECT_INTERPRETER = new HashMap<>();
     {
-        objectInterpreter.put(File.class, (o) -> {
+        OBJECT_INTERPRETER.put(File.class, (o) -> {
             File file = (File)o;
             List<String> info = new ArrayList<>();
             info.add(file.getName());
@@ -44,14 +43,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
             info.add(IOUtil.readableFileSize(file.length()));
             return info;
         });
-        objectInterpreter.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
+        OBJECT_INTERPRETER.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
     }
 
     public static @Nonnull List<String> getInterpretedInfo(Object o)
     {
         Map.Entry<Class, Function<Object, List<String>>> lastEntryUsed = null;
         List<String> infos = null;
-        for(Map.Entry<Class, Function<Object, List<String>>> e : objectInterpreter.entrySet())
+        for(Map.Entry<Class, Function<Object, List<String>>> e : OBJECT_INTERPRETER.entrySet())
         {
             if(e.getKey().isInstance(o))
             {
@@ -72,7 +71,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public static void registerObjectInterpreter(Class clz, Function<Object, List<String>> function)
     {
-        objectInterpreter.put(clz, function);
+        OBJECT_INTERPRETER.put(clz, function);
     }
 
     public int ellipsisLength = 0;
@@ -82,9 +81,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     private boolean renderMinecraftStyle;
     private boolean hasInit;
 
-    public Workspace(ITextComponent title, boolean mcStyle)
+    private Screen lastScreen;
+
+    public Workspace(Screen lastScreen, ITextComponent title, boolean mcStyle)
     {
         super(title);
+        this.lastScreen = lastScreen;
         renderMinecraftStyle = mcStyle;
 
         if(canDockWindows())
@@ -124,6 +126,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
+    public void onClose()
+    {
+        this.minecraft.displayGuiScreen(lastScreen);
+    }
+
+    @Override
     protected void init()
     {
         if(!hasInit)
@@ -135,16 +143,29 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
+    public boolean hasInit()
+    {
+        return hasInit;
+    }
+
     @Override
     public List<Window> children()
     {
+        if(canDockWindows())
+        {
+            ArrayList<Window> winds = new ArrayList<>(windows);
+            winds.addAll(getDock().docked.keySet());
+            winds.remove(getDock());
+            return winds;
+        }
         return windows;
     }
 
     @Override
-    public void addWindow(Window window)
+    public Window addWindow(Window window)
     {
         windows.add(0, window); //MC's iterator starts from first element of list
+        return window;
     }
 
     @Override
@@ -164,18 +185,18 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void tick()
     {
-        windows.forEach(Fragment::tick);
+        children().forEach(Fragment::tick);
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        boolean oldStyle = renderMinecraftStyle;
+        //        boolean oldStyle = renderMinecraftStyle;
         //        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
-        if(oldStyle != renderMinecraftStyle)
-        {
-            windows.forEach(window -> window.resize(minecraft, width, height));
-        }
+        //        if(oldStyle != renderMinecraftStyle)
+        //        {
+        //            windows.forEach(window -> window.resize(minecraft, width, height));
+        //        }
 
         RenderSystem.enableAlphaTest();
         renderBackground();

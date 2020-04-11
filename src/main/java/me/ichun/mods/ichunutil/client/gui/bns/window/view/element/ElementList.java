@@ -131,6 +131,8 @@ public class ElementList extends ElementFertile<Fragment>
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
+        super.resize(mc, width, height);//code is here twice to fix resizing when init
+        alignItems();
         super.resize(mc, width, height);
         alignItems();
         updateScrollBarSizes();
@@ -457,9 +459,18 @@ public class ElementList extends ElementFertile<Fragment>
             return this;
         }
 
-        public void addElement(Element e)
+        public Item addTextWrapper(String s)
+        {
+            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(s);
+            wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).top(this, Constraint.Property.Type.TOP, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+            this.addElement(wrapper);
+            return this;
+        }
+
+        public Element addElement(Element e)
         {
             elements.add(e);
+            return e;
         }
 
         public M getObject()

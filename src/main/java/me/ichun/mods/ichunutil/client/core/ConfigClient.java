@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.core;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.fml.config.ModConfig;
@@ -9,8 +10,12 @@ import javax.annotation.Nonnull;
 
 public class ConfigClient extends ConfigBase
 {
+    @CategoryDivider(name = "clientOnly")
     @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
     public boolean easterEgg = true;
+
+    @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
+    public boolean guiStyleMinecraft = false;
 
     @Nonnull
     @Override

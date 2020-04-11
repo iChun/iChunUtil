@@ -1,4 +1,9 @@
 {
   "config.ichunutil.prop.easterEgg.name": "Client Easter Eggs",
-  "config.ichunutil.prop.easterEgg.desc": "Enables Client-Side Easter Eggs for iChun's Mods"
+  "config.ichunutil.prop.easterEgg.desc": "Enables Client-Side Easter Eggs for iChun's Mods",
+  "config.ichunutil.prop.guiStyleMinecraft.name": "Minecraft Style GUIs",
+  "config.ichunutil.prop.guiStyleMinecraft.desc": "Renders iChunUtil's GUIs in a Minecraft Style instead",
+
+  "gui.ichunutil.configs.title": "Config Editor",
+  "gui.ichunutil.configs.options": "Options"
 }
