@@ -107,31 +107,46 @@ public abstract class ConfigBase
         if(field.isAnnotationPresent(CategoryDivider.class))
         {
             CategoryDivider divider =  field.getAnnotation(CategoryDivider.class);
-            if(!divider.name().isEmpty())
-            {
-                if(!lastCat[0].isEmpty())
-                {
-                    builder.pop();
-                }
-                lastCat[0] = divider.name();
-                if(!divider.comment().equals("undefined")) //not undefined //TODO if ever localizable, localize these
-                {
-                    builder.comment(divider.comment());
-                }
-                else if(divider.name().equals("general")) //undefined, but we're in a set category, default to generics
-                {
-                    builder.comment("These options are general options that don't fit any other category.");
-                }
-                else if(divider.name().equals("gameplay")) //undefined, but we're in a set category, default to generics
-                {
-                    builder.comment("These options affect the gameplay while using the mod.");
-                }
-                builder.push(lastCat[0]);
-            }
-            else
+            if(divider.name().isEmpty())
             {
                 throw new RuntimeException("WHY are you defining AN EMPTY CATEGORY?!");
             }
+
+            //TODO update the langkey mappings for these
+            if(!lastCat[0].isEmpty())
+            {
+                builder.pop();
+            }
+            lastCat[0] = divider.name();
+            if(!divider.comment().equals("undefined")) //not undefined //TODO if ever localizable, localize these
+            {
+                builder.comment(divider.comment());
+            }
+            else if(divider.name().equals("general")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("These options are general options that don't fit any other category.");
+            }
+            else if(divider.name().equals("gameplay")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("These options affect the gameplay while using the mod.");
+            }
+            else if(divider.name().equals("global")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("These options affect both servers and clients that load the mod.");
+            }
+            else if(divider.name().equals("serverOnly")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("These options affect only the server that loads the mod.");
+            }
+            else if(divider.name().equals("clientOnly")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("These options affect only the client that loads the mod.");
+            }
+            else if(divider.name().equals("block")) //undefined, but we're in a set category, default to generics
+            {
+                builder.comment("TThese options affect the blocks in the mod.");
+            }
+            builder.push(lastCat[0]);
         }
 
         //handle the field itself

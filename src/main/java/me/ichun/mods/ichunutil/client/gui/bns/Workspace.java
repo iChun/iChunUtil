@@ -1,10 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
@@ -79,10 +82,15 @@ public abstract class Workspace extends Screen //boxes and stuff!
     private boolean renderMinecraftStyle;
     private boolean hasInit;
 
-    public Workspace(ITextComponent title, boolean mcStyle) //TODO window latching on sides
+    public Workspace(ITextComponent title, boolean mcStyle)
     {
         super(title);
         renderMinecraftStyle = mcStyle;
+
+        if(canDockWindows())
+        {
+            windows.add(new WindowDock(this));
+        }
     }
 
     public <T extends Workspace> T setTheme(Theme theme)
@@ -133,9 +141,16 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return windows;
     }
 
+    @Override
     public void addWindow(Window window)
     {
         windows.add(0, window); //MC's iterator starts from first element of list
+    }
+
+    @Override
+    public void removeWindow(Window window)
+    {
+        windows.remove(window);
     }
 
     public void bringToFront(Window window)
@@ -165,7 +180,11 @@ public abstract class Workspace extends Screen //boxes and stuff!
         RenderSystem.enableAlphaTest();
         renderBackground();
 
-        windows.forEach(window -> window.render(mouseX, mouseY, partialTick));
+        for(int i = windows.size() - 1; i >= 0; i--)
+        {
+            Window window = windows.get(i);
+            window.render(mouseX, mouseY, partialTick);
+        }
 
         //render tooltip
         Fragment topMost = getTopMostFragment(mouseX, mouseY);
@@ -427,6 +446,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public boolean isObstructed(Window window, double mouseX, double mouseY)
     {
+        if(isDocked(window))
+        {
+            return isObstructed(getDock(), mouseX, mouseY);
+        }
         for(Window window1 : windows)
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
@@ -438,6 +461,57 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
+    public boolean canDockWindows()
+    {
+        return true;
+    }
+
+    public WindowDock getDock()
+    {
+        return (WindowDock)windows.get(windows.size() - 1);
+    }
+
+    @Override
+    public Constraint.Property.Type dockType(double mouseX, double mouseY)
+    {
+        if(canDockWindows())
+        {
+            return getDock().dockType(mouseX, mouseY);
+        }
+        return null;
+    }
+
+    @Override
+    public void addToDock(Window window, Constraint.Property.Type type)
+    {
+        if(canDockWindows())
+        {
+            getDock().addToDock(window, type);
+            removeWindow(window);
+        }
+    }
+
+    @Override
+    public void removeFromDock(Window window)
+    {
+        if(canDockWindows())
+        {
+            getDock().removeFromDock(window);
+            addWindow(window);
+        }
+    }
+
+    @Override
+    public boolean isDocked(Window window)
+    {
+        if(canDockWindows())
+        {
+            return getDock().docked.containsKey(window);
+        }
+        return false;
+    }
+
+    @Override
     public void setFocused(@Nullable IGuiEventListener gui)
     {
         IGuiEventListener lastFocused = getFocused();
@@ -445,8 +519,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             ((Fragment)lastFocused).unfocus(gui);
         }
-        if(gui instanceof Window)//TODO check it's not docked when we do docks
+        if(gui instanceof Window)
         {
+            if(canDockWindows() && gui == getDock() && getDock().clickedWindow != null)
+            {
+                super.setFocused(getDock().clickedWindow); //TODO is this right?
+                return;
+            }
             bringToFront((Window)gui);
         }
         super.setFocused(gui);

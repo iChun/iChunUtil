@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -16,20 +17,23 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 public abstract class Window<M extends IWindows> extends Fragment
 {
-    public Supplier<Integer> borderSize = () -> renderMinecraftStyle() ? 4 : 3;
+    public Supplier<Integer> borderSize;;
     public Supplier<Integer> titleSize = () -> borderSize.get() + 10;
 
     public @Nonnull final M parent;
     public @Nonnull List<View> views;
-    public @Nonnull View currentView;
+    public @Nonnull View currentView; //except for WindowDock
 
     public EdgeGrab edgeGrab; //set if a corner is grabbed
+
+    //TODO ID for remembering docked windows and positions?
 
     public Window(M parent)
     {
         super(null);
         this.parent = parent;
         this.views = new ArrayList<>();
+        borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() ? 4 : 3);
     }
 
     public <T extends Window> T setPos(int x, int y)
@@ -50,7 +54,6 @@ public abstract class Window<M extends IWindows> extends Fragment
     public void init()
     {
         //TODO check for special constraints
-        //TODO constraints should only apply to docked windows..?
         views.forEach(Fragment::init);
     }
 
@@ -76,14 +79,11 @@ public abstract class Window<M extends IWindows> extends Fragment
         return canShowTitle() && !currentView.title.isEmpty();
     }
 
-    //TODO drag title or double click to undock (top bars cannot undock)
-    //TODO docked?
     public boolean canDrag()
     {
         return true;
     }
 
-    //TODO docked?
     public boolean canDragResize()
     {
         return true;
@@ -96,7 +96,7 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public boolean canBeDocked() { return true; }
 
-    public boolean canBeUndocked() {return true; }
+    public boolean canBeUndocked() { return true; }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
@@ -107,7 +107,7 @@ public abstract class Window<M extends IWindows> extends Fragment
         renderBackground();
         if(hasTitle())
         {
-            drawString(currentView.title, getLeft() + borderSize.get() + 1, getTop() + (renderMinecraftStyle() ? borderSize.get() : 3));
+            drawString(currentView.title, getLeft() + borderSize.get() + 1, getTop() + borderSize.get());
         }
 
         //render the current view
@@ -195,6 +195,14 @@ public abstract class Window<M extends IWindows> extends Fragment
     {
         if(edgeGrab != null)
         {
+            if(edgeGrab.titleGrab && !parent.isDocked(this))
+            {
+                Constraint.Property.Type dockType = parent.dockType(mouseX, mouseY);
+                if(dockType != null)
+                {
+                    parent.addToDock(this, dockType);
+                }
+            }
             edgeGrab = null;
         }
         return super.mouseReleased(mouseX, mouseY, button);
@@ -209,6 +217,11 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 if(canDrag())
                 {
+                    if(parent.isDocked(this))
+                    {
+                        parent.removeFromDock(this);
+                    }
+
                     posX -= edgeGrab.x - (int)mouseX;
                     posY -= edgeGrab.y - (int)mouseY;
                     edgeGrab.x = (int)mouseX;

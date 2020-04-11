@@ -42,6 +42,18 @@ public class Constraint
         return this;
     }
 
+    public Constraint type(Property.Type link, IConstrainable c, Property.Type type, int i)
+    {
+        switch(link)
+        {
+            case LEFT : return left(c, type, i);
+            case RIGHT : return right(c, type, i);
+            case TOP : return top(c, type, i);
+            case BOTTOM : return bottom(c, type, i);
+        }
+        return this;
+    }
+
     public boolean hasLeft()
     {
         return left != Property.NONE;
@@ -171,6 +183,18 @@ public class Constraint
                     case BOTTOM: return reference.getBottom();
                 }
                 return -1;
+            }
+
+            public Type getOpposite()
+            {
+                switch(this)
+                {
+                    case LEFT: return RIGHT;
+                    case RIGHT: return LEFT;
+                    case TOP: return BOTTOM;
+                    case BOTTOM: return TOP;
+                }
+                return null;
             }
         }
 

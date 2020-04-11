@@ -169,7 +169,12 @@ public abstract class Fragment<M extends Fragment>
 
     public void fill(int[] colours, int border)
     {
-        RenderHelper.drawColour(colours[0], colours[1], colours[2], 255, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
+        fill(colours, 255, border);
+    }
+
+    public void fill(int[] colours, int alpha, int border)
+    {
+        RenderHelper.drawColour(colours[0], colours[1], colours[2], alpha, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
     }
 
     public @Nullable String tooltip(double mouseX, double mouseY)
