@@ -15,14 +15,9 @@ public class LatchedEntityRenderer<T extends LatchedEntity> extends EntityRender
         super(p_i46179_1_);
     }
 
-    @Override
-    public void doRender(T p_76986_1_, double p_76986_2_, double p_76986_4_, double p_76986_6_, float p_76986_8_, float p_76986_9_)
-    {
-    }
-
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(T t)
+    public ResourceLocation getEntityTexture(T t)
     {
         return null;
     }

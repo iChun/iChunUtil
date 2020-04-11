@@ -117,16 +117,4 @@ public class Theme
     {
         return (set[0] << 16) + (set[1] << 8) + (set[2]);
     }
-
-//    @Override
-//    public String getName()
-//    {
-//        return name + " - " + author;
-//    }
-//
-//    @Override
-//    public boolean localizable()
-//    {
-//        return false;
-//    }
 }

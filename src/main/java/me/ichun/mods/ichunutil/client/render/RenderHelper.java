@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -29,10 +29,10 @@ public class RenderHelper
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(posX, posY + height, zLevel).tex(u1, v2).endVertex();
-        bufferbuilder.pos(posX + width, posY + height, zLevel).tex(u2, v2).endVertex();
-        bufferbuilder.pos(posX + width, posY, zLevel).tex(u2, v1).endVertex();
-        bufferbuilder.pos(posX, posY, zLevel).tex(u1, v1).endVertex();
+        bufferbuilder.pos(posX, posY + height, zLevel).tex((float)u1, (float)v2).endVertex();
+        bufferbuilder.pos(posX + width, posY + height, zLevel).tex((float)u2, (float)v2).endVertex();
+        bufferbuilder.pos(posX + width, posY, zLevel).tex((float)u2, (float)v1).endVertex();
+        bufferbuilder.pos(posX, posY, zLevel).tex((float)u1, (float)v1).endVertex();
         tessellator.draw();
     }
 
@@ -50,7 +50,7 @@ public class RenderHelper
         {
             return;
         }
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -59,7 +59,7 @@ public class RenderHelper
         bufferbuilder.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
         bufferbuilder.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
         tessellator.draw();
-        GlStateManager.enableTexture();
+        RenderSystem.enableTexture();
     }
 
     public static void colour(int color)
@@ -67,7 +67,7 @@ public class RenderHelper
         float r = (color >> 16 & 255) / 255.0F;
         float g = (color >> 8 & 255) / 255.0F;
         float b = (color & 255) / 255.0F;
-        GlStateManager.color4f(r, g, b, 1.0F);
+        RenderSystem.color4f(r, g, b, 1.0F);
     }
 
     public static void colour(int color, float alpha)
@@ -75,7 +75,7 @@ public class RenderHelper
         float r = (color >> 16 & 255) / 255.0F;
         float g = (color >> 8 & 255) / 255.0F;
         float b = (color & 255) / 255.0F;
-        GlStateManager.color4f(r, g, b, alpha);
+        RenderSystem.color4f(r, g, b, alpha);
     }
 
     public static int getRandomColourFromString(String s)
@@ -94,8 +94,8 @@ public class RenderHelper
     {
         Minecraft mc = Minecraft.getInstance();
 
-        double scaleW = (double)mc.mainWindow.getFramebufferWidth() / mc.mainWindow.getScaledWidth();
-        double scaleH = (double)mc.mainWindow.getFramebufferHeight() / mc.mainWindow.getScaledHeight();
+        double scaleW = (double)mc.getMainWindow().getFramebufferWidth() / mc.getMainWindow().getScaledWidth();
+        double scaleH = (double)mc.getMainWindow().getFramebufferHeight() / mc.getMainWindow().getScaledHeight();
 
         if(width <= 0 || height <= 0)
         {
@@ -112,7 +112,7 @@ public class RenderHelper
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
-        GL11.glScissor((int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.mainWindow.getFramebufferHeight() - ((double)(y + height) * scaleH)), (int)Math.floor((double)(x + width) * scaleW) - (int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.mainWindow.getFramebufferHeight() - ((double)y * scaleH)) - (int)Math.floor((double)mc.mainWindow.getFramebufferHeight() - ((double)(y + height) * scaleH))); //starts from lower left corner (minecraft starts from upper left)
+        GL11.glScissor((int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.getMainWindow().getFramebufferHeight() - ((double)(y + height) * scaleH)), (int)Math.floor((double)(x + width) * scaleW) - (int)Math.floor((double)x * scaleW), (int)Math.floor((double)mc.getMainWindow().getFramebufferHeight() - ((double)y * scaleH)) - (int)Math.floor((double)mc.getMainWindow().getFramebufferHeight() - ((double)(y + height) * scaleH))); //starts from lower left corner (minecraft starts from upper left)
     }
 
     public static void endGlScissor()
@@ -125,16 +125,16 @@ public class RenderHelper
         //Basic scissor test
         Minecraft mc = Minecraft.getInstance();
 
-        RenderHelper.startGlScissor(mc.mainWindow.getScaledWidth() / 2 - 50, mc.mainWindow.getScaledHeight() / 2 - 50, 100, 100);
-        //        RenderHelper.startGlScissor(10, 10, mc.mainWindow.getScaledWidth() - 20, mc.mainWindow.getScaledHeight() - 20);
+        RenderHelper.startGlScissor(mc.getMainWindow().getScaledWidth() / 2 - 50, mc.getMainWindow().getScaledHeight() / 2 - 50, 100, 100);
+        //        RenderHelper.startGlScissor(10, 10, mc.getMainWindow().getScaledWidth() - 20, mc.getMainWindow().getScaledHeight() - 20);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
-        //        GlStateManager.translatef(-15F, 15F, 0F);
+        //        RenderSystem.translatef(-15F, 15F, 0F);
 
-        RenderHelper.drawColour(0xffffff, 255, 0, 0, mc.mainWindow.getScaledWidth(), mc.mainWindow.getScaledHeight(), 0);
+        RenderHelper.drawColour(0xffffff, 255, 0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight(), 0);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         RenderHelper.endGlScissor();
     }

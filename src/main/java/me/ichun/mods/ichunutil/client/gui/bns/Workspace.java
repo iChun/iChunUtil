@@ -1,12 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.util.IOUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -19,14 +20,58 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public abstract class Workspace extends Screen //boxes and stuff!
-    implements IConstrainable, IWindows
+        implements IConstrainable, IWindows
 {
     public static final String ELLIPSIS = "…";
+
+    private static HashMap<Class, Function<Object, List<String>>> objectInterpreter = new HashMap<>();
+    {
+        objectInterpreter.put(File.class, (o) -> {
+            File file = (File)o;
+            List<String> info = new ArrayList<>();
+            info.add(file.getName());
+            info.add((new SimpleDateFormat()).format(new Date(file.lastModified())));
+            info.add(IOUtil.readableFileSize(file.length()));
+            return info;
+        });
+        objectInterpreter.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
+    }
+
+    public static @Nonnull List<String> getInterpretedInfo(Object o)
+    {
+        Map.Entry<Class, Function<Object, List<String>>> lastEntryUsed = null;
+        List<String> infos = null;
+        for(Map.Entry<Class, Function<Object, List<String>>> e : objectInterpreter.entrySet())
+        {
+            if(e.getKey().isInstance(o))
+            {
+                if(!(lastEntryUsed != null && e.getKey().isAssignableFrom(lastEntryUsed.getKey()))) // !(the last entry extends our current class)
+                {
+                    lastEntryUsed = e;
+                    infos = e.getValue().apply(o);
+                }
+            }
+        }
+        if(infos == null)
+        {
+            infos = new ArrayList<>();
+            infos.add(o.toString());
+        }
+        return infos;
+    }
+
+    public static void registerObjectInterpreter(Class clz, Function<Object, List<String>> function)
+    {
+        objectInterpreter.put(clz, function);
+    }
+
     public int ellipsisLength = 0;
 
     private Theme theme = Theme.getInstance();
@@ -111,13 +156,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void render(int mouseX, int mouseY, float partialTick)
     {
         boolean oldStyle = renderMinecraftStyle;
-//        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
+        //        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
         if(oldStyle != renderMinecraftStyle)
         {
             windows.forEach(window -> window.resize(minecraft, width, height));
         }
 
-        GlStateManager.enableAlphaTest();
+        RenderSystem.enableAlphaTest();
         renderBackground();
 
         windows.forEach(window -> window.render(mouseX, mouseY, partialTick));
@@ -134,7 +179,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
 
         resetBackground();
-        GlStateManager.enableAlphaTest();
+        RenderSystem.enableAlphaTest();
     }
 
     @Override
@@ -165,10 +210,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
             font = event.getFontRenderer();
 
             //TODO hmmmmmmmmm do we need these calls?
-            GlStateManager.disableRescaleNormal();
+            RenderSystem.disableRescaleNormal();
             net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepthTest();
+            RenderSystem.disableLighting();
+            RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
             for (String textLine : textLines)
@@ -285,10 +330,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
             MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(stack, textLines, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
 
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepthTest();
+            RenderSystem.enableLighting();
+            RenderSystem.enableDepthTest();
             net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -324,16 +369,16 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
         else
         {
-            GlStateManager.matrixMode(GL11.GL_PROJECTION);
-            GlStateManager.loadIdentity();
-            GlStateManager.ortho(0.0D, minecraft.mainWindow.getFramebufferWidth() / minecraft.mainWindow.getGuiScaleFactor(), minecraft.mainWindow.getFramebufferHeight() / minecraft.mainWindow.getGuiScaleFactor(), 0.0D, -5000.0D, 5000.0D);
-            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-            GlStateManager.loadIdentity();
+            RenderSystem.matrixMode(GL11.GL_PROJECTION);
+            RenderSystem.loadIdentity();
+            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth() / minecraft.getMainWindow().getGuiScaleFactor(), minecraft.getMainWindow().getFramebufferHeight() / minecraft.getMainWindow().getGuiScaleFactor(), 0.0D, -5000.0D, 5000.0D);
+            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+            RenderSystem.loadIdentity();
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
-            GlStateManager.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
-            GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+            RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
+            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
         }
     }
 
@@ -341,13 +386,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         if(!renderMinecraftStyle)
         {
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
 
-            GlStateManager.matrixMode(GL11.GL_PROJECTION);
-            GlStateManager.loadIdentity();
-            GlStateManager.ortho(0.0D, minecraft.mainWindow.getFramebufferWidth(), minecraft.mainWindow.getFramebufferHeight(), 0.0D, 1000.0D, 3000.0D);
-            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-            GlStateManager.loadIdentity();
+            RenderSystem.matrixMode(GL11.GL_PROJECTION);
+            RenderSystem.loadIdentity();
+            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth(), minecraft.getMainWindow().getFramebufferHeight(), 0.0D, 1000.0D, 3000.0D);
+            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+            RenderSystem.loadIdentity();
         }
     }
 

@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
@@ -13,7 +14,6 @@ import org.apache.logging.log4j.util.TriConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -450,7 +450,7 @@ public class ElementList extends ElementFertile<Fragment>
 
         public Item setDefaultAppearance()
         {
-            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Arrays.asList(heldObject.toString().split("\n")));
+            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             elements.add(wrapper);
 
@@ -478,10 +478,10 @@ public class ElementList extends ElementFertile<Fragment>
 
                 if(draggingUs)
                 {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     double x = (mouseX - pos.x);
                     double y = (mouseY - pos.y);
-                    GlStateManager.translated(x, y, 0D);
+                    RenderSystem.translated(x, y, 0D);
                 }
 
                 if(renderMinecraftStyle())
@@ -563,7 +563,7 @@ public class ElementList extends ElementFertile<Fragment>
 
                 if(draggingUs)
                 {
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
             }
         }

@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.util.ResourceLocation;
@@ -29,7 +29,8 @@ public class ElementButtonTextured extends ElementButtonTooltip
     {
         super.render(mouseX, mouseY, partialTick);
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         bindTexture(textureLocation);
 
         if(warping)

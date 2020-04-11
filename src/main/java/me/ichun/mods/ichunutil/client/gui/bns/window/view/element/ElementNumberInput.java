@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
@@ -102,7 +102,8 @@ public class ElementNumberInput extends ElementTextField
         {
             widget.setEnableBackgroundDrawing(true);
             widget.render(mouseX, mouseY, partialTick);
-            GlStateManager.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.enableAlphaTest();
 
             renderMinecraftStyleButton(getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE); //top half
             renderMinecraftStyleButton(getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE); //top half
@@ -127,7 +128,7 @@ public class ElementNumberInput extends ElementTextField
             fill(colour, 1);
             widget.setEnableBackgroundDrawing(false);
             widget.render(mouseX, mouseY, partialTick);
-            GlStateManager.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.color4f(1F, 1F, 1F, 1F);
 
             //handle top half
             if(clickUp)
@@ -159,15 +160,15 @@ public class ElementNumberInput extends ElementTextField
                 colour = getTheme().elementInputBorder;
             }
             RenderHelper.drawColour(colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop() + (height / 2d), BUTTON_WIDTH, (height / 2d), 0); //bottom half
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             float scale = 0.5F;
-            GlStateManager.scalef(scale, scale, scale);
+            RenderSystem.scalef(scale, scale, scale);
             drawString("\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
             drawString("\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
 
-//            parent.workspace.getFontRenderer().drawString("\u25B2", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() - 1) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//up
-//            parent.workspace.getFontRenderer().drawString("\u25BC", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() + 5) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//down
+            //            parent.workspace.getFontRenderer().drawString("\u25B2", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() - 1) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//up
+            //            parent.workspace.getFontRenderer().drawString("\u25BC", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() + 5) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//down
         }
     }
 
@@ -259,7 +260,7 @@ public class ElementNumberInput extends ElementTextField
     public void changeValue(boolean up, boolean hasShiftDown, boolean hasControlDown)
     {
         String s = widget.getText();
-        double amp = Math.pow(0.1, Math.max(0, decimals - 1));
+        double amp = isDouble ? Math.pow(0.1, Math.max(0, decimals - 1)) : 10;
         if(hasShiftDown && hasControlDown)
         {
             amp *= 100D;
@@ -297,6 +298,43 @@ public class ElementNumberInput extends ElementTextField
                 widget.setText(newVal);
             }
         }
+    }
+
+    public int getInt()
+    {
+        String s = widget.getText();
+
+        if(s.contains("."))
+        {
+            try
+            {
+                return (int)Double.parseDouble(s);
+            }
+            catch(NumberFormatException ignored){}
+        }
+        else if(!s.isEmpty())
+        {
+            try
+            {
+                return Integer.parseInt(s);
+            }
+            catch(NumberFormatException ignored){}
+        }
+        return 0;
+    }
+
+    public double getDouble()
+    {
+        String s = widget.getText();
+        if(!s.isEmpty())
+        {
+            try
+            {
+                return (int)Double.parseDouble(s);
+            }
+            catch(NumberFormatException ignored){}
+        }
+        return 0D;
     }
 
     @Override

@@ -16,7 +16,7 @@ public class PacketChannel
     private final BiMap<Class<? extends AbstractPacket>, Byte> clzToId;
     private final BiMap<Byte, Class<? extends AbstractPacket>> idToClz;
 
-    public PacketChannel(ResourceLocation name, String protocolVersion, Class<? extends AbstractPacket>...packetTypes)
+    public PacketChannel(ResourceLocation name, String protocolVersion, boolean clientRequired, boolean serverRequired, Class<? extends AbstractPacket>...packetTypes)
     {
         clzToId = HashBiMap.create(packetTypes.length);
         for(int i = 0; i < packetTypes.length; i++)
@@ -25,7 +25,7 @@ public class PacketChannel
         }
         idToClz = clzToId.inverse();
 
-        channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, protocolVersion::equals, protocolVersion::equals);
+        channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, anObject -> protocolVersion.equals(anObject) || !serverRequired, anObject1 -> protocolVersion.equals(anObject1) || !clientRequired);
         channel.registerMessage(0, PacketHolder.class,
                 (packet, buffer) -> {
                     buffer.writeByte(clzToId.get(packet.packet.getClass()));

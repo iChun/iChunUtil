@@ -288,7 +288,7 @@ public abstract class ConfigBase
         }
     }
 
-    private void onConfigReload(ModConfig.ConfigReloading event)
+    private void onConfigReload(ModConfig.Reloading event)
     {
         if(event.getConfig().getFileName().equals(fileName))
         {

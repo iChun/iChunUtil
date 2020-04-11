@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -75,7 +75,6 @@ public class ElementTextField extends Element<Fragment>
         return !s.startsWith(".");
     };
 
-
     private List<IGuiEventListener> children = Lists.newArrayList();
     protected TextFieldWidget widget;
     private String defaultText = "";
@@ -132,7 +131,7 @@ public class ElementTextField extends Element<Fragment>
         widget.setText(defaultText);
         widget.setMaxStringLength(maxStringLength);
         widget.setValidator(validator);
-        widget.func_212954_a(responder);
+        widget.setResponder(responder);
         widget.setTextFormatter(textFormatter);
         children.add(widget);
         adjustWidget();
@@ -187,7 +186,7 @@ public class ElementTextField extends Element<Fragment>
             widget.setEnableBackgroundDrawing(false);
             widget.render(mouseX, mouseY, partialTick);
         }
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
     }
 
     @Override

@@ -12,4 +12,5 @@ public interface IWindows extends INestedGuiEventHandler
     boolean renderMinecraftStyle();
     FontRenderer getFontRenderer();
     boolean isObstructed(Window mWindow, double mouseX, double mouseY);
+    default boolean canDockWindows() { return true; }
 }

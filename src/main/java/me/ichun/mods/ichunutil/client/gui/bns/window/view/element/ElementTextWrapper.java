@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementTextWrapper extends Element<Fragment>
+public class ElementTextWrapper extends Element<Fragment> //TODO image element
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();

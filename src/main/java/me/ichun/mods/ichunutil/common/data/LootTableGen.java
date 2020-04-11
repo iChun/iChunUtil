@@ -101,7 +101,7 @@ public class LootTableGen implements IDataProvider
                 ResourceLocation table = block.getLootTable();
                 if(!LootTables.EMPTY.equals(table) && set.add(table))
                 {
-                    LootTable.Builder builder = this.field_218581_i.remove(table);
+                    LootTable.Builder builder = this.lootTables.remove(table);
                     if (builder == null)
                         throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, block.getRegistryName()));
 
@@ -109,8 +109,8 @@ public class LootTableGen implements IDataProvider
                 }
             });
 
-            if (!this.field_218581_i.isEmpty())
-                throw new IllegalStateException("Created block loot tables for non-blocks: " + this.field_218581_i.keySet());
+            if (!this.lootTables.isEmpty())
+                throw new IllegalStateException("Created block loot tables for non-blocks: " + this.lootTables.keySet());
         }
     }
 
@@ -145,7 +145,7 @@ public class LootTableGen implements IDataProvider
                     ResourceLocation table = type.getLootTable();
                     if(table != LootTables.EMPTY && set.add(table))
                     {
-                        LootTable.Builder builder = this.field_218587_b.remove(table);
+                        LootTable.Builder builder = this.lootTables.remove(table);
                         if (builder == null)
                             throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, type.getRegistryName()));
 
@@ -154,8 +154,8 @@ public class LootTableGen implements IDataProvider
                 }
             });
 
-            if (!this.field_218587_b.isEmpty())
-                throw new IllegalStateException("Created entity loot tables for non-living entities: " + this.field_218587_b.keySet());
+            if (!this.lootTables.isEmpty())
+                throw new IllegalStateException("Created entity loot tables for non-living entities: " + this.lootTables.keySet());
         }
     }
 

@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
@@ -49,7 +50,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     public void init()
     {
         //TODO check for special constraints
-        //TODO constraints should only apply to docked windows
+        //TODO constraints should only apply to docked windows..?
         views.forEach(Fragment::init);
     }
 
@@ -92,6 +93,10 @@ public abstract class Window<M extends IWindows> extends Fragment
     {
         return true;
     }
+
+    public boolean canBeDocked() { return true; }
+
+    public boolean canBeUndocked() {return true; }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)

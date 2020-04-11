@@ -325,15 +325,15 @@ public class ElementScrollBar extends Element<Fragment>
         return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
-    public static void draw(double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    public static void draw(double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //TODO check this
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(posX, posY + height, zLevel)        .tex(u2, v1).endVertex();
-        bufferbuilder.pos(posX + width, posY + height, zLevel).tex(u2, v2).endVertex();
-        bufferbuilder.pos(posX + width, posY, zLevel)         .tex(u1, v2).endVertex();
-        bufferbuilder.pos(posX, posY, zLevel)                 .tex(u1, v1).endVertex();
+        bufferbuilder.pos(posX, posY + height, zLevel)        .tex((float)u2, (float)v1).endVertex();
+        bufferbuilder.pos(posX + width, posY + height, zLevel).tex((float)u2, (float)v2).endVertex();
+        bufferbuilder.pos(posX + width, posY, zLevel)         .tex((float)u1, (float)v2).endVertex();
+        bufferbuilder.pos(posX, posY, zLevel)                 .tex((float)u1, (float)v1).endVertex();
         tessellator.draw();
     }
 }

@@ -38,7 +38,7 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     {
         this.parent = parent;
         setParentId(parent.getEntityId());
-        setPositionAndRotation(parent.posX, parent.posY, parent.posZ, parent.rotationYaw, parent.rotationPitch);
+        setPositionAndRotation(parent.getPosX(), parent.getPosY(), parent.getPosZ(), parent.rotationYaw, parent.rotationPitch);
         size = parent.size;
         setBoundingBox(parent.getBoundingBox()); // match the parent's size for rendering
         return (T)this;
@@ -141,7 +141,7 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
         }
         else //parent is "alive" and safe
         {
-            this.setPosition(parent.posX, parent.posY, parent.posZ);
+            this.setPosition(parent.getPosX(), parent.getPosY(), parent.getPosZ());
             this.setRotation(parent.rotationYaw, parent.rotationPitch);
         }
     }
