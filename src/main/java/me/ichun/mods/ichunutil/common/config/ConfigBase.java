@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common.config;
 
+import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -26,7 +27,7 @@ public abstract class ConfigBase
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
 
     private final @Nonnull String fileName;
-    private final @Nonnull HashSet<ValueWrapper> values = new HashSet<>();
+    public final @Nonnull TreeMap<String, HashSet<ValueWrapper>> values = new TreeMap<>(Ordering.natural()); //category to value
     private final @Nonnull HashSet<String> reveal = new HashSet<>();
 
     private boolean init;
@@ -144,7 +145,7 @@ public abstract class ConfigBase
             }
             else if(divider.name().equals("block")) //undefined, but we're in a set category, default to generics
             {
-                builder.comment("TThese options affect the blocks in the mod.");
+                builder.comment("These options affect the blocks in the mod.");
             }
             builder.push(lastCat[0]);
         }
@@ -279,7 +280,8 @@ public abstract class ConfigBase
 
         if(value != null)
         {
-            values.add(new ValueWrapper(this, value, field));
+            HashSet<ValueWrapper> vals = values.computeIfAbsent(lastCat[0], v -> new HashSet<>());
+            vals.add(new ValueWrapper(this, value, field));
         }
         else
         {
@@ -325,7 +327,10 @@ public abstract class ConfigBase
 
     private void checkForChanges()
     {
-        values.forEach(ValueWrapper::checkForChange);
+        for(HashSet<ValueWrapper> vals : values.values())
+        {
+            vals.forEach(ValueWrapper::checkForChange);
+        }
     }
 
     public boolean hasInit()
@@ -336,9 +341,12 @@ public abstract class ConfigBase
     public void save()
     {
         boolean save = false;
-        for(ValueWrapper value : values)
+        for(HashSet<ValueWrapper> vals : values.values())
         {
-            save = value.save() || save;
+            for(ValueWrapper value : vals)
+            {
+                save = value.save() || save;
+            }
         }
         if(save)
         {
@@ -361,11 +369,11 @@ public abstract class ConfigBase
         return field.isAnnotationPresent(Prop.class) || field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType());
     }
 
-    private static class ValueWrapper<T>
+    public static class ValueWrapper<T>
     {
         private final ConfigBase parent;
         private final @Nonnull ForgeConfigSpec.ConfigValue<T> configValue;
-        private final @Nonnull Field field;
+        public final @Nonnull Field field;
 
         private T lastObj = null;
 

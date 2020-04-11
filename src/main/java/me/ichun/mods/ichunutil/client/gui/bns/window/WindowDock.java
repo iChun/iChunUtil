@@ -6,19 +6,19 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.*;
+import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.LEFT;
 
 public class WindowDock<M extends IWindows> extends Window<M>
 {
-    public HashMap<Window, Constraint.Property.Type> docked = new HashMap<>();
+    public LinkedHashMap<Window, Constraint.Property.Type> docked = new LinkedHashMap<>();
     public HashMap<Window, WindowSize> dockedOriSize = new HashMap<>();
 
     public Window clickedWindow = null;
@@ -362,14 +362,14 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 }
                 constraint = constraint.type(type1, this, edgeType, -(Integer)window.borderSize.get());
             }
-//            else //type is opposite
-//            {
-//                if(constrainable != null)
-//                {
-//                    edgeType = type;
-//                }
-//                constraint = constraint.type(type.getOpposite(), this, edgeType, type1 == Constraint.Property.Type.LEFT || type1 == Constraint.Property.Type.RIGHT ? window.width : window.height);
-//            }
+            //            else //type is opposite
+            //            {
+            //                if(constrainable != null)
+            //                {
+            //                    edgeType = type;
+            //                }
+            //                constraint = constraint.type(type.getOpposite(), this, edgeType, type1 == Constraint.Property.Type.LEFT || type1 == Constraint.Property.Type.RIGHT ? window.width : window.height);
+            //            }
         }
 
         docked.put(window, type);

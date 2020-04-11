@@ -1,4 +1,18 @@
 {
+  "config.ichunutil.cat.general.name": "General Options",
+  "config.ichunutil.cat.gameplay.name": "Gameplay",
+  "config.ichunutil.cat.global.name": "Global Options",
+  "config.ichunutil.cat.serverOnly.name": "Server Options",
+  "config.ichunutil.cat.clientOnly.name": "Client Only",
+  "config.ichunutil.cat.block.name": "Block",
+
+  "config.ichunutil.cat.general.desc": "These options are general options that don't fit any other category.",
+  "config.ichunutil.cat.gameplay.desc": "These options affect the gameplay while using the mod.",
+  "config.ichunutil.cat.global.desc": "These options affect both servers and clients that load the mod.",
+  "config.ichunutil.cat.serverOnly.desc": "These options affect only the server that loads the mod.",
+  "config.ichunutil.cat.clientOnly.desc": "These options affect only the client that loads the mod.",
+  "config.ichunutil.cat.block.desc": "These options affect the blocks in the mod.",
+
   "config.ichunutil.prop.easterEgg.name": "Client Easter Eggs",
   "config.ichunutil.prop.easterEgg.desc": "Enables Client-Side Easter Eggs for iChun's Mods",
   "config.ichunutil.prop.guiStyleMinecraft.name": "Minecraft Style GUIs",

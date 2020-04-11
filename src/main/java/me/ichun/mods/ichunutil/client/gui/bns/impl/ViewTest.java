@@ -2,8 +2,10 @@ package me.ichun.mods.ichunutil.client.gui.bns.impl;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
-import net.minecraft.util.ResourceLocation;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;

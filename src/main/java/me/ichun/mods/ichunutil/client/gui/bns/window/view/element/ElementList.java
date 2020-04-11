@@ -9,7 +9,6 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
-import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ElementList extends ElementFertile<Fragment>
 {
     public List<Item> items = new ArrayList<>();
     private @Nullable ElementScrollBar scrollVert;
     private @Nullable ElementScrollBar scrollHori;
-    private @Nullable TriConsumer<ElementList, Object, Boolean> selectionHandler;
     private @Nullable BiConsumer<Item, Item> dragHandler;
     private @Nullable BiConsumer<Item, Integer> rearrangeHandler;
 
@@ -46,12 +45,6 @@ public class ElementList extends ElementFertile<Fragment>
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());
-        return this;
-    }
-
-    public ElementList setSelectionHandler(TriConsumer<ElementList, Object, Boolean> selectionHandler)
-    {
-        this.selectionHandler = selectionHandler;
         return this;
     }
 
@@ -437,6 +430,7 @@ public class ElementList extends ElementFertile<Fragment>
         private List<Element> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
         public boolean selected;
+        private @Nullable Consumer<Item<M>> selectionHandler;
 
         public Item(@Nonnull Fragment parent, @Nonnull M heldObject)
         {
@@ -456,6 +450,12 @@ public class ElementList extends ElementFertile<Fragment>
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             elements.add(wrapper);
 
+            return this;
+        }
+
+        public Item setSelectionHandler(Consumer<Item<M>> handler)
+        {
+            this.selectionHandler = handler;
             return this;
         }
 
@@ -592,9 +592,9 @@ public class ElementList extends ElementFertile<Fragment>
                 {
                     selected = false;
                 }
-                if(((ElementList)parentFragment).selectionHandler != null)
+                if(selectionHandler != null)
                 {
-                    ((ElementList)parentFragment).selectionHandler.accept(((ElementList)parentFragment), heldObject, selected);
+                    selectionHandler.accept(this);
                 }
                 return true;
             }
@@ -620,9 +620,9 @@ public class ElementList extends ElementFertile<Fragment>
             if(deselectOnUnfocus)
             {
                 selected = false;
-                if(((ElementList)parentFragment).selectionHandler != null)
+                if(selectionHandler != null)
                 {
-                    ((ElementList)parentFragment).selectionHandler.accept(((ElementList)parentFragment), heldObject, selected);
+                    selectionHandler.accept(this);
                 }
             }
         }
