@@ -7,7 +7,6 @@ import net.minecraft.client.resources.I18n;
 
 public class WindowConfigs extends Window<WorkspaceConfigs>
 {
-
     public WindowConfigs(WorkspaceConfigs parent)
     {
         super(parent);

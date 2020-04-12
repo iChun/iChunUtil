@@ -23,14 +23,14 @@ public class WorkspaceConfigs extends Workspace
 
     public WorkspaceConfigs(Screen lastScreen)
     {
-        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), iChunUtil.configClient.guiStyleMinecraft);
+        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), Screen.hasControlDown()/*iChunUtil.configClient.guiStyleMinecraft*/); //TODO this
 
         ConfigBase.CONFIGS.forEach((configBase -> {
             TreeSet<ConfigInfo> confs = configs.computeIfAbsent(configBase.getConfigName(), v -> new TreeSet<>(Ordering.natural()));
             confs.add(new ConfigInfo(configBase));
         }));
 
-        getDock().borderSize(() -> 0);
+        getDock().setBorderSize(() -> 0);
         addToDock(new WindowConfigs(this), Constraint.Property.Type.LEFT);
     }
 

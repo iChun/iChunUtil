@@ -56,7 +56,7 @@ public abstract class Window<M extends IWindows> extends Fragment
         return (T)this;
     }
 
-    public <T extends Window<?>> T borderSize(Supplier<Integer> borderSize)
+    public <T extends Window<?>> T setBorderSize(Supplier<Integer> borderSize)
     {
         this.borderSize = borderSize;
         return (T)this;

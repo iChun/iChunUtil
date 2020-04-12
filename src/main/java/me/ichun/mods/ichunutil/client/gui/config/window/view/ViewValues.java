@@ -11,6 +11,7 @@ import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -125,7 +126,10 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz.isEnum()) //enum! //TODO this
         {
-            System.out.println(o.toString());
+            ElementContextMenu input = new ElementContextMenu(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) -> {});
+            input.setSize(80, 14);
+            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+            item.addElement(input);
         }
         else if(o instanceof List) //lists
         {

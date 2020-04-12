@@ -64,6 +64,7 @@ public class ViewConfigs extends View<WindowConfigs>
                     {
                         if(item1.getObject() == e.getValue().first())
                         {
+                            item.parentFragment.setFocused(item);
                             item1.selected = true;
                             parent.parent.selectItem(item1);
                             break;

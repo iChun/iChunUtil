@@ -29,13 +29,13 @@ public abstract class ElementClickable<M extends Fragment<?>> extends Element<M>
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
-        super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
+        boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
         parentFragment.setFocused(null); //we're a one time click, stop focusing on us
         if(isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
             trigger();
         }
-        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
+        return flag;
     }
 
     private void trigger()
