@@ -27,7 +27,7 @@ public abstract class ConfigBase
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
 
     private final @Nonnull String fileName;
-    public final @Nonnull TreeMap<String, HashSet<ValueWrapper>> values = new TreeMap<>(Ordering.natural()); //category to value
+    public final @Nonnull TreeMap<String, HashSet<ValueWrapper<?>>> values = new TreeMap<>(Ordering.natural()); //category to value
     private final @Nonnull HashSet<String> reveal = new HashSet<>();
 
     private boolean init;
@@ -280,7 +280,7 @@ public abstract class ConfigBase
 
         if(value != null)
         {
-            HashSet<ValueWrapper> vals = values.computeIfAbsent(lastCat[0], v -> new HashSet<>());
+            HashSet<ValueWrapper<?>> vals = values.computeIfAbsent(lastCat[0], v -> new HashSet<>());
             vals.add(new ValueWrapper(this, value, field));
         }
         else
@@ -327,7 +327,7 @@ public abstract class ConfigBase
 
     private void checkForChanges()
     {
-        for(HashSet<ValueWrapper> vals : values.values())
+        for(HashSet<ValueWrapper<?>> vals : values.values())
         {
             vals.forEach(ValueWrapper::checkForChange);
         }
@@ -341,7 +341,7 @@ public abstract class ConfigBase
     public void save()
     {
         boolean save = false;
-        for(HashSet<ValueWrapper> vals : values.values())
+        for(HashSet<ValueWrapper<?>> vals : values.values())
         {
             for(ValueWrapper value : vals)
             {

@@ -273,6 +273,18 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return null;
     }
 
+    public boolean isDocked(Window<?> window)
+    {
+        for(ArrayList<Window<?>> windows : docked.keySet())
+        {
+            if(windows.contains(window))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public IWindows.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(dockStack)
@@ -358,7 +370,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return null;
     }
 
-    public void addToDocked(Window dockedWin, Window window)
+    public void addToDocked(Window<?> dockedWin, Window<?> window)
     {
         for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
@@ -372,7 +384,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
         }
     }
 
-    public void addToDock(Window window, Constraint.Property.Type type)
+    public void addToDock(Window<?> window, Constraint.Property.Type type)
     {
         dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
 

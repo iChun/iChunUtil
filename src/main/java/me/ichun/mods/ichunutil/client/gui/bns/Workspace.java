@@ -538,7 +538,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         if(canDockWindows())
         {
-            return getDock().docked.containsKey(window);
+            return getDock().isDocked(window);
         }
         return false;
     }

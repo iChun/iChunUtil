@@ -34,11 +34,11 @@ public class WorkspaceConfigs extends Workspace
         addToDock(new WindowConfigs(this), Constraint.Property.Type.LEFT);
     }
 
-    public void selectItem(ElementList.Item item)
+    public void selectItem(ElementList.Item<?> item)
     {
         if(item.selected)
         {
-            for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+            for(ElementList.Item<?> item1 : ((ElementList)item.parentFragment).items)
             {
                 if(item1 != item)
                 {
@@ -74,7 +74,7 @@ public class WorkspaceConfigs extends Workspace
                 Window<?> window = windows.get(i);
                 if(window instanceof WindowValues)
                 {
-                    dock.dockedOriSize.remove(windows);
+                    dock.dockedOriSize.remove(window);
                     windows.remove(i);
                 }
             }
@@ -107,10 +107,10 @@ public class WorkspaceConfigs extends Workspace
         public ConfigInfo(ConfigBase config)
         {
             this.config = config;
-            for(Map.Entry<String, HashSet<ConfigBase.ValueWrapper>> e : config.values.entrySet())
+            for(Map.Entry<String, HashSet<ConfigBase.ValueWrapper<?>>> e : config.values.entrySet())
             {
                 TreeSet<ValueWrapperLocalised> set = categories.computeIfAbsent(e.getKey(), v -> new TreeSet<>(Ordering.natural()));
-                for(ConfigBase.ValueWrapper valueWrapper : e.getValue())
+                for(ConfigBase.ValueWrapper<?> valueWrapper : e.getValue())
                 {
                     set.add(new ValueWrapperLocalised(valueWrapper, I18n.format("config." + config.getModId() + ".prop." + valueWrapper.field.getName() + ".name"), I18n.format("config." + config.getModId() + ".prop." + valueWrapper.field.getName() + ".desc")));
                 }
@@ -126,11 +126,11 @@ public class WorkspaceConfigs extends Workspace
         public static class ValueWrapperLocalised
             implements Comparable<ValueWrapperLocalised>
         {
-            public final ConfigBase.ValueWrapper value;
+            public final ConfigBase.ValueWrapper<?> value;
             public final String name;
             public final String desc;
 
-            public ValueWrapperLocalised(ConfigBase.ValueWrapper value, String name, String desc) {
+            public ValueWrapperLocalised(ConfigBase.ValueWrapper<?> value, String name, String desc) {
                 this.value = value;
                 this.name = name;
                 this.desc = desc;

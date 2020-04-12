@@ -16,7 +16,7 @@ public class ElementToggle extends ElementClickable<Fragment<?>>
         this(parent, s, (button) -> {});
     }
 
-    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<ElementClickable> callback)
+    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);
         text = s;

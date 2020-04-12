@@ -13,7 +13,7 @@ public class ElementButtonTooltip extends ElementButton
     }
 
     @Override
-    public <T extends Element> T setTooltip(String s) //do nothing
+    public <T extends Element<?>> T setTooltip(String s) //do nothing
     {
         return (T)this;
     }
