@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.common.network;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -13,26 +12,26 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class PacketChannel
 {
     private final SimpleChannel channel;
-    private final BiMap<Class<? extends AbstractPacket>, Byte> clzToId;
-    private final BiMap<Byte, Class<? extends AbstractPacket>> idToClz;
+    private final Object2ByteOpenHashMap<Class<? extends AbstractPacket>> clzToId;
+    private final Class<? extends AbstractPacket>[] idToClz;
 
     public PacketChannel(ResourceLocation name, String protocolVersion, boolean clientRequired, boolean serverRequired, Class<? extends AbstractPacket>...packetTypes)
     {
-        clzToId = HashBiMap.create(packetTypes.length);
+        clzToId = new Object2ByteOpenHashMap<>(packetTypes.length);
         for(int i = 0; i < packetTypes.length; i++)
         {
             clzToId.put(packetTypes[i], (byte)i);
         }
-        idToClz = clzToId.inverse();
+        idToClz = packetTypes;
 
         channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, anObject -> protocolVersion.equals(anObject) || !serverRequired, anObject1 -> protocolVersion.equals(anObject1) || !clientRequired);
         channel.registerMessage(0, PacketHolder.class,
                 (packet, buffer) -> {
-                    buffer.writeByte(clzToId.get(packet.packet.getClass()));
+                    buffer.writeByte(clzToId.getByte(packet.packet.getClass()));
                     packet.packet.writeTo(buffer);
                 },
                 (buffer) -> {
-                    Class<? extends AbstractPacket> clz = idToClz.get(buffer.readByte());
+                    Class<? extends AbstractPacket> clz = idToClz[buffer.readByte()];
                     AbstractPacket packet = null;
                     try
                     {

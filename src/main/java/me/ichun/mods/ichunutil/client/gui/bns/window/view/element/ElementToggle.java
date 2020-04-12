@@ -2,12 +2,11 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementToggle extends ElementClickable<Fragment>
+public class ElementToggle extends ElementClickable<Fragment<?>>
 {
     public String text;
     public boolean toggleState;

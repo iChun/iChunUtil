@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -16,7 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ElementTextField extends Element<Fragment>
+public class ElementTextField extends Element<Fragment<?>>
 {
     public static final Predicate<String> INTEGERS = (s) ->
     {
@@ -88,7 +87,7 @@ public class ElementTextField extends Element<Fragment>
     private int lastLeft;
     private int lastTop;
 
-    public ElementTextField(@Nonnull Fragment parent)
+    public ElementTextField(@Nonnull Fragment<?> parent)
     {
         super(parent);
     }

@@ -11,11 +11,7 @@ import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 public class ViewValues extends View<WindowValues>

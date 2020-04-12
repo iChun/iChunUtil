@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("unchecked")
-public abstract class Fragment<M extends Fragment>
+public abstract class Fragment<M extends Fragment<?>>
         implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
 {
     public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
@@ -35,13 +35,13 @@ public abstract class Fragment<M extends Fragment>
         this.parentFragment = parentFragment;
     }
 
-    public <T extends Fragment> T setConstraint(Constraint constraint)
+    public <T extends Fragment<?>> T setConstraint(Constraint constraint)
     {
         this.constraint = constraint;
         return (T)this;
     }
 
-    public <T extends Fragment> T setId(String id)
+    public <T extends Fragment<?>> T setId(String id)
     {
         this.id = id;
         return (T)this;
@@ -66,21 +66,21 @@ public abstract class Fragment<M extends Fragment>
 
     public void tick()
     {
-        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment)child).tick());
+        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment<?>)child).tick());
     }
 
-    public @Nullable <T extends Fragment> T getById(@Nonnull String id)
+    public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
     {
         if(id.equals(this.id))
         {
             return (T)this;
         }
-        Fragment o = null;
+        Fragment<?> o = null;
         for(IGuiEventListener child : children())
         {
             if(o == null && child instanceof Fragment)
             {
-                o = ((Fragment)child).getById(id);
+                o = ((Fragment<?>)child).getById(id);
             }
         }
         return (T)o;
@@ -119,16 +119,16 @@ public abstract class Fragment<M extends Fragment>
         return 16777215;
     }
 
-    public @Nullable Fragment getTopMostFragment(double mouseX, double mouseY)
+    public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            Fragment fragment = this;
+            Fragment<?> fragment = this;
             for(IGuiEventListener child : this.children())
             {
                 if(child instanceof Fragment)
                 {
-                    Fragment fragment1 = ((Fragment)child).getTopMostFragment(mouseX, mouseY);
+                    Fragment<?> fragment1 = ((Fragment<?>)child).getTopMostFragment(mouseX, mouseY);
                     if(fragment1 != null)
                     {
                         fragment = fragment1;
@@ -226,7 +226,7 @@ public abstract class Fragment<M extends Fragment>
         IGuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && iGuiEventListener != lastFocused)
         {
-            ((Fragment)lastFocused).unfocus(iGuiEventListener);
+            ((Fragment<?>)lastFocused).unfocus(iGuiEventListener);
         }
         focused = iGuiEventListener;
     }
@@ -236,7 +236,7 @@ public abstract class Fragment<M extends Fragment>
         IGuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && guiReplacing != lastFocused)
         {
-            ((Fragment)lastFocused).unfocus(guiReplacing);
+            ((Fragment<?>)lastFocused).unfocus(guiReplacing);
             setFocused(null); //set focus to nothing. MouseClicked will handle the focus of the new object.
         }
     }

@@ -18,18 +18,18 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ElementList extends ElementFertile<Fragment>
+public class ElementList extends ElementFertile<Fragment<?>>
 {
-    public List<Item> items = new ArrayList<>();
+    public List<Item<?>> items = new ArrayList<>();
     private @Nullable ElementScrollBar scrollVert;
     private @Nullable ElementScrollBar scrollHori;
-    private @Nullable BiConsumer<Item, Item> dragHandler;
-    private @Nullable BiConsumer<Item, Integer> rearrangeHandler;
+    private @Nullable BiConsumer<Item<?>, Item<?>> dragHandler;
+    private @Nullable BiConsumer<Item<?>, Integer> rearrangeHandler;
 
     public boolean hasInit;
     private MousePosItem pos;
 
-    public ElementList(@Nonnull View parent)
+    public ElementList(@Nonnull View<?> parent)
     {
         super(parent);
     }
@@ -48,21 +48,21 @@ public class ElementList extends ElementFertile<Fragment>
         return this;
     }
 
-    public ElementList setDragHandler(BiConsumer<Item, Item> dragHandler)
+    public ElementList setDragHandler(BiConsumer<Item<?>, Item<?>> dragHandler)
     {
         this.dragHandler = dragHandler;
         return this;
     }
 
-    public ElementList setRearrangeHandler(BiConsumer<Item, Integer> rearrangeHandler)
+    public ElementList setRearrangeHandler(BiConsumer<Item<?>, Integer> rearrangeHandler)
     {
         this.rearrangeHandler = rearrangeHandler;
         return this;
     }
 
-    public Item addItem(Object o)
+    public Item<?> addItem(Object o)
     {
-        Item item = new Item(this, o);
+        Item<?> item = new Item<>(this, o);
         items.add(item);
         item.constraint = Constraint.sizeOnly(item);
         if(hasInit)
@@ -77,7 +77,7 @@ public class ElementList extends ElementFertile<Fragment>
     {
         for(int i = items.size() - 1; i >= 0; i--)
         {
-            Item item = items.get(i);
+            Item<?> item = items.get(i);
             if(item.getObject().equals(o))
             {
                 items.remove(item);
@@ -88,9 +88,9 @@ public class ElementList extends ElementFertile<Fragment>
         return false;
     }
 
-    public @Nullable Item getItemWithObject(Object o)
+    public @Nullable Item<?> getItemWithObject(Object o)
     {
-        for(Item item : items)
+        for(Item<?> item : items)
         {
             if(item.getObject().equals(o))
             {
@@ -100,9 +100,9 @@ public class ElementList extends ElementFertile<Fragment>
         return null;
     }
 
-    public List<Item> getSelectedItems()
+    public List<Item<?>> getSelectedItems()
     {
-        List<Item> listItems = new ArrayList<>();
+        List<Item<?>> listItems = new ArrayList<>();
         items.forEach(item -> {
             if(item.selected)
             {
@@ -152,23 +152,23 @@ public class ElementList extends ElementFertile<Fragment>
 
         if(getFocused() instanceof Item)
         {
-            ((Item)getFocused()).render(mouseX, mouseY, partialTick);
+            ((Item<?>)getFocused()).render(mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();
     }
 
-    public Item getItemAt(double mouseX, double mouseY)
+    public Item<?> getItemAt(double mouseX, double mouseY)
     {
         Optional<IGuiEventListener> child = getEventListenerForPos(mouseX, mouseY);
-        if(child.isPresent() && child.get() instanceof Item)
+        if(child.isPresent() && child.get() instanceof Item<?>)
         {
-            return (Item)child.get();
+            return (Item<?>)child.get();
         }
         return null;
     }
 
-    public int getMouseRelation(double mouseX, double mouseY, Item item)
+    public int getMouseRelation(double mouseX, double mouseY, Item<?> item)
     {
         if(rearrangeHandler != null)
         {
@@ -218,8 +218,8 @@ public class ElementList extends ElementFertile<Fragment>
     {
         if(pos != null)
         {
-            Item item = getItemAt(mouseX, mouseY);
-            Item draggedItem = pos.item;
+            Item<?> item = getItemAt(mouseX, mouseY);
+            Item<?> draggedItem = pos.item;
             if(draggedItem != null && item != draggedItem)
             {
                 if(item != null)
@@ -318,7 +318,7 @@ public class ElementList extends ElementFertile<Fragment>
 
         int currentWidth = 1; // we draw a 1px border
         int currentHeight = 1; // we draw a 1px border
-        for(Item item : items)
+        for(Item<?> item : items)
         {
             item.posX = currentWidth - offsetX;
             item.posY = currentHeight - offsetY;
@@ -362,7 +362,7 @@ public class ElementList extends ElementFertile<Fragment>
     public int getTotalItemHeight()
     {
         int itemHeight = 0;
-        for(Item item : items)
+        for(Item<?> item : items)
         {
             itemHeight += item.height;
         }
@@ -372,7 +372,7 @@ public class ElementList extends ElementFertile<Fragment>
     public int getMinItemWidth()
     {
         int itemWidth = 0;
-        for(Item item : items)
+        for(Item<?> item : items)
         {
             if(item.getMinWidth() > itemWidth)
             {
@@ -432,28 +432,28 @@ public class ElementList extends ElementFertile<Fragment>
         return 1;
     }
 
-    public static class Item<M> extends ElementFertile<Fragment>
+    public static class Item<M> extends ElementFertile<Fragment<?>>
     {
         protected final @Nonnull M heldObject; //height 13?
-        private List<Element> elements = new ArrayList<>();
+        private List<Element<?>> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
         private int borderSize = 1;
 
-        public Item(@Nonnull Fragment parent, @Nonnull M heldObject)
+        public Item(@Nonnull Fragment<?> parent, @Nonnull M heldObject)
         {
             super(parent);
             this.heldObject = heldObject;
         }
 
-        public Item staySelectedOnDefocus()
+        public Item<?> staySelectedOnDefocus()
         {
             deselectOnUnfocus = false;
             return this;
         }
 
-        public Item setDefaultAppearance()
+        public Item<?> setDefaultAppearance()
         {
             ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
@@ -462,19 +462,19 @@ public class ElementList extends ElementFertile<Fragment>
             return this;
         }
 
-        public Item setSelectionHandler(Consumer<Item<M>> handler)
+        public Item<?> setSelectionHandler(Consumer<Item<M>> handler)
         {
             this.selectionHandler = handler;
             return this;
         }
 
-        public Item setBorderSize(int size)
+        public Item<?> setBorderSize(int size)
         {
             this.borderSize = size;
             return this;
         }
 
-        public Item addTextWrapper(String s)
+        public Item<?> addTextWrapper(String s)
         {
             ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(s);
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).top(this, Constraint.Property.Type.TOP, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
@@ -482,7 +482,7 @@ public class ElementList extends ElementFertile<Fragment>
             return this;
         }
 
-        public Element addElement(Element e)
+        public Element<?> addElement(Element<?> e)
         {
             elements.add(e);
             return e;
@@ -517,8 +517,8 @@ public class ElementList extends ElementFertile<Fragment>
 
                     if(draggingUs && list.rearrangeHandler != null)
                     {
-                        Item item = list.getItemAt(mouseX, mouseY);
-                        Item draggedItem = pos.item;
+                        Item<?> item = list.getItemAt(mouseX, mouseY);
+                        Item<?> draggedItem = pos.item;
                         if(draggedItem != null && item != draggedItem)
                         {
                             if(item != null)
@@ -556,8 +556,8 @@ public class ElementList extends ElementFertile<Fragment>
 
                     if(draggingUs && list.rearrangeHandler != null)
                     {
-                        Item item = list.getItemAt(mouseX, mouseY);
-                        Item draggedItem = pos.item;
+                        Item<?> item = list.getItemAt(mouseX, mouseY);
+                        Item<?> draggedItem = pos.item;
                         if(draggedItem != null && item != draggedItem)
                         {
                             if(item != null)
@@ -649,13 +649,13 @@ public class ElementList extends ElementFertile<Fragment>
         }
     }
 
-    public class MousePosItem
+    public static class MousePosItem
     {
         int x;
         int y;
-        Item item;
+        Item<?> item;
 
-        public MousePosItem(int x, int y, Item item)
+        public MousePosItem(int x, int y, Item<?> item)
         {
             this.x = x;
             this.y = y;

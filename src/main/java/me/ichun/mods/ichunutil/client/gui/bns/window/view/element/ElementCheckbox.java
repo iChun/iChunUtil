@@ -1,16 +1,15 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementCheckbox extends ElementClickable<Fragment>
+public class ElementCheckbox extends ElementClickable<Fragment<?>>
 {
     public boolean toggleState;
 
-    public ElementCheckbox(@Nonnull Fragment parent, String tooltip, Consumer<ElementClickable> callback)
+    public ElementCheckbox(@Nonnull Fragment<?> parent, String tooltip, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);
         this.tooltip = tooltip;

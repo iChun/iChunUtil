@@ -5,6 +5,8 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 
+import javax.annotation.Nullable;
+
 public interface IWindows extends INestedGuiEventHandler
 {
     int getWidth();
@@ -12,12 +14,24 @@ public interface IWindows extends INestedGuiEventHandler
     Theme getTheme();
     boolean renderMinecraftStyle();
     FontRenderer getFontRenderer();
-    Window addWindow(Window window);
-    void removeWindow(Window window);
-    boolean isObstructed(Window mWindow, double mouseX, double mouseY);
+    Window<?> addWindow(Window<?> window);
+    void removeWindow(Window<?> window);
+    boolean isObstructed(Window<?> mWindow, double mouseX, double mouseY);
     default boolean canDockWindows() { return false; }
-    default Constraint.Property.Type dockType(double mouseX, double mouseY) { return null; } //returns null if not in a point where you can dock something
-    default void addToDock(Window window, Constraint.Property.Type type) {}
-    default void removeFromDock(Window window){}
-    default boolean isDocked(Window window) { return false; }
+    default DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack) { return null; } //returns null if not in a point where you can dock something
+    default void addToDock(Window<?> window, Constraint.Property.Type type) {}
+    default void addToDocked(Window<?> docked, Window<?> window) {}
+    default void removeFromDock(Window<?> window){}
+    default boolean isDocked(Window<?> window) { return false; }
+
+    class DockInfo
+    {
+        public final @Nullable Window<?> window;
+        public final @Nullable Constraint.Property.Type type;
+
+        public DockInfo(Window<?> window, Constraint.Property.Type type) {
+            this.window = window;
+            this.type = type;
+        }
+    }
 }

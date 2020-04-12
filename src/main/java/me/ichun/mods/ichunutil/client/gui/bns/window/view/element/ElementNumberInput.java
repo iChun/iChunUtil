@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -27,7 +26,7 @@ public class ElementNumberInput extends ElementTextField
     public boolean clickUp;
     public boolean clickDown;
 
-    public ElementNumberInput(@Nonnull Fragment parent, boolean isDouble)
+    public ElementNumberInput(@Nonnull Fragment<?> parent, boolean isDouble)
     {
         super(parent);
         this.isDouble = isDouble;

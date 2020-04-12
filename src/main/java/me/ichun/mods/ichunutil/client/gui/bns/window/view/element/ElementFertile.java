@@ -10,7 +10,7 @@ import java.util.ListIterator;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public abstract class ElementFertile<M extends Fragment> extends Element<M>
+public abstract class ElementFertile<M extends Fragment<?>> extends Element<M>
 {
     public ElementFertile(@Nonnull M parent)
     {
@@ -24,7 +24,7 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
         children().forEach(child -> {
             if(child instanceof Element)
             {
-                ((Element)child).init();
+                ((Element<?>)child).init();
             }
         });
     }
@@ -36,7 +36,7 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
         children().forEach(child -> {
             if(child instanceof Element)
             {
-                ((Element)child).resize(mc, this.width, this.height);
+                ((Element<?>)child).resize(mc, this.width, this.height);
             }
         });
     }
@@ -100,9 +100,9 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
         int min = 0;
         for(IGuiEventListener child : children())
         {
-            if(child instanceof Fragment)
+            if(child instanceof Fragment<?>)
             {
-                Fragment fragment = (Fragment)child;
+                Fragment<?> fragment = (Fragment<?>)child;
                 if(fragment.getMinWidth() > min)
                 {
                     min = fragment.getMinWidth();
@@ -118,9 +118,9 @@ public abstract class ElementFertile<M extends Fragment> extends Element<M>
         int min = 0;
         for(IGuiEventListener child : children())
         {
-            if(child instanceof Fragment)
+            if(child instanceof Fragment<?>)
             {
-                Fragment fragment = (Fragment)child;
+                Fragment<?> fragment = (Fragment<?>)child;
                 if(fragment.getMinHeight() > min)
                 {
                     min = fragment.getMinHeight();

@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,15 +11,15 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementScrollView extends ElementFertile<Fragment>
+public class ElementScrollView extends ElementFertile<Fragment<?>>
 {
-    public List<Element> elements = new ArrayList<>();
+    public List<Element<?>> elements = new ArrayList<>();
     private @Nullable ElementScrollBar scrollVert;
     private @Nullable ElementScrollBar scrollHori;
 
     public boolean hasInit;
 
-    public ElementScrollView(@Nonnull Fragment parent)
+    public ElementScrollView(@Nonnull Fragment<?> parent)
     {
         super(parent);
     }
@@ -39,9 +38,9 @@ public class ElementScrollView extends ElementFertile<Fragment>
         return this;
     }
 
-    public Element addElement(Element e)
+    public Element<?> addElement(Element<?> e)
     {
-        Element anchor = elements.isEmpty() ? null : elements.get(elements.size() - 1);
+        Element<?> anchor = elements.isEmpty() ? null : elements.get(elements.size() - 1);
 
         elements.add(e);
         e.constraint = new Constraint(e).left(this, Constraint.Property.Type.LEFT, getBorderSize()).right(this, Constraint.Property.Type.RIGHT, getBorderSize());
@@ -129,7 +128,7 @@ public class ElementScrollView extends ElementFertile<Fragment>
 
         int currentWidth = 1; // we draw a 1px border
         int currentHeight = 1; // we draw a 1px border
-        for(Element item : elements)
+        for(Element<?> item : elements)
         {
             item.posX = currentWidth - offsetX;
             item.posY = currentHeight - offsetY;
@@ -173,7 +172,7 @@ public class ElementScrollView extends ElementFertile<Fragment>
     public int getTotalItemHeight()
     {
         int itemHeight = 0;
-        for(Element item : elements)
+        for(Element<?> item : elements)
         {
             itemHeight += item.height;
         }
@@ -183,7 +182,7 @@ public class ElementScrollView extends ElementFertile<Fragment>
     public int getMinItemWidth()
     {
         int itemWidth = 0;
-        for(Element item : elements)
+        for(Element<?> item : elements)
         {
             if(item.getMinWidth() > itemWidth)
             {

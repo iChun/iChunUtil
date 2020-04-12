@@ -64,14 +64,22 @@ public class WorkspaceConfigs extends Workspace
 
     public void destroyWindowValues()
     {
-        WindowDock dock = getDock();
-        Iterator<Window> iterator = getDock().docked.keySet().iterator();
+        WindowDock<?> dock = getDock();
+        Iterator<ArrayList<Window<?>>> iterator = getDock().docked.keySet().iterator();
         while(iterator.hasNext())
         {
-            Window window = iterator.next();
-            if(window instanceof WindowValues)
+            ArrayList<Window<?>> windows = iterator.next();
+            for(int i = windows.size() - 1; i >= 0; i--)
             {
-                dock.dockedOriSize.remove(window);
+                Window<?> window = windows.get(i);
+                if(window instanceof WindowValues)
+                {
+                    dock.dockedOriSize.remove(windows);
+                    windows.remove(i);
+                }
+            }
+            if(windows.isEmpty())
+            {
                 iterator.remove();
             }
         }

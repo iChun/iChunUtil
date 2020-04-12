@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Element<M extends Fragment> extends Fragment //TODO handle narration?
+public abstract class Element<M extends Fragment<?>> extends Fragment //TODO handle narration?
 {
-    public final static List<Element> INFERTILE = Collections.emptyList();
+    public final static List<Element<?>> INFERTILE = Collections.emptyList();
 
     public String tooltip;
 
@@ -22,21 +22,21 @@ public abstract class Element<M extends Fragment> extends Fragment //TODO handle
         super(parent);
     }
 
-    public <T extends Element> T setPos(int x, int y)
+    public <T extends Element<?>> T setPos(int x, int y)
     {
         posX = x;
         posY = y;
         return (T)this;
     }
 
-    public <T extends Element> T setSize(int width, int height)
+    public <T extends Element<?>> T setSize(int width, int height)
     {
         this.width = width;
         this.height = height;
         return (T)this;
     }
 
-    public <T extends Element> T setTooltip(String s)
+    public <T extends Element<?>> T setTooltip(String s)
     {
         tooltip = s;
         return (T)this;
@@ -184,7 +184,7 @@ public abstract class Element<M extends Fragment> extends Fragment //TODO handle
         RenderHelper.draw(posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
     }
 
-    public class MousePos
+    public static class MousePos
     {
         int x;
         int y;

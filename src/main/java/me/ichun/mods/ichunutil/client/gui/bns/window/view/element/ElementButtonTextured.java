@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -13,7 +12,7 @@ public class ElementButtonTextured extends ElementButtonTooltip
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementButtonTextured(@Nonnull Fragment parent, String tooltip, ResourceLocation rl)
+    public ElementButtonTextured(@Nonnull Fragment<?> parent, String tooltip, ResourceLocation rl)
     {
         super(parent, "", tooltip);
         this.textureLocation = rl;

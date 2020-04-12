@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -12,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementScrollBar extends Element<Fragment>
+public class ElementScrollBar extends Element<Fragment<?>>
 {
     public enum Orientation
     {
@@ -28,7 +27,7 @@ public class ElementScrollBar extends Element<Fragment>
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull Fragment parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@Nonnull Fragment<?> parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;

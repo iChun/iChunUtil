@@ -1,21 +1,20 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementButton extends ElementClickable<Fragment>
+public class ElementButton extends ElementClickable<Fragment<?>>
 {
     public @Nonnull String text; //already localized
 
-    public ElementButton(@Nonnull Fragment parent, String s)
+    public ElementButton(@Nonnull Fragment<?> parent, String s)
     {
         this(parent, s, (button) -> {});
     }
 
-    public ElementButton(@Nonnull Fragment parent, String s, Consumer<ElementClickable> callback)
+    public ElementButton(@Nonnull Fragment<?> parent, String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);
         text = s;

@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -20,8 +19,8 @@ public abstract class Window<M extends IWindows> extends Fragment
     public Supplier<Integer> titleSize = () -> borderSize.get() + 10;
 
     public @Nonnull final M parent;
-    public @Nonnull List<View> views;
-    public @Nonnull View currentView; //except for WindowDock
+    public @Nonnull List<View<?>> views;
+    public View<?> currentView; //should never be null (except for WindowDock)
 
     public EdgeGrab edgeGrab; //set if a corner is grabbed
 
@@ -32,6 +31,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     private boolean canBringToFront = true;
     private boolean canBeDocked = true;
     private boolean canBeUndocked = true;
+    private boolean canDockStack = true;
     //TODO ID for remembering docked windows and positions?
 
     public Window(M parent)
@@ -42,59 +42,65 @@ public abstract class Window<M extends IWindows> extends Fragment
         borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() ? 4 : 3);
     }
 
-    public <T extends Window> T pos(int x, int y)
+    public <T extends Window<?>> T pos(int x, int y)
     {
         posX = x;
         posY = y;
         return (T)this;
     }
 
-    public <T extends Window> T size(int width, int height)
+    public <T extends Window<?>> T size(int width, int height)
     {
         this.width = width;
         this.height = height;
         return (T)this;
     }
 
-    public <T extends Window> T borderSize(Supplier<Integer> borderSize)
+    public <T extends Window<?>> T borderSize(Supplier<Integer> borderSize)
     {
         this.borderSize = borderSize;
         return (T)this;
     }
 
-    public <T extends Window> T disableTitle()
+    public <T extends Window<?>> T disableTitle()
     {
         showTitle = false;
         return (T)this;
     }
 
-    public <T extends Window> T disableDrag()
+    public <T extends Window<?>> T disableDrag()
     {
         canDrag = false;
         return (T)this;
     }
 
-    public <T extends Window> T disableDragResize()
+    public <T extends Window<?>> T disableDragResize()
     {
         canDragResize = false;
         return (T)this;
     }
 
-    public <T extends Window> T disableBringToFront()
+    public <T extends Window<?>> T disableBringToFront()
     {
         canBringToFront = false;
         return (T)this;
     }
 
-    public <T extends Window> T disableDocking()
+    public <T extends Window<?>> T disableDocking()
     {
         canBeDocked = false;
         return (T)this;
     }
 
-    public <T extends Window> T disableUndocking()
+    public <T extends Window<?>> T disableUndocking()
     {
         canBeUndocked = false;
+        return (T)this;
+    }
+
+    public <T extends Window<?>> T disableDockStacking()
+    {
+        canDockStack = false;
         return (T)this;
     }
 
@@ -106,12 +112,12 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public List<View> children()
+    public List<View<?>> children()
     {
         return views;
     }
 
-    public void setView(View v)
+    public void setView(View<?> v)
     {
         this.views.add(v);
         this.currentView = v;
@@ -145,6 +151,8 @@ public abstract class Window<M extends IWindows> extends Fragment
     public boolean canBeDocked() { return canBeDocked; }
 
     public boolean canBeUndocked() { return canBeUndocked; }
+
+    public boolean canDockStack() { return canDockStack; }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
@@ -246,10 +254,17 @@ public abstract class Window<M extends IWindows> extends Fragment
         {
             if(edgeGrab.titleGrab && canBeDocked() && !parent.isDocked(this))
             {
-                Constraint.Property.Type dockType = parent.dockType(mouseX, mouseY);
-                if(dockType != null)
+                IWindows.DockInfo dockInfo = parent.getDockInfo(mouseX, mouseY, canDockStack());
+                if(dockInfo != null)
                 {
-                    parent.addToDock(this, dockType);
+                    if(dockInfo.window != null)
+                    {
+                        parent.addToDocked(dockInfo.window, this);
+                    }
+                    else
+                    {
+                        parent.addToDock(this, dockInfo.type);
+                    }
                 }
             }
             edgeGrab = null;
@@ -324,9 +339,9 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public boolean mouseScrolled(double mouseY, double mouseZ, double amount)
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        return super.mouseScrolled(mouseY, mouseZ, amount);
+        return super.mouseScrolled(mouseX, mouseY, amount);
     }
 
     @Override
@@ -437,7 +452,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
 
-    public class EdgeGrab
+    public static class EdgeGrab
     {
         boolean left;
         boolean right;

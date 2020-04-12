@@ -6,14 +6,13 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 
 public class ViewTest extends View<WindowTest>
 {
     public ViewTest(@Nonnull WindowTest parent, @Nonnull String title)
     {
         super(parent, title);
-        Element e;
+        Element<?> e;
 
         e = new ElementButton(this, "test string");
         e.setWidth(40);

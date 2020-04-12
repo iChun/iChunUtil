@@ -33,7 +33,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 {
     public static final String ELLIPSIS = "…";
 
-    private static HashMap<Class, Function<Object, List<String>>> OBJECT_INTERPRETER = new HashMap<>();
+    private static HashMap<Class<?>, Function<Object, List<String>>> OBJECT_INTERPRETER = new HashMap<>();
     {
         OBJECT_INTERPRETER.put(File.class, (o) -> {
             File file = (File)o;
@@ -48,9 +48,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public static @Nonnull List<String> getInterpretedInfo(Object o)
     {
-        Map.Entry<Class, Function<Object, List<String>>> lastEntryUsed = null;
+        Map.Entry<Class<?>, Function<Object, List<String>>> lastEntryUsed = null;
         List<String> infos = null;
-        for(Map.Entry<Class, Function<Object, List<String>>> e : OBJECT_INTERPRETER.entrySet())
+        for(Map.Entry<Class<?>, Function<Object, List<String>>> e : OBJECT_INTERPRETER.entrySet())
         {
             if(e.getKey().isInstance(o))
             {
@@ -69,7 +69,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return infos;
     }
 
-    public static void registerObjectInterpreter(Class clz, Function<Object, List<String>> function)
+    public static void registerObjectInterpreter(Class<?> clz, Function<Object, List<String>> function)
     {
         OBJECT_INTERPRETER.put(clz, function);
     }
@@ -77,7 +77,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public int ellipsisLength = 0;
 
     private Theme theme = Theme.getInstance();
-    public ArrayList<Window> windows = new ArrayList<>(); //0 = newest
+    public ArrayList<Window<?>> windows = new ArrayList<>(); //0 = newest
     private boolean renderMinecraftStyle;
     private boolean hasInit;
 
@@ -91,7 +91,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
         if(canDockWindows())
         {
-            windows.add(new WindowDock(this));
+            windows.add(new WindowDock<>(this));
         }
     }
 
@@ -149,12 +149,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public List<Window> children()
+    public List<Window<?>> children()
     {
         if(canDockWindows())
         {
-            ArrayList<Window> winds = new ArrayList<>(windows);
-            winds.addAll(getDock().docked.keySet());
+            ArrayList<Window<?>> winds = new ArrayList<>(windows);
+            getDock().docked.keySet().forEach(winds::addAll);
             winds.remove(getDock());
             return winds;
         }
@@ -162,19 +162,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public Window addWindow(Window window)
+    public Window<?> addWindow(Window<?> window)
     {
         windows.add(0, window); //MC's iterator starts from first element of list
         return window;
     }
 
     @Override
-    public void removeWindow(Window window)
+    public void removeWindow(Window<?> window)
     {
         windows.remove(window);
     }
 
-    public void bringToFront(Window window)
+    public void bringToFront(Window<?> window)
     {
         if(window.canBringToFront() && windows.remove(window))
         {
@@ -203,12 +203,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
         for(int i = windows.size() - 1; i >= 0; i--)
         {
-            Window window = windows.get(i);
+            Window<?> window = windows.get(i);
             window.render(mouseX, mouseY, partialTick);
         }
 
         //render tooltip
-        Fragment topMost = getTopMostFragment(mouseX, mouseY);
+        Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
         if(topMost != null)
         {
             String tooltip = topMost.tooltip(mouseX, mouseY);
@@ -377,12 +377,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    public @Nullable Fragment getTopMostFragment(double mouseX, double mouseY)
+    public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
-        Fragment o = null;
+        Fragment<?> o = null;
         for(int i = windows.size() - 1; i >= 0; i--) //furthest back to front
         {
-            Fragment o1 = windows.get(i).getTopMostFragment(mouseX, mouseY);
+            Fragment<?> o1 = windows.get(i).getTopMostFragment(mouseX, mouseY);
             if(o1 != null)
             {
                 o = o1;
@@ -465,13 +465,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public boolean isObstructed(Window window, double mouseX, double mouseY)
+    public boolean isObstructed(Window<?> window, double mouseX, double mouseY)
     {
         if(isDocked(window))
         {
             return isObstructed(getDock(), mouseX, mouseY);
         }
-        for(Window window1 : windows)
+        for(Window<?> window1 : windows)
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {
@@ -487,23 +487,34 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return true;
     }
 
-    public WindowDock getDock()
+    public WindowDock<? extends Workspace> getDock()
     {
-        return (WindowDock)windows.get(windows.size() - 1);
+        return (WindowDock<? extends Workspace>)windows.get(windows.size() - 1);
     }
 
     @Override
-    public Constraint.Property.Type dockType(double mouseX, double mouseY)
+    public DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(canDockWindows())
         {
-            return getDock().dockType(mouseX, mouseY);
+            return getDock().getDockInfo(mouseX, mouseY, dockStack);
         }
         return null;
     }
 
     @Override
-    public void addToDock(Window window, Constraint.Property.Type type)
+    public void addToDocked(Window<?> docked, Window<?> window)
+    {
+        if(true) return; //TODO disable this for now
+        if(canDockWindows())
+        {
+            getDock().addToDocked(docked, window);
+            removeWindow(window);
+        }
+    }
+
+    @Override
+    public void addToDock(Window<?> window, Constraint.Property.Type type)
     {
         if(canDockWindows())
         {
@@ -513,7 +524,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void removeFromDock(Window window)
+    public void removeFromDock(Window<?> window)
     {
         if(canDockWindows())
         {
@@ -523,7 +534,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public boolean isDocked(Window window)
+    public boolean isDocked(Window<?> window)
     {
         if(canDockWindows())
         {
@@ -538,11 +549,11 @@ public abstract class Workspace extends Screen //boxes and stuff!
         IGuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && gui != lastFocused)
         {
-            ((Fragment)lastFocused).unfocus(gui);
+            ((Fragment<?>)lastFocused).unfocus(gui);
         }
         if(gui instanceof Window)
         {
-            bringToFront((Window)gui);
+            bringToFront((Window<?>)gui);
         }
         super.setFocused(gui);
     }

@@ -10,18 +10,14 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.LEFT;
 
 public class WindowDock<M extends IWindows> extends Window<M>
 {
-    public LinkedHashMap<Window, Constraint.Property.Type> docked = new LinkedHashMap<>();
-    public HashMap<Window, WindowSize> dockedOriSize = new HashMap<>();
-
-    public Window clickedWindow = null;
+    public LinkedHashMap<ArrayList<Window<?>>, Constraint.Property.Type> docked = new LinkedHashMap<>();
+    public HashMap<Window<?>, WindowSize> dockedOriSize = new HashMap<>();
 
     public WindowDock(M parent)
     {
@@ -75,61 +71,64 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public void init()
     {
         constraint.apply();
-        docked.keySet().forEach(window -> {
+        docked.keySet().forEach(windows -> windows.forEach(window -> {
             window.constraint.apply();
             window.resize(Minecraft.getInstance(), this.width, this.height);
-        });
+        }));
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
+        //Render BORDER HIGHLIGHT
         double left = 0;
         double top = 0;
         double right = width;
         double bottom = height;
-        for(Map.Entry<Window, Constraint.Property.Type> entry : docked.entrySet())
+        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
-            Window key = entry.getKey();
-            Constraint.Property.Type value = entry.getValue();
-            switch(value)
+            for(Window<?> key : e.getKey())
             {
-                case LEFT:
+                Constraint.Property.Type value = e.getValue();
+                switch(value)
                 {
-                    if(key.getRight() > left)
+                    case LEFT:
                     {
-                        left = key.getRight();
+                        if(key.getRight() > left)
+                        {
+                            left = key.getRight();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case TOP:
-                {
-                    if(key.getBottom() > top)
+                    case TOP:
                     {
-                        top = key.getBottom();
+                        if(key.getBottom() > top)
+                        {
+                            top = key.getBottom();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case RIGHT:
-                {
-                    if(key.getLeft() < right)
+                    case RIGHT:
                     {
-                        right = key.getLeft();
+                        if(key.getLeft() < right)
+                        {
+                            right = key.getLeft();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case BOTTOM:
-                {
-                    if(key.getTop() < bottom)
+                    case BOTTOM:
                     {
-                        bottom = key.getTop();
+                        if(key.getTop() < bottom)
+                        {
+                            bottom = key.getTop();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
 
-        if(getWorkspace().getFocused() instanceof Window && getWorkspace().isDragging() && ((Window)getWorkspace().getFocused()).canBeDocked() && !getWorkspace().isDocked((Window)getWorkspace().getFocused()))
+        if(getWorkspace().getFocused() instanceof Window && getWorkspace().isDragging() && ((Window<?>)getWorkspace().getFocused()).canBeDocked() && !getWorkspace().isDocked((Window)getWorkspace().getFocused()))
         {
             int dockSnap = 4;
             boolean draw = (mouseY >= top && mouseY < bottom && (mouseX >= left && mouseX < left + dockSnap || mouseX >= right - dockSnap && mouseX < right)) || (mouseX >= left && mouseX < right && (mouseY >= top && mouseY < top + dockSnap || mouseY >= bottom - dockSnap && bottom < right));
@@ -195,17 +194,19 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 RenderSystem.disableBlend();
             }
         }
-        docked.forEach(((window, type) -> window.render(mouseX, mouseY, partialTick)));
+        //END RENDER BORDER HIGHLIGHT
+
+        docked.forEach(((windows, type) -> windows.forEach(window -> window.render(mouseX, mouseY, partialTick))));
     }
 
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();
-        docked.keySet().forEach(window -> {
+        docked.keySet().forEach(windows -> windows.forEach(window -> {
             window.constraint.apply();
-            window.resize(mc, this.width, this.height);
-        });
+            window.resize(Minecraft.getInstance(), this.width, this.height);
+        }));
     }
 
     @Override
@@ -234,7 +235,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        Window windowOver = getWindowOver(mouseX, mouseY);
+        Window<?> windowOver = getWindowOver(mouseX, mouseY);
         if(windowOver != null)
         {
             return windowOver.mouseScrolled(mouseX, mouseY, amount);
@@ -251,17 +252,20 @@ public class WindowDock<M extends IWindows> extends Window<M>
     //TODO test changeFocus!
 
     @Override
-    public @Nullable Fragment getTopMostFragment(double mouseX, double mouseY)
+    public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            Fragment fragment = this;
-            for(Window window : this.docked.keySet())
+            Fragment<?> fragment = this;
+            for(ArrayList<Window<?>> windows : this.docked.keySet())
             {
-                Fragment fragment1 = window.getTopMostFragment(mouseX, mouseY);
-                if(fragment1 != null)
+                for(Window<?> window : windows)
                 {
-                    fragment = fragment1;
+                    Fragment<?> fragment1 = window.getTopMostFragment(mouseX, mouseY);
+                    if(fragment1 != null)
+                    {
+                        fragment = fragment1;
+                    }
                 }
             }
             return fragment;
@@ -269,51 +273,60 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return null;
     }
 
-
-
-    public Constraint.Property.Type dockType(double mouseX, double mouseY)
+    public IWindows.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
+        if(dockStack)
+        {
+            Window<?> window = getWindowOver(mouseX, mouseY);
+            if(window != null && window.canDockStack())
+            {
+                return new IWindows.DockInfo(window, getAnchorType(window));
+            }
+        }
+
         double left = 0;
         double top = 0;
         double right = width;
         double bottom = height;
-        for(Map.Entry<Window, Constraint.Property.Type> entry : docked.entrySet())
+        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
-            Window key = entry.getKey();
-            Constraint.Property.Type value = entry.getValue();
-            switch(value)
+            for(Window<?> key : e.getKey())
             {
-                case LEFT:
+                Constraint.Property.Type value = e.getValue();
+                switch(value)
                 {
-                    if(key.getRight() > left)
+                    case LEFT:
                     {
-                        left = key.getRight();
+                        if(key.getRight() > left)
+                        {
+                            left = key.getRight();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case TOP:
-                {
-                    if(key.getBottom() > top)
+                    case TOP:
                     {
-                        top = key.getBottom();
+                        if(key.getBottom() > top)
+                        {
+                            top = key.getBottom();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case RIGHT:
-                {
-                    if(key.getLeft() < right)
+                    case RIGHT:
                     {
-                        right = key.getLeft();
+                        if(key.getLeft() < right)
+                        {
+                            right = key.getLeft();
+                        }
+                        break;
                     }
-                    break;
-                }
-                case BOTTOM:
-                {
-                    if(key.getTop() < bottom)
+                    case BOTTOM:
                     {
-                        bottom = key.getTop();
+                        if(key.getTop() < bottom)
+                        {
+                            bottom = key.getTop();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -323,32 +336,47 @@ public class WindowDock<M extends IWindows> extends Window<M>
         {
             if(mouseX >= left && mouseX < left + dockSnap)
             {
-                return LEFT;
+                return new IWindows.DockInfo(null, LEFT);
             }
             else if(mouseX >= right - dockSnap && mouseX < right)
             {
-                return Constraint.Property.Type.RIGHT;
+                return new IWindows.DockInfo(null, Constraint.Property.Type.RIGHT);
             }
         }
         if(mouseX >= left && mouseX < right)
         {
             if(mouseY >= top && mouseY < top + dockSnap)
             {
-                return Constraint.Property.Type.TOP;
+                return new IWindows.DockInfo(null, Constraint.Property.Type.TOP);
             }
             else if(mouseY >= bottom - dockSnap && bottom < right)
             {
-                return Constraint.Property.Type.BOTTOM;
+                return new IWindows.DockInfo(null, Constraint.Property.Type.BOTTOM);
             }
         }
 
         return null;
     }
 
+    public void addToDocked(Window dockedWin, Window window)
+    {
+        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
+        {
+            if(e.getKey().contains(dockedWin))
+            {
+                dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
+                //TODO constaints
+                e.getKey().add(window);
+                break;
+            }
+        }
+    }
+
     public void addToDock(Window window, Constraint.Property.Type type)
     {
         dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
 
+        //TODO sort out constraints?
         Constraint constraint = new Constraint(window);
         for(Constraint.Property.Type type1 : Constraint.Property.Type.values())
         {
@@ -364,17 +392,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
                     constraint = constraint.type(type1, this, type1, -(Integer)window.borderSize.get() + borderSize.get());
                 }
             }
-            //            else //type is opposite
-            //            {
-            //                if(constrainable != null)
-            //                {
-            //                    edgeType = type;
-            //                }
-            //                constraint = constraint.type(type.getOpposite(), this, edgeType, type1 == Constraint.Property.Type.LEFT || type1 == Constraint.Property.Type.RIGHT ? window.width : window.height);
-            //            }
         }
 
-        docked.put(window, type);
+        ArrayList<Window<?>> windows = new ArrayList<>();
+        windows.add(window);
+        docked.put(windows, type);
         window.setConstraint(constraint);
         window.constraint.apply();
         if(getWorkspace().hasInit())
@@ -383,9 +405,26 @@ public class WindowDock<M extends IWindows> extends Window<M>
         }
     }
 
-    public void removeFromDock(Window window)
+    public void removeFromDock(Window<?> window)
     {
-        docked.remove(window);
+        Iterator<ArrayList<Window<?>>> iterator = docked.keySet().iterator();
+        while(iterator.hasNext())
+        {
+            ArrayList<Window<?>> windows = iterator.next();
+            if(windows.remove(window))
+            {
+                if(windows.isEmpty())
+                {
+                    iterator.remove();
+                }
+                else
+                {
+                    //TODO Update the constraints
+                }
+                break;
+            }
+        }
+
         WindowSize size = dockedOriSize.get(window);
         window.setConstraint(size.constraint);
         window.setLeft(size.x);
@@ -396,26 +435,41 @@ public class WindowDock<M extends IWindows> extends Window<M>
         dockedOriSize.remove(window);
     }
 
-    public IConstrainable getAnchor(Constraint.Property.Type type)
+    public IConstrainable getAnchor(Constraint.Property.Type type) //gets the element to anchor on based on type
     {
         IConstrainable typeMost = null;
-        for(Map.Entry<Window, Constraint.Property.Type> e : docked.entrySet())
+        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
             if(e.getValue() == type)
             {
-                typeMost = e.getKey();
+                typeMost = e.getKey().get(0);
             }
         }
         return typeMost;
     }
 
-    public Window getWindowOver(double mouseX, double mouseY)
+    public Constraint.Property.Type getAnchorType(Window<?> window)
     {
-        for(Window window : docked.keySet())
+        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
-            if(window.isMouseOver(mouseX, mouseY))
+            if(e.getKey().contains(window))
             {
-                return window;
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    public Window<?> getWindowOver(double mouseX, double mouseY)
+    {
+        for(ArrayList<Window<?>> windows : docked.keySet())
+        {
+            for(Window<?> window : windows)
+            {
+                if(window.isMouseOver(mouseX, mouseY))
+                {
+                    return window;
+                }
             }
         }
         return null;

@@ -9,12 +9,12 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public abstract class ElementClickable<M extends Fragment> extends Element<M> //we reset our focus when we're clicked.
+public abstract class ElementClickable<M extends Fragment<?>> extends Element<M> //we reset our focus when we're clicked.
 {
-    public @Nonnull Consumer<ElementClickable> callback;
+    public @Nonnull Consumer<ElementClickable<? extends Fragment<?>>> callback;
     public boolean hover; //for rendering
 
-    public ElementClickable(@Nonnull M parent, Consumer<ElementClickable> callback)
+    public ElementClickable(@Nonnull M parent, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent);
         this.callback = callback;

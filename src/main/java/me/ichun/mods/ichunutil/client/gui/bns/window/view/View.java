@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class View<M extends Window> extends Fragment
+public abstract class View<M extends Window<?>> extends Fragment
 {
-    public ArrayList<Element> elements = new ArrayList<>();
+    public ArrayList<Element<?>> elements = new ArrayList<>();
     public @Nonnull String title; //all titles are already localized
 
     public View(@Nonnull M parent, @Nonnull String s)
@@ -27,14 +27,14 @@ public abstract class View<M extends Window> extends Fragment
         }
     }
 
-    public <T extends View> T setPos(int x, int y)
+    public <T extends View<?>> T setPos(int x, int y)
     {
         posX = x;
         posY = y;
         return (T)this;
     }
 
-    public <T extends View> T setSize(int width, int height)
+    public <T extends View<?>> T setSize(int width, int height)
     {
         this.width = width;
         this.height = height;
@@ -49,7 +49,7 @@ public abstract class View<M extends Window> extends Fragment
     }
 
     @Override
-    public List<Element> children()
+    public List<Element<?>> children()
     {
         return elements;
     }
@@ -66,7 +66,7 @@ public abstract class View<M extends Window> extends Fragment
             fill(getTheme().windowBackground, 0);
         }
         //render attached elements
-        for(Element element : elements)
+        for(Element<?> element : elements)
         {
             element.render(mouseX, mouseY, partialTick);
         }
