@@ -204,22 +204,28 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        //        boolean oldStyle = renderMinecraftStyle;
-        //        renderMinecraftStyle = Screen.hasControlDown(); //TODO remove this
-        //        if(oldStyle != renderMinecraftStyle)
-        //        {
-        //            windows.forEach(window -> window.resize(minecraft, width, height));
-        //        }
-
         RenderSystem.enableAlphaTest();
         renderBackground();
 
+        renderWindows(mouseX, mouseY, partialTick);
+
+        renderTooltip(mouseX, mouseY, partialTick);
+
+        resetBackground();
+        RenderSystem.enableAlphaTest();
+    }
+
+    public void renderWindows(int mouseX, int mouseY, float partialTick)
+    {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
             Window<?> window = windows.get(i);
             window.render(mouseX, mouseY, partialTick);
         }
+    }
 
+    public void renderTooltip(int mouseX, int mouseY, float partialTick)
+    {
         //render tooltip
         Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
         if(topMost != null)
@@ -243,9 +249,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             renderTooltip(lastTooltip, mouseX, mouseY);
         }
-
-        resetBackground();
-        RenderSystem.enableAlphaTest();
     }
 
     @Override
