@@ -371,7 +371,7 @@ public abstract class ConfigBase
 
     public static class ValueWrapper<T>
     {
-        private final ConfigBase parent;
+        public final ConfigBase parent;
         private final @Nonnull ForgeConfigSpec.ConfigValue<T> configValue;
         public final @Nonnull Field field;
 

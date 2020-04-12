@@ -22,8 +22,10 @@ public class ViewConfigs extends View<WindowConfigs>
     {
         super(parent, s);
 
-        ElementButton btn = new ElementButton(this, I18n.format("gui.done"));
-        btn.setWidth(70);
+        ElementButton btn = new ElementButton(this, I18n.format("gui.done"), button -> {
+            parent.parent.onClose();
+        });
+        btn.setWidth(60);
         btn.setHeight(20);
         btn.setConstraint(new Constraint(btn).left(this, Constraint.Property.Type.LEFT, 5)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 5)
@@ -38,8 +40,8 @@ public class ViewConfigs extends View<WindowConfigs>
         elements.add(sv);
 
         ElementList list = new ElementList(this).setScrollVertical(sv)
-//                .setDragHandler((i, j) -> {})
-//                .setRearrangeHandler((i, j) -> {})
+                //                .setDragHandler((i, j) -> {})
+                //                .setRearrangeHandler((i, j) -> {})
                 ;
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                 .bottom(btn, Constraint.Property.Type.TOP, 5)
@@ -49,15 +51,36 @@ public class ViewConfigs extends View<WindowConfigs>
 
         for(Map.Entry<String, TreeSet<WorkspaceConfigs.ConfigInfo>> e : parent.parent.configs.entrySet())
         {
-            list.addItem(e.getKey()).addTextWrapper(e.getKey());
+            list.addItem(e.getKey()).addTextWrapper(e.getKey()).setSelectionHandler(o -> {
+                ElementList.Item item = ((ElementList.Item)o);
+                if(item.selected)
+                {
+                    item.selected = false;
+                    for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+                    {
+                        item1.selected = false; //workaround. Just make sure we don't got configs with no category
+                    }
+                    for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+                    {
+                        if(item1.getObject() == e.getValue().first())
+                        {
+                            item1.selected = true;
+                            parent.parent.selectItem(item1);
+                            break;
+                        }
+                    }
+                }
+            });
             for(WorkspaceConfigs.ConfigInfo info : e.getValue())
             {
                 for(String key : info.categories.keySet())
                 {
-                    ElementList.Item item = list.addItem(info).setSelectionHandler(item1 -> parent.parent.selectItem((ElementList.Item)item1)); //TODO tooltip provider?
-                    item.setTooltip(getLocalizedCategory(info, key, "description"));
-                    ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
+                    ElementList.Item item = list.addItem(info).setSelectionHandler(item1 -> parent.parent.selectItem((ElementList.Item)item1));
+                    item.setId(key);
+                    item.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
+                    ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
                     wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+                    wrapper.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
                     item.addElement(wrapper);
                 }
             }
@@ -74,14 +97,5 @@ public class ViewConfigs extends View<WindowConfigs>
             case SERVER: return Theme.getAsHex(getTheme().fontDim);
             default: return 0xff0000;
         }
-    }
-
-    public String getLocalizedCategory(WorkspaceConfigs.ConfigInfo info, String cat, String suffix)
-    {
-        if(cat.equals("general") || cat.equals("gameplay") || cat.equals("global") || cat.equals("serverOnly") || cat.equals("clientOnly") || cat.equals("block"))
-        {
-            return I18n.format("config.ichunutil.cat."+ cat + "." + suffix);
-        }
-        return I18n.format("config." + info.config.getModId() + ".cat."+ cat + "." + suffix);
     }
 }

@@ -13,7 +13,7 @@ public class WindowConfigs extends Window<WorkspaceConfigs>
         super(parent);
         setView(new ViewConfigs(this, I18n.format("gui.ichunutil.configs.options")));
         pos(20, 20);
-        size(100, 300);
+        size(120, 300);
         disableUndocking();
         disableDrag();
         disableBringToFront();

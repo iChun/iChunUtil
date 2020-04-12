@@ -12,21 +12,21 @@ public class ElementToggle extends ElementClickable<Fragment>
     public String text;
     public boolean toggleState;
 
-    public ElementToggle(@Nonnull View parent, @Nonnull String s)
+    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s)
     {
         this(parent, s, (button) -> {});
     }
 
-    public ElementToggle(@Nonnull View parent, @Nonnull String s, Consumer<ElementClickable> callback)
+    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<ElementClickable> callback)
     {
         super(parent, callback);
         text = s;
     }
 
-    public ElementToggle setToggled(boolean flag)
+    public <T extends ElementToggle> T setToggled(boolean flag)
     {
         toggleState = flag;
-        return this;
+        return (T)this;
     }
 
     @Override
@@ -83,11 +83,11 @@ public class ElementToggle extends ElementClickable<Fragment>
             //draw the text
             if(renderMinecraftStyle())
             {
-                getFontRenderer().drawStringWithShadow(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F, getMinecraftFontColour());
+                getFontRenderer().drawStringWithShadow(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, getMinecraftFontColour());
             }
             else
             {
-                getFontRenderer().drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                getFontRenderer().drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
         }
     }
@@ -107,6 +107,6 @@ public class ElementToggle extends ElementClickable<Fragment>
     @Override
     public int getMinHeight()
     {
-        return 16;
+        return 14;
     }
 }

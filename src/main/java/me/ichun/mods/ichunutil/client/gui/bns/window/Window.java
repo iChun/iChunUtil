@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("unchecked")
 public abstract class Window<M extends IWindows> extends Fragment
 {
-    public Supplier<Integer> borderSize;;
+    public Supplier<Integer> borderSize;
     public Supplier<Integer> titleSize = () -> borderSize.get() + 10;
 
     public @Nonnull final M parent;
@@ -53,6 +53,12 @@ public abstract class Window<M extends IWindows> extends Fragment
     {
         this.width = width;
         this.height = height;
+        return (T)this;
+    }
+
+    public <T extends Window> T borderSize(Supplier<Integer> borderSize)
+    {
+        this.borderSize = borderSize;
         return (T)this;
     }
 
@@ -205,12 +211,13 @@ public abstract class Window<M extends IWindows> extends Fragment
         {
             if(button == 0 && (canDrag() || canDragResize())) //dragging
             {
+                boolean isDocked = parent.isDocked(this);
                 EdgeGrab grab = new EdgeGrab(
-                        isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
-                        isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
-                        isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
-                        isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
-                        isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
+                        (!isDocked || !constraint.hasLeft()) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
+                        (!isDocked || !constraint.hasRight()) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
+                        (!isDocked || !constraint.hasTop()) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
+                        (!isDocked || !constraint.hasBottom()) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
+                        (!isDocked || canBeUndocked()) && isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
                         (int)mouseX,
                         (int)mouseY
                 );
@@ -305,6 +312,11 @@ public abstract class Window<M extends IWindows> extends Fragment
                     setTop(top);
                 }
                 resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
+
+                if(parent.isDocked(this))
+                {
+                    getWorkspace().getDock().init();
+                }
             }
             return true; //drag is handled
         }

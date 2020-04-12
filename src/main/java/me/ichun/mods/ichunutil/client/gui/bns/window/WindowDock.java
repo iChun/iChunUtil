@@ -353,14 +353,16 @@ public class WindowDock<M extends IWindows> extends Window<M>
         for(Constraint.Property.Type type1 : Constraint.Property.Type.values())
         {
             IConstrainable constrainable = getAnchor(type1);
-            Constraint.Property.Type edgeType = type1;
             if(type1 != type.getOpposite())
             {
                 if(constrainable != null)
                 {
-                    edgeType = type1.getOpposite();
+                    constraint = constraint.type(type1, constrainable, type1.getOpposite(), -(Integer)window.borderSize.get() + borderSize.get());
                 }
-                constraint = constraint.type(type1, this, edgeType, -(Integer)window.borderSize.get());
+                else
+                {
+                    constraint = constraint.type(type1, this, type1, -(Integer)window.borderSize.get() + borderSize.get());
+                }
             }
             //            else //type is opposite
             //            {

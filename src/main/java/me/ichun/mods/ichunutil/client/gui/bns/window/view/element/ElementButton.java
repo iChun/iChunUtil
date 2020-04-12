@@ -10,12 +10,12 @@ public class ElementButton extends ElementClickable<Fragment>
 {
     public @Nonnull String text; //already localized
 
-    public ElementButton(@Nonnull View parent, String s)
+    public ElementButton(@Nonnull Fragment parent, String s)
     {
         this(parent, s, (button) -> {});
     }
 
-    public ElementButton(@Nonnull View parent, String s, Consumer<ElementClickable> callback)
+    public ElementButton(@Nonnull Fragment parent, String s, Consumer<ElementClickable> callback)
     {
         super(parent, callback);
         text = s;
@@ -62,6 +62,6 @@ public class ElementButton extends ElementClickable<Fragment>
     @Override
     public int getMinHeight()
     {
-        return 16;
+        return 14;
     }
 }

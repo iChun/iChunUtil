@@ -10,7 +10,7 @@ public class ElementCheckbox extends ElementClickable<Fragment>
 {
     public boolean toggleState;
 
-    public ElementCheckbox(@Nonnull View parent, String tooltip, Consumer<ElementClickable> callback)
+    public ElementCheckbox(@Nonnull Fragment parent, String tooltip, Consumer<ElementClickable> callback)
     {
         super(parent, callback);
         this.tooltip = tooltip;

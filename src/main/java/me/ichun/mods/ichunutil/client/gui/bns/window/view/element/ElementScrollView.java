@@ -20,7 +20,7 @@ public class ElementScrollView extends ElementFertile<Fragment>
 
     public boolean hasInit;
 
-    public ElementScrollView(@Nonnull View parent)
+    public ElementScrollView(@Nonnull Fragment parent)
     {
         super(parent);
     }

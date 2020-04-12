@@ -88,7 +88,7 @@ public class ElementTextField extends Element<Fragment>
     private int lastLeft;
     private int lastTop;
 
-    public ElementTextField(@Nonnull View parent)
+    public ElementTextField(@Nonnull Fragment parent)
     {
         super(parent);
     }

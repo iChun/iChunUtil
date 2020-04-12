@@ -2,19 +2,20 @@ package me.ichun.mods.ichunutil.client.gui.config;
 
 import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
+import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 public class WorkspaceConfigs extends Workspace
 {
@@ -29,14 +30,66 @@ public class WorkspaceConfigs extends Workspace
             confs.add(new ConfigInfo(configBase));
         }));
 
+        getDock().borderSize(() -> 0);
         addToDock(new WindowConfigs(this), Constraint.Property.Type.LEFT);
     }
 
     public void selectItem(ElementList.Item item)
     {
+        if(item.selected)
+        {
+            for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+            {
+                if(item1 != item)
+                {
+                    item1.selected = false; //workaround. Just make sure we don't got configs with no category
+                }
+            }
 
+            destroyWindowValues();
+            WindowValues window = new WindowValues(this, (ConfigInfo)item.getObject(), item.id);
+            addToDock(window, Constraint.Property.Type.LEFT);
+            window.constraint.right(getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)getDock().borderSize.get());
+            window.constraint.apply();
+            if(hasInit())
+            {
+                window.init();
+                window.resize(Minecraft.getInstance(), this.width, this.height);
+            }
+        }
     }
 
+    public void destroyWindowValues()
+    {
+        WindowDock dock = getDock();
+        Iterator<Window> iterator = getDock().docked.keySet().iterator();
+        while(iterator.hasNext())
+        {
+            Window window = iterator.next();
+            if(window instanceof WindowValues)
+            {
+                if(dock.clickedWindow == window)
+                {
+                    dock.clickedWindow = null;
+                }
+                dock.dockedOriSize.remove(window);
+                iterator.remove();
+            }
+        }
+    }
+
+    public static String getLocalizedCategory(WorkspaceConfigs.ConfigInfo info, String cat, String suffix)
+    {
+        if(cat.isEmpty())
+        {
+            return I18n.format("config.ichunutil.cat.general." + suffix);
+        }
+        else if(cat.equals("general") || cat.equals("gameplay") || cat.equals("global") || cat.equals("serverOnly") || cat.equals("clientOnly") || cat.equals("block"))
+        {
+            return I18n.format("config.ichunutil.cat."+ cat + "." + suffix);
+        }
+        return I18n.format("config." + info.config.getModId() + ".cat."+ cat + "." + suffix);
+    }
 
     public static class ConfigInfo
             implements Comparable<ConfigInfo>

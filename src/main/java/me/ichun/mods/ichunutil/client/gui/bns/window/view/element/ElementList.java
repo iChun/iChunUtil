@@ -431,6 +431,7 @@ public class ElementList extends ElementFertile<Fragment>
         private boolean deselectOnUnfocus = true;
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
+        private int borderSize = 1;
 
         public Item(@Nonnull Fragment parent, @Nonnull M heldObject)
         {
@@ -456,6 +457,12 @@ public class ElementList extends ElementFertile<Fragment>
         public Item setSelectionHandler(Consumer<Item<M>> handler)
         {
             this.selectionHandler = handler;
+            return this;
+        }
+
+        public Item setBorderSize(int size)
+        {
+            this.borderSize = size;
             return this;
         }
 
@@ -567,7 +574,7 @@ public class ElementList extends ElementFertile<Fragment>
 
                     //RENDER
                     fill(borderColour, 0);
-                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, 1);
+                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
                 }
 
                 elements.forEach(element -> element.render(mouseX, mouseY, partialTick));
@@ -630,7 +637,7 @@ public class ElementList extends ElementFertile<Fragment>
         @Override
         public int getBorderSize()
         {
-            return 1;
+            return borderSize;
         }
     }
 

@@ -28,7 +28,7 @@ public class ElementScrollBar extends Element<Fragment>
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull View parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@Nonnull Fragment parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;
