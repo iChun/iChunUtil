@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
+import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -419,15 +420,16 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public void removeFromDock(Window<?> window)
     {
-        Iterator<ArrayList<Window<?>>> iterator = docked.keySet().iterator();
+        Iterator<Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type>> iterator = docked.entrySet().iterator();
         while(iterator.hasNext())
         {
-            ArrayList<Window<?>> windows = iterator.next();
-            if(windows.remove(window))
+            Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e = iterator.next();
+            ArrayList<Window<?>> windows = e.getKey();
+            if(windows.contains(window)) // window is in this arraylist. sort it out
             {
-                if(windows.isEmpty())
+                if(windows.size() == 1)
                 {
-                    iterator.remove();
+                    iterator.remove(); //we're using a linkedHASHmap. Empty ArrayLists aren't very friendly.
                 }
                 else
                 {
