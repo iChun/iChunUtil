@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
@@ -28,7 +29,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
         {
             setConstraint(Constraint.matchParent(this, (IConstrainable)parent, 0));
         }
-        borderSize = () -> 0;
+        borderSize = () -> iChunUtil.configClient.guiDockPadding;
         titleSize = () -> 0;
     }
 

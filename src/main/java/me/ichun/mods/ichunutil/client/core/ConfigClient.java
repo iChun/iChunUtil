@@ -17,8 +17,11 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Renders iChunUtil's GUIs in a Minecraft Style instead")
     public boolean guiStyleMinecraft = false;
 
+    @Prop(comment = "How much padding to add to the docked windows", min = 0, max = 50)
+    public int guiDockPadding = 0;
+
     @Prop(comment = "Number of ticks before showing a tooltip", min = 0)
-    public int tooltipCooldown = 10;
+    public int guiTooltipCooldown = 20;
 
     @Nonnull
     @Override

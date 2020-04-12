@@ -4,13 +4,17 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
+import me.ichun.mods.ichunutil.client.gui.config.window.WindowEditList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import net.jodah.typetools.TypeResolver;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -62,7 +66,7 @@ public class ViewValues extends View<WindowValues>
                 }
             });
             ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(value.name);
-            wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).right(item, Constraint.Property.Type.RIGHT, 90).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(item, Constraint.Property.Type.BOTTOM, item.getBorderSize()));
+            wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 90));
             wrapper.setTooltip(value.desc);
             item.addElement(wrapper);
             ElementPadding padding = new ElementPadding(item, 0, 20);
@@ -87,7 +91,7 @@ public class ViewValues extends View<WindowValues>
         return null;
     }
 
-    public void addControlFor(WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value, ElementList.Item<?> item)
+    public void addControlFor(final WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value, ElementList.Item<?> item)
     {
         Field field = value.value.field;
         field.setAccessible(true);
@@ -150,9 +154,16 @@ public class ViewValues extends View<WindowValues>
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);
         }
-        else if(clz.isEnum()) //enum! //TODO this
+        else if(clz.isEnum()) //enum!
         {
-            ElementContextMenu input = new ElementContextMenu(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) -> {});
+            ElementContextMenu<?> input = new ElementContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
+            {
+                if(listItem.selected)
+                {
+                    ElementContextMenu<?> contextMenu = (ElementContextMenu<?>)menu;
+                    contextMenu.text = listItem.getObject().toString();
+                }
+            });
             input.setSize(80, 14);
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);
@@ -160,7 +171,7 @@ public class ViewValues extends View<WindowValues>
         else if(o instanceof List) //lists
         {
             StringBuilder sb = new StringBuilder();
-            List list = (List)o;
+            final List list = (List)o;
             for(int i = 0; i < list.size(); i++)
             {
                 Object o1 = list.get(i);
@@ -170,7 +181,19 @@ public class ViewValues extends View<WindowValues>
                     sb.append("\n");
                 }
             }
-            ElementButtonTooltip button = new ElementButtonTooltip(item, I18n.format("selectWorld.edit"), sb.toString());
+            ElementButton button = new ElementButton(item, I18n.format("selectWorld.edit"), btn ->
+            {
+                WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value);
+                window.setWidth((int)(window.getParentWidth() * 0.6D));
+                window.setHeight((int)(window.getParentHeight() * 0.8D));
+//                window.resize(Minecraft.getInstance(), window.getParentWidth(), window.getParentHeight());
+                getWorkspace().addWindow(window);
+                getWorkspace().putInCenter(window);
+                getWorkspace().setFocused(window);
+                window.init();
+                window.init();
+
+            }).setTooltip(sb.toString());
             button.setSize(80, 14);
             button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(button);

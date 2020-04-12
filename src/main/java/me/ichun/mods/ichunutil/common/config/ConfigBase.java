@@ -343,7 +343,7 @@ public abstract class ConfigBase
         boolean save = false;
         for(HashSet<ValueWrapper<?>> vals : values.values())
         {
-            for(ValueWrapper value : vals)
+            for(ValueWrapper<?> value : vals)
             {
                 save = value.save() || save;
             }

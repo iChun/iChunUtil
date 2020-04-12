@@ -107,7 +107,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public void init()
     {
-        //TODO check for special constraints
+        constraint.apply();
         views.forEach(Fragment::init);
     }
 
@@ -209,6 +209,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
+        constraint.apply();
         currentView.resize(mc, this.width, this.height);
     }
 

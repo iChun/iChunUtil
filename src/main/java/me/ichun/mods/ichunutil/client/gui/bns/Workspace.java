@@ -186,6 +186,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
+    public void putInCenter(Window<?> window)
+    {
+        if(!isDocked(window))
+        {
+            window.pos((int)((getWidth() - window.getWidth()) / 2D), (int)((getHeight() - window.getHeight()) / 2D));
+        }
+    }
+
     @Override
     public void tick()
     {
@@ -217,10 +225,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
         if(topMost != null)
         {
             String tooltip = topMost.tooltip(mouseX, mouseY);
-            if(tooltip != null && tooltip.equals(lastTooltip))
+            if(tooltip != null)
             {
-                lastTooltip = tooltip;
-                tooltipCooldown = iChunUtil.configClient.tooltipCooldown;
+                if(!tooltip.equals(lastTooltip))
+                {
+                    lastTooltip = tooltip;
+                    tooltipCooldown = iChunUtil.configClient.guiTooltipCooldown;
+                }
             }
             else
             {

@@ -5,7 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.client.gui.config.window.view.ViewValues;
@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class WorkspaceConfigs extends Workspace
@@ -24,14 +25,13 @@ public class WorkspaceConfigs extends Workspace
 
     public WorkspaceConfigs(Screen lastScreen)
     {
-        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), Screen.hasControlDown()/*iChunUtil.configClient.guiStyleMinecraft*/); //TODO this
+        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), iChunUtil.configClient.guiStyleMinecraft);
 
         ConfigBase.CONFIGS.forEach((configBase -> {
             TreeSet<ConfigInfo> confs = configs.computeIfAbsent(configBase.getConfigName(), v -> new TreeSet<>(Ordering.natural()));
             confs.add(new ConfigInfo(configBase));
         }));
 
-        getDock().setBorderSize(() -> 0);
         addToDock(new WindowConfigs(this), Constraint.Property.Type.LEFT);
     }
 
@@ -94,7 +94,62 @@ public class WorkspaceConfigs extends Workspace
 
     private void saveConfig(ViewValues view)
     {
+        for(ElementList.Item<?> item : view.list.items)
+        {
+            Element<?> e = view.getControlElement(item);
+            if(e != null) // we have the control element
+            {
+                ConfigBase.ValueWrapper<?> valueWrapper = ((ConfigInfo.ValueWrapperLocalised)item.getObject()).value;
 
+                Field field = valueWrapper.field;
+                field.setAccessible(true);
+                String fieldName = field.getName();
+                Class clz = field.getType();
+                Object o;
+                try
+                {
+                    o = field.get(valueWrapper.parent);
+
+                    if(clz == int.class && e instanceof ElementNumberInput)
+                    {
+                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getInt());
+                    }
+                    else if(clz == double.class && e instanceof ElementNumberInput)
+                    {
+                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getDouble());
+                    }
+                    else if(clz == boolean.class && e instanceof ElementToggleTextable)
+                    {
+                        field.set(valueWrapper.parent, ((ElementToggle)e).toggleState);
+                    }
+                    else if(clz == String.class && e instanceof ElementTextField)
+                    {
+                        field.set(valueWrapper.parent, ((ElementTextField)e).getText());
+                    }
+                    else if(clz.isEnum() && e instanceof ElementContextMenu) //enum!
+                    {
+                        Object[] enums = clz.getEnumConstants();
+                        for(Object en : enums)
+                        {
+                            if(en.toString().equals(((ElementContextMenu<?>)e).text))
+                            {
+                                field.set(valueWrapper.parent, en);
+                                break;
+                            }
+                        }
+                    }
+                    else if(o instanceof List) //lists
+                    {
+                        //List should have already been set by the editor.
+                    }
+                }
+                catch(IllegalAccessException e1)
+                {
+                    continue;
+                }
+            }
+        }
+        view.info.config.save();
     }
 
     @Override

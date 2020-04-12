@@ -76,7 +76,7 @@ public class ViewConfigs extends View<WindowConfigs>
             {
                 for(String key : info.categories.keySet())
                 {
-                    ElementList.Item item = list.addItem(info).setSelectionHandler(item1 -> parent.parent.selectItem((ElementList.Item)item1));
+                    ElementList.Item item = list.addItem(info).setSelectionHandler(parent.parent::selectItem);
                     item.setId(key);
                     item.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
                     ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));

@@ -9,11 +9,6 @@ public class ElementButton extends ElementClickable<Fragment<?>>
 {
     public @Nonnull String text; //already localized
 
-    public ElementButton(@Nonnull Fragment<?> parent, String s)
-    {
-        this(parent, s, (button) -> {});
-    }
-
     public ElementButton(@Nonnull Fragment<?> parent, String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);

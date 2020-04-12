@@ -6,15 +6,16 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
-public class ElementButtonTextured extends ElementButtonTooltip
+public class ElementButtonTextured extends ElementButton
 {
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementButtonTextured(@Nonnull Fragment<?> parent, String tooltip, ResourceLocation rl)
+    public ElementButtonTextured(@Nonnull Fragment<?> parent, ResourceLocation rl, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
-        super(parent, "", tooltip);
+        super(parent, "", callback);
         this.textureLocation = rl;
     }
 

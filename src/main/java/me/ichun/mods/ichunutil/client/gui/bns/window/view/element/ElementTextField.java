@@ -104,10 +104,20 @@ public class ElementTextField extends Element<Fragment<?>>
         return this;
     }
 
+    public Predicate<String> getValidator()
+    {
+        return this.validator;
+    }
+
     public ElementTextField setResponder(Consumer<String> responder)
     {
         this.responder = responder;
         return this;
+    }
+
+    public Consumer<String> getResponder()
+    {
+        return this.responder;
     }
 
     public ElementTextField setMaxStringLength(int i)

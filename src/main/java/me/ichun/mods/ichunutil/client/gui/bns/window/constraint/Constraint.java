@@ -110,37 +110,36 @@ public class Constraint
             //expand if we're below minimum dimensions
             parent.expandX(parent.getMinWidth());
             parent.expandY(parent.getMinHeight());
-        }
-        if(!(left.apply(this) | right.apply(this)))
-        {
-            if(hasTop() || hasBottom())
+
+            if(!(left.apply(this) | right.apply(this)))
             {
-                //free floating on x axis, align centrally to attachment on Y axis
-                IConstrainable attachment = hasTop() ? top.reference : bottom.reference;
-                parent.setLeft(attachment.getLeft() + (((attachment.getRight() - attachment.getLeft()) - parent.getWidth()) / 2));
+                if(hasTop() || hasBottom())
+                {
+                    //free floating on x axis, align centrally to attachment on Y axis
+                    IConstrainable attachment = hasTop() ? top.reference : bottom.reference;
+                    parent.setLeft(attachment.getLeft() + (((attachment.getRight() - attachment.getLeft()) - parent.getWidth()) / 2));
+                }
+                else
+                {
+                    //parent is free floating. set to middle on X axis
+                    parent.setPosX((parent.getParentWidth() - parent.getWidth()) / 2);
+                }
             }
-            else
+            if(!(top.apply(this) | bottom.apply(this)))
             {
-                //parent is free floating. set to middle on X axis
-                parent.setPosX((parent.getParentWidth() - parent.getWidth()) / 2);
+                if(hasLeft() || hasRight())
+                {
+                    //free floating on y axis, align centrally to attachment on X axis
+                    IConstrainable attachment = hasLeft() ? left.reference : right.reference;
+                    parent.setTop(attachment.getTop() + (((attachment.getBottom() - attachment.getTop()) - parent.getHeight()) / 2));
+                }
+                else
+                {
+                    //parent is free floating. set to middle on Y axis
+                    parent.setPosY((parent.getParentHeight() - parent.getHeight()) / 2);
+                }
             }
-        }
-        if(!(top.apply(this) | bottom.apply(this)))
-        {
-            if(hasLeft() || hasRight())
-            {
-                //free floating on y axis, align centrally to attachment on X axis
-                IConstrainable attachment = hasLeft() ? left.reference : right.reference;
-                parent.setTop(attachment.getTop() + (((attachment.getBottom() - attachment.getTop()) - parent.getHeight()) / 2));
-            }
-            else
-            {
-                //parent is free floating. set to middle on Y axis
-                parent.setPosY((parent.getParentHeight() - parent.getHeight()) / 2);
-            }
-        }
-        if(parent != null)
-        {
+
             //contract if we're above max dimensions
             parent.contractX(parent.getMaxWidth());
             parent.contractY(parent.getMaxHeight());
@@ -157,7 +156,7 @@ public class Constraint
             @Override
             public boolean apply(Constraint c)
             {
-                return true;
+                return false;
             }
         };
 
