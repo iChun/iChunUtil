@@ -272,20 +272,28 @@ public class ElementList extends ElementFertile<Fragment>
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            if(Screen.hasShiftDown())
+            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, dist);
+            if(defaultScroll)
             {
-                if(scrollHori != null)
-                {
-                    scrollHori.secondHandScroll(dist);
-                    return true;
-                }
+                return true;
             }
             else
             {
-                if(scrollVert != null)
+                if(Screen.hasShiftDown())
                 {
-                    scrollVert.secondHandScroll(dist);
-                    return true;
+                    if(scrollHori != null)
+                    {
+                        scrollHori.secondHandScroll(dist);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if(scrollVert != null)
+                    {
+                        scrollVert.secondHandScroll(dist);
+                        return true;
+                    }
                 }
             }
         }

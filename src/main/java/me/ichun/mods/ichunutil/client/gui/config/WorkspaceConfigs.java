@@ -47,7 +47,10 @@ public class WorkspaceConfigs extends Workspace
             }
 
             destroyWindowValues();
+
             WindowValues window = new WindowValues(this, (ConfigInfo)item.getObject(), item.id);
+//            addWindow(window);
+//            window.setLeft(130);
             addToDock(window, Constraint.Property.Type.LEFT);
             window.constraint.right(getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)getDock().borderSize.get());
             window.constraint.apply();

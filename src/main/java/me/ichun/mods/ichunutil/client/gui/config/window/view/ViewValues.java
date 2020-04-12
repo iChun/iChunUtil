@@ -52,7 +52,7 @@ public class ViewValues extends View<WindowValues>
         {
             ElementList.Item item = list.addItem(value).setBorderSize(0);
             ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(value.name);
-            wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(item, Constraint.Property.Type.BOTTOM, item.getBorderSize()));
+            wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).right(item, Constraint.Property.Type.RIGHT, 90).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(item, Constraint.Property.Type.BOTTOM, item.getBorderSize()));
             wrapper.setTooltip(value.desc);
             item.addElement(wrapper);
             ElementPadding padding = new ElementPadding(item, 0, 20);
@@ -97,7 +97,7 @@ public class ViewValues extends View<WindowValues>
             input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
             input.setMax(props.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)props.max());
             input.setDefaultText(o.toString());
-            input.setSize(60, 14);
+            input.setSize(80, 14);
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);
         }
@@ -106,27 +106,49 @@ public class ViewValues extends View<WindowValues>
             ElementNumberInput input = new ElementNumberInput(item, true);
             input.setMin(props.min());
             input.setMax(props.max());
+            input.setMaxDec(2);
             input.setDefaultText(o.toString());
-            input.setSize(60, 14);
+            input.setSize(80, 14);
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);
         }
         else if(clz == boolean.class)
         {
             ElementToggle toggle = new ElementToggleTextable(item, value.name).setToggled((boolean)o);
-            toggle.setSize(60, 14);
+            toggle.setSize(80, 14);
             toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(toggle);
         }
         else if(clz == String.class)
         {
+            ElementTextField input = new ElementTextField(item);
+            input.setDefaultText(o.toString());
+            input.setSize(80, 14);
+            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+            item.addElement(input);
         }
-        else if(clz.isEnum()) //enum!
+        else if(clz.isEnum()) //enum! //TODO this
         {
+            System.out.println(o.toString());
         }
-//        else if(o instanceof List) //lists //TODO this
-//        {
-//        }
+        else if(o instanceof List) //lists
+        {
+            StringBuilder sb = new StringBuilder();
+            List list = (List)o;
+            for(int i = 0; i < list.size(); i++)
+            {
+                Object o1 = list.get(i);
+                sb.append(o1);
+                if(i < list.size() - 1)
+                {
+                    sb.append("\n");
+                }
+            }
+            ElementButtonTooltip button = new ElementButtonTooltip(item, I18n.format("selectWorld.edit"), sb.toString());
+            button.setSize(80, 14);
+            button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+            item.addElement(button);
+        }
     }
 
 }

@@ -46,7 +46,7 @@ public class ElementButton extends ElementClickable<Fragment>
             {
                 setTooltip(text);
             }
-            drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F);
+            drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
         }
     }
 

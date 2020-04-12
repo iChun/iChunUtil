@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.common;
 
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
+import me.ichun.mods.ichunutil.client.core.ConfigTest;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,6 +38,7 @@ public class iChunUtil //TODO update forge dependency to build 41
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             configClient = new ConfigClient().init();
+            new ConfigTest(ModLoadingContext.get().getActiveContainer().getModId() + "-test.toml").init();
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });
 
