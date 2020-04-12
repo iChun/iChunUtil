@@ -542,11 +542,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
         if(gui instanceof Window)
         {
-            if(canDockWindows() && gui == getDock() && getDock().clickedWindow != null)
-            {
-                super.setFocused(getDock().clickedWindow); //TODO is this right?
-                return;
-            }
             bringToFront((Window)gui);
         }
         super.setFocused(gui);

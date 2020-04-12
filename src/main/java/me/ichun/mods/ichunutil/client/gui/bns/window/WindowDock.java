@@ -385,10 +385,6 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public void removeFromDock(Window window)
     {
-        if(clickedWindow == window)
-        {
-            clickedWindow = null;
-        }
         docked.remove(window);
         WindowSize size = dockedOriSize.get(window);
         window.setConstraint(size.constraint);

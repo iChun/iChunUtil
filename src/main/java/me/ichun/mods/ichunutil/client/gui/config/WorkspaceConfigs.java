@@ -71,10 +71,6 @@ public class WorkspaceConfigs extends Workspace
             Window window = iterator.next();
             if(window instanceof WindowValues)
             {
-                if(dock.clickedWindow == window)
-                {
-                    dock.clickedWindow = null;
-                }
                 dock.dockedOriSize.remove(window);
                 iterator.remove();
             }
