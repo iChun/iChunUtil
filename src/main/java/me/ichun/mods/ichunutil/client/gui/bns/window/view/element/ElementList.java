@@ -435,7 +435,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
     public static class Item<M> extends ElementFertile<Fragment<?>>
     {
         protected final @Nonnull M heldObject; //height 13?
-        private List<Element<?>> elements = new ArrayList<>();
+        public List<Element<?>> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
@@ -595,9 +595,9 @@ public class ElementList extends ElementFertile<Fragment<?>>
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button)
+        public boolean mouseReleased(double mouseX, double mouseY, int button)
         {
-            if(super.mouseClicked(mouseX, mouseY, button)) // clicking this
+            if(parentFragment.getFocused() == this && isMouseOver(mouseX, mouseY))
             {
                 if(button == 0)
                 {
@@ -611,9 +611,8 @@ public class ElementList extends ElementFertile<Fragment<?>>
                 {
                     selectionHandler.accept(this);
                 }
-                return true;
             }
-            return false;
+            return super.mouseReleased(mouseX, mouseY, button);
         }
 
         public boolean shouldRender()

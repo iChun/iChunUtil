@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
+import me.ichun.mods.ichunutil.client.gui.config.window.view.ViewValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
@@ -75,6 +76,8 @@ public class WorkspaceConfigs extends Workspace
                 Window<?> window = windows.get(i);
                 if(window instanceof WindowValues)
                 {
+                    saveConfig((ViewValues)((WindowValues)window).currentView);
+
                     dock.dockedOriSize.remove(window);
                     if(windows.size() == 1)
                     {
@@ -87,6 +90,18 @@ public class WorkspaceConfigs extends Workspace
                 }
             }
         }
+    }
+
+    private void saveConfig(ViewValues view)
+    {
+
+    }
+
+    @Override
+    public void onClose()
+    {
+        destroyWindowValues();
+        super.onClose();
     }
 
     public static String getLocalizedCategory(WorkspaceConfigs.ConfigInfo info, String cat, String suffix)

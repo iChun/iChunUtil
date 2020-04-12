@@ -20,6 +20,7 @@ public class ViewValues extends View<WindowValues>
     public final WorkspaceConfigs.ConfigInfo info;
     public final String category;
     public final TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values;
+    public final ElementList list;
 
     public ViewValues(@Nonnull WindowValues parent, @Nonnull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values)
     {
@@ -35,7 +36,7 @@ public class ViewValues extends View<WindowValues>
         );
         elements.add(sv);
 
-        ElementList list = new ElementList(this).setScrollVertical(sv)
+        this.list = new ElementList(this).setScrollVertical(sv)
                 //                .setDragHandler((i, j) -> {})
                 //                .setRearrangeHandler((i, j) -> {})
                 ;
@@ -47,7 +48,19 @@ public class ViewValues extends View<WindowValues>
 
         for(WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value : values)
         {
-            ElementList.Item item = list.addItem(value).setBorderSize(0);
+            ElementList.Item<?> item = list.addItem(value).setBorderSize(0);
+            item.setSelectionHandler(itemObj -> {
+                if(itemObj.selected)
+                {
+                    Element<?> e = getControlElement(itemObj);
+                    if(e != null)
+                    {
+                        e.parentFragment.setFocused(e);
+                        e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                        e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                    }
+                }
+            });
             ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(value.name);
             wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).right(item, Constraint.Property.Type.RIGHT, 90).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(item, Constraint.Property.Type.BOTTOM, item.getBorderSize()));
             wrapper.setTooltip(value.desc);
@@ -61,7 +74,20 @@ public class ViewValues extends View<WindowValues>
         elements.add(list);
     }
 
-    public void addControlFor(WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value, ElementList.Item item)
+    public Element<?> getControlElement(ElementList.Item<?> item)
+    {
+        for(Element<?> element : item.elements)
+        {
+            if(element instanceof ElementTextWrapper || element instanceof ElementPadding)
+            {
+                continue;
+            }
+            return element;
+        }
+        return null;
+    }
+
+    public void addControlFor(WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value, ElementList.Item<?> item)
     {
         Field field = value.value.field;
         field.setAccessible(true);

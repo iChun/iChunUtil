@@ -36,6 +36,20 @@ public class ConfigTest extends ConfigBase
         add("ChargedProjectiles");
     }};
 
+    @Prop
+    public List<Integer> integerlistInteger = new ArrayList() {{
+        add(1);
+        add(123);
+        add(72);
+    }};
+
+    @Prop
+    public List<Double> doublelistDouble = new ArrayList() {{
+        add(42D);
+        add(420D);
+        add(69420D);
+    }};
+
     @CategoryDivider(name = "scrollTest")
     @Prop
     public int numberTestA = 1;

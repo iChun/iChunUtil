@@ -14,8 +14,11 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
     public boolean easterEgg = true;
 
-    @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
+    @Prop(comment = "Renders iChunUtil's GUIs in a Minecraft Style instead")
     public boolean guiStyleMinecraft = false;
+
+    @Prop(comment = "Number of ticks before showing a tooltip", min = 0)
+    public int tooltipCooldown = 10;
 
     @Nonnull
     @Override

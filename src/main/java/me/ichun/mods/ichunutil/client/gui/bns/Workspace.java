@@ -9,6 +9,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -82,6 +83,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     private boolean hasInit;
 
     private Screen lastScreen;
+
+    public String lastTooltip;
+    public int tooltipCooldown;
 
     public Workspace(Screen lastScreen, ITextComponent title, boolean mcStyle)
     {
@@ -186,6 +190,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void tick()
     {
         children().forEach(Fragment::tick);
+        tooltipCooldown--;
     }
 
     @Override
@@ -212,10 +217,20 @@ public abstract class Workspace extends Screen //boxes and stuff!
         if(topMost != null)
         {
             String tooltip = topMost.tooltip(mouseX, mouseY);
-            if(tooltip != null)
+            if(tooltip != null && tooltip.equals(lastTooltip))
             {
-                renderTooltip(tooltip, mouseX, mouseY);
+                lastTooltip = tooltip;
+                tooltipCooldown = iChunUtil.configClient.tooltipCooldown;
             }
+            else
+            {
+                lastTooltip = null;
+            }
+        }
+
+        if(lastTooltip != null && tooltipCooldown < 0)
+        {
+            renderTooltip(lastTooltip, mouseX, mouseY);
         }
 
         resetBackground();

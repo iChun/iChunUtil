@@ -197,7 +197,12 @@ public class WindowDock<M extends IWindows> extends Window<M>
         }
         //END RENDER BORDER HIGHLIGHT
 
-        docked.forEach(((windows, type) -> windows.forEach(window -> window.render(mouseX, mouseY, partialTick))));
+        List<ArrayList<Window<?>>> keys = new ArrayList<>(docked.keySet());
+        for(int i = keys.size() - 1; i >= 0; i--)
+        {
+            ArrayList<Window<?>> windows = keys.get(i);
+            windows.forEach(window -> window.render(mouseX, mouseY, partialTick));
+        }
     }
 
     @Override
