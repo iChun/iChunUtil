@@ -1,16 +1,9 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
-import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.util.Util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +15,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
 {
     public LinkedHashMap<ArrayList<Window<?>>, Constraint.Property.Type> docked = new LinkedHashMap<>();
     public HashMap<Window<?>, WindowSize> dockedOriSize = new HashMap<>();
+    public HashSet<Constraint.Property.Type> disabledDocks = new HashSet<>();
 
     public WindowDock(M parent)
     {
@@ -190,6 +184,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return false;
     }
 
+    public void disableDock(Constraint.Property.Type type)
+    {
+        disabledDocks.add(type);
+    }
+
     public @Nullable IWindows.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(dockStack)
@@ -251,22 +250,22 @@ public class WindowDock<M extends IWindows> extends Window<M>
         int dockSnap = 4;
         if(mouseY >= top && mouseY < bottom)
         {
-            if(mouseX >= left && mouseX < left + dockSnap)
+            if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(LEFT))
             {
                 return new IWindows.DockInfo(null, LEFT);
             }
-            else if(mouseX >= right - dockSnap && mouseX < right)
+            else if(mouseX >= right - dockSnap && mouseX < right && !disabledDocks.contains(RIGHT))
             {
                 return new IWindows.DockInfo(null, Constraint.Property.Type.RIGHT);
             }
         }
         if(mouseX >= left && mouseX < right)
         {
-            if(mouseY >= top && mouseY < top + dockSnap)
+            if(mouseY >= top && mouseY < top + dockSnap && !disabledDocks.contains(TOP))
             {
                 return new IWindows.DockInfo(null, Constraint.Property.Type.TOP);
             }
-            else if(mouseY >= bottom - dockSnap && bottom < right)
+            else if(mouseY >= bottom - dockSnap && bottom < right && !disabledDocks.contains(BOTTOM))
             {
                 return new IWindows.DockInfo(null, Constraint.Property.Type.BOTTOM);
             }
@@ -385,99 +384,142 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public void removeFromDock(Window<?> window)
     {
+        boolean redoConstraints = false;
+
         Iterator<Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type>> iterator = docked.entrySet().iterator();
         while(iterator.hasNext())
         {
             Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e = iterator.next();
             ArrayList<Window<?>> windows = e.getKey();
+
+            //redo the constraints
+            EnumMap<Constraint.Property.Type, Constraint.Property> anchors = new EnumMap<>(Constraint.Property.Type.class);
+            if(redoConstraints || windows.contains(window))
+            {
+                for(Constraint.Property.Type type : Constraint.Property.Type.values())
+                {
+                    Constraint.Property stackAnchor = getStackAnchor(windows, type);
+                    if(stackAnchor != null)
+                    {
+                        anchors.put(type, stackAnchor);
+                    }
+                }
+            }
+
             if(windows.contains(window)) // window is in this arraylist. sort it out
             {
+                redoConstraints = true;
+
                 if(windows.size() == 1)
                 {
                     iterator.remove(); //we're using a linkedHASHmap. Empty ArrayLists aren't very friendly.
                 }
                 else //we're in a dock stack.
                 {
-                    //redo the constraints
-                    EnumMap<Constraint.Property.Type, Constraint.Property> anchors = new EnumMap<>(Constraint.Property.Type.class);
-                    for(Constraint.Property.Type type : Constraint.Property.Type.values())
-                    {
-                        Constraint.Property stackAnchor = getStackAnchor(windows, type);
-                        if(stackAnchor != null)
-                        {
-                            anchors.put(type, stackAnchor);
-                        }
-                    }
                     //we have the anchors of each type. remove the nonbeliever!
                     windows.remove(window);
+                }
+            }
 
-                    Constraint.Property.Type dockType = e.getValue();
-                    //Update the constraints
-                    for(int i = 0; i < windows.size(); i++)
+            if(redoConstraints)
+            {
+                Constraint.Property.Type dockType = e.getValue();
+                //Update the constraints
+                for(int i = 0; i < windows.size(); i++)
+                {
+                    Window<?> dockWindow = windows.get(i);
+                    if(i == 0)
                     {
-                        Window<?> dockWindow = windows.get(i);
-                        if(i == 0)
-                        {
-                            Constraint constraint = new Constraint(dockWindow);
-                            anchors.forEach((type, property) -> {
-                                constraint.type(type, property.getReference(), property.getType(), property.getDist());
-                            });
-                            dockWindow.setConstraint(constraint);
-                        }
-                        else
-                        {
-                            Window<?> lastInStack = windows.get(i - 1); // we stack downwards and to the right.
-
-                            Constraint constraint = new Constraint(dockWindow);
-                            Constraint.Property.Type[] values = Constraint.Property.Type.values();
-                            for(int ii = values.length - 1; ii >= 0; ii--)
+                        Constraint constraint = new Constraint(dockWindow);
+                        anchors.forEach((type, property) -> {
+                            if(property.getReference() == window)
                             {
-                                Constraint.Property.Type type1 = values[ii];
-                                IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
-                                if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
+                                IConstrainable constrainable = getAnchor(type, dockWindow);
+                                if(constrainable != null && constrainable != dockWindow)
                                 {
-                                    constrainable = lastInStack;
-
-                                    //we drop the constraint of lastInStack. let it free float.
-                                    lastInStack.constraint.type(type1.getOpposite(), null, null, 0);
-
-                                    //set the size
-                                    if(type1 == TOP) //if we're docked left or right, reset height
-                                    {
-                                        lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
-                                    }
-                                    else
-                                    {
-                                        lastInStack.setWidth(dockedOriSize.get(lastInStack).width);
-                                    }
+                                    constraint.type(type, constrainable, type.getOpposite(), -(Integer)dockWindow.borderSize.get() + borderSize.get());
                                 }
-                                if(type1 != dockType.getOpposite())
+                                else
                                 {
-                                    if(constrainable != null && !(constrainable instanceof WindowDock))
-                                    {
-                                        constraint = constraint.type(type1, constrainable, type1.getOpposite(), -(Integer)dockWindow.borderSize.get() + borderSize.get());
-                                    }
-                                    else
-                                    {
-                                        constraint = constraint.type(type1, this, type1, -(Integer)dockWindow.borderSize.get() + borderSize.get());
-                                    }
+                                    constraint.type(type, this, type, -(Integer)dockWindow.borderSize.get() + borderSize.get());
                                 }
                             }
-                            dockWindow.setConstraint(constraint);
-                        }
+                            else
+                            {
+                                constraint.type(type, property.getReference(), property.getType(), property.getDist());
+                            }
+                        });
+                        dockWindow.setConstraint(constraint);
                     }
-
-                    for(Window<?> window1 : windows)
+                    else
                     {
-                        window1.constraint.apply();
-                        if(getWorkspace().hasInit())
+                        Window<?> lastInStack = windows.get(i - 1); // we stack downwards and to the right.
+
+                        Constraint constraint = new Constraint(dockWindow);
+                        Constraint.Property.Type[] values = Constraint.Property.Type.values();
+                        for(int ii = values.length - 1; ii >= 0; ii--)
                         {
-                            window1.resize(Minecraft.getInstance(), this.width, this.height);
+                            Constraint.Property.Type type1 = values[ii];
+                            IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
+                            if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
+                            {
+                                constrainable = lastInStack;
+
+                                //we drop the constraint of lastInStack. let it free float.
+                                lastInStack.constraint.type(type1.getOpposite(), null, null, 0);
+
+                                //set the size
+                                if(type1 == TOP) //if we're docked left or right, reset height
+                                {
+                                    lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
+                                }
+                                else
+                                {
+                                    lastInStack.setWidth(dockedOriSize.get(lastInStack).width);
+                                }
+                            }
+                            if(type1 != dockType.getOpposite())
+                            {
+                                if(constrainable != null && !(constrainable instanceof WindowDock))
+                                {
+                                    constraint = constraint.type(type1, constrainable, type1.getOpposite(), -(Integer)dockWindow.borderSize.get() + borderSize.get());
+                                }
+                                else
+                                {
+                                    constraint = constraint.type(type1, this, type1, -(Integer)dockWindow.borderSize.get() + borderSize.get());
+                                }
+                            }
                         }
+                        dockWindow.setConstraint(constraint);
                     }
                 }
-                break;
+
+                for(Window<?> window1 : windows)
+                {
+                    window1.constraint.apply();
+                    if(getWorkspace().hasInit())
+                    {
+                        window1.resize(Minecraft.getInstance(), this.width, this.height);
+                    }
+                }
             }
+//            else if(anchor != null)
+//            {
+//                Window<?> nextDock;
+//                //update the constraints for the NEXT dock
+//                if(anchor.getType() == LEFT || anchor.getType() == TOP)
+//                {
+//                    nextDock = windows.get(0);
+//                }
+//                else
+//                {
+//                    nextDock = windows.get(windows.size() - 1);
+//                }
+//                int dist = anchor.getDist();
+//                nextDock.constraint.type(anchorDir, anchor.getReference(), anchor.getType(), dist);
+//                nextDock.constraint.apply();
+//                nextDock.resize(Minecraft.getInstance(), nextDock.parent.getWidth(), nextDock.parent.getHeight());
+//            }
         }
 
         WindowSize size = dockedOriSize.get(window);
@@ -495,10 +537,16 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public @Nullable IConstrainable getAnchor(Constraint.Property.Type type) //gets the element to anchor on based on type
     {
+        return getAnchor(type, null);
+    }
+
+
+    public @Nullable IConstrainable getAnchor(Constraint.Property.Type type, IConstrainable ignored) //gets the element to anchor on based on type
+    {
         IConstrainable typeMost = null;
         for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
         {
-            if(e.getValue() == type)
+            if(e.getValue() == type && (ignored == null || !e.getKey().contains(ignored)))
             {
                 typeMost = e.getKey().get(0);
             }

@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class View<M extends Window<?>> extends Fragment
+public abstract class View<M extends Window<? extends IWindows>> extends Fragment
 {
     public ArrayList<Element<?>> elements = new ArrayList<>();
     public @Nonnull String title; // we localise when this is set

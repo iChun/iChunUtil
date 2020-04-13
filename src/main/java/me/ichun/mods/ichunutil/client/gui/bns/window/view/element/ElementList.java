@@ -60,10 +60,17 @@ public class ElementList extends ElementFertile<Fragment<?>>
         return this;
     }
 
-    public Item<?> addItem(Object o)
+    public Item<?> addItem(Object o, int index)
     {
         Item<?> item = new Item<>(this, o);
-        items.add(item);
+        if(index >= 0)
+        {
+            items.add(index, item);
+        }
+        else
+        {
+            items.add(item);
+        }
         item.constraint = Constraint.sizeOnly(item);
         if(hasInit)
         {
@@ -71,6 +78,11 @@ public class ElementList extends ElementFertile<Fragment<?>>
             updateScrollBarSizes();
         }
         return item;
+    }
+
+    public Item<?> addItem(Object o)
+    {
+        return addItem(o, -1);
     }
 
     public boolean removeItemWithObject(Object o)

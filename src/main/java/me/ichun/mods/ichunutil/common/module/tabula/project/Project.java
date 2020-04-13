@@ -67,4 +67,9 @@ public class Project //Model
             public float expandZ;
         }
     }
+
+    public void addPart()
+    {
+        parts.add(new Part());
+    }
 }

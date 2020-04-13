@@ -38,7 +38,7 @@ public abstract class ElementClickable<M extends Fragment<?>> extends Element<M>
         return flag;
     }
 
-    private void trigger()
+    protected void trigger()
     {
         if(renderMinecraftStyle())
         {

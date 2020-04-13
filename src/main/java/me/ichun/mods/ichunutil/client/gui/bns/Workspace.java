@@ -209,7 +209,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void removeWindow(Window<?> window)
     {
-        window.onClose();
+        window.onClose(); //TODO this might bite me in the ass. how can we tell if the window was removed or destroyed????? dock???
         windows.remove(window);
     }
 
@@ -554,6 +554,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
             }
         }
         return true; //our window isn't even here! pretend we're obstructed
+    }
+
+    public Window<?> getWindowType(Class<? extends Window<?>> clz)
+    {
+        List<Window<?>> windows = children();
+        for(Window<?> window : windows)
+        {
+            if(clz.isAssignableFrom(window.getClass()))
+            {
+                return window;
+            }
+        }
+        return null;
     }
 
     @Override

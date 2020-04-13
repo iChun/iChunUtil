@@ -109,13 +109,18 @@ public abstract class Fragment<M extends Fragment<?>>
 
     public void drawString(String s, float posX, float posY)
     {
+        drawString(s, posX, posY, renderMinecraftStyle() ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
+    }
+
+    public void drawString(String s, float posX, float posY, int color)
+    {
         if(renderMinecraftStyle())
         {
-            getFontRenderer().drawStringWithShadow(s, posX, posY, getMinecraftFontColour());
+            getFontRenderer().drawStringWithShadow(s, posX, posY, color);
         }
         else
         {
-            getFontRenderer().drawString(s, posX, posY, Theme.getAsHex(getTheme().font));
+            getFontRenderer().drawString(s, posX, posY, color);
         }
     }
 

@@ -15,9 +15,12 @@ import net.minecraft.util.Util;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.*;
 
 @SuppressWarnings("unchecked")
 public abstract class Window<M extends IWindows> extends Fragment
@@ -193,7 +196,7 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public void renderDockHighlight(int mouseX, int mouseY, float partialTick)
     {
-        if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()))
+        if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {
             WindowDock<?> dock = getWorkspace().getDock();
 
@@ -262,31 +265,33 @@ public abstract class Window<M extends IWindows> extends Fragment
             }
             else if(canBeDocked() && !getWorkspace().isDocked(this))
             {
+                HashSet<Constraint.Property.Type> disabledDocks = getWorkspace().getDock().disabledDocks;
+
                 int dockSnap = 4;
-                draw = (mouseY >= top && mouseY < bottom && (mouseX >= left && mouseX < left + dockSnap || mouseX >= right - dockSnap && mouseX < right)) || (mouseX >= left && mouseX < right && (mouseY >= top && mouseY < top + dockSnap || mouseY >= bottom - dockSnap && bottom < right));
-                if(draw)
+                if(mouseY >= top && mouseY < bottom)
                 {
-                    if(mouseY >= top && mouseY < bottom)
+                    if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(LEFT))
                     {
-                        if(mouseX >= left && mouseX < left + dockSnap)
-                        {
-                            right = left + dockSnap;
-                        }
-                        else if(mouseX >= right - dockSnap && mouseX < right)
-                        {
-                            left = right - dockSnap;
-                        }
+                        right = left + dockSnap;
+                        draw = true;
                     }
-                    if(mouseX >= left && mouseX < right)
+                    else if(mouseX >= right - dockSnap && mouseX < right && !disabledDocks.contains(RIGHT))
                     {
-                        if(mouseY >= top && mouseY < top + dockSnap)
-                        {
-                            bottom = top + dockSnap;
-                        }
-                        else if(mouseY >= bottom - dockSnap && bottom < right)
-                        {
-                            top = bottom - dockSnap;
-                        }
+                        left = right - dockSnap;
+                        draw = true;
+                    }
+                }
+                if(mouseX >= left && mouseX < right)
+                {
+                    if(mouseY >= top && mouseY < top + dockSnap && !disabledDocks.contains(TOP))
+                    {
+                        bottom = top + dockSnap;
+                        draw = true;
+                    }
+                    else if(mouseY >= bottom - dockSnap && bottom < right && !disabledDocks.contains(BOTTOM))
+                    {
+                        top = bottom - dockSnap;
+                        draw = true;
                     }
                 }
             }
@@ -451,8 +456,9 @@ public abstract class Window<M extends IWindows> extends Fragment
                     {
                         int oriX = posX;
                         int oriY = posY;
+                        int oriWidth = width;
                         parent.removeFromDock(this);
-                        posX += oriX - posX;
+                        posX += oriX - posX + ((oriWidth - width) / 2);
                         posY += oriY - posY;
                     }
 
