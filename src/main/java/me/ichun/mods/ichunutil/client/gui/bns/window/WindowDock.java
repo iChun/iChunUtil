@@ -12,11 +12,11 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.LEFT;
-import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.TOP;
+import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.*;
 
 public class WindowDock<M extends IWindows> extends Window<M>
 {
@@ -304,10 +304,20 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         if(type1 == TOP) //if we're docked left or right, reset height
                         {
                             lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
+
+                            //get max width
+                            int width = Math.max(window.width, lastInStack.width);
+                            window.setWidth(width);
+                            lastInStack.setWidth(width);
                         }
                         else
                         {
                             lastInStack.setWidth(dockedOriSize.get(lastInStack).width);
+
+                            //get max height
+                            int height = Math.max(window.height, lastInStack.height);
+                            window.setHeight(height);
+                            lastInStack.setHeight(height);
                         }
                     }
                     if(type1 != dockType.getOpposite())
@@ -539,6 +549,40 @@ public class WindowDock<M extends IWindows> extends Window<M>
             }
         }
         return null;
+    }
+
+    public @Nonnull ArrayList<Window<?>> getDockStack(Window<?> window)
+    {
+        for(ArrayList<Window<?>> windows : docked.keySet())
+        {
+            if(windows.contains(window))
+            {
+                return windows;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public <M extends IWindows> void edgeGrab(Window<M> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
+    {
+        if(edgeGrab.left && draggedWindow.constraint.get(LEFT) == Constraint.Property.NONE ||
+                edgeGrab.right && draggedWindow.constraint.get(RIGHT) == Constraint.Property.NONE ||
+                edgeGrab.top && draggedWindow.constraint.get(TOP) == Constraint.Property.NONE ||
+                edgeGrab.bottom && draggedWindow.constraint.get(BOTTOM) == Constraint.Property.NONE
+        )
+        {
+            ArrayList<Window<?>> dockStack = getDockStack(draggedWindow);
+
+            for(Window<?> window : dockStack)
+            {
+                if(window != draggedWindow)
+                {
+                    window.dragResize(mouseX, mouseY, edgeGrab);
+                }
+            }
+        }
+
+        getWorkspace().getDock().init();
     }
 
     public static class WindowSize

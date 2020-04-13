@@ -464,48 +464,57 @@ public abstract class Window<M extends IWindows> extends Fragment
             }
             else if(canDragResize())
             {
-                int left = getLeft();
-                int right = getRight();
-                int top = getTop();
-                int bottom = getBottom();
-                if(edgeGrab.left)
-                {
-                    setLeft((int)mouseX);
-                    setRight(right);
-                }
-                else if(edgeGrab.right)
-                {
-                    setRight((int)mouseX);
-                }
-                if(edgeGrab.top)
-                {
-                    setTop((int)mouseY);
-                    setBottom(bottom);
-                }
-                else if(edgeGrab.bottom)
-                {
-                    setBottom((int)mouseY);
-                }
-                if(width < 20)
-                {
-                    width = 20;
-                    setLeft(left);
-                }
-                if(height < 20)
-                {
-                    height = 20;
-                    setTop(top);
-                }
-                resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
-
                 if(parent.isDocked(this))
                 {
-                    getWorkspace().getDock().init();
+                    dragResize(mouseX, mouseY, edgeGrab);
+
+                    getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, edgeGrab);
+                }
+                else
+                {
+                    dragResize(mouseX, mouseY, edgeGrab);
                 }
             }
             return true; //drag is handled
         }
         return super.mouseDragged(mouseX, mouseY, button, distX, distY);
+    }
+
+    public void dragResize(double mouseX, double mouseY, EdgeGrab grab)
+    {
+        int left = getLeft();
+        int right = getRight();
+        int top = getTop();
+        int bottom = getBottom();
+        if(grab.left)
+        {
+            setLeft((int)mouseX);
+            setRight(right);
+        }
+        else if(grab.right)
+        {
+            setRight((int)mouseX);
+        }
+        if(grab.top)
+        {
+            setTop((int)mouseY);
+            setBottom(bottom);
+        }
+        else if(grab.bottom)
+        {
+            setBottom((int)mouseY);
+        }
+        if(width < 20)
+        {
+            width = 20;
+            setLeft(left);
+        }
+        if(height < 20)
+        {
+            height = 20;
+            setTop(top);
+        }
+        resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
     }
 
     @Override
