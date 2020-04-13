@@ -457,9 +457,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
         Fragment<?> o = null;
-        for(int i = windows.size() - 1; i >= 0; i--) //furthest back to front
+        List<Window<?>> children = children();
+        for(int i = children.size() - 1; i >= 0; i--) //furthest back to front
         {
-            Fragment<?> o1 = windows.get(i).getTopMostFragment(mouseX, mouseY);
+            Fragment<?> o1 = children.get(i).getTopMostFragment(mouseX, mouseY);
             if(o1 != null)
             {
                 o = o1;
@@ -492,24 +493,25 @@ public abstract class Workspace extends Screen //boxes and stuff!
             RenderSystem.matrixMode(GL11.GL_MODELVIEW);
             RenderSystem.loadIdentity();
 
-            RenderSystem.pushMatrix();
-
             RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
             RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
         }
+
+        RenderSystem.pushMatrix();
     }
 
     public void resetBackground()
     {
+        RenderSystem.popMatrix();
+
         if(!renderMinecraftStyle)
         {
-            RenderSystem.popMatrix();
-
             RenderSystem.matrixMode(GL11.GL_PROJECTION);
             RenderSystem.loadIdentity();
-            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth(), minecraft.getMainWindow().getFramebufferHeight(), 0.0D, 1000.0D, 3000.0D);
+            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth() / minecraft.getMainWindow().getGuiScaleFactor(), minecraft.getMainWindow().getFramebufferHeight() / minecraft.getMainWindow().getGuiScaleFactor(), 0.0D, 1000.0D, 3000.0D);
             RenderSystem.matrixMode(GL11.GL_MODELVIEW);
             RenderSystem.loadIdentity();
+            RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
         }
     }
 
