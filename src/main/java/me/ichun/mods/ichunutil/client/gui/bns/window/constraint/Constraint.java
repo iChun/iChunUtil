@@ -1,5 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
+import net.minecraft.util.Direction;
+
 import javax.annotation.Nonnull;
 
 public class Constraint
@@ -52,6 +54,17 @@ public class Constraint
             case BOTTOM : return bottom(c, type, i);
         }
         return this;
+    }
+
+    public Property get(Property.Type type)
+    {
+        switch (type)
+        {
+            case LEFT: return left;
+            case RIGHT: return right;
+            case TOP: return top;
+            default: case BOTTOM: return bottom;
+        }
     }
 
     public boolean hasLeft()
@@ -151,7 +164,7 @@ public class Constraint
 
     public static class Property
     {
-        private static final Property NONE = new Property(null, null, null, 0)
+        public static final Property NONE = new Property(null, null, null, 0)
         {
             @Override
             public boolean apply(Constraint c)
@@ -191,9 +204,23 @@ public class Constraint
                     case LEFT: return RIGHT;
                     case RIGHT: return LEFT;
                     case TOP: return BOTTOM;
-                    case BOTTOM: return TOP;
+                    default: case BOTTOM: return TOP;
                 }
-                return null;
+            }
+
+            public Direction.Axis getAxis()
+            {
+                switch(this)
+                {
+                    case LEFT:
+                    case RIGHT:
+                        return Direction.Axis.X;
+                    case TOP:
+                    case BOTTOM:
+                        return Direction.Axis.Y;
+                    default:
+                        return Direction.Axis.Z;
+                }
             }
         }
 
@@ -253,6 +280,21 @@ public class Constraint
                 }
             }
             return false;
+        }
+
+        public IConstrainable getReference()
+        {
+            return reference;
+        }
+
+        public Type getType()
+        {
+            return type;
+        }
+
+        public int getDist()
+        {
+            return dist;
         }
     }
 }

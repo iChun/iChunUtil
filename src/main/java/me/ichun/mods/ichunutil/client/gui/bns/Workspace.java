@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
@@ -15,7 +16,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -157,8 +160,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         if(canDockWindows())
         {
-            ArrayList<Window<?>> winds = new ArrayList<>(windows);
-            getDock().docked.keySet().forEach(winds::addAll);
+            ArrayList<Window<?>> winds = new ArrayList<>();
+            for(int i = 0; i < windows.size(); i++)
+            {
+                Window<?> window = windows.get(i);
+                if(window instanceof WindowDock)
+                {
+                    ((WindowDock<?>)window).docked.keySet().forEach(winds::addAll);
+                }
+                else
+                {
+                    winds.add(window);
+                }
+            }
             winds.remove(getDock());
             return winds;
         }
@@ -168,6 +182,26 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public Window<?> addWindow(Window<?> window)
     {
+        if(window.isUnique()) // aw how cute
+        {
+            List<Window<?>> allWindows = children();
+            for(int i = allWindows.size() - 1; i >= 0; i--)
+            {
+                Window<?> window1 = allWindows.get(i);
+                if(window1.getClass() == window.getClass()) //we're unique. Kill the old one
+                {
+                    if(isDocked(window1))
+                    {
+                        window1.onClose();
+                        getDock().removeFromDock(window1); //Don't call our own removeFromDock, that readds it back into our list.
+                    }
+                    else
+                    {
+                        removeWindow(window1);
+                    }
+                }
+            }
+        }
         windows.add(0, window); //MC's iterator starts from first element of list
         return window;
     }
@@ -175,6 +209,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void removeWindow(Window<?> window)
     {
+        window.onClose();
         windows.remove(window);
     }
 
@@ -199,6 +234,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         children().forEach(Fragment::tick);
         tooltipCooldown--;
+    }
+
+    public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
+    {
+        Fragment<?> o = null;
+        for(IGuiEventListener child : children())
+        {
+            if(o == null && child instanceof Fragment)
+            {
+                o = ((Fragment<?>)child).getById(id);
+            }
+        }
+        return (T)o;
     }
 
     @Override
@@ -496,11 +544,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public boolean isObstructed(Window<?> window, double mouseX, double mouseY)
     {
-        if(isDocked(window))
-        {
-            return isObstructed(getDock(), mouseX, mouseY);
-        }
-        for(Window<?> window1 : windows) //TODO exclude the dock
+        for(Window<?> window1 : children())
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {
@@ -534,10 +578,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void addToDocked(Window<?> docked, Window<?> window)
     {
-        if(true) return; //TODO disable this for now
-        if(canDockWindows())
+        if(canDockWindows() && getDock().addToDocked(docked, window))
         {
-            getDock().addToDocked(docked, window);
             removeWindow(window);
         }
     }
@@ -568,6 +610,16 @@ public abstract class Workspace extends Screen //boxes and stuff!
         if(canDockWindows())
         {
             return getDock().isDocked(window);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sameDockStack(IConstrainable window, IConstrainable window1)
+    {
+        if(canDockWindows())
+        {
+            return getDock().sameDockStack(window, window1);
         }
         return false;
     }

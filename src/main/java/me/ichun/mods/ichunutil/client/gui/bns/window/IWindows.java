@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.INestedGuiEventHandler;
 
@@ -23,6 +24,7 @@ public interface IWindows extends INestedGuiEventHandler
     default void addToDocked(Window<?> docked, Window<?> window) {}
     default void removeFromDock(Window<?> window){}
     default boolean isDocked(Window<?> window) { return false; }
+    default boolean sameDockStack(IConstrainable window, IConstrainable window1) { return false; }
 
     class DockInfo
     {

@@ -69,6 +69,11 @@ public abstract class Fragment<M extends Fragment<?>>
         children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment<?>)child).tick());
     }
 
+    public void onClose()
+    {
+        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment<?>)child).onClose());
+    }
+
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
     {
         if(id.equals(this.id))

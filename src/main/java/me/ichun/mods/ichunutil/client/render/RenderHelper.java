@@ -1,18 +1,127 @@
 package me.ichun.mods.ichunutil.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class RenderHelper
 {
+    private static void renderModel(IBakedModel modelIn, ItemStack stack, int combinedLightIn, int combinedOverlayIn, MatrixStack matrixStackIn, IVertexBuilder bufferIn) {
+        Random random = new Random();
+        long i = 42L;
+
+        for(Direction direction : Direction.values()) {
+            random.setSeed(42L);
+            renderQuads(matrixStackIn, bufferIn, modelIn.getQuads((BlockState)null, direction, random), stack, combinedLightIn, combinedOverlayIn);
+        }
+
+        random.setSeed(42L);
+        renderQuads(matrixStackIn, bufferIn, modelIn.getQuads((BlockState)null, (Direction)null, random), stack, combinedLightIn, combinedOverlayIn);
+    }
+
+    public static void renderQuads(MatrixStack matrixStackIn, IVertexBuilder bufferIn, List<BakedQuad> quadsIn, ItemStack itemStackIn, int combinedLightIn, int combinedOverlayIn) {
+        boolean flag = !itemStackIn.isEmpty();
+        MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+
+        for(BakedQuad bakedquad : quadsIn) {
+            int i = -1;
+            if (flag && bakedquad.hasTintIndex()) {
+                i = Minecraft.getInstance().getItemColors().getColor(itemStackIn, bakedquad.getTintIndex());
+            }
+
+            float f = (float)(i >> 16 & 255) / 255.0F;
+            float f1 = (float)(i >> 8 & 255) / 255.0F;
+            float f2 = (float)(i & 255) / 255.0F;
+            bufferIn.addVertexData(matrixstack$entry, bakedquad, f, f1, f2, combinedLightIn, combinedOverlayIn, true);
+        }
+
+    }
+
+    public static void renderBakedModel(IBakedModel modelIn, ItemStack itemStackIn)
+    {
+        Minecraft mc = Minecraft.getInstance();
+
+        //ItemRenderer.renderItemModelIntoGUI
+        RenderSystem.pushMatrix();
+        mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.defaultAlphaFunc();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //setupGuiTransform removed
+        MatrixStack matrixStackIn = new MatrixStack();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        boolean flag4 = !modelIn.func_230044_c_();
+        if (flag4) {
+            net.minecraft.client.renderer.RenderHelper.setupGuiFlatDiffuseLighting();
+        }
+
+        //renderitem
+        if (!itemStackIn.isEmpty()) {
+            matrixStackIn.push();
+            if (itemStackIn.getItem() == Items.TRIDENT) {
+                modelIn = mc.getItemRenderer().getItemModelMesher().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+            }
+
+            modelIn = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStackIn, modelIn, ItemCameraTransforms.TransformType.NONE, false);
+            matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
+            if (!modelIn.isBuiltInRenderer()) {
+                RenderType rendertype = RenderTypeLookup.getRenderType(itemStackIn);
+                RenderType rendertype1;
+                if (Objects.equals(rendertype, Atlases.getTranslucentBlockType())) {
+                    rendertype1 = Atlases.getTranslucentCullBlockType();
+                } else {
+                    rendertype1 = rendertype;
+                }
+
+                IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(irendertypebuffer$impl, rendertype1, true, itemStackIn.hasEffect());
+                //renderModel
+                renderModel(modelIn, itemStackIn, 15728880, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
+                //end renderModel
+            } else {
+                itemStackIn.getItem().getItemStackTileEntityRenderer().render(itemStackIn, matrixStackIn, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY);
+            }
+
+            matrixStackIn.pop();
+        }
+        //end renderitem
+
+        irendertypebuffer$impl.finish();
+        RenderSystem.enableDepthTest();
+        if (flag4) {
+            net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
+        }
+
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.popMatrix();
+
+    }
+
     public static void drawTexture(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
     {
         Minecraft.getInstance().getTextureManager().bindTexture(resource);

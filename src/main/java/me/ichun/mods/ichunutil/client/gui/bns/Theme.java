@@ -1,5 +1,8 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+
 import java.lang.reflect.Field;
 
 public class Theme
@@ -7,6 +10,7 @@ public class Theme
     private static final transient Theme INSTANCE = new Theme(); //defaults. Try not to change this if possible.
 
     public transient String filename;
+    public transient Block block = Blocks.OAK_PLANKS;
 
     public String name = "Default";
     public String author = "iChun";
@@ -47,6 +51,14 @@ public class Theme
     public int[] fontChat = new int[] { 220, 220, 220 };
     public int[] font = new int[] { 255, 255, 255 };
     public int[] fontDim = new int[] { 150, 150, 150 };
+
+    public BlockInfo workspaceBlock = new BlockInfo();
+
+    public class BlockInfo
+    {
+        public String block = "minecraft:planks";
+        public int metadata = 1;
+    }
 
     public static Theme getInstance()
     {

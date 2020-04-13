@@ -10,7 +10,7 @@ public class Project //Model
     //defaults
     public String modelName = "";
     public String author = "";
-    public int projVersion = PROJ_VERSION; //TODO detect if version is old (< 5). Not supported anymore.
+    public int projVersion = PROJ_VERSION; //TODO detect if version is old (< 5). Support? Should we support Techne?
     public ArrayList<String> notes = new ArrayList<>();
 
     public int texWidth = 64;
@@ -51,6 +51,8 @@ public class Project //Model
 
         public static class Box //ModelBox
         {
+            public String name = "Box";
+
             //the old offsets.
             public float posX;
             public float posY;

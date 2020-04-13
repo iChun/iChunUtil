@@ -1,15 +1,22 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.util.Util;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
@@ -32,6 +39,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     private boolean canBeDocked = true;
     private boolean canBeUndocked = true;
     private boolean canDockStack = true;
+    private boolean isUnique = true;
     //TODO ID for remembering docked windows and positions?
 
     public Window(M parent)
@@ -104,6 +112,12 @@ public abstract class Window<M extends IWindows> extends Fragment
         return (T)this;
     }
 
+    public <T extends Window<?>> T isNotUnique() //you're plainer than a plain white tee
+    {
+        isUnique = false;
+        return (T)this;
+    }
+
     @Override
     public void init()
     {
@@ -154,9 +168,14 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public boolean canDockStack() { return canDockStack; }
 
+    public boolean isUnique() { return isUnique; }
+
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
+        //render dock highlight
+        renderDockHighlight(mouseX, mouseY, partialTick);
+
         setScissor();
 
         //render our background
@@ -171,6 +190,148 @@ public abstract class Window<M extends IWindows> extends Fragment
 
         endScissor();
     }
+
+    public void renderDockHighlight(int mouseX, int mouseY, float partialTick)
+    {
+        if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()))
+        {
+            WindowDock<?> dock = getWorkspace().getDock();
+
+            //Render BORDER HIGHLIGHT
+            double left = 0;
+            double top = 0;
+            double right = getWorkspace().getWidth();
+            double bottom = getWorkspace().getHeight();
+            for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : dock.docked.entrySet())
+            {
+                for(Window<?> key : e.getKey())
+                {
+                    Constraint.Property.Type value = e.getValue();
+                    switch(value)
+                    {
+                        case LEFT:
+                        {
+                            if(key.getRight() > left)
+                            {
+                                left = key.getRight();
+                            }
+                            break;
+                        }
+                        case TOP:
+                        {
+                            if(key.getBottom() > top)
+                            {
+                                top = key.getBottom();
+                            }
+                            break;
+                        }
+                        case RIGHT:
+                        {
+                            if(key.getLeft() < right)
+                            {
+                                right = key.getLeft();
+                            }
+                            break;
+                        }
+                        case BOTTOM:
+                        {
+                            if(key.getTop() < bottom)
+                            {
+                                bottom = key.getTop();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Window<?> window = this;
+            int oriX = window.posX;
+            int oriY = window.posY;
+            window.pos(-10000, -10000);
+            IWindows.DockInfo info = dock.getDockInfo(mouseX, mouseY, window.canDockStack());
+            window.pos(oriX, oriY);
+
+            boolean draw = info != null && info.window != null;
+            if(draw)
+            {
+                left = info.window.getLeft();
+                right = info.window.getRight();
+                top = info.window.getTop();
+                bottom = info.window.getBottom();
+            }
+            else if(canBeDocked() && !getWorkspace().isDocked(this))
+            {
+                int dockSnap = 4;
+                draw = (mouseY >= top && mouseY < bottom && (mouseX >= left && mouseX < left + dockSnap || mouseX >= right - dockSnap && mouseX < right)) || (mouseX >= left && mouseX < right && (mouseY >= top && mouseY < top + dockSnap || mouseY >= bottom - dockSnap && bottom < right));
+                if(draw)
+                {
+                    if(mouseY >= top && mouseY < bottom)
+                    {
+                        if(mouseX >= left && mouseX < left + dockSnap)
+                        {
+                            right = left + dockSnap;
+                        }
+                        else if(mouseX >= right - dockSnap && mouseX < right)
+                        {
+                            left = right - dockSnap;
+                        }
+                    }
+                    if(mouseX >= left && mouseX < right)
+                    {
+                        if(mouseY >= top && mouseY < top + dockSnap)
+                        {
+                            bottom = top + dockSnap;
+                        }
+                        else if(mouseY >= bottom - dockSnap && bottom < right)
+                        {
+                            top = bottom - dockSnap;
+                        }
+                    }
+                }
+            }
+            if(draw)
+            {
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                if(renderMinecraftStyle())
+                {
+                    float scale = 8;
+                    float scaleTex = 512F;
+                    RenderSystem.depthMask(false);
+                    RenderSystem.depthFunc(514);
+                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE);
+                    Fragment.bindTexture(ItemRenderer.RES_ITEM_GLINT);
+                    RenderSystem.matrixMode(5890);
+                    RenderSystem.pushMatrix();
+                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
+                    float f = (float)(Util.milliTime() % 3000L) / 3000.0F / (float)scale;
+                    RenderSystem.translatef(f, 0.0F, 0.0F);
+                    RenderSystem.rotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+                    RenderHelper.draw(left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+                    RenderSystem.popMatrix();
+                    RenderSystem.pushMatrix();
+                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
+                    float f1 = (float)(Util.milliTime() % 4873L) / 4873.0F / (float)scale;
+                    RenderSystem.translatef(-f1, 0.0F, 0.0F);
+                    RenderSystem.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
+                    RenderHelper.draw(left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+                    RenderSystem.popMatrix();
+                    RenderSystem.matrixMode(5888);
+                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    RenderSystem.depthFunc(515);
+                    RenderSystem.depthMask(true);
+                }
+                else
+                {
+                    RenderHelper.drawColour(getTheme().tabBorder[0], getTheme().tabBorder[1], getTheme().tabBorder[2], 150, left, top, right - left, bottom - top, 0);
+                }
+                RenderSystem.disableBlend();
+            }
+            //END RENDER BORDER HIGHLIGHT
+        }
+    }
+
 
     public void renderBackground()
     {
@@ -222,10 +383,10 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 boolean isDocked = parent.isDocked(this);
                 EdgeGrab grab = new EdgeGrab(
-                        (!isDocked || !constraint.hasLeft()) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
-                        (!isDocked || !constraint.hasRight()) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
-                        (!isDocked || !constraint.hasTop()) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
-                        (!isDocked || !constraint.hasBottom()) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
+                        (!isDocked || (!constraint.hasLeft() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.LEFT).getReference()))) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
+                        (!isDocked || (!constraint.hasRight() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.RIGHT).getReference()))) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
+                        (!isDocked || (!constraint.hasTop() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.TOP).getReference()))) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
+                        (!isDocked || (!constraint.hasBottom() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.BOTTOM).getReference()))) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
                         (!isDocked || canBeUndocked()) && isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
                         (int)mouseX,
                         (int)mouseY
@@ -255,7 +416,11 @@ public abstract class Window<M extends IWindows> extends Fragment
         {
             if(edgeGrab.titleGrab && canBeDocked() && !parent.isDocked(this))
             {
+                int oriX = posX;
+                int oriY = posY;
+                pos(-10000, -10000);
                 IWindows.DockInfo dockInfo = parent.getDockInfo(mouseX, mouseY, canDockStack());
+                pos(oriX, oriY);
                 if(dockInfo != null)
                 {
                     if(dockInfo.window != null)
@@ -284,7 +449,11 @@ public abstract class Window<M extends IWindows> extends Fragment
                 {
                     if(parent.isDocked(this) && canBeUndocked())
                     {
+                        int oriX = posX;
+                        int oriY = posY;
                         parent.removeFromDock(this);
+                        posX += oriX - posX;
+                        posY += oriY - posY;
                     }
 
                     posX -= edgeGrab.x - (int)mouseX;
