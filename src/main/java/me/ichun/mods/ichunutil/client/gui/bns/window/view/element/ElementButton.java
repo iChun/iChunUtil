@@ -1,18 +1,19 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class ElementButton extends ElementClickable<Fragment<?>>
 {
-    public @Nonnull String text; //already localized
+    public @Nonnull String text;
 
     public ElementButton(@Nonnull Fragment<?> parent, String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);
-        text = s;
+        text = I18n.format(s);
     }
 
     @Override

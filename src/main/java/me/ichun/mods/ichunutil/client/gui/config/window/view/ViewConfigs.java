@@ -22,7 +22,7 @@ public class ViewConfigs extends View<WindowConfigs>
     {
         super(parent, s);
 
-        ElementButton btn = new ElementButton(this, I18n.format("gui.done"), button -> {
+        ElementButton btn = new ElementButton(this, "gui.done", button -> {
             parent.parent.onClose();
         });
         btn.setWidth(60);

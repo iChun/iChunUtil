@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -14,12 +15,12 @@ import java.util.List;
 public abstract class View<M extends Window<?>> extends Fragment
 {
     public ArrayList<Element<?>> elements = new ArrayList<>();
-    public @Nonnull String title; //all titles are already localized
+    public @Nonnull String title; // we localise when this is set
 
     public View(@Nonnull M parent, @Nonnull String s)
     {
         super(parent);
-        title = s;
+        title = I18n.format(s);
         constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get()); //TODO might have to redo
         if(parent.canShowTitle() && !s.isEmpty())
         {

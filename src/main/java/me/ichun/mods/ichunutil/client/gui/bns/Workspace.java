@@ -500,7 +500,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             return isObstructed(getDock(), mouseX, mouseY);
         }
-        for(Window<?> window1 : windows)
+        for(Window<?> window1 : windows) //TODO exclude the dock
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {

@@ -447,8 +447,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
         WindowSize size = dockedOriSize.get(window);
         window.setConstraint(size.constraint);
-        window.setLeft(size.x);
-        window.setTop(size.y);
+        if(!(size.x == 0 && size.y == 0))
+        {
+            window.setLeft(size.x);
+            window.setTop(size.y);
+        }
         window.setWidth(size.width);
         window.setHeight(size.height);
         window.resize(Minecraft.getInstance(), window.parent.getWidth(), window.parent.getHeight());

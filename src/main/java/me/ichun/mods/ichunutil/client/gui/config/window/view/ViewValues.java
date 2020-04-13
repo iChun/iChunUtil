@@ -141,7 +141,7 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz == boolean.class)
         {
-            ElementToggle toggle = new ElementToggleTextable(item, value.name).setToggled((boolean)o);
+            ElementToggle toggle = new ElementToggleTextable(item, value.name, elementClickable -> {}).setToggled((boolean)o);
             toggle.setSize(80, 14);
             toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(toggle);
@@ -181,7 +181,7 @@ public class ViewValues extends View<WindowValues>
                     sb.append("\n");
                 }
             }
-            ElementButton button = new ElementButton(item, I18n.format("selectWorld.edit"), btn ->
+            ElementButton button = new ElementButton(item, "selectWorld.edit", btn ->
             {
                 WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value);
                 window.setWidth((int)(window.getParentWidth() * 0.6D));

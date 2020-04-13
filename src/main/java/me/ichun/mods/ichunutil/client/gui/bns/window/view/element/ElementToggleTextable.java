@@ -4,23 +4,24 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 public class ElementToggleTextable extends ElementToggle
 {
     public @Nonnull String offString;
     public @Nonnull String onString;
 
-    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s)
+    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
-        this(parent, s, I18n.format("gui.no"), I18n.format("gui.yes"));
+        this(parent, s, "gui.no", "gui.yes", callback);
     }
 
-    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s, @Nonnull String off, @Nonnull String on)
+    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s, @Nonnull String off, @Nonnull String on, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
-        super(parent, s);
+        super(parent, s, callback);
         this.tooltip = s;
-        this.offString = off;
-        this.onString = on;
+        this.offString = I18n.format(off);
+        this.onString = I18n.format(on);
     }
 
     @Override

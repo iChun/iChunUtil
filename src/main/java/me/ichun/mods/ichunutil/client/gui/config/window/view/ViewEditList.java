@@ -46,7 +46,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                 .right(sv, Constraint.Property.Type.LEFT, 0)
         );
 
-        ElementButton btn = new ElementButton(this, I18n.format("gui.done"), button -> {
+        ElementButton btn = new ElementButton(this, "gui.done", button -> {
             try
             {
                 valueWrapper.value.field.setAccessible(true);

@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -11,15 +12,10 @@ public class ElementToggle extends ElementClickable<Fragment<?>>
     public String text;
     public boolean toggleState;
 
-    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s)
-    {
-        this(parent, s, (button) -> {});
-    }
-
     public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
     {
         super(parent, callback);
-        text = s;
+        text = I18n.format(s);
     }
 
     public <T extends ElementToggle> T setToggled(boolean flag)
