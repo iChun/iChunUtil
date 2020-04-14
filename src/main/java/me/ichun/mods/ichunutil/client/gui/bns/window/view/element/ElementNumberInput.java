@@ -331,7 +331,7 @@ public class ElementNumberInput extends ElementTextField
         {
             try
             {
-                return (int)Double.parseDouble(s);
+                return Double.parseDouble(s);
             }
             catch(NumberFormatException ignored){}
         }

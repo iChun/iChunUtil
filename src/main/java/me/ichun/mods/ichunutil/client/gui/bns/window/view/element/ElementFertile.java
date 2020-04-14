@@ -17,6 +17,8 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
         super(parent);
     }
 
+    public abstract List<? extends Fragment<?>> children();
+
     @Override
     public void init()
     {
