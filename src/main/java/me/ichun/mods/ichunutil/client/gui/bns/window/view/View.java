@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class View<M extends Window<? extends IWindows>> extends Fragment
+public abstract class View<P extends Window<? extends IWindows>> extends Fragment<P>
 {
     public ArrayList<Element<?>> elements = new ArrayList<>();
     public @Nonnull String title; // we localise when this is set
 
-    public View(@Nonnull M parent, @Nonnull String s)
+    public View(@Nonnull P parent, @Nonnull String s)
     {
         super(parent);
         title = I18n.format(s);
-        constraint = Constraint.matchParent(this, parent, (Integer)parent.borderSize.get()); //TODO might have to redo
+        constraint = Constraint.matchParent(this, parent, parent.borderSize.get()); //TODO might have to redo
         if(parent.canShowTitle() && !s.isEmpty())
         {
-            constraint.top(parent, Constraint.Property.Type.TOP, (Integer)parent.titleSize.get());
+            constraint.top(parent, Constraint.Property.Type.TOP, parent.titleSize.get());
         }
     }
 

@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementTextWrapper extends Element<Fragment<?>> //TODO image element
+public class ElementTextWrapper<P extends Fragment> extends Element<P> //TODO image element
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
@@ -19,34 +19,34 @@ public class ElementTextWrapper extends Element<Fragment<?>> //TODO image elemen
 
     //TODO text formatter?
 
-    public ElementTextWrapper(@Nonnull Fragment<?> parent)
+    public ElementTextWrapper(@Nonnull P parent)
     {
         super(parent);
     }
 
-    public ElementTextWrapper setText(List<String> text)
+    public <T extends ElementTextWrapper<?>> T setText(List<String> text)
     {
         this.text = text;
-        return this;
+        return (T)this;
     }
 
-    public ElementTextWrapper setText(String text)
+    public <T extends ElementTextWrapper<?>> T setText(String text)
     {
         this.text.clear();
         this.text.add(text);
-        return this;
+        return (T)this;
     }
 
-    public ElementTextWrapper setNoWrap()
+    public <T extends ElementTextWrapper<?>> T setNoWrap()
     {
         this.doNotWrap = true;
-        return this;
+        return (T)this;
     }
 
-    public ElementTextWrapper setColor(Integer clr)
+    public <T extends ElementTextWrapper<?>> T setColor(Integer clr)
     {
         this.color = clr;
-        return this;
+        return (T)this;
     }
 
 
@@ -150,18 +150,6 @@ public class ElementTextWrapper extends Element<Fragment<?>> //TODO image elemen
         }
     }
 
-    public int getRandomColourForName(String s)
-    {
-        if(s.equalsIgnoreCase("System"))
-        {
-            return 0xffcc00;
-        }
-        else
-        {
-            return Math.abs(s.hashCode()) & 0xffffff;
-        }
-    }
-
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) //we can't click on this
     {
@@ -196,5 +184,18 @@ public class ElementTextWrapper extends Element<Fragment<?>> //TODO image elemen
     public int getMaxHeight()
     {
         return getMinHeight();
+    }
+
+
+    public static int getRandomColourForName(String s)
+    {
+        if(s.equalsIgnoreCase("System"))
+        {
+            return 0xffcc00;
+        }
+        else
+        {
+            return Math.abs(s.hashCode()) & 0xffffff;
+        }
     }
 }

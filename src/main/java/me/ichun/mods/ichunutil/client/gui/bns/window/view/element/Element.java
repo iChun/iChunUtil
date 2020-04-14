@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,13 +10,13 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Element<M extends Fragment<?>> extends Fragment //TODO handle narration?
+public abstract class Element<P extends Fragment> extends Fragment<P> //TODO handle narration?
 {
     public final static List<Element<?>> INFERTILE = Collections.emptyList();
 
     public String tooltip;
 
-    public Element(@Nonnull M parent) //TODO Make aligned element, which counts the gaps between elements and equally distributes widht/height to each
+    public Element(@Nonnull P parent) //TODO Make aligned element, which counts the gaps between elements and equally distributes widht/height to each
     {
         super(parent);
     }
@@ -55,7 +54,7 @@ public abstract class Element<M extends Fragment<?>> extends Fragment //TODO han
     }
 
     @Override
-    public List<? extends IGuiEventListener> children()
+    public List<? extends Fragment<?>> children()
     {
         return INFERTILE;
     }
@@ -72,11 +71,7 @@ public abstract class Element<M extends Fragment<?>> extends Fragment //TODO han
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isMouseOver(mouseX, mouseY))
-        {
-            return true;
-        }
-        return false;
+        return isMouseOver(mouseX, mouseY);
     }
 
     /**

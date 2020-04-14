@@ -10,9 +10,9 @@ import java.util.ListIterator;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public abstract class ElementFertile<M extends Fragment<?>> extends Element<M>
+public abstract class ElementFertile<P extends Fragment> extends Element<P>
 {
-    public ElementFertile(@Nonnull M parent)
+    public ElementFertile(@Nonnull P parent)
     {
         super(parent);
     }
@@ -21,24 +21,14 @@ public abstract class ElementFertile<M extends Fragment<?>> extends Element<M>
     public void init()
     {
         super.init();
-        children().forEach(child -> {
-            if(child instanceof Element)
-            {
-                ((Element<?>)child).init();
-            }
-        });
+        children().forEach(Fragment::init);
     }
 
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
         super.resize(mc, width, height);
-        children().forEach(child -> {
-            if(child instanceof Element)
-            {
-                ((Element<?>)child).resize(mc, this.width, this.height);
-            }
-        });
+        children().forEach(child -> child.resize(mc, this.width, this.height));
     }
 
     @Override
@@ -87,7 +77,7 @@ public abstract class ElementFertile<M extends Fragment<?>> extends Element<M>
                 }
             }
 
-            this.setFocused((IGuiEventListener)null);
+            this.setFocused(null);
             return false;
         }
     }

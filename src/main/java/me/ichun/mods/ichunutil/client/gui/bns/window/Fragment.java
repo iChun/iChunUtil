@@ -15,9 +15,10 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Fragment<M extends Fragment<?>>
+public abstract class Fragment<P extends Fragment>
         implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
 {
     public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
@@ -26,11 +27,11 @@ public abstract class Fragment<M extends Fragment<?>>
     public static final ResourceLocation VANILLA_STATS_ICON = new ResourceLocation("textures/gui/container/stats_icons.png");
     public static final ResourceLocation VANILLA_HORSE = new ResourceLocation("textures/gui/container/horse.png");
 
-    public M parentFragment;
+    public P parentFragment;
     public @Nonnull Constraint constraint = Constraint.NONE;
     public @Nullable String id;
 
-    public Fragment(M parentFragment)
+    public Fragment(P parentFragment)
     {
         this.parentFragment = parentFragment;
     }
@@ -58,20 +59,22 @@ public abstract class Fragment<M extends Fragment<?>>
     }
 
     public abstract void init();
+    @Override
+    public abstract List<? extends Fragment<?>> children();
 
-    public Workspace getWorkspace()
+    public <T extends Workspace> T getWorkspace()
     {
-        return parentFragment.getWorkspace();
+        return (T)parentFragment.getWorkspace();
     }
 
     public void tick()
     {
-        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment<?>)child).tick());
+        children().forEach(Fragment::tick);
     }
 
     public void onClose()
     {
-        children().stream().filter(child -> child instanceof Fragment).forEach(child -> ((Fragment<?>)child).onClose());
+        children().forEach(Fragment::onClose);
     }
 
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -18,11 +17,12 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ElementList extends ElementFertile<Fragment<?>>
+@SuppressWarnings("unchecked")
+public class ElementList<P extends Fragment> extends ElementFertile<P>
 {
     public List<Item<?>> items = new ArrayList<>();
-    private @Nullable ElementScrollBar scrollVert;
-    private @Nullable ElementScrollBar scrollHori;
+    private @Nullable ElementScrollBar<?, ?> scrollVert;
+    private @Nullable ElementScrollBar<?, ?> scrollHori;
     private @Nullable BiConsumer<Item<?>, Item<?>> dragHandler;
     private @Nullable BiConsumer<Item<?>, Integer> rearrangeHandler;
 
@@ -31,46 +31,45 @@ public class ElementList extends ElementFertile<Fragment<?>>
     public boolean hasInit;
     private MousePosItem pos;
 
-    public ElementList(@Nonnull View<?> parent)
+    public ElementList(@Nonnull P parent)
     {
         super(parent);
     }
 
-    public ElementList setScrollVertical(ElementScrollBar scroll)
+    public <T extends ElementList<P>> T setScrollVertical(ElementScrollBar<?, ?> scroll)
     {
         scrollVert = scroll;
         scrollVert.setCallback((scr) -> alignItems());
-        return this;
+        return (T)this;
     }
 
-    public ElementList setScrollHorizontal(ElementScrollBar scroll)
+    public <T extends ElementList<P>> T setScrollHorizontal(ElementScrollBar<?, ?> scroll)
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());
-        return this;
+        return (T)this;
     }
 
-    public ElementList setDragHandler(BiConsumer<Item<?>, Item<?>> dragHandler)
+    public <T extends ElementList<P>> T setDragHandler(BiConsumer<Item<?>, Item<?>> dragHandler)
     {
         this.dragHandler = dragHandler;
-        return this;
+        return (T)this;
     }
 
-    public ElementList setRearrangeHandler(BiConsumer<Item<?>, Integer> rearrangeHandler)
+    public <T extends ElementList<P>> T setRearrangeHandler(BiConsumer<Item<?>, Integer> rearrangeHandler)
     {
         this.rearrangeHandler = rearrangeHandler;
-        return this;
+        return (T)this;
     }
 
-    public ElementList disableBackground() //and border
+    public <T extends ElementList<P>> T disableBackground() //and border
     {
         this.renderBackground = false;
-        return this;
+        return (T)this;
     }
 
-    public Item<?> addItem(Object o, int index)
+    public <T extends Item<?>> T addItem(T item, int index)
     {
-        Item<?> item = new Item<>(this, o);
         if(index >= 0)
         {
             items.add(index, item);
@@ -86,6 +85,16 @@ public class ElementList extends ElementFertile<Fragment<?>>
             updateScrollBarSizes();
         }
         return item;
+    }
+
+    public <T extends Item<?>> T addItem(T item)
+    {
+        return addItem(item, -1);
+    }
+
+    public Item<?> addItem(Object o, int index)
+    {
+        return addItem(new Item<>(this, o), index);
     }
 
     public Item<?> addItem(Object o)
@@ -406,7 +415,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
     }
 
     @Override
-    public List<? extends IGuiEventListener> children()
+    public List<? extends Fragment<?>> children()
     {
         return items;
     }
@@ -455,7 +464,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
         return 1;
     }
 
-    public static class Item<M> extends ElementFertile<Fragment<?>>
+    public static class Item<M> extends ElementFertile<ElementList<?>>
     {
         protected final @Nonnull M heldObject; //height 13?
         public List<Element<?>> elements = new ArrayList<>();
@@ -464,7 +473,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
         private @Nullable Consumer<Item<M>> selectionHandler;
         private int borderSize = 1;
 
-        public Item(@Nonnull Fragment<?> parent, @Nonnull M heldObject)
+        public Item(@Nonnull ElementList<?> parent, @Nonnull M heldObject)
         {
             super(parent);
             this.heldObject = heldObject;
@@ -478,7 +487,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
 
         public Item<?> setDefaultAppearance()
         {
-            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
+            ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(this).setText(Workspace.getInterpretedInfo(heldObject));
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             elements.add(wrapper);
 
@@ -499,7 +508,7 @@ public class ElementList extends ElementFertile<Fragment<?>>
 
         public Item<?> addTextWrapper(String s)
         {
-            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(s);
+            ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(this).setText(s);
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).top(this, Constraint.Property.Type.TOP, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             this.addElement(wrapper);
             return this;
@@ -521,8 +530,8 @@ public class ElementList extends ElementFertile<Fragment<?>>
         {
             if(shouldRender())
             {
-                boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && ((ElementList)parentFragment).pos != null;
-                ElementList list = (ElementList)parentFragment;
+                boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
+                ElementList<?> list = parentFragment;
                 MousePosItem pos = list.pos;
 
                 if(draggingUs)
@@ -641,11 +650,11 @@ public class ElementList extends ElementFertile<Fragment<?>>
         public boolean shouldRender()
         {
             return getRight() > parentFragment.getLeft() && getLeft() < parentFragment.getRight() && getBottom() > parentFragment.getTop() && getTop() < parentFragment.getBottom() ||
-                    parentFragment.isDragging() && parentFragment.getFocused() == this && ((ElementList)parentFragment).pos != null;
+                    parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
         }
 
         @Override
-        public List<? extends IGuiEventListener> children()
+        public List<? extends Fragment<?>> children()
         {
             return elements;
         }

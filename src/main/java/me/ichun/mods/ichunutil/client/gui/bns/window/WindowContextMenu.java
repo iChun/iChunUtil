@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+@SuppressWarnings("unchecked")
 public class WindowContextMenu<M extends IWindows> extends Window<M>
 {
-    private final ElementList list;
+    private final ElementList<?> list;
     private int minWidth = 1;
 
     private WindowContextMenu(M parent)
@@ -25,7 +26,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         setBorderSize(() -> 1);
         setView(new ViewContextMenu(this, ""));
 
-        list = (ElementList)((ViewContextMenu)currentView).elements.get(1);
+        list = (ElementList<?>)((ViewContextMenu)currentView).elements.get(1);
 
         disableTitle();
         disableDocking();
@@ -35,7 +36,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         disableUndocking();
     }
 
-    public ElementList getList()
+    public ElementList<?> getList()
     {
         return list;
     }
@@ -105,14 +106,14 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         {
             super(parent, s);
 
-            ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+            ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                     .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                     .right(this, Constraint.Property.Type.RIGHT, 0)
             );
             elements.add(sv);
 
-            ElementList list = new ElementList(this).setScrollVertical(sv);
+            ElementList<?> list = new ElementList<>(this).setScrollVertical(sv);
             list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                     .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                     .top(this, Constraint.Property.Type.TOP, 0)
@@ -132,7 +133,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
     public static <M extends IWindows> WindowContextMenu<M> create(M parent, IContextMenu iContextMenu, double posX, double posY, int minWidth, int yFlipHeight)
     {
         WindowContextMenu<M> windowContextMenu = new WindowContextMenu<>(parent);
-        ElementList list = windowContextMenu.getList();
+        ElementList<?> list = windowContextMenu.getList();
         List<Object> contextMenuObjects = iContextMenu.getObjects();
         Function<Object, String> nameProvider = iContextMenu.getNameProvider();
         BiConsumer<IContextMenu, ElementList.Item<?>> contextMenuReceiver = iContextMenu.getReceiver();

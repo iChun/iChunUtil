@@ -4,12 +4,12 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 
 import javax.annotation.Nonnull;
 
-public class ElementPadding extends Element<Fragment<?>>
+public class ElementPadding<P extends Fragment> extends Element<P>
 {
     public int minWidth;
     public int minHeight;
 
-    public ElementPadding(@Nonnull Fragment<?> parent, int minWidth, int minHeight)
+    public ElementPadding(@Nonnull P parent, int minWidth, int minHeight)
     {
         super(parent);
         this.minWidth = minWidth;

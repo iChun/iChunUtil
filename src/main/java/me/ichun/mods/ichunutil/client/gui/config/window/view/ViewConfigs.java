@@ -9,7 +9,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollB
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
@@ -22,7 +21,7 @@ public class ViewConfigs extends View<WindowConfigs>
     {
         super(parent, s);
 
-        ElementButton btn = new ElementButton(this, "gui.done", button -> {
+        ElementButton<?, ?> btn = new ElementButton<>(this, "gui.done", button -> {
             parent.parent.onClose();
         });
         btn.setWidth(60);
@@ -32,17 +31,14 @@ public class ViewConfigs extends View<WindowConfigs>
         );
         elements.add(btn);
 
-        ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                 .bottom(btn, Constraint.Property.Type.TOP, 5)
                 .right(this, Constraint.Property.Type.RIGHT, 0)
         );
         elements.add(sv);
 
-        ElementList list = new ElementList(this).setScrollVertical(sv)
-                //                .setDragHandler((i, j) -> {})
-                //                .setRearrangeHandler((i, j) -> {})
-                ;
+        ElementList<?> list = new ElementList<>(this).setScrollVertical(sv);
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                 .bottom(btn, Constraint.Property.Type.TOP, 5)
                 .top(this, Constraint.Property.Type.TOP, 0)
@@ -51,16 +47,15 @@ public class ViewConfigs extends View<WindowConfigs>
 
         for(Map.Entry<String, TreeSet<WorkspaceConfigs.ConfigInfo>> e : parent.parent.configs.entrySet())
         {
-            list.addItem(e.getKey()).addTextWrapper(e.getKey()).setSelectionHandler(o -> {
-                ElementList.Item item = ((ElementList.Item)o);
+            list.addItem(e.getKey()).addTextWrapper(e.getKey()).setSelectionHandler(item -> {
                 if(item.selected)
                 {
                     item.selected = false;
-                    for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+                    for(ElementList.Item<?> item1 : item.parentFragment.items)
                     {
                         item1.selected = false; //workaround. Just make sure we don't got configs with no category
                     }
-                    for(ElementList.Item item1 : ((ElementList)item.parentFragment).items)
+                    for(ElementList.Item<?> item1 : item.parentFragment.items)
                     {
                         if(item1.getObject() == e.getValue().first())
                         {
@@ -76,10 +71,10 @@ public class ViewConfigs extends View<WindowConfigs>
             {
                 for(String key : info.categories.keySet())
                 {
-                    ElementList.Item item = list.addItem(info).setSelectionHandler(parent.parent::selectItem);
+                    ElementList.Item<?> item = list.addItem(info).setSelectionHandler(parent.parent::selectItem);
                     item.setId(key);
                     item.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
-                    ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
+                    ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
                     wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
                     wrapper.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
                     item.addElement(wrapper);

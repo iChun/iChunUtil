@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 
 import javax.annotation.Nonnull;
@@ -11,31 +10,31 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementScrollView extends ElementFertile<Fragment<?>>
+public class ElementScrollView<P extends Fragment> extends ElementFertile<P>
 {
     public List<Element<?>> elements = new ArrayList<>();
-    private @Nullable ElementScrollBar scrollVert;
-    private @Nullable ElementScrollBar scrollHori;
+    private @Nullable ElementScrollBar<?, ?> scrollVert;
+    private @Nullable ElementScrollBar<?, ?> scrollHori;
 
     public boolean hasInit;
 
-    public ElementScrollView(@Nonnull Fragment<?> parent)
+    public ElementScrollView(@Nonnull P parent)
     {
         super(parent);
     }
 
-    public ElementScrollView setScrollVertical(ElementScrollBar scroll)
+    public <T extends ElementScrollView<?>> T setScrollVertical(ElementScrollBar<?, ?> scroll)
     {
         scrollVert = scroll;
         scrollVert.setCallback((scr) -> alignItems());
-        return this;
+        return (T)this;
     }
 
-    public ElementScrollView setScrollHorizontal(ElementScrollBar scroll)
+    public <T extends ElementScrollView<?>> T setScrollHorizontal(ElementScrollBar<?, ?> scroll)
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());
-        return this;
+        return (T)this;
     }
 
     public Element<?> addElement(Element<?> e)
@@ -193,7 +192,7 @@ public class ElementScrollView extends ElementFertile<Fragment<?>>
     }
 
     @Override
-    public List<? extends IGuiEventListener> children()
+    public List<? extends Element<?>> children()
     {
         return elements;
     }

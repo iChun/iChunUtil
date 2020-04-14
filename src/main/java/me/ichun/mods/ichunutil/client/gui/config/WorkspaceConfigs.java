@@ -39,7 +39,7 @@ public class WorkspaceConfigs extends Workspace
     {
         if(item.selected)
         {
-            for(ElementList.Item<?> item1 : ((ElementList)item.parentFragment).items)
+            for(ElementList.Item<?> item1 : item.parentFragment.items)
             {
                 if(item1 != item)
                 {
@@ -50,8 +50,6 @@ public class WorkspaceConfigs extends Workspace
             destroyWindowValues();
 
             WindowValues window = new WindowValues(this, (ConfigInfo)item.getObject(), item.id);
-//            addWindow(window);
-//            window.setLeft(130);
             addToDock(window, Constraint.Property.Type.LEFT);
             window.constraint.right(getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)getDock().borderSize.get());
             window.constraint.apply();
@@ -103,7 +101,6 @@ public class WorkspaceConfigs extends Workspace
 
                 Field field = valueWrapper.field;
                 field.setAccessible(true);
-                String fieldName = field.getName();
                 Class clz = field.getType();
                 Object o;
                 try
@@ -112,26 +109,26 @@ public class WorkspaceConfigs extends Workspace
 
                     if(clz == int.class && e instanceof ElementNumberInput)
                     {
-                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getInt());
+                        field.set(valueWrapper.parent, ((ElementNumberInput<?>)e).getInt());
                     }
                     else if(clz == double.class && e instanceof ElementNumberInput)
                     {
-                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getDouble());
+                        field.set(valueWrapper.parent, ((ElementNumberInput<?>)e).getDouble());
                     }
                     else if(clz == boolean.class && e instanceof ElementToggleTextable)
                     {
-                        field.set(valueWrapper.parent, ((ElementToggle)e).toggleState);
+                        field.set(valueWrapper.parent, ((ElementToggle<?, ?>)e).toggleState);
                     }
                     else if(clz == String.class && e instanceof ElementTextField)
                     {
-                        field.set(valueWrapper.parent, ((ElementTextField)e).getText());
+                        field.set(valueWrapper.parent, ((ElementTextField<?>)e).getText());
                     }
                     else if(clz.isEnum() && e instanceof ElementContextMenu) //enum!
                     {
                         Object[] enums = clz.getEnumConstants();
                         for(Object en : enums)
                         {
-                            if(en.toString().equals(((ElementContextMenu<?>)e).text))
+                            if(en.toString().equals(((ElementContextMenu<?, ?>)e).text))
                             {
                                 field.set(valueWrapper.parent, en);
                                 break;

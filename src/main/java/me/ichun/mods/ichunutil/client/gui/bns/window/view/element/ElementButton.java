@@ -6,11 +6,11 @@ import net.minecraft.client.resources.I18n;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementButton extends ElementClickable<Fragment<?>>
+public class ElementButton<P extends Fragment, T extends ElementButton> extends ElementClickable<P, T>
 {
     public @Nonnull String text;
 
-    public ElementButton(@Nonnull Fragment<?> parent, String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
+    public ElementButton(@Nonnull P parent, String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = I18n.format(s);

@@ -9,12 +9,13 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public abstract class ElementClickable<M extends Fragment<?>> extends Element<M> //we reset our focus when we're clicked.
+@SuppressWarnings("unchecked")
+public abstract class ElementClickable<P extends Fragment, T extends ElementClickable> extends Element<P> //we reset our focus when we're clicked.
 {
-    public @Nonnull Consumer<ElementClickable<? extends Fragment<?>>> callback;
+    public @Nonnull Consumer<T> callback;
     public boolean hover; //for rendering
 
-    public ElementClickable(@Nonnull M parent, Consumer<ElementClickable<? extends Fragment<?>>> callback)
+    public ElementClickable(@Nonnull P parent, Consumer<T> callback)
     {
         super(parent);
         this.callback = callback;
@@ -45,7 +46,7 @@ public abstract class ElementClickable<M extends Fragment<?>> extends Element<M>
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         onClickRelease();
-        callback.accept(this);
+        callback.accept((T)this);
     }
 
     public abstract void onClickRelease();

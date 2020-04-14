@@ -8,13 +8,9 @@ import me.ichun.mods.ichunutil.client.gui.config.window.WindowEditList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
-import net.jodah.typetools.TypeResolver;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -24,7 +20,7 @@ public class ViewValues extends View<WindowValues>
     public final WorkspaceConfigs.ConfigInfo info;
     public final String category;
     public final TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values;
-    public final ElementList list;
+    public final ElementList<?> list;
 
     public ViewValues(@Nonnull WindowValues parent, @Nonnull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values)
     {
@@ -33,14 +29,14 @@ public class ViewValues extends View<WindowValues>
         this.category = category;
         this.values = values;
 
-        ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                 .right(this, Constraint.Property.Type.RIGHT, 0)
         );
         elements.add(sv);
 
-        this.list = new ElementList(this).setScrollVertical(sv)
+        this.list = new ElementList<>(this).setScrollVertical(sv)
                 //                .setDragHandler((i, j) -> {})
                 //                .setRearrangeHandler((i, j) -> {})
                 ;
@@ -65,11 +61,11 @@ public class ViewValues extends View<WindowValues>
                     }
                 }
             });
-            ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(value.name);
+            ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(item).setText(value.name);
             wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 90));
             wrapper.setTooltip(value.desc);
             item.addElement(wrapper);
-            ElementPadding padding = new ElementPadding(item, 0, 20);
+            ElementPadding<?> padding = new ElementPadding<>(item, 0, 20);
             padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
             item.addElement(padding);
             addControlFor(value, item);
@@ -120,7 +116,7 @@ public class ViewValues extends View<WindowValues>
 
         if(clz == int.class)
         {
-            ElementNumberInput input = new ElementNumberInput(item, false);
+            ElementNumberInput<?> input = new ElementNumberInput<>(item, false);
             input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
             input.setMax(props.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)props.max());
             input.setDefaultText(o.toString());
@@ -130,7 +126,7 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz == double.class)
         {
-            ElementNumberInput input = new ElementNumberInput(item, true);
+            ElementNumberInput<?> input = new ElementNumberInput<>(item, true);
             input.setMin(props.min());
             input.setMax(props.max());
             input.setMaxDec(2);
@@ -141,14 +137,14 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz == boolean.class)
         {
-            ElementToggle toggle = new ElementToggleTextable(item, value.name, elementClickable -> {}).setToggled((boolean)o);
+            ElementToggleTextable<?, ?> toggle = new ElementToggleTextable<>(item, value.name, elementClickable -> {}).setToggled((boolean)o);
             toggle.setSize(80, 14);
             toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(toggle);
         }
         else if(clz == String.class)
         {
-            ElementTextField input = new ElementTextField(item);
+            ElementTextField<?> input = new ElementTextField<>(item);
             input.setDefaultText(o.toString());
             input.setSize(80, 14);
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
@@ -156,11 +152,11 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz.isEnum()) //enum!
         {
-            ElementContextMenu<?> input = new ElementContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
+            ElementContextMenu<?, ?> input = new ElementContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
             {
                 if(listItem.selected)
                 {
-                    ElementContextMenu<?> contextMenu = (ElementContextMenu<?>)menu;
+                    ElementContextMenu<?, ?> contextMenu = (ElementContextMenu<?, ?>)menu;
                     contextMenu.text = listItem.getObject().toString();
                 }
             });
@@ -181,7 +177,7 @@ public class ViewValues extends View<WindowValues>
                     sb.append("\n");
                 }
             }
-            ElementButton button = new ElementButton(item, "selectWorld.edit", btn ->
+            ElementButton<?, ?> button = new ElementButton<>(item, "selectWorld.edit", btn ->
             {
                 WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value);
                 window.setWidth((int)(window.getParentWidth() * 0.6D));

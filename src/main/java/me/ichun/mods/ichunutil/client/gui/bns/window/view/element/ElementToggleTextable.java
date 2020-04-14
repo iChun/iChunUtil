@@ -6,17 +6,17 @@ import net.minecraft.client.resources.I18n;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementToggleTextable extends ElementToggle
+public class ElementToggleTextable<P extends Fragment, T extends ElementToggle> extends ElementToggle<P, T>
 {
     public @Nonnull String offString;
     public @Nonnull String onString;
 
-    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s, Consumer<ElementClickable<? extends Fragment<?>>> callback)
+    public ElementToggleTextable(@Nonnull P parent, @Nonnull String s, Consumer<T> callback)
     {
         this(parent, s, "gui.no", "gui.yes", callback);
     }
 
-    public ElementToggleTextable(@Nonnull Fragment<?> parent, @Nonnull String s, @Nonnull String off, @Nonnull String on, Consumer<ElementClickable<? extends Fragment<?>>> callback)
+    public ElementToggleTextable(@Nonnull P parent, @Nonnull String s, @Nonnull String off, @Nonnull String on, Consumer<T> callback)
     {
         super(parent, s, callback);
         this.tooltip = s;
@@ -25,7 +25,7 @@ public class ElementToggleTextable extends ElementToggle
     }
 
     @Override
-    public <T extends ElementToggle> T setToggled(boolean flag)
+    public <T extends ElementToggle<?, ?>> T setToggled(boolean flag)
     {
         toggleState = flag;
         text = toggleState ? onString : offString;

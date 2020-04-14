@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -10,12 +9,12 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ElementTextField extends Element<Fragment<?>>
+@SuppressWarnings("unchecked")
+public class ElementTextField<P extends Fragment> extends Element<P>
 {
     public static final Predicate<String> INTEGERS = (s) ->
     {
@@ -74,34 +73,32 @@ public class ElementTextField extends Element<Fragment<?>>
         return !s.startsWith(".");
     };
 
-    private List<IGuiEventListener> children = Lists.newArrayList();
+//    private List<IGuiEventListener> children = Lists.newArrayList();
     protected TextFieldWidget widget;
     private String defaultText = "";
     private int maxStringLength = 256;
     private Predicate<String> validator = s -> true;
-    private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> {
-        return s;
-    };
+    private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> s;
     private @Nullable Consumer<String> responder;
 
     private int lastLeft;
     private int lastTop;
 
-    public ElementTextField(@Nonnull Fragment<?> parent)
+    public ElementTextField(@Nonnull P parent)
     {
         super(parent);
     }
 
-    public ElementTextField setDefaultText(String s)
+    public <T extends ElementTextField<?>> T setDefaultText(String s)
     {
         defaultText = s;
-        return this;
+        return (T)this;
     }
 
-    public ElementTextField setValidator(Predicate<String> validator)
+    public <T extends ElementTextField<?>> T setValidator(Predicate<String> validator)
     {
         this.validator = validator;
-        return this;
+        return (T)this;
     }
 
     public Predicate<String> getValidator()
@@ -109,10 +106,10 @@ public class ElementTextField extends Element<Fragment<?>>
         return this.validator;
     }
 
-    public ElementTextField setResponder(Consumer<String> responder)
+    public <T extends ElementTextField<?>> T setResponder(Consumer<String> responder)
     {
         this.responder = responder;
-        return this;
+        return (T)this;
     }
 
     public Consumer<String> getResponder()
@@ -120,16 +117,16 @@ public class ElementTextField extends Element<Fragment<?>>
         return this.responder;
     }
 
-    public ElementTextField setMaxStringLength(int i)
+    public <T extends ElementTextField<?>> T setMaxStringLength(int i)
     {
         this.maxStringLength = i;
-        return this;
+        return (T)this;
     }
 
-    public ElementTextField setTextFormatter(BiFunction<String, Integer, String> textFormatter)
+    public <T extends ElementTextField<?>> T setTextFormatter(BiFunction<String, Integer, String> textFormatter)
     {
         this.textFormatter = textFormatter;
-        return this;
+        return (T)this;
     }
 
     @Override
@@ -142,7 +139,7 @@ public class ElementTextField extends Element<Fragment<?>>
         widget.setValidator(validator);
         widget.setResponder(responder);
         widget.setTextFormatter(textFormatter);
-        children.add(widget);
+//        children.add(widget);
         adjustWidget();
 
         lastLeft = getLeft();

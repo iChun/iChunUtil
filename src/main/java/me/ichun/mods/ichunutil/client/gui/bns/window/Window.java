@@ -29,7 +29,7 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public @Nonnull final M parent;
     public @Nonnull List<View<?>> views;
-    public View<?> currentView; //should never be null (except for WindowDock)
+    public View<? extends Window<?>> currentView; //should never be null (except for WindowDock)
 
     public EdgeGrab edgeGrab; //set if a corner is grabbed
 

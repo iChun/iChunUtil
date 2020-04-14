@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public class ElementNumberInput extends ElementTextField
+public class ElementNumberInput<P extends Fragment> extends ElementTextField<P>
 {
     public static final int BUTTON_WIDTH = 10;
 
@@ -26,13 +26,13 @@ public class ElementNumberInput extends ElementTextField
     public boolean clickUp;
     public boolean clickDown;
 
-    public ElementNumberInput(@Nonnull Fragment<?> parent, boolean isDouble)
+    public ElementNumberInput(@Nonnull P parent, boolean isDouble)
     {
         super(parent);
         this.isDouble = isDouble;
     }
 
-    public ElementNumberInput setMin(double d)
+    public <T extends ElementNumberInput<?>> T setMin(double d)
     {
         min = s -> {
             if(s.isEmpty())
@@ -49,10 +49,10 @@ public class ElementNumberInput extends ElementTextField
                 return false;
             }
         };
-        return this;
+        return (T)this;
     }
 
-    public ElementNumberInput setMax(double d)
+    public <T extends ElementNumberInput<?>> T setMax(double d)
     {
         max = s -> {
             if(s.isEmpty())
@@ -69,10 +69,10 @@ public class ElementNumberInput extends ElementTextField
                 return false;
             }
         };
-        return this;
+        return (T)this;
     }
 
-    public ElementNumberInput setMaxDec(int i)
+    public <T extends ElementNumberInput<?>> T setMaxDec(int i)
     {
         decimals = Math.max(0, i); //keep it above 0
         if(i >= 0)
@@ -82,7 +82,7 @@ public class ElementNumberInput extends ElementTextField
                 return dot == -1 || (dot + 1) + i >= s.length();
             };
         }
-        return this;
+        return (T)this;
     }
 
     @Override
@@ -165,9 +165,6 @@ public class ElementNumberInput extends ElementTextField
             drawString("\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
             drawString("\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
             RenderSystem.popMatrix();
-
-            //            parent.workspace.getFontRenderer().drawString("\u25B2", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() - 1) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//up
-            //            parent.workspace.getFontRenderer().drawString("\u25BC", (int)((float)(getPosX() + ((width / textFields.size()) * (i + 1)) - 8) / scale), (int)((float)(getPosY() + 5) / scale), Theme.getAsHex(parent.workspace.currentTheme.font), false);//down
         }
     }
 

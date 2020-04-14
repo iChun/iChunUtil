@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementScrollBar extends Element<Fragment<?>>
+public class ElementScrollBar<P extends Fragment, T extends ElementScrollBar> extends Element<P>
 {
     public enum Orientation
     {
@@ -21,23 +21,23 @@ public class ElementScrollBar extends Element<Fragment<?>>
 
     public final Orientation orientation;
     private float scrollBarSize;
-    public Consumer<ElementScrollBar> callback;
+    public Consumer<T> callback;
     public float scrollProg;
     public boolean resizing;
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull Fragment<?> parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@Nonnull P parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;
         this.scrollBarSize = scrollBarSize;
     }
 
-    public ElementScrollBar setCallback(Consumer<ElementScrollBar> callback)
+    public T setCallback(Consumer<T> callback)
     {
         this.callback = callback;
-        return this;
+        return (T)this;
     }
 
     public void setScrollBarSize(float f)
@@ -64,7 +64,7 @@ public class ElementScrollBar extends Element<Fragment<?>>
             scrollProg = scroll;
             if(callback != null)
             {
-                callback.accept(this);
+                callback.accept((T)this);
             }
         }
     }
@@ -90,7 +90,7 @@ public class ElementScrollBar extends Element<Fragment<?>>
         }
         else
         {
-            setScrollProg(scrollProg / oldSize * scrollBarSize); //oldScrollProg / oldSize = newScrollProg / newSize //TODO test this
+            setScrollProg(scrollProg / oldSize * scrollBarSize); //oldScrollProg / oldSize = newScrollProg / newSize
         }
 
         if(!resizing && (oldSize <= 1F && scrollBarSize > 1F || scrollBarSize <= 1F && oldSize > 1F))
