@@ -28,7 +28,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         super(parent, s);
         this.valueWrapper = valueWrapper;
 
-        ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 30)
                 .right(this, Constraint.Property.Type.RIGHT, 0)
@@ -45,7 +45,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                 .right(sv, Constraint.Property.Type.LEFT, 0)
         );
 
-        ElementButton<?, ?> btn = new ElementButton<>(this, "gui.done", button -> {
+        ElementButton<?> btn = new ElementButton<>(this, "gui.done", button -> {
             try
             {
                 valueWrapper.value.field.setAccessible(true);
@@ -64,7 +64,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                             list1.clear();
                             for(ElementList.Item<?> item : list.items)
                             {
-                                ElementTextField<?> oriText = (ElementTextField<?>)item.elements.get(0);
+                                ElementTextField oriText = (ElementTextField)item.elements.get(0);
                                 if(!oriText.getText().isEmpty())
                                 {
                                     if(types[0] == String.class)
@@ -135,7 +135,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                                 for(int i = 0; i < items.size(); i++)
                                 {
                                     ElementList.Item<?> item = items.get(i);
-                                    ElementTextField<?> oriText = (ElementTextField<?>)item.elements.get(0);
+                                    ElementTextField oriText = (ElementTextField)item.elements.get(0);
                                     if(oriText.getResponder() != null)
                                     {
                                         anyResponder = oriText.getResponder();
@@ -155,12 +155,12 @@ public class ViewEditList extends View<WindowEditList<?>>
                                         list.items.clear();
                                         for(ElementList.Item<?> oriItem : oriItems)
                                         {
-                                            ElementTextField<?> oriText = (ElementTextField<?>)oriItem.elements.get(0);
+                                            ElementTextField oriText = (ElementTextField)oriItem.elements.get(0);
                                             if(!oriText.getText().isEmpty())
                                             {
                                                 String ori = oriText.getText();
                                                 ElementList.Item<?> item = list.addItem(ori);
-                                                ElementTextField<?> textField = new ElementTextField<>(item);
+                                                ElementTextField textField = new ElementTextField(item);
                                                 textField.setDefaultText(ori);
                                                 textField.setValidator(oriText.getValidator());
                                                 textField.setResponder(oriText.getResponder());
@@ -173,7 +173,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                                         if(anyResponder != null)
                                         {
                                             ElementList.Item<?> item = list.addItem("");
-                                            ElementTextField<?> textField = new ElementTextField<>(item);
+                                            ElementTextField textField = new ElementTextField(item);
                                             textField.setDefaultText("");
                                             textField.setValidator(validatorFinal);
                                             textField.setResponder(anyResponder);
@@ -182,12 +182,12 @@ public class ViewEditList extends View<WindowEditList<?>>
                                             textField.init();
                                         }
                                     }
-                                    else if(!((ElementTextField<?>)list.items.get(list.items.size() - 1).elements.get(0)).getText().isEmpty()) //if the last field is not empty, add another empty field
+                                    else if(!((ElementTextField)list.items.get(list.items.size() - 1).elements.get(0)).getText().isEmpty()) //if the last field is not empty, add another empty field
                                     {
                                         if(anyResponder != null)
                                         {
                                             ElementList.Item<?> item = list.addItem("");
-                                            ElementTextField<?> textField = new ElementTextField<>(item);
+                                            ElementTextField textField = new ElementTextField(item);
                                             textField.setDefaultText("");
                                             textField.setValidator(validatorFinal);
                                             textField.setResponder(anyResponder);
@@ -204,7 +204,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                             {
                                 String ori = o1.toString();
                                 ElementList.Item<?> item = list.addItem(ori);
-                                ElementTextField<?> textField = new ElementTextField<>(item);
+                                ElementTextField textField = new ElementTextField(item);
                                 textField.setDefaultText(ori);
                                 textField.setValidator(validator);
                                 textField.setResponder(sharedResponder);
@@ -212,7 +212,7 @@ public class ViewEditList extends View<WindowEditList<?>>
                                 item.addElement(textField);
                             }
                             ElementList.Item<?> item = list.addItem("");
-                            ElementTextField<?> textField = new ElementTextField<>(item);
+                            ElementTextField textField = new ElementTextField(item);
                             textField.setDefaultText("");
                             textField.setValidator(validator);
                             textField.setResponder(sharedResponder);

@@ -10,12 +10,12 @@ import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
-public abstract class ElementClickable<P extends Fragment, T extends ElementClickable> extends Element<P> //we reset our focus when we're clicked.
+public abstract class ElementClickable<T extends ElementClickable> extends Element //we reset our focus when we're clicked.
 {
     public @Nonnull Consumer<T> callback;
     public boolean hover; //for rendering
 
-    public ElementClickable(@Nonnull P parent, Consumer<T> callback)
+    public ElementClickable(@Nonnull Fragment parent, Consumer<T> callback)
     {
         super(parent);
         this.callback = callback;

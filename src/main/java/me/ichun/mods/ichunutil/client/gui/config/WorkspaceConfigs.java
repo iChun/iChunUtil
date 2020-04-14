@@ -109,26 +109,26 @@ public class WorkspaceConfigs extends Workspace
 
                     if(clz == int.class && e instanceof ElementNumberInput)
                     {
-                        field.set(valueWrapper.parent, ((ElementNumberInput<?>)e).getInt());
+                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getInt());
                     }
                     else if(clz == double.class && e instanceof ElementNumberInput)
                     {
-                        field.set(valueWrapper.parent, ((ElementNumberInput<?>)e).getDouble());
+                        field.set(valueWrapper.parent, ((ElementNumberInput)e).getDouble());
                     }
                     else if(clz == boolean.class && e instanceof ElementToggleTextable)
                     {
-                        field.set(valueWrapper.parent, ((ElementToggle<?, ?>)e).toggleState);
+                        field.set(valueWrapper.parent, ((ElementToggle<?>)e).toggleState);
                     }
                     else if(clz == String.class && e instanceof ElementTextField)
                     {
-                        field.set(valueWrapper.parent, ((ElementTextField<?>)e).getText());
+                        field.set(valueWrapper.parent, ((ElementTextField)e).getText());
                     }
                     else if(clz.isEnum() && e instanceof ElementContextMenu) //enum!
                     {
                         Object[] enums = clz.getEnumConstants();
                         for(Object en : enums)
                         {
-                            if(en.toString().equals(((ElementContextMenu<?, ?>)e).text))
+                            if(en.toString().equals(((ElementContextMenu<?>)e).text))
                             {
                                 field.set(valueWrapper.parent, en);
                                 break;

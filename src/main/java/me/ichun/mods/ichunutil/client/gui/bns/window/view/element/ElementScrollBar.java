@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementScrollBar<P extends Fragment, T extends ElementScrollBar> extends Element<P>
+public class ElementScrollBar<T extends ElementScrollBar> extends Element
 {
     public enum Orientation
     {
@@ -27,7 +27,7 @@ public class ElementScrollBar<P extends Fragment, T extends ElementScrollBar> ex
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull P parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@Nonnull Fragment parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;

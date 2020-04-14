@@ -5,17 +5,17 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementCheckbox<P extends Fragment, T extends ElementCheckbox> extends ElementClickable<P, T>
+public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable<T>
 {
     public boolean toggleState;
 
-    public ElementCheckbox(@Nonnull P parent, String tooltip, Consumer<T> callback)
+    public ElementCheckbox(@Nonnull Fragment parent, String tooltip, Consumer<T> callback)
     {
         super(parent, callback);
         this.tooltip = tooltip;
     }
 
-    public ElementCheckbox<P, T> setToggled(boolean flag)
+    public ElementCheckbox<T> setToggled(boolean flag)
     {
         toggleState = flag;
         return this;

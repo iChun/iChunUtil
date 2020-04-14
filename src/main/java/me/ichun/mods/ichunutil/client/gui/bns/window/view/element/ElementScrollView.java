@@ -10,27 +10,27 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementScrollView<P extends Fragment> extends ElementFertile<P>
+public class ElementScrollView extends ElementFertile
 {
     public List<Element<?>> elements = new ArrayList<>();
-    private @Nullable ElementScrollBar<?, ?> scrollVert;
-    private @Nullable ElementScrollBar<?, ?> scrollHori;
+    private @Nullable ElementScrollBar<?> scrollVert;
+    private @Nullable ElementScrollBar<?> scrollHori;
 
     public boolean hasInit;
 
-    public ElementScrollView(@Nonnull P parent)
+    public ElementScrollView(@Nonnull Fragment parent)
     {
         super(parent);
     }
 
-    public <T extends ElementScrollView<?>> T setScrollVertical(ElementScrollBar<?, ?> scroll)
+    public <T extends ElementScrollView> T setScrollVertical(ElementScrollBar<?> scroll)
     {
         scrollVert = scroll;
         scrollVert.setCallback((scr) -> alignItems());
         return (T)this;
     }
 
-    public <T extends ElementScrollView<?>> T setScrollHorizontal(ElementScrollBar<?, ?> scroll)
+    public <T extends ElementScrollView> T setScrollHorizontal(ElementScrollBar<?> scroll)
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());

@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-public class ElementNumberInput<P extends Fragment> extends ElementTextField<P>
+public class ElementNumberInput extends ElementTextField
 {
     public static final int BUTTON_WIDTH = 10;
 
@@ -26,13 +26,13 @@ public class ElementNumberInput<P extends Fragment> extends ElementTextField<P>
     public boolean clickUp;
     public boolean clickDown;
 
-    public ElementNumberInput(@Nonnull P parent, boolean isDouble)
+    public ElementNumberInput(@Nonnull Fragment parent, boolean isDouble)
     {
         super(parent);
         this.isDouble = isDouble;
     }
 
-    public <T extends ElementNumberInput<?>> T setMin(double d)
+    public <T extends ElementNumberInput> T setMin(double d)
     {
         min = s -> {
             if(s.isEmpty())
@@ -52,7 +52,7 @@ public class ElementNumberInput<P extends Fragment> extends ElementTextField<P>
         return (T)this;
     }
 
-    public <T extends ElementNumberInput<?>> T setMax(double d)
+    public <T extends ElementNumberInput> T setMax(double d)
     {
         max = s -> {
             if(s.isEmpty())
@@ -72,7 +72,7 @@ public class ElementNumberInput<P extends Fragment> extends ElementTextField<P>
         return (T)this;
     }
 
-    public <T extends ElementNumberInput<?>> T setMaxDec(int i)
+    public <T extends ElementNumberInput> T setMaxDec(int i)
     {
         decimals = Math.max(0, i); //keep it above 0
         if(i >= 0)

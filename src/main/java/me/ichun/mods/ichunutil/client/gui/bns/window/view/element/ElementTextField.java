@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public class ElementTextField<P extends Fragment> extends Element<P>
+public class ElementTextField extends Element
 {
     public static final Predicate<String> INTEGERS = (s) ->
     {
@@ -84,18 +84,18 @@ public class ElementTextField<P extends Fragment> extends Element<P>
     private int lastLeft;
     private int lastTop;
 
-    public ElementTextField(@Nonnull P parent)
+    public ElementTextField(@Nonnull Fragment parent)
     {
         super(parent);
     }
 
-    public <T extends ElementTextField<?>> T setDefaultText(String s)
+    public <T extends ElementTextField> T setDefaultText(String s)
     {
         defaultText = s;
         return (T)this;
     }
 
-    public <T extends ElementTextField<?>> T setValidator(Predicate<String> validator)
+    public <T extends ElementTextField> T setValidator(Predicate<String> validator)
     {
         this.validator = validator;
         return (T)this;
@@ -106,7 +106,7 @@ public class ElementTextField<P extends Fragment> extends Element<P>
         return this.validator;
     }
 
-    public <T extends ElementTextField<?>> T setResponder(Consumer<String> responder)
+    public <T extends ElementTextField> T setResponder(Consumer<String> responder)
     {
         this.responder = responder;
         return (T)this;
@@ -117,13 +117,13 @@ public class ElementTextField<P extends Fragment> extends Element<P>
         return this.responder;
     }
 
-    public <T extends ElementTextField<?>> T setMaxStringLength(int i)
+    public <T extends ElementTextField> T setMaxStringLength(int i)
     {
         this.maxStringLength = i;
         return (T)this;
     }
 
-    public <T extends ElementTextField<?>> T setTextFormatter(BiFunction<String, Integer, String> textFormatter)
+    public <T extends ElementTextField> T setTextFormatter(BiFunction<String, Integer, String> textFormatter)
     {
         this.textFormatter = textFormatter;
         return (T)this;

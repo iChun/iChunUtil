@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 public class ElementList<P extends Fragment> extends ElementFertile<P>
 {
     public List<Item<?>> items = new ArrayList<>();
-    private @Nullable ElementScrollBar<?, ?> scrollVert;
-    private @Nullable ElementScrollBar<?, ?> scrollHori;
+    private @Nullable ElementScrollBar<?> scrollVert;
+    private @Nullable ElementScrollBar<?> scrollHori;
     private @Nullable BiConsumer<Item<?>, Item<?>> dragHandler;
     private @Nullable BiConsumer<Item<?>, Integer> rearrangeHandler;
 
@@ -36,14 +36,14 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         super(parent);
     }
 
-    public <T extends ElementList<P>> T setScrollVertical(ElementScrollBar<?, ?> scroll)
+    public <T extends ElementList<P>> T setScrollVertical(ElementScrollBar<?> scroll)
     {
         scrollVert = scroll;
         scrollVert.setCallback((scr) -> alignItems());
         return (T)this;
     }
 
-    public <T extends ElementList<P>> T setScrollHorizontal(ElementScrollBar<?, ?> scroll)
+    public <T extends ElementList<P>> T setScrollHorizontal(ElementScrollBar<?> scroll)
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());
@@ -487,7 +487,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
         public Item<?> setDefaultAppearance()
         {
-            ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(this).setText(Workspace.getInterpretedInfo(heldObject));
+            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             elements.add(wrapper);
 
@@ -508,7 +508,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
         public Item<?> addTextWrapper(String s)
         {
-            ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(this).setText(s);
+            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(s);
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).top(this, Constraint.Property.Type.TOP, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             this.addElement(wrapper);
             return this;

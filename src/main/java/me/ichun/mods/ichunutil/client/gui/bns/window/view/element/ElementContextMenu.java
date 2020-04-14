@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class ElementContextMenu<P extends Fragment, T extends ElementContextMenu> extends ElementClickable<P, T>
+public class ElementContextMenu<T extends ElementContextMenu> extends ElementClickable<T>
         implements WindowContextMenu.IContextMenu
 {
     public @Nonnull String text;
@@ -19,7 +19,7 @@ public class ElementContextMenu<P extends Fragment, T extends ElementContextMenu
 
     public Function<Object, String> nameProvider = Object::toString;
 
-    public ElementContextMenu(@Nonnull P parent, String text, @Nonnull List<Object> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementContextMenu(@Nonnull Fragment parent, String text, @Nonnull List<Object> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
     {
         super(parent, e -> {});
         this.text = text;
@@ -27,7 +27,7 @@ public class ElementContextMenu<P extends Fragment, T extends ElementContextMenu
         this.contextMenuReceiver = contextMenuReceiver;
     }
 
-    public ElementContextMenu<P, T> setNameProvider(Function<Object, String> nameProvider)
+    public ElementContextMenu<T> setNameProvider(Function<Object, String> nameProvider)
     {
         this.nameProvider = nameProvider;
         return this;

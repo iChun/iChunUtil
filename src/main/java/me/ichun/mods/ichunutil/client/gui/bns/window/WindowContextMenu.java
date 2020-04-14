@@ -106,7 +106,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         {
             super(parent, s);
 
-            ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+            ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                     .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                     .right(this, Constraint.Property.Type.RIGHT, 0)

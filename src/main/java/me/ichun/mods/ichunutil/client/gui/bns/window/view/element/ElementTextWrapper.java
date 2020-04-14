@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementTextWrapper<P extends Fragment> extends Element<P> //TODO image element
+public class ElementTextWrapper extends Element //TODO image element
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
@@ -19,31 +19,31 @@ public class ElementTextWrapper<P extends Fragment> extends Element<P> //TODO im
 
     //TODO text formatter?
 
-    public ElementTextWrapper(@Nonnull P parent)
+    public ElementTextWrapper(@Nonnull Fragment parent)
     {
         super(parent);
     }
 
-    public <T extends ElementTextWrapper<?>> T setText(List<String> text)
+    public <T extends ElementTextWrapper> T setText(List<String> text)
     {
         this.text = text;
         return (T)this;
     }
 
-    public <T extends ElementTextWrapper<?>> T setText(String text)
+    public <T extends ElementTextWrapper> T setText(String text)
     {
         this.text.clear();
         this.text.add(text);
         return (T)this;
     }
 
-    public <T extends ElementTextWrapper<?>> T setNoWrap()
+    public <T extends ElementTextWrapper> T setNoWrap()
     {
         this.doNotWrap = true;
         return (T)this;
     }
 
-    public <T extends ElementTextWrapper<?>> T setColor(Integer clr)
+    public <T extends ElementTextWrapper> T setColor(Integer clr)
     {
         this.color = clr;
         return (T)this;

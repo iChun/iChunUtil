@@ -21,7 +21,7 @@ public class ViewConfigs extends View<WindowConfigs>
     {
         super(parent, s);
 
-        ElementButton<?, ?> btn = new ElementButton<>(this, "gui.done", button -> {
+        ElementButton<?> btn = new ElementButton<>(this, "gui.done", button -> {
             parent.parent.onClose();
         });
         btn.setWidth(60);
@@ -31,7 +31,7 @@ public class ViewConfigs extends View<WindowConfigs>
         );
         elements.add(btn);
 
-        ElementScrollBar<?, ?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                 .bottom(btn, Constraint.Property.Type.TOP, 5)
                 .right(this, Constraint.Property.Type.RIGHT, 0)
@@ -74,7 +74,7 @@ public class ViewConfigs extends View<WindowConfigs>
                     ElementList.Item<?> item = list.addItem(info).setSelectionHandler(parent.parent::selectItem);
                     item.setId(key);
                     item.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
-                    ElementTextWrapper<?> wrapper = new ElementTextWrapper<>(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
+                    ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
                     wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
                     wrapper.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
                     item.addElement(wrapper);

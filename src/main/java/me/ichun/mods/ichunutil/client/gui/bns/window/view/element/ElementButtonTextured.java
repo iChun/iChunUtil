@@ -8,18 +8,18 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementButtonTextured<P extends Fragment, T extends ElementButtonTextured> extends ElementButton<P, T>
+public class ElementButtonTextured<T extends ElementButtonTextured> extends ElementButton<T>
 {
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementButtonTextured(@Nonnull P parent, ResourceLocation rl, Consumer<T> callback)
+    public ElementButtonTextured(@Nonnull Fragment parent, ResourceLocation rl, Consumer<T> callback)
     {
         super(parent, "", callback);
         this.textureLocation = rl;
     }
 
-    public ElementButtonTextured<P, T> setWarping()
+    public ElementButtonTextured<T> setWarping()
     {
         warping = true;
         return this;

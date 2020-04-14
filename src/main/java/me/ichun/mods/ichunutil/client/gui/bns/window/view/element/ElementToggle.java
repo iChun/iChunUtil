@@ -7,18 +7,18 @@ import net.minecraft.client.resources.I18n;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementToggle<P extends Fragment, T extends ElementToggle> extends ElementClickable<P, T>
+public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
 {
     public String text;
     public boolean toggleState;
 
-    public ElementToggle(@Nonnull P parent, @Nonnull String s, Consumer<T> callback)
+    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = I18n.format(s);
     }
 
-    public <T extends ElementToggle<?, ?>> T setToggled(boolean flag)
+    public <T extends ElementToggle<?>> T setToggled(boolean flag)
     {
         toggleState = flag;
         return (T)this;
