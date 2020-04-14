@@ -26,6 +26,8 @@ public class ElementList extends ElementFertile<Fragment<?>>
     private @Nullable BiConsumer<Item<?>, Item<?>> dragHandler;
     private @Nullable BiConsumer<Item<?>, Integer> rearrangeHandler;
 
+    public boolean renderBackground = true;
+
     public boolean hasInit;
     private MousePosItem pos;
 
@@ -57,6 +59,12 @@ public class ElementList extends ElementFertile<Fragment<?>>
     public ElementList setRearrangeHandler(BiConsumer<Item<?>, Integer> rearrangeHandler)
     {
         this.rearrangeHandler = rearrangeHandler;
+        return this;
+    }
+
+    public ElementList disableBackground() //and border
+    {
+        this.renderBackground = false;
         return this;
     }
 
@@ -146,17 +154,20 @@ public class ElementList extends ElementFertile<Fragment<?>>
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        if(renderMinecraftStyle())
+        if(renderBackground)
         {
-            bindTexture(Fragment.VANILLA_HORSE);
-            cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
-        }
-        else
-        {
-            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
-            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
-            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
-            RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+            if(renderMinecraftStyle())
+            {
+                bindTexture(Fragment.VANILLA_HORSE);
+                cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+            }
+            else
+            {
+                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
+                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
+                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
+                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+            }
         }
 
         setScissor();

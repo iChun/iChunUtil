@@ -1,11 +1,16 @@
 package me.ichun.mods.ichunutil.common.module.tabula.project;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 
-public class Project extends Identifiable //Model
+public class Project extends Identifiable<Project> //Model
 {
     public static final int IDENTIFIER_LENGTH = 20;
     public static final int PROJ_VERSION = 5;
+
+    public static final Gson SIMPLE_GSON = new GsonBuilder().disableHtmlEscaping().create();
 
     //defaults
     public String modelName = "";
@@ -32,7 +37,23 @@ public class Project extends Identifiable //Model
         return identifier.equals(id) ? this : null;
     }
 
-    public static class Part extends Identifiable //ModelRenderer
+    @Override
+    public String getJsonWithoutChildren()
+    {
+        ArrayList<Part> parts = this.parts;
+        this.parts = null;
+        String json = SIMPLE_GSON.toJson(this);
+        this.parts = parts;
+        return json;
+    }
+
+    @Override
+    public void transferChildren(Project clone)
+    {
+        clone.parts = parts;
+    }
+
+    public static class Part extends Identifiable<Part> //ModelRenderer
     {
         public String name = "Part";
         public ArrayList<String> notes = new ArrayList<>();
@@ -88,8 +109,28 @@ public class Project extends Identifiable //Model
             return identifier.equals(id) ? this : null;
         }
 
+        @Override
+        public String getJsonWithoutChildren()
+        {
+            ArrayList<Box> boxes = this.boxes;
+            ArrayList<Part> children = this.children;
+            this.boxes = null;
+            this.children = null;
+            String json = SIMPLE_GSON.toJson(this);
+            this.boxes = boxes;
+            this.children = children;
+            return json;
+        }
 
-        public static class Box extends Identifiable //ModelBox
+        @Override
+        public void transferChildren(Part clone)
+        {
+            clone.boxes = boxes;
+            clone.children = children;
+        }
+
+
+        public static class Box extends Identifiable<Box> //ModelBox
         {
             public String name = "Box";
 
@@ -98,9 +139,9 @@ public class Project extends Identifiable //Model
             public float posY;
             public float posZ;
 
-            public float dimX = 1;
-            public float dimY = 1;
-            public float dimZ = 1;
+            public float dimX = 1F;
+            public float dimY = 1F;
+            public float dimZ = 1F;
 
             public float expandX;
             public float expandY;
@@ -108,7 +149,7 @@ public class Project extends Identifiable //Model
 
             public Box(String identifier)
             {
-                this.parentIdent = parentIdent;
+                this.parentIdent = identifier;
             }
 
             @Override
@@ -116,6 +157,15 @@ public class Project extends Identifiable //Model
             {
                 return identifier.equals(id) ? this : null;
             }
+
+            @Override
+            public String getJsonWithoutChildren()
+            {
+                return SIMPLE_GSON.toJson(this);
+            }
+
+            @Override
+            public void transferChildren(Box clone){}
         }
     }
 

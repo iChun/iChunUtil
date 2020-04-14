@@ -9,7 +9,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.util.Util;
 
