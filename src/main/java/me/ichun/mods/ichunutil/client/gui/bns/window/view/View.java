@@ -63,8 +63,6 @@ public abstract class View<M extends Window<? extends IWindows>> extends Fragmen
         //render our background
         if(!renderMinecraftStyle())
         {
-            int width = getRight() - getLeft();
-            int height = getBottom() - getTop();
             fill(getTheme().windowBackground, 0);
         }
         //render attached elements

@@ -474,7 +474,22 @@ public abstract class Window<M extends IWindows> extends Fragment
                 {
                     dragResize(mouseX, mouseY, edgeGrab);
 
-                    getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, edgeGrab);
+                    if(edgeGrab.left)
+                    {
+                        getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, new EdgeGrab(true, false, false, false, false, edgeGrab.x, edgeGrab.y));
+                    }
+                    if(edgeGrab.right)
+                    {
+                        getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, new EdgeGrab(false, true, false, false, false, edgeGrab.x, edgeGrab.y));
+                    }
+                    if(edgeGrab.top)
+                    {
+                        getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, new EdgeGrab(false, false, true, false, false, edgeGrab.x, edgeGrab.y));
+                    }
+                    if(edgeGrab.bottom)
+                    {
+                        getWorkspace().getDock().edgeGrab(this, mouseX, mouseY, new EdgeGrab(false, false, false, true, false, edgeGrab.x, edgeGrab.y));
+                    }
                 }
                 else
                 {

@@ -259,6 +259,10 @@ public class ElementNumberInput extends ElementTextField
     public void changeValue(boolean up, boolean hasShiftDown, boolean hasControlDown)
     {
         String s = widget.getText();
+        if(s.isEmpty())
+        {
+            s = "0";
+        }
         double amp = isDouble ? Math.pow(0.1, Math.max(0, decimals - 1)) : 1;
         if(hasShiftDown && hasControlDown)
         {

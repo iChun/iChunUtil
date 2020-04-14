@@ -286,6 +286,32 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 ArrayList<Window<?>> dockStack = e.getKey();
                 Window<?> lastInStack = dockStack.get(dockStack.size() - 1); // we stack downwards and to the right.
 
+                int maxWidth = -1;
+                int maxHeight = -1;
+                if(dockType.getAxis().isHorizontal())
+                {
+                    maxWidth = window.width;
+                    for(Window<?> window1 : dockStack)
+                    {
+                        if(window1.width > maxWidth)
+                        {
+                            maxWidth = window1.width;
+                        }
+                    }
+                }
+                else if(dockType.getAxis().isVertical())
+                {
+                    maxHeight = window.height;
+                    for(Window<?> window1 : dockStack)
+                    {
+                        if(window1.height > maxHeight)
+                        {
+                            maxHeight = window1.height;
+                        }
+                    }
+                }
+
+
                 Constraint constraint = new Constraint(window);
                 Constraint.Property.Type[] values = Constraint.Property.Type.values();
                 for(int i = values.length - 1; i >= 0; i--)
@@ -303,20 +329,10 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         if(type1 == TOP) //if we're docked left or right, reset height
                         {
                             lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
-
-                            //get max width
-                            int width = Math.max(window.width, lastInStack.width);
-                            window.setWidth(width);
-                            lastInStack.setWidth(width);
                         }
                         else
                         {
                             lastInStack.setWidth(dockedOriSize.get(lastInStack).width);
-
-                            //get max height
-                            int height = Math.max(window.height, lastInStack.height);
-                            window.setHeight(height);
-                            lastInStack.setHeight(height);
                         }
                     }
                     if(type1 != dockType.getOpposite())
@@ -334,15 +350,22 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
                 e.getKey().add(window);
                 window.setConstraint(constraint);
-                lastInStack.constraint.apply();
-                if(getWorkspace().hasInit())
+
+                for(Window<?> window1 : dockStack)
                 {
-                    lastInStack.resize(Minecraft.getInstance(), this.width, this.height);
-                }
-                window.constraint.apply();
-                if(getWorkspace().hasInit())
-                {
-                    window.resize(Minecraft.getInstance(), this.width, this.height);
+                    if(maxWidth >= 0)
+                    {
+                        window1.setWidth(maxWidth);
+                    }
+                    else if(maxHeight >= 0)
+                    {
+                        window1.setHeight(maxHeight);
+                    }
+                    window1.constraint.apply();
+                    if(getWorkspace().hasInit())
+                    {
+                        window1.resize(Minecraft.getInstance(), this.width, this.height);
+                    }
                 }
                 return true;
             }
@@ -613,16 +636,18 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public <M extends IWindows> void edgeGrab(Window<M> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
     {
-        if(edgeGrab.left && draggedWindow.constraint.get(LEFT) == Constraint.Property.NONE ||
-                edgeGrab.right && draggedWindow.constraint.get(RIGHT) == Constraint.Property.NONE ||
-                edgeGrab.top && draggedWindow.constraint.get(TOP) == Constraint.Property.NONE ||
-                edgeGrab.bottom && draggedWindow.constraint.get(BOTTOM) == Constraint.Property.NONE
-        )
+        Constraint.Property.Type anchorType = getAnchorType(draggedWindow);
+        if(anchorType != null && (anchorType.getAxis().isHorizontal() && edgeGrab.left && draggedWindow.constraint.get(LEFT) == Constraint.Property.NONE ||
+                anchorType.getAxis().isHorizontal() && edgeGrab.right && draggedWindow.constraint.get(RIGHT) == Constraint.Property.NONE ||
+                anchorType.getAxis().isVertical() && edgeGrab.top && draggedWindow.constraint.get(TOP) == Constraint.Property.NONE ||
+                anchorType.getAxis().isVertical() && edgeGrab.bottom && draggedWindow.constraint.get(BOTTOM) == Constraint.Property.NONE
+        ))
         {
             ArrayList<Window<?>> dockStack = getDockStack(draggedWindow);
 
-            for(Window<?> window : dockStack)
+            for(int i = 0; i < dockStack.size(); i++)
             {
+                Window<?> window = dockStack.get(i);
                 if(window != draggedWindow)
                 {
                     window.dragResize(mouseX, mouseY, edgeGrab);

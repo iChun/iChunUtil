@@ -269,7 +269,11 @@ public class ElementScrollBar extends Element<Fragment<?>>
         {
             if(Screen.hasShiftDown())
             {
-                setScrollProg((float)dist * -100);
+                setScrollProg((float)dist * -100F);
+            }
+            else if(Screen.hasControlDown())
+            {
+                setScrollProg(scrollProg + (float)(dist * -(1 / 100D)));
             }
             else
             {

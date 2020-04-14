@@ -2,7 +2,7 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 
 import java.util.ArrayList;
 
-public class Project //Model
+public class Project extends Identifiable //Model
 {
     public static final int IDENTIFIER_LENGTH = 20;
     public static final int PROJ_VERSION = 5;
@@ -18,13 +18,28 @@ public class Project //Model
 
     public ArrayList<Part> parts = new ArrayList<>();
 
-    public static class Part //ModelRenderer
+    @Override
+    public Identifiable getById(String id)
+    {
+        for(Part part : parts)
+        {
+            Identifiable ident = part.getById(id);
+            if(ident != null)
+            {
+                return ident;
+            }
+        }
+        return identifier.equals(id) ? this : null;
+    }
+
+    public static class Part extends Identifiable //ModelRenderer
     {
         public String name = "Part";
         public ArrayList<String> notes = new ArrayList<>();
 
         public int texWidth = 64;
         public int texHeight = 32;
+        public boolean matchProject = true;
 
         public int texOffX;
         public int texOffY;
@@ -44,12 +59,37 @@ public class Project //Model
         public ArrayList<Box> boxes = new ArrayList<>();
         public ArrayList<Part> children = new ArrayList<>();
 
-        public Part()
+        public Part(String parentIdent)
         {
-            boxes.add(new Box());
+            this.parentIdent = parentIdent;
+            this.boxes.add(new Box(identifier));
         }
 
-        public static class Box //ModelBox
+        @Override
+        public Identifiable getById(String id)
+        {
+            for(Box part : boxes)
+            {
+                Identifiable ident = part.getById(id);
+                if(ident != null)
+                {
+                    return ident;
+                }
+            }
+
+            for(Part part : children)
+            {
+                Identifiable ident = part.getById(id);
+                if(ident != null)
+                {
+                    return ident;
+                }
+            }
+            return identifier.equals(id) ? this : null;
+        }
+
+
+        public static class Box extends Identifiable //ModelBox
         {
             public String name = "Box";
 
@@ -65,11 +105,24 @@ public class Project //Model
             public float expandX;
             public float expandY;
             public float expandZ;
+
+            public Box(String identifier)
+            {
+                this.parentIdent = parentIdent;
+            }
+
+            @Override
+            public Identifiable getById(String id)
+            {
+                return identifier.equals(id) ? this : null;
+            }
         }
     }
 
-    public void addPart()
+    public Part addPart()
     {
-        parts.add(new Part());
+        Part part = new Part(this.identifier);
+        parts.add(part);
+        return part;
     }
 }
