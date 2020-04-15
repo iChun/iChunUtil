@@ -144,7 +144,7 @@ public class ProjectInfo
 
         public ArrayList<String> metadata = new ArrayList<>();
 
-        private ArrayList<CubeInfo> children = new ArrayList<>();
+        public ArrayList<CubeInfo> children = new ArrayList<>();
         public String parentIdentifier;
 
         public String identifier;

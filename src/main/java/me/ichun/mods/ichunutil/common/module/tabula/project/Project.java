@@ -2,7 +2,13 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.ichun.mods.ichunutil.client.model.ModelTabula;
+import me.ichun.mods.ichunutil.client.render.BufferedImageTexture;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,7 +36,11 @@ public class Project extends Identifiable<Project> //Model
 
     //Project texture Stuffs
     private transient BufferedImage bufferedTexture;
-    public transient int bufferedTextureId = -1;
+    public transient BufferedImageTexture bufferedImageTexture;
+
+    //Client Model
+    @OnlyIn(Dist.CLIENT)
+    private transient ModelTabula model;
 
     //defaults
     public String author = "";
@@ -76,38 +86,106 @@ public class Project extends Identifiable<Project> //Model
         clone.parts = parts;
     }
 
+    @Override
+    public void adoptChildren()
+    {
+        for(Part part : parts)
+        {
+            part.parent = this;
+            part.adoptChildren();
+        }
+    }
+
     public boolean save(@Nonnull File saveFile) //file to save as
     {
         return saveProject(this, saveFile);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void markDirty()
     {
         isDirty = true;
+
+        updateModel();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void destroy()
+    {
+        //destroy the model
+        setBufferedTexture(null);
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void updateModel()
+    {
+        if(model != null)
+        {
+            model.isDirty = true;
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public ModelTabula getModel()
+    {
+        if(model == null)
+        {
+            model = new ModelTabula(this);
+        }
+        return model;
     }
 
     public void importProject(@Nonnull Project project, boolean texture)
     {
+        markDirty();
+
         if(texture && project.getBufferedTexture() != null)
         {
-            loadBufferedTexture(project.getBufferedTexture(), project.bufferedTextureId);
+            setBufferedTexture(project.getBufferedTexture());
         }
         parts.addAll(project.parts);
     }
 
-    public void loadBufferedTexture(BufferedImage texture, int newId)
+
+    @OnlyIn(Dist.CLIENT)
+    public void setBufferedTexture(BufferedImage texture)
     {
-        if(bufferedTextureId != -1)
+        if(bufferedImageTexture != null)
         {
-            //TODO delete the old texture
+            Minecraft.getInstance().getTextureManager().deleteTexture(bufferedImageTexture.getResourceLocation());
+
+            bufferedImageTexture = null;
         }
         this.bufferedTexture = texture;
-        this.bufferedTextureId = newId;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public ResourceLocation getBufferedTextureResourceLocation()
+    {
+        if(bufferedTexture != null)
+        {
+            if(bufferedImageTexture == null)
+            {
+                bufferedImageTexture = new BufferedImageTexture(bufferedTexture);
+                Minecraft.getInstance().getTextureManager().loadTexture(bufferedImageTexture.getResourceLocation(), bufferedImageTexture);
+            }
+
+            return bufferedImageTexture.getResourceLocation();
+        }
+        return null;
     }
 
     public BufferedImage getBufferedTexture()
     {
         return bufferedTexture;
+    }
+
+    public void load()
+    {
+        repair(); //repair first.
+
+        adoptChildren();
     }
 
     public void repair()
@@ -182,14 +260,15 @@ public class Project extends Identifiable<Project> //Model
         public float rotAZ;
 
         public boolean mirror;
+        public boolean showModel = true;
 
         public ArrayList<Box> boxes = new ArrayList<>();
         public ArrayList<Part> children = new ArrayList<>();
 
-        public Part(String parentIdent, int count)
+        public Part(Identifiable<?> parent, int count)
         {
-            this.parentIdent = parentIdent;
-            this.boxes.add(new Box(identifier)); //there is code that rely on parts always having 1 box
+            this.parent = parent;
+            this.boxes.add(new Box(this)); //there is code that rely on parts always having 1 box
             this.name = "part" + count;
         }
 
@@ -236,6 +315,35 @@ public class Project extends Identifiable<Project> //Model
             clone.children = children;
         }
 
+        @Override
+        public void adoptChildren()
+        {
+            for(Box box : boxes)
+            {
+                box.parent = this;
+                box.adoptChildren();
+            }
+
+            for(Part part : children)
+            {
+                part.parent = this;
+                part.adoptChildren();
+            }
+        }
+
+        public int[] getProjectTextureDims()
+        {
+            if(parent instanceof Part)
+            {
+                return ((Part)parent).getProjectTextureDims();
+            }
+            else if(parent instanceof Project)
+            {
+                return new int[] { ((Project)parent).texWidth, ((Project)parent).texHeight };
+            }
+            iChunUtil.LOGGER.error("We can't find out parent's texture dimensions, we have an orphaned Part. Uh oh! Their name is {} and their identifier is {}", name, identifier);
+            return new int[] { texWidth, texHeight };
+        }
 
         public static class Box extends Identifiable<Box> //ModelBox
         {
@@ -252,9 +360,9 @@ public class Project extends Identifiable<Project> //Model
             public float expandY;
             public float expandZ;
 
-            public Box(String identifier)
+            public Box(Identifiable<?> parent)
             {
-                this.parentIdent = identifier;
+                this.parent = parent;
                 this.name = "Box";
             }
 
@@ -272,6 +380,9 @@ public class Project extends Identifiable<Project> //Model
 
             @Override
             public void transferChildren(Box clone){}
+
+            @Override
+            public void adoptChildren(){} //boxes are infertile
         }
     }
 
@@ -279,16 +390,16 @@ public class Project extends Identifiable<Project> //Model
     {
         markDirty();
 
-        Part part = new Part(this.identifier, ++partCountProjectLife);
+        Part part = new Part(this, ++partCountProjectLife);
         if(parent instanceof Part) //Parts can have children
         {
-            part.parentIdent = parent.identifier;
+            part.parent = parent;
 
             ((Part)parent).children.add(part);
         }
         else if(parent instanceof Part.Box)
         {
-            return addPart(getById(parent.parentIdent));
+            return addPart(parent.parent);
         }
         else
         {
@@ -304,18 +415,18 @@ public class Project extends Identifiable<Project> //Model
 
         if(parent instanceof Part) //Parts can have children
         {
-            Part.Box box = new Part.Box(parent.identifier);
+            Part.Box box = new Part.Box(parent);
 
             ((Part)parent).boxes.add(box);
             return box;
         }
         else if(parent instanceof Part.Box)
         {
-            return addBox(getById(parent.parentIdent));
+            return addBox(parent.parent);
         }
         else
         {
-            Part part = new Part(this.identifier, ++partCountProjectLife);
+            Part part = new Part(this, ++partCountProjectLife);
             parts.add(part);
             return part.boxes.get(0);
         }
@@ -323,7 +434,7 @@ public class Project extends Identifiable<Project> //Model
 
     public void delete(Identifiable<?> child)
     {
-        Identifiable<?> parent = getById(child.parentIdent);
+        Identifiable<?> parent = child.parent;
         if(parent instanceof Project) //lets orphan this mofo
         {
             ((Project)parent).parts.remove(child);

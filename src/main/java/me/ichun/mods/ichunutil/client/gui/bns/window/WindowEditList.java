@@ -15,8 +15,6 @@ public class WindowEditList<M extends IWindows> extends Window<M>
         super(parent);
 
         setView(new ViewEditList(this, s, objectList, validator, responder));
-        disableDocking();
-        disableDockStacking();
-        disableUndocking();
+        disableDockingEntirely();
     }
 }

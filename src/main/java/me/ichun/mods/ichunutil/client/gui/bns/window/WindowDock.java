@@ -436,6 +436,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 if(windows.size() == 1)
                 {
                     iterator.remove(); //we're using a linkedHASHmap. Empty ArrayLists aren't very friendly.
+                    continue;
                 }
                 else //we're in a dock stack.
                 {
@@ -526,23 +527,6 @@ public class WindowDock<M extends IWindows> extends Window<M>
                     }
                 }
             }
-//            else if(anchor != null)
-//            {
-//                Window<?> nextDock;
-//                //update the constraints for the NEXT dock
-//                if(anchor.getType() == LEFT || anchor.getType() == TOP)
-//                {
-//                    nextDock = windows.get(0);
-//                }
-//                else
-//                {
-//                    nextDock = windows.get(windows.size() - 1);
-//                }
-//                int dist = anchor.getDist();
-//                nextDock.constraint.type(anchorDir, anchor.getReference(), anchor.getType(), dist);
-//                nextDock.constraint.apply();
-//                nextDock.resize(Minecraft.getInstance(), nextDock.parent.getWidth(), nextDock.parent.getHeight());
-//            }
         }
 
         WindowSize size = dockedOriSize.get(window);

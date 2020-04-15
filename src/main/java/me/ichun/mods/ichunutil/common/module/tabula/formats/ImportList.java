@@ -34,7 +34,7 @@ public class ImportList
                 if(project != null)
                 {
                     project.projVersion = importer.getProjectVersion();
-                    project.repair();
+                    project.load();
                     return project;
                 }
             }

@@ -8,17 +8,17 @@ public abstract class Identifiable<T>
 {
     @Nonnull
     public String identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
-    public transient String parentIdent = null; //TODO should this be transient?
+    public transient Identifiable<?> parent = null; //TODO should this be transient?
 
     public String name = "";
 
     public abstract Identifiable getById(String id);
     public abstract String getJsonWithoutChildren();
     public abstract void transferChildren(T clone);
+    public abstract void adoptChildren();
 
     public void markDirty()
     {
-        Identifiable parent = getById(parentIdent);
         if(parent != null)
         {
             parent.markDirty();

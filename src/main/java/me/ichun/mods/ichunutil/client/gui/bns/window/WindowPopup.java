@@ -31,18 +31,17 @@ public class WindowPopup extends Window<Workspace>
 
             ElementTextWrapper text = new ElementTextWrapper(this);
             text.setNoWrap().setText(text1);
-            text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20));
+            text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
             elements.add(text);
 
             ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.ok"), elementClickable ->
             {
+                parent.parent.removeWindow(parent);
+
                 if(callback != null)
                 {
                     callback.accept(parent.parent);
                 }
-
-                parent.parent.setFocused(null);
-                parent.parent.removeWindow(parent);
             });
             button.setSize(60, 20);
             button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 20));

@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
@@ -66,14 +67,6 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
-            if(s.equals(text))
-            {
-                setTooltip(null);
-            }
-            else
-            {
-                setTooltip(text);
-            }
 
             //draw the text
             if(renderMinecraftStyle())
@@ -85,6 +78,21 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
                 getFontRenderer().drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public String tooltip(double mouseX, double mouseY)
+    {
+        if(!text.isEmpty())
+        {
+            String s = reString(text, width - 4);
+            if(!s.equals(text))
+            {
+                return text;
+            }
+        }
+        return super.tooltip(mouseX, mouseY);
     }
 
     @Override
