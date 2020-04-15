@@ -23,5 +23,13 @@
   "config.ichunutil.prop.guiTooltipCooldown.desc": "Number of ticks before showing a tooltip",
 
   "gui.ichunutil.configs.title": "Config Editor",
-  "gui.ichunutil.configs.options": "Options"
+  "gui.ichunutil.configs.options": "Options",
+
+  "window.popup.title": "Alert!",
+
+  "window.saveAs.title": "Save As",
+  "window.saveAs.fileName": "File Name",
+  "window.saveAs.overwrite": "Overwrite?",
+  "window.saveAs.confirmOverwrite": "File already exists! Confirm overwrite?",
+  "window.saveAs.failed": "Failed to save file."
 }

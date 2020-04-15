@@ -341,6 +341,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     {
         if(renderMinecraftStyle())
         {
+            RenderSystem.enableAlphaTest();
             //draw the corners
             bindTexture(Fragment.VANILLA_TABS);
 

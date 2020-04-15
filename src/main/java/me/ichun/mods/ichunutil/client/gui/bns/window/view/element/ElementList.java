@@ -92,12 +92,12 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         return addItem(item, -1);
     }
 
-    public Item<?> addItem(Object o, int index)
+    public <M extends Object> Item<M> addItem(M o, int index)
     {
         return addItem(new Item<>(this, o), index);
     }
 
-    public Item<?> addItem(Object o)
+    public <M extends Object> Item<M> addItem(M o)
     {
         return addItem(o, -1);
     }
@@ -224,19 +224,23 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isMouseOver(mouseX, mouseY) && dragHandler != null && button == 0) // check for if we can drag or nah
+        if(isMouseOver(mouseX, mouseY)) // check for if we can drag or nah
         {
             boolean hasElement = defaultMouseClicked(mouseX, mouseY, button); //this calls setDragging();
-            if(hasElement) //we clicked an element. let's drag it
+            if(dragHandler != null && button == 0)
             {
-                pos = new MousePosItem((int)mouseX, (int)mouseY, getItemAt(mouseX, mouseY));
+                if(hasElement) //we clicked an element. let's drag it
+                {
+                    pos = new MousePosItem((int)mouseX, (int)mouseY, getItemAt(mouseX, mouseY));
+                }
+                else if(getFocused() instanceof Fragment)
+                {
+                    setFocused(null);
+                }
             }
-            else if(getFocused() instanceof Fragment)
-            {
-                setFocused(null);
-            }
+            return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return false;
     }
 
     @Override
@@ -387,7 +391,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         {
             //set the width
             int itemWidth = getMinItemWidth();
-            scrollHori.setScrollBarSize(width / (float)itemWidth); //if items height is higher than ours, scroll bar should appear
+            scrollHori.setScrollBarSize(width / (float)itemWidth); //if items width is higher than ours, scroll bar should appear
         }
     }
 
@@ -415,7 +419,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public List<? extends Fragment<?>> children()
+    public List<? extends Item<?>> children()
     {
         return items;
     }
@@ -479,13 +483,13 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
             this.heldObject = heldObject;
         }
 
-        public Item<?> staySelectedOnDefocus()
+        public Item<M> staySelectedOnDefocus()
         {
             deselectOnUnfocus = false;
             return this;
         }
 
-        public Item<?> setDefaultAppearance()
+        public Item<M> setDefaultAppearance()
         {
             ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
             wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
@@ -494,22 +498,22 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
             return this;
         }
 
-        public Item<?> setSelectionHandler(Consumer<Item<M>> handler)
+        public Item<M> setSelectionHandler(Consumer<Item<M>> handler)
         {
             this.selectionHandler = handler;
             return this;
         }
 
-        public Item<?> setBorderSize(int size)
+        public Item<M> setBorderSize(int size)
         {
             this.borderSize = size;
             return this;
         }
 
-        public Item<?> addTextWrapper(String s)
+        public Item<M> addTextWrapper(String s)
         {
             ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(s);
-            wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).top(this, Constraint.Property.Type.TOP, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+            wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
             this.addElement(wrapper);
             return this;
         }

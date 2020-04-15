@@ -4,16 +4,19 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
-import me.ichun.mods.ichunutil.client.gui.config.window.WindowEditList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 public class ViewValues extends View<WindowValues>
 {
@@ -37,9 +40,9 @@ public class ViewValues extends View<WindowValues>
         elements.add(sv);
 
         this.list = new ElementList<>(this).setScrollVertical(sv)
-                //                .setDragHandler((i, j) -> {})
-                //                .setRearrangeHandler((i, j) -> {})
-                ;
+        //                .setDragHandler((i, j) -> {})
+        //                .setRearrangeHandler((i, j) -> {})
+        ;
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                 .top(this, Constraint.Property.Type.TOP, 0)
@@ -179,16 +182,69 @@ public class ViewValues extends View<WindowValues>
             }
             ElementButton<?> button = new ElementButton<>(item, "selectWorld.edit", btn ->
             {
-                WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value);
-                window.setWidth((int)(window.getParentWidth() * 0.6D));
-                window.setHeight((int)(window.getParentHeight() * 0.8D));
-//                window.resize(Minecraft.getInstance(), window.getParentWidth(), window.getParentHeight());
-                getWorkspace().addWindow(window);
-                getWorkspace().putInCenter(window);
-                getWorkspace().setFocused(window);
-                window.init();
-                window.init();
+                value.value.field.setAccessible(true);
+                Type typefield = value.value.field.getGenericType();
+                if(typefield instanceof ParameterizedType)
+                {
+                    ParameterizedType type = (ParameterizedType)typefield;
+                    Type[] types = type.getActualTypeArguments();
 
+                    if(types.length == 1)
+                    {
+                        Predicate<String> validator = null; //get which kind of validator we should use
+                        if(types[0] == String.class)
+                        {
+                            validator = str -> true;
+                        }
+                        else if(types[0] == Double.class)
+                        {
+                            validator = ElementTextField.NUMBERS;
+                        }
+                        else if(types[0] == Integer.class)
+                        {
+                            validator = ElementTextField.INTEGERS;
+                        }
+
+                        if(validator != null)
+                        {
+                            WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
+                                try
+                                {
+                                    list.clear();
+                                    for(ElementList.Item<?> item1 : list1.items)
+                                    {
+                                        ElementTextField oriText = (ElementTextField)item1.elements.get(0);
+                                        if(!oriText.getText().isEmpty())
+                                        {
+                                            if(types[0] == String.class)
+                                            {
+                                                list.add(oriText.getText());
+                                            }
+                                            else if(types[0] == Double.class)
+                                            {
+                                                list.add(Double.parseDouble(oriText.getText()));
+                                            }
+                                            else if(types[0] == Integer.class)
+                                            {
+                                                list.add(Integer.parseInt(oriText.getText()));
+                                            }
+                                        }
+                                    }
+                                    value.value.field.set(value.value.parent, list1);
+                                    value.value.parent.save();
+                                }
+                                catch(IllegalAccessException ignored){}
+                            });
+                            window.setWidth((int)(window.getParentWidth() * 0.6D));
+                            window.setHeight((int)(window.getParentHeight() * 0.8D));
+                            getWorkspace().addWindow(window);
+                            getWorkspace().putInCenter(window);
+                            getWorkspace().setFocused(window);
+                            window.init();
+                            window.init();
+                        }
+                    }
+                }
             });
             button.setTooltip(sb.toString());
             button.setSize(80, 14);

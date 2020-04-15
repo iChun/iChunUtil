@@ -553,14 +553,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return true; //our window isn't even here! pretend we're obstructed
     }
 
-    public Window<?> getWindowType(Class<? extends Window<?>> clz)
+    public <T extends Window<?>> T getWindowType(Class<T> clz)
     {
         List<Window<?>> windows = children();
         for(Window<?> window : windows)
         {
             if(clz.isAssignableFrom(window.getClass()))
             {
-                return window;
+                return (T)window;
             }
         }
         return null;

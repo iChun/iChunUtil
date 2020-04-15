@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -230,6 +231,10 @@ public class ElementTextField extends Element
         {
             setFocused(widget);
             widget.setFocused2(true);
+            if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) //TODO middle mouse pastes
+            {
+                widget.setText("");
+            }
             widget.mouseClicked(mouseX, mouseY, button);
             return true;
         }

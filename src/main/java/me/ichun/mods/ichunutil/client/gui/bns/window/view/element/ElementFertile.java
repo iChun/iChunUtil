@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 
@@ -95,9 +96,12 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
             if(child instanceof Fragment<?>)
             {
                 Fragment<?> fragment = (Fragment<?>)child;
-                if(fragment.getMinWidth() > min)
+                int fragWidth = fragment.getMinWidth();
+                fragWidth += fragment.constraint.get(Constraint.Property.Type.LEFT).getDist();
+                fragWidth += fragment.constraint.get(Constraint.Property.Type.RIGHT).getDist();
+                if(fragWidth > min)
                 {
-                    min = fragment.getMinWidth();
+                    min = fragWidth;
                 }
             }
         }
@@ -113,9 +117,12 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
             if(child instanceof Fragment<?>)
             {
                 Fragment<?> fragment = (Fragment<?>)child;
-                if(fragment.getMinHeight() > min)
+                int fragHeight = fragment.getMinHeight();
+                fragHeight += fragment.constraint.get(Constraint.Property.Type.TOP).getDist();
+                fragHeight += fragment.constraint.get(Constraint.Property.Type.BOTTOM).getDist();
+                if(fragHeight > min)
                 {
-                    min = fragment.getMinHeight();
+                    min = fragHeight;
                 }
             }
         }
