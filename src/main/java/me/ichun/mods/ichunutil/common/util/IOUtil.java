@@ -106,7 +106,7 @@ public class IOUtil
         }
         catch(Exception e)
         {
-            iChunUtil.LOGGER.warn("Failed to generate MD5 checksum for " + file.getName());
+            iChunUtil.LOGGER.warn("Failed to generate MD5 checksum for {}", file.getName());
             return null;
         }
     }

@@ -50,14 +50,13 @@ public class WindowPopup extends Window<Workspace>
         }
     }
 
+    public static void popup(Workspace parent, double widthRatio, double heightRatio, String text, Consumer<Workspace> callback)
+    {
+        popup(parent, widthRatio, heightRatio, "window.popup.title", text, callback);
+    }
+
     public static void popup(Workspace parent, double widthRatio, double heightRatio, String title, String text, Consumer<Workspace> callback)
     {
-        WindowPopup popup = new WindowPopup(parent, title, text, callback);
-        popup.setWidth((int)(popup.getParentWidth() * widthRatio));
-        popup.setHeight((int)(popup.getParentHeight() * heightRatio));
-        parent.addWindow(popup);
-        parent.putInCenter(popup);
-        parent.setFocused(popup);
-        popup.init();
+        parent.openWindowInCenter(new WindowPopup(parent, title, text, callback), widthRatio, heightRatio);
     }
 }

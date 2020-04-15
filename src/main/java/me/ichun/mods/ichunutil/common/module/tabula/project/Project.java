@@ -2,9 +2,17 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class Project extends Identifiable<Project> //Model
 {
@@ -13,8 +21,16 @@ public class Project extends Identifiable<Project> //Model
 
     public static final Gson SIMPLE_GSON = new GsonBuilder().disableHtmlEscaping().create();
 
+    //Save file stuff
+    @Nullable
     public transient File saveFile;
     public transient boolean isDirty;
+    public transient boolean tampered; //file may be tampered?
+    public transient boolean isOldTabula; //*GASP*
+
+    //Project texture Stuffs
+    public transient BufferedImage bufferedTexture;
+    public transient int bufferedTextureId = -1;
 
     //defaults
     public String author = "";
@@ -27,6 +43,8 @@ public class Project extends Identifiable<Project> //Model
     public ArrayList<Part> parts = new ArrayList<>();
 
     public int partCountProjectLife = 0;
+
+    //TODO should we check for tampered files?
 
     @Override
     public Identifiable<?> getById(String id)
@@ -58,16 +76,70 @@ public class Project extends Identifiable<Project> //Model
         clone.parts = parts;
     }
 
-    public boolean save(File saveFile) //file to save as
+    public boolean save(@Nonnull File saveFile) //file to save as
     {
-        //save and mark no longer dirty
-        //set our save file as the saveFile.
-        return false;
+        return saveProject(this, saveFile);
     }
 
     public void markDirty()
     {
         isDirty = true;
+    }
+
+    public void repair()
+    {
+        while(projVersion < PROJ_VERSION)
+        {
+            if(projVersion <= 4) //TODO UHHH is this necessary?
+            {
+
+            }
+            projVersion++;
+        }
+    }
+
+    public static Project openProject(File file)
+    {
+
+        return null;
+    }
+
+    public static boolean saveProject(Project project, File file)
+    {
+        try
+        {
+            file.getParentFile().mkdirs();
+
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
+            out.setLevel(9);
+            out.putNextEntry(new ZipEntry("model.json"));
+
+            byte[] data = SIMPLE_GSON.toJson(project).getBytes();
+            out.write(data, 0, data.length);
+            out.closeEntry();
+
+            if(project.bufferedTexture != null)
+            {
+                out.putNextEntry(new ZipEntry("texture.png"));
+                ImageIO.write(project.bufferedTexture, "png", out);
+                out.closeEntry();
+            }
+
+            out.close();
+
+            //save and mark no longer dirty
+            //set our save file as the saveFile.
+            project.saveFile = file;
+            project.isDirty = false;
+
+            return true;
+        }
+        catch(Exception e)
+        {
+            iChunUtil.LOGGER.error("Failed to save model: {}", project.name + " - " + project.author);
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static class Part extends Identifiable<Part> //ModelRenderer

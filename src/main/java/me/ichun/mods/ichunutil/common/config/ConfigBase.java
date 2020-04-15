@@ -188,7 +188,7 @@ public abstract class ConfigBase
         }
         else if(iChunUtil.isDevEnvironemnt())
         {
-            iChunUtil.LOGGER.warn("Property is not commented: " + fieldName); //TODO switch this over to localization?
+            iChunUtil.LOGGER.warn("Property is not commented: {}", fieldName); //TODO switch this over to localization?
         }
         builder.translation("config." + getModId() + ".prop." + fieldName + ".desc");
 

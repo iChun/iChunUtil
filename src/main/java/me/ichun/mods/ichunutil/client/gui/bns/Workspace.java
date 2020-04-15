@@ -206,6 +206,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void removeWindow(Window<?> window)
     {
+        if(getFocused() == window)
+        {
+            setFocused(null);
+        }
         window.onClose(); //TODO this might bite me in the ass. how can we tell if the window was removed or destroyed????? dock???
         windows.remove(window);
     }
@@ -224,6 +228,23 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             window.pos((int)((getWidth() - window.getWidth()) / 2D), (int)((getHeight() - window.getHeight()) / 2D));
         }
+    }
+
+    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio)
+    {
+        window.setWidth((int)(window.getParentWidth() * widthRatio));
+        window.setHeight((int)(window.getParentHeight() * heightRatio));
+
+        addWindow(window);
+        putInCenter(window);
+        setFocused(window);
+
+        window.init();
+    }
+
+    public void openWindowInCenter(Window<?> window)
+    {
+        openWindowInCenter(window, 0.5D, 0.5D);
     }
 
     @Override

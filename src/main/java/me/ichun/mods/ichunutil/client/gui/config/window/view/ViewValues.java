@@ -235,13 +235,8 @@ public class ViewValues extends View<WindowValues>
                                 }
                                 catch(IllegalAccessException ignored){}
                             });
-                            window.setWidth((int)(window.getParentWidth() * 0.6D));
-                            window.setHeight((int)(window.getParentHeight() * 0.8D));
-                            getWorkspace().addWindow(window);
-                            getWorkspace().putInCenter(window);
-                            getWorkspace().setFocused(window);
-                            window.init();
-                            window.init();
+                            getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
+                            window.init();//reinit cause we're using lists and they're weird
                         }
                     }
                 }

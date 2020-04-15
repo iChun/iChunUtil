@@ -96,6 +96,12 @@ public abstract class Window<M extends IWindows> extends Fragment
         return (T)this;
     }
 
+    public <T extends Window<?>> T disableDockingEntirely()
+    {
+        canDockStack = canBeUndocked = canBeDocked = false;
+        return (T)this;
+    }
+
     public <T extends Window<?>> T disableDocking()
     {
         canBeDocked = false;

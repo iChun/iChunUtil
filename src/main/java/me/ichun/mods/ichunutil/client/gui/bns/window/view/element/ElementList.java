@@ -5,13 +5,17 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.util.IOUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -475,7 +479,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         private boolean deselectOnUnfocus = true;
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
+        private @Nullable Consumer<Item<M>> doubleClickHandler;
         private int borderSize = 1;
+        private int clickTimeout;
 
         public Item(@Nonnull ElementList<?> parent, @Nonnull M heldObject)
         {
@@ -491,9 +497,30 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
         public Item<M> setDefaultAppearance()
         {
-            ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
-            wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
-            elements.add(wrapper);
+            if(heldObject instanceof File)
+            {
+                File file = (File)heldObject;
+                //name
+                ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(file.getName());
+                wrapper.setNoWrap().setConstraint(new Constraint(wrapper).left(this, Constraint.Property.Type.LEFT, this.getBorderSize() + 2).top(this, Constraint.Property.Type.TOP, this.getBorderSize()));
+                this.addElement(wrapper);
+
+                //last modified
+                ElementTextWrapper wrapper1 = new ElementTextWrapper(this).setText((new SimpleDateFormat()).format(new Date(file.lastModified())));
+                wrapper1.setNoWrap().setConstraint(new Constraint(wrapper1).left(this, Constraint.Property.Type.LEFT, this.getBorderSize() + 2).top(wrapper, Constraint.Property.Type.BOTTOM, 0));
+                this.addElement(wrapper1);
+
+                //size
+                wrapper = new ElementTextWrapper(this).setText(IOUtil.readableFileSize(file.length()));
+                wrapper.setNoWrap().setConstraint(new Constraint(wrapper).right(this, Constraint.Property.Type.RIGHT, this.getBorderSize() + 4).top(this, Constraint.Property.Type.TOP, this.getBorderSize()));
+                this.addElement(wrapper);
+            }
+            else
+            {
+                ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
+                wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
+                elements.add(wrapper);
+            }
 
             return this;
         }
@@ -501,6 +528,12 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public Item<M> setSelectionHandler(Consumer<Item<M>> handler)
         {
             this.selectionHandler = handler;
+            return this;
+        }
+
+        public Item<M> setDoubleClickHandler(Consumer<Item<M>> handler)
+        {
+            this.doubleClickHandler = handler;
             return this;
         }
 
@@ -647,8 +680,30 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     selectionHandler.accept(this);
                 }
+                if(doubleClickHandler != null)
+                {
+                    if(clickTimeout > 0)
+                    {
+                        clickTimeout = 0;
+                        doubleClickHandler.accept(this);
+                    }
+                    else
+                    {
+                        clickTimeout = 10; //TODO config for double click speed
+                    }
+                }
             }
             return super.mouseReleased(mouseX, mouseY, button);
+        }
+
+        @Override
+        public void tick()
+        {
+            super.tick();
+            if(clickTimeout > 0)
+            {
+                clickTimeout--;
+            }
         }
 
         public boolean shouldRender()

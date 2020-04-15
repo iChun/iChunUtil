@@ -96,9 +96,7 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
             if(child instanceof Fragment<?>)
             {
                 Fragment<?> fragment = (Fragment<?>)child;
-                int fragWidth = fragment.getMinWidth();
-                fragWidth += fragment.constraint.get(Constraint.Property.Type.LEFT).getDist();
-                fragWidth += fragment.constraint.get(Constraint.Property.Type.RIGHT).getDist();
+                int fragWidth = getConstraintSensitiveMinWidth(fragment);
                 if(fragWidth > min)
                 {
                     min = fragWidth;
@@ -117,9 +115,7 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
             if(child instanceof Fragment<?>)
             {
                 Fragment<?> fragment = (Fragment<?>)child;
-                int fragHeight = fragment.getMinHeight();
-                fragHeight += fragment.constraint.get(Constraint.Property.Type.TOP).getDist();
-                fragHeight += fragment.constraint.get(Constraint.Property.Type.BOTTOM).getDist();
+                int fragHeight = getConstraintSensitiveMinHeight(fragment);
                 if(fragHeight > min)
                 {
                     min = fragHeight;
@@ -127,6 +123,46 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
             }
         }
         return min > 0 ? min + (getBorderSize() * 2) : 4;
+    }
+
+    public int getConstraintSensitiveMinWidth(Fragment<?> child)
+    {
+        int ourWidth = child.getMinHeight();
+        ourWidth += child.constraint.get(Constraint.Property.Type.LEFT).getDist();
+        ourWidth += child.constraint.get(Constraint.Property.Type.RIGHT).getDist();
+
+        Constraint.Property left = child.constraint.get(Constraint.Property.Type.LEFT);
+        if(left != Constraint.Property.NONE && left.getReference() != this && left.getReference() instanceof Fragment) //we gotta end somewhere
+        {
+            ourWidth += getConstraintSensitiveMinWidth((Fragment<?>)left.getReference());
+        }
+
+        Constraint.Property right = child.constraint.get(Constraint.Property.Type.RIGHT);
+        if(right != Constraint.Property.NONE && right.getReference() != this && right.getReference() instanceof Fragment) //we gotta end somewhere
+        {
+            ourWidth += getConstraintSensitiveMinWidth((Fragment<?>)right.getReference());
+        }
+        return ourWidth;
+    }
+
+    public int getConstraintSensitiveMinHeight(Fragment<?> child)
+    {
+        int ourHeight = child.getMinHeight();
+        ourHeight += child.constraint.get(Constraint.Property.Type.TOP).getDist();
+        ourHeight += child.constraint.get(Constraint.Property.Type.BOTTOM).getDist();
+
+        Constraint.Property top = child.constraint.get(Constraint.Property.Type.TOP);
+        if(top != Constraint.Property.NONE && top.getReference() != this && top.getReference() instanceof Fragment) //we gotta end somewhere
+        {
+            ourHeight += getConstraintSensitiveMinHeight((Fragment<?>)top.getReference());
+        }
+
+        Constraint.Property bottom = child.constraint.get(Constraint.Property.Type.BOTTOM);
+        if(bottom != Constraint.Property.NONE && bottom.getReference() != this && bottom.getReference() instanceof Fragment) //we gotta end somewhere
+        {
+            ourHeight += getConstraintSensitiveMinHeight((Fragment<?>)bottom.getReference());
+        }
+        return ourHeight;
     }
 }
 
