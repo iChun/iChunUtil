@@ -16,6 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -695,5 +696,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public int getBottom()
     {
         return height;
+    }
+
+
+    //Convenience method
+    public static void bindTexture(ResourceLocation rl)
+    {
+        Minecraft.getInstance().getTextureManager().bindTexture(rl);
     }
 }

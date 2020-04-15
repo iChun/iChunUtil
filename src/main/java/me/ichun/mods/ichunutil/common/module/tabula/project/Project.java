@@ -29,7 +29,7 @@ public class Project extends Identifiable<Project> //Model
     public transient boolean isOldTabula; //*GASP*
 
     //Project texture Stuffs
-    public transient BufferedImage bufferedTexture;
+    private transient BufferedImage bufferedTexture;
     public transient int bufferedTextureId = -1;
 
     //defaults
@@ -86,6 +86,30 @@ public class Project extends Identifiable<Project> //Model
         isDirty = true;
     }
 
+    public void importProject(@Nonnull Project project, boolean texture)
+    {
+        if(texture && project.getBufferedTexture() != null)
+        {
+            loadBufferedTexture(project.getBufferedTexture(), project.bufferedTextureId);
+        }
+        parts.addAll(project.parts);
+    }
+
+    public void loadBufferedTexture(BufferedImage texture, int newId)
+    {
+        if(bufferedTextureId != -1)
+        {
+            //TODO delete the old texture
+        }
+        this.bufferedTexture = texture;
+        this.bufferedTextureId = newId;
+    }
+
+    public BufferedImage getBufferedTexture()
+    {
+        return bufferedTexture;
+    }
+
     public void repair()
     {
         while(projVersion < PROJ_VERSION)
@@ -96,12 +120,6 @@ public class Project extends Identifiable<Project> //Model
             }
             projVersion++;
         }
-    }
-
-    public static Project openProject(File file)
-    {
-
-        return null;
     }
 
     public static boolean saveProject(Project project, File file)

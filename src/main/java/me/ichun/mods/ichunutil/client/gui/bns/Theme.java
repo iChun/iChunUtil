@@ -10,7 +10,7 @@ public class Theme
     private static final transient Theme INSTANCE = new Theme(); //defaults. Try not to change this if possible.
 
     public transient String filename;
-    public transient Block block = Blocks.OAK_PLANKS;
+    public transient Block block = Blocks.SPRUCE_PLANKS;
 
     public String name = "Default";
     public String author = "iChun";
