@@ -651,7 +651,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
                     //RENDER
                     fill(borderColour, 0);
-                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : isMouseOver(mouseX, mouseY) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
+                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parentFragment.isDragging() && parentFragment.getFocused() != this)) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
                 }
 
                 elements.forEach(element -> element.render(mouseX, mouseY, partialTick));

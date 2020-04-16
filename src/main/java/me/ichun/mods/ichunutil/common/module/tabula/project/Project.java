@@ -96,12 +96,90 @@ public class Project extends Identifiable<Project> //Model
         }
     }
 
+    @Override
+    public void disown(Identifiable child)
+    {
+        if(!parts.remove(child))
+        {
+            for(Part part : parts)
+            {
+                part.disown(child);
+            }
+        }
+        else
+        {
+            child.parent = null;
+        }
+    }
+
+    @Override
+    public void adopt(Identifiable<?> child)
+    {
+        if(child instanceof Part)
+        {
+            parts.add((Part)child);
+            child.parent = this;
+        }
+    }
+
+    @Override
+    public boolean rearrange(Identifiable<?> before, Identifiable<?> child)
+    {
+        boolean arranged = false;
+        while(before.parent != null && before.parent != this)
+        {
+            if(before.parent.rearrange(before, child))
+            {
+                arranged = true;
+                break;
+            }
+            before = before.parent;
+        }
+        if(before.rearrange(before, child))
+        {
+            arranged = true;
+        }
+        if(before == child)
+        {
+            return true;
+        }
+        if(!arranged)
+        {
+            if(child instanceof Part && parts.contains(child) && parts.remove(child))
+            {
+                if(before == this)
+                {
+                    parts.add(0, (Part)child);
+                }
+                else
+                {
+                    for(int i = 0; i < parts.size(); i++)
+                    {
+                        if(parts.get(i) == before)
+                        {
+                            parts.add(i + 1, (Part)child);
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean save(@Nonnull File saveFile) //file to save as
     {
         return saveProject(this, saveFile);
     }
 
+    @Override
+    public Project getProject()
+    {
+        return this;
+    }
+
     @OnlyIn(Dist.CLIENT)
+    @Override
     public void markDirty()
     {
         isDirty = true;
@@ -343,6 +421,83 @@ public class Project extends Identifiable<Project> //Model
             }
         }
 
+        @Override
+        public void disown(Identifiable<?> child)
+        {
+            if(!(boxes.remove(child) | children.remove(child)))
+            {
+                for(Part part : children)
+                {
+                    part.disown(child);
+                }
+            }
+            else
+            {
+                child.parent = null;
+            }
+        }
+
+        @Override
+        public void adopt(Identifiable<?> child)
+        {
+            if(child instanceof Part)
+            {
+                children.add((Part)child);
+                child.parent = this;
+            }
+            else if(child instanceof Box)
+            {
+                boxes.add((Box)child);
+                child.parent = this;
+            }
+        }
+
+        @Override
+        public boolean rearrange(Identifiable<?> before, Identifiable<?> child)
+        {
+            if(before == child)
+            {
+                return true;
+            }
+            if(child instanceof Part && children.contains(child) && children.remove(child))
+            {
+                if(before == this)
+                {
+                    children.add(0, (Part)child);
+                }
+                else
+                {
+                    for(int i = 0; i < children.size(); i++)
+                    {
+                        if(children.get(i) == before)
+                        {
+                            children.add(i + 1, (Part)child);
+                        }
+                    }
+                }
+                return true;
+            }
+            if(child instanceof Box && boxes.contains(child) && boxes.remove(child))
+            {
+                if(before == this)
+                {
+                    boxes.add(0, (Box)child);
+                }
+                else
+                {
+                    for(int i = 0; i < boxes.size(); i++)
+                    {
+                        if(boxes.get(i) == before)
+                        {
+                            boxes.add(i + 1, (Box)child);
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
         public int[] getProjectTextureDims()
         {
             if(parent instanceof Part)
@@ -388,7 +543,7 @@ public class Project extends Identifiable<Project> //Model
             }
 
             @Override
-            public Identifiable getById(String id)
+            public Identifiable<?> getById(String id)
             {
                 return identifier.equals(id) ? this : null;
             }
@@ -404,6 +559,15 @@ public class Project extends Identifiable<Project> //Model
 
             @Override
             public void adoptChildren(){} //boxes are infertile
+
+            @Override
+            public void disown(Identifiable<?> child){}
+
+            @Override
+            public void adopt(Identifiable<?> child){}
+
+            @Override
+            public boolean rearrange(Identifiable<?> before, Identifiable<?> child){ return false; }
         }
     }
 

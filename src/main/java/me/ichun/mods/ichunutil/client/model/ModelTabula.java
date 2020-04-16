@@ -39,16 +39,20 @@ public class ModelTabula extends Model
     public HashMap<Project.Part, ModelRendererTabula> partMap = new HashMap<>();
     public boolean isDirty = true;
 
+    protected boolean selecting;
     private float selectionR = 0F;
     private float selectionG = 0F;
     private float selectionB = 0F;
     protected Project.Part selectedPart;
     protected Project.Part.Box selectedBox;
 
+    protected ModelRotationPoint rotationPoint;
+
     public ModelTabula(Project project)
     {
         super(rl -> RENDER_MODEL_NO_TEXTURE);
         this.project = project;
+        this.rotationPoint = new ModelRotationPoint();
     }
 
     public void createParts()
@@ -102,7 +106,7 @@ public class ModelTabula extends Model
         this.selectedBox = selectedBox;
         if(selectedPart != null || selectedBox != null)
         {
-            render(matrixStack, 1F);
+            render(matrixStack, 0.95F);
 
             this.selectedPart = null;
             this.selectedBox = null;
@@ -119,18 +123,7 @@ public class ModelTabula extends Model
         preRender();
 
         models.forEach(modelRenderer -> {
-            IRenderTypeBuffer.Impl bufferSource = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-            RenderType type = ModelTabula.RENDER_MODEL_NO_TEXTURE;
-            if(project.getBufferedTexture() != null)
-            {
-                type = RenderType.getEntityTranslucentCull(project.getBufferedTextureResourceLocation());
-            }
-
-            IVertexBuilder ivertexbuilder = bufferSource.getBuffer(type);
-
-            modelRenderer.render(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
-
-            bufferSource.finish();
+            modelRenderer.render(matrixStack, null, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
         });
 
     }
@@ -174,7 +167,9 @@ public class ModelTabula extends Model
 
         preRender();
         resetForSelection();
+        selecting = true;
         models.forEach(modelRenderer -> modelRenderer.renderForSelection(matrixStack, ivertexbuilder, 1F));
+        selecting = false;
 
         bufferSource.finish();
     }
@@ -206,7 +201,6 @@ public class ModelTabula extends Model
         @Nonnull
         public final ModelTabula parentModel;
         public HashMap<BoxToBox, int[]> boxes = new HashMap<>();
-        public boolean selecting;
 
         public ModelRendererTabula(ModelTabula parent, int textureWidthIn, int textureHeightIn, int textureOffsetXIn, int textureOffsetYIn)
         {
@@ -222,9 +216,7 @@ public class ModelTabula extends Model
 
         public void renderForSelection(MatrixStack matrixStackIn, IVertexBuilder bufferIn, float alpha)
         {
-            selecting = true;
             super.render(matrixStackIn, bufferIn, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
-            selecting = false;
         }
 
         public Project.Part.Box getSelectedBox(int r, int g, int b)
@@ -235,6 +227,17 @@ public class ModelTabula extends Model
                 if(value != null && value[0] == r && value[1] == g && value[2] == b)
                 {
                     return boxToBoxEntry.getKey().box;
+                }
+            }
+            for(ModelRenderer childModel : childModels)
+            {
+                if(childModel instanceof ModelRendererTabula)
+                {
+                    Project.Part.Box box = ((ModelRendererTabula)childModel).getSelectedBox(r, g, b);
+                    if(box != null)
+                    {
+                        return box;
+                    }
                 }
             }
             return null;
@@ -253,6 +256,56 @@ public class ModelTabula extends Model
         }
 
         @Override
+        public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            if (this.showModel) {
+                if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
+                    matrixStackIn.push();
+                    this.translateRotate(matrixStackIn);
+
+                    if(bufferIn == null)
+                    {
+                        IRenderTypeBuffer.Impl bufferSource = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                        RenderType type = ModelTabula.RENDER_MODEL_NO_TEXTURE;
+
+                        IVertexBuilder ivertexbuilder = bufferSource.getBuffer(type);
+
+                        if(parentModel.selectedPart != null && parentModel.partMap.get(parentModel.selectedPart) == this)
+                        {
+                            parentModel.rotationPoint.render(matrixStackIn, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 0F, 0F, 1F, 1F);
+                        }
+
+                        if(parentModel.project.getBufferedTexture() != null)
+                        {
+                            type = RenderType.getEntityTranslucentCull(parentModel.project.getBufferedTextureResourceLocation());
+                        }
+
+                        ivertexbuilder = bufferSource.getBuffer(type);
+
+                        this.doRender(matrixStackIn.getLast(), ivertexbuilder, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+                        bufferSource.finish();
+
+                        for(ModelRenderer modelrenderer : this.childModels)
+                        {
+                            modelrenderer.render(matrixStackIn, null, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        }
+                    }
+                    else
+                    {
+                        this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+                        for(ModelRenderer modelrenderer : this.childModels)
+                        {
+                            modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        }
+                    }
+
+                    matrixStackIn.pop();
+                }
+            }
+        }
+
+        @Override
         public void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
             if(parentModel.selectedPart != null && parentModel.partMap.get(parentModel.selectedPart) != this)
             {
@@ -263,12 +316,21 @@ public class ModelTabula extends Model
             Matrix3f matrix3f = matrixEntryIn.getNormal();
 
             for(ModelRenderer.ModelBox modelBox : this.cubeList) {
+                if(parentModel.selectedBox != null)
+                {
+                    BoxToBox box = getBoxToBox(modelBox);
+                    if(parentModel.selectedBox != box.box)
+                    {
+                        continue;
+                    }
+                }
+
                 float r, g, b, a;
                 r = red;
                 g = green;
                 b = blue;
                 a = alpha;
-                if(selecting)
+                if(parentModel.selecting)
                 {
                     BoxToBox box = getBoxToBox(modelBox);
                     if(box != null)
@@ -279,10 +341,7 @@ public class ModelTabula extends Model
                         boxes.put(box, new int[] { (int)(r * 255F), (int)(g * 255F), (int)(b * 255F) });
                     }
                 }
-                if(parentModel.selectedPart != null || parentModel.selectedBox != null)
-                {
 
-                }
                 for(ModelRenderer.TexturedQuad modelrenderer$texturedquad : modelBox.quads) {
                     Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
                     vector3f.transform(matrix3f);
@@ -297,7 +356,7 @@ public class ModelTabula extends Model
                         float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
                         Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
                         vector4f.transform(matrix4f);
-                        bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), r, g, b, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                        bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), r, g, b, a, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
                     }
                 }
             }

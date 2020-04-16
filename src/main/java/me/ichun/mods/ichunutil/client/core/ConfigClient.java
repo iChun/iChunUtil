@@ -23,6 +23,9 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Number of ticks before showing a tooltip", min = 0)
     public int guiTooltipCooldown = 20;
 
+    @Prop(comment = "Number of pixels before iChunUtil thinks you're trying to dock a window", min = 1)
+    public int guiDockBorder = 8;
+
     @Nonnull
     @Override
     public String getModId()

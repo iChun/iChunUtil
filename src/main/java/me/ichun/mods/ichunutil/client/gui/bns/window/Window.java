@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -272,7 +273,7 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 HashSet<Constraint.Property.Type> disabledDocks = getWorkspace().getDock().disabledDocks;
 
-                int dockSnap = 4;
+                int dockSnap = iChunUtil.configClient.guiDockBorder;
                 if(mouseY >= top && mouseY < bottom)
                 {
                     if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(LEFT))

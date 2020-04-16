@@ -247,7 +247,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
             }
         }
 
-        int dockSnap = 4;
+        int dockSnap = iChunUtil.configClient.guiDockBorder;
         if(mouseY >= top && mouseY < bottom)
         {
             if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(LEFT))
