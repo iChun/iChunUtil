@@ -668,6 +668,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         {
             if(parentFragment.getFocused() == this && isMouseOver(mouseX, mouseY))
             {
+                boolean oldSelected = selected;
                 if(button == 0)
                 {
                     selected = true;
@@ -676,7 +677,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     selected = false;
                 }
-                if(selectionHandler != null)
+                if(oldSelected != selected && selectionHandler != null)
                 {
                     selectionHandler.accept(this);
                 }
@@ -724,8 +725,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
             super.unfocus(guiReplacing);
             if(deselectOnUnfocus)
             {
+                boolean oldSelected = selected;
                 selected = false;
-                if(selectionHandler != null)
+                if(oldSelected && selectionHandler != null)
                 {
                     selectionHandler.accept(this);
                 }

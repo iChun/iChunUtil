@@ -35,11 +35,14 @@ public class ModelTabula extends Model
     @Nonnull
     public final Project project;
     public ArrayList<ModelRendererTabula> models = new ArrayList<>();
+    public HashMap<Project.Part, ModelRendererTabula> partMap = new HashMap<>();
     public boolean isDirty = true;
 
     private float selectionR = 0F;
     private float selectionG = 0F;
     private float selectionB = 0F;
+    protected Project.Part selectedPart;
+    protected Project.Part.Box selectedBox;
 
     public ModelTabula(Project project)
     {
@@ -50,6 +53,7 @@ public class ModelTabula extends Model
     public void createParts()
     {
         models.clear();
+        partMap.clear();
 
         textureWidth = project.texWidth;
         textureHeight = project.texHeight;
@@ -81,6 +85,7 @@ public class ModelTabula extends Model
         part.children.forEach(part1 -> populateModel(modelPart.childModels, part1));
 
         parts.add(modelPart);
+        partMap.put(part, modelPart);
     }
 
     @Override
@@ -88,6 +93,24 @@ public class ModelTabula extends Model
     {
         preRender();
         models.forEach(modelRenderer -> modelRenderer.render(matrixStack, iVertexBuilder, light, overlay, r, g, b, alpha));
+    }
+
+    public void render(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, Project.Part selectedPart, Project.Part.Box selectedBox)
+    {
+        this.selectedPart = selectedPart;
+        this.selectedBox = selectedBox;
+        if(selectedPart != null || selectedBox != null)
+        {
+            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
+            this.selectedPart = null;
+            this.selectedBox = null;
+            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 0.25F);
+        }
+        else
+        {
+            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        }
     }
 
     public void resetForSelection()
@@ -126,7 +149,7 @@ public class ModelTabula extends Model
     {
         preRender();
         resetForSelection();
-        models.forEach(modelRenderer -> modelRenderer.renderForSelection(matrixStack, iVertexBuilder));
+        models.forEach(modelRenderer -> modelRenderer.renderForSelection(matrixStack, iVertexBuilder, 1F));
     }
 
     public Project.Part.Box getSelectedBox(int r, int g, int b)
@@ -170,10 +193,10 @@ public class ModelTabula extends Model
             boxes.put(new BoxToBox(box, cubeList.get(cubeList.size() - 1)), null);
         }
 
-        public void renderForSelection(MatrixStack matrixStackIn, IVertexBuilder bufferIn)
+        public void renderForSelection(MatrixStack matrixStackIn, IVertexBuilder bufferIn, float alpha)
         {
             selecting = true;
-            super.render(matrixStackIn, bufferIn, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+            super.render(matrixStackIn, bufferIn, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
             selecting = false;
         }
 
@@ -204,14 +227,20 @@ public class ModelTabula extends Model
 
         @Override
         public void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            if(parentModel.selectedPart != null && parentModel.partMap.get(parentModel.selectedPart) != this)
+            {
+                return;
+            }
+
             Matrix4f matrix4f = matrixEntryIn.getMatrix();
             Matrix3f matrix3f = matrixEntryIn.getNormal();
 
             for(ModelRenderer.ModelBox modelBox : this.cubeList) {
-                float r, g, b;
+                float r, g, b, a;
                 r = red;
                 g = green;
                 b = blue;
+                a = alpha;
                 if(selecting)
                 {
                     BoxToBox box = getBoxToBox(modelBox);
@@ -222,6 +251,10 @@ public class ModelTabula extends Model
                         b = MathHelper.clamp(parentModel.getSelectionB(), 0F, 1F);
                         boxes.put(box, new int[] { (int)(r * 255F), (int)(g * 255F), (int)(b * 255F) });
                     }
+                }
+                if(parentModel.selectedPart != null || parentModel.selectedBox != null)
+                {
+
                 }
                 for(ModelRenderer.TexturedQuad modelrenderer$texturedquad : modelBox.quads) {
                     Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
