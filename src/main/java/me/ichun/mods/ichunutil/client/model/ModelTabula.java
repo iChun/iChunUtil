@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -95,22 +96,43 @@ public class ModelTabula extends Model
         models.forEach(modelRenderer -> modelRenderer.render(matrixStack, iVertexBuilder, light, overlay, r, g, b, alpha));
     }
 
-    public void render(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, Project.Part selectedPart, Project.Part.Box selectedBox)
+    public void render(MatrixStack matrixStack, Project.Part selectedPart, Project.Part.Box selectedBox)
     {
         this.selectedPart = selectedPart;
         this.selectedBox = selectedBox;
         if(selectedPart != null || selectedBox != null)
         {
-            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+            render(matrixStack, 1F);
 
             this.selectedPart = null;
             this.selectedBox = null;
-            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 0.25F);
+            render(matrixStack, 0.25F);
         }
         else
         {
-            render(matrixStack, iVertexBuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+            render(matrixStack, 1F);
         }
+    }
+
+    private void render(MatrixStack matrixStack, float alpha)
+    {
+        preRender();
+
+        models.forEach(modelRenderer -> {
+            IRenderTypeBuffer.Impl bufferSource = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+            RenderType type = ModelTabula.RENDER_MODEL_NO_TEXTURE;
+            if(project.getBufferedTexture() != null)
+            {
+                type = RenderType.getEntityTranslucentCull(project.getBufferedTextureResourceLocation());
+            }
+
+            IVertexBuilder ivertexbuilder = bufferSource.getBuffer(type);
+
+            modelRenderer.render(matrixStack, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
+
+            bufferSource.finish();
+        });
+
     }
 
     public void resetForSelection()
@@ -145,11 +167,16 @@ public class ModelTabula extends Model
         return selectionB;
     }
 
-    public void renderForSelection(MatrixStack matrixStack, IVertexBuilder iVertexBuilder)
+    public void renderForSelection(MatrixStack matrixStack)
     {
+        IRenderTypeBuffer.Impl bufferSource = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        IVertexBuilder ivertexbuilder = bufferSource.getBuffer(ModelTabula.RENDER_MODEL_FLAT);
+
         preRender();
         resetForSelection();
-        models.forEach(modelRenderer -> modelRenderer.renderForSelection(matrixStack, iVertexBuilder, 1F));
+        models.forEach(modelRenderer -> modelRenderer.renderForSelection(matrixStack, ivertexbuilder, 1F));
+
+        bufferSource.finish();
     }
 
     public Project.Part.Box getSelectedBox(int r, int g, int b)

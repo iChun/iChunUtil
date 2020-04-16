@@ -4,12 +4,10 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextField;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.util.function.Consumer;
 
 public class WindowConfirmation extends Window<Workspace>

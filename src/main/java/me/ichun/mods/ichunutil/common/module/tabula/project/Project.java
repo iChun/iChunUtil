@@ -181,6 +181,18 @@ public class Project extends Identifiable<Project> //Model
         return bufferedTexture;
     }
 
+    public ArrayList<Part.Box> getAllBoxes()
+    {
+        ArrayList<Part.Box> boxes = new ArrayList<>();
+
+        for(Part part : parts)
+        {
+            part.addAllBoxes(boxes);
+        }
+
+        return boxes;
+    }
+
     public void load()
     {
         repair(); //repair first.
@@ -343,6 +355,15 @@ public class Project extends Identifiable<Project> //Model
             }
             iChunUtil.LOGGER.error("We can't find out parent's texture dimensions, we have an orphaned Part. Uh oh! Their name is {} and their identifier is {}", name, identifier);
             return new int[] { texWidth, texHeight };
+        }
+
+        public void addAllBoxes(ArrayList<Box> boxes)
+        {
+            boxes.addAll(this.boxes);
+            for(Part child : children)
+            {
+                child.addAllBoxes(boxes);
+            }
         }
 
         public static class Box extends Identifiable<Box> //ModelBox

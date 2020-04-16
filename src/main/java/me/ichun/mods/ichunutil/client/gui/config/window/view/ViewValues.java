@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.config.window.view;
 
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
-import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
