@@ -71,7 +71,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return infos;
     }
 
-    public static void registerObjectInterpreter(Class<?> clz, Function<Object, List<String>> function)
+    public static void registerObjectInterpreter(Class<?> clz, Function<Object, List<String>> function) //TODO register Entities for .getName()
     {
         OBJECT_INTERPRETER.put(clz, function);
     }
@@ -345,10 +345,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
             maxTextWidth = event.getMaxWidth();
             font = event.getFontRenderer();
 
-            //TODO hmmmmmmmmm do we need these calls?
-            RenderSystem.disableRescaleNormal();
-            net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
-            RenderSystem.disableLighting();
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
@@ -466,10 +462,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
             MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(stack, textLines, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
 
-            RenderSystem.enableLighting();
             RenderSystem.enableDepthTest();
-            net.minecraft.client.renderer.RenderHelper.enableStandardItemLighting();
-            RenderSystem.enableRescaleNormal();
         }
     }
 

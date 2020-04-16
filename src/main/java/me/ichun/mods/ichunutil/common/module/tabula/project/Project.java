@@ -32,7 +32,7 @@ public class Project extends Identifiable<Project> //Model
     public transient File saveFile;
     public transient boolean isDirty;
     public transient boolean tampered; //file may be tampered?
-    public transient boolean isOldTabula; //*GASP*
+    public transient boolean isOldTabula; //*GASP* //TODO this
 
     //Project texture Stuffs
     private transient BufferedImage bufferedTexture;
