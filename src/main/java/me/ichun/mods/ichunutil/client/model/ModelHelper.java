@@ -80,7 +80,7 @@ public class ModelHelper
             clz = (Class<? extends Model>)clz.getSuperclass();
         }
 
-        HashSet<ModelRenderer> done = new HashSet<>();
+        HashMap<ModelRenderer, Identifiable<?>> done = new HashMap<>();
 
         fields.forEach((s, modelRenderer) -> {
             createPartFor(s, modelRenderer, done, project);
@@ -105,18 +105,23 @@ public class ModelHelper
         return project;
     }
 
-    private static void createPartFor(String name, ModelRenderer renderer, HashSet<ModelRenderer> done, Identifiable<?> parent)
+    private static void createPartFor(String name, ModelRenderer renderer, HashMap<ModelRenderer, Identifiable<?>> done, Identifiable<?> parent)
     {
-        if(done.contains(renderer))
+        if(done.containsKey(renderer))
         {
+            if(!(parent instanceof Project))
+            {
+                Identifiable<?> identifiable = done.get(renderer);
+                identifiable.parent.disown(identifiable);
+                parent.adopt(identifiable);
+            }
             return;
         }
         Project.Part part = new Project.Part(parent, done.size());
+
         part.boxes.clear();
         part.name = name;
-        part.texWidth = (int)renderer.textureWidth;
-        part.texHeight = (int)renderer.textureHeight;
-        part.matchProject = false;
+        part.matchProject = true;
         part.texOffX = renderer.textureOffsetX;
         part.texOffY = renderer.textureOffsetY;
 
@@ -142,25 +147,26 @@ public class ModelHelper
             box.dimY = Math.abs(modelBox.posY2 - modelBox.posY1);
             box.dimZ = Math.abs(modelBox.posZ2 - modelBox.posZ1);
 
+            //TODO THIS WHOLE IF STATEMENT IS OFF
             if(modelBox.quads != null) //TODO WHY DOES THE HORSE LOOK WEIRD
             {
                 ModelRenderer.PositionTextureVertex[] vertices = modelBox.quads[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
 
                 part.mirror = (((vertices[part.mirror ? 1 : 2].position.getY() - vertices[part.mirror ? 3 : 0].position.getY()) - box.dimY) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
 
-                part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
-                part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
+//                part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
+//                part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
 
                 if(vertices[part.mirror ? 2 : 1].textureV > vertices[part.mirror ? 1 : 2].textureV) //Check to correct the texture offset on the y axis to fix some minecraft models
                 {
                     part.mirror = !part.mirror;
 
-                    part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
-                    part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
+//                    part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
+//                    part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
                 }
 
-                float delta = ((vertices[part.mirror ? 1 : 2].position.getY() - vertices[part.mirror ? 3 : 0].position.getY()) - box.dimY) / 2;
-                box.expandX = box.expandY = box.expandZ = delta;
+                float delta = ((vertices[part.mirror ? 1 : 2].position.getY() - vertices[part.mirror ? 3 : 0].position.getY()) - box.dimY) / 2; //TODO this is delta Y only.
+//                box.expandX = box.expandY = box.expandZ = delta;
             }
 
             part.boxes.add(box);
@@ -181,6 +187,6 @@ public class ModelHelper
         {
             ((Project.Part)parent).children.add(part);
         }
-        done.add(renderer);
+        done.put(renderer, part);
     }
 }

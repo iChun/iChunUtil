@@ -350,7 +350,7 @@ public class Project extends Identifiable<Project> //Model
         public float rotAZ;
 
         public boolean mirror;
-        public boolean showModel = true;
+        public boolean showModel = true; //TODO allow this to be toggled
 
         public ArrayList<Box> boxes = new ArrayList<>();
         public ArrayList<Part> children = new ArrayList<>();
