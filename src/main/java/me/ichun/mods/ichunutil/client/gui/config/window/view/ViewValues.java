@@ -155,11 +155,11 @@ public class ViewValues extends View<WindowValues>
         }
         else if(clz.isEnum()) //enum!
         {
-            ElementContextMenu<?> input = new ElementContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
+            ElementDropdownContextMenu<?> input = new ElementDropdownContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
             {
                 if(listItem.selected)
                 {
-                    ElementContextMenu<?> contextMenu = (ElementContextMenu<?>)menu;
+                    ElementDropdownContextMenu<?> contextMenu = (ElementDropdownContextMenu<?>)menu;
                     contextMenu.text = listItem.getObject().toString();
                 }
             });

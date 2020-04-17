@@ -26,6 +26,9 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Number of pixels before iChunUtil thinks you're trying to dock a window", min = 1)
     public int guiDockBorder = 8;
 
+    @Prop(comment = "Speed, in ticks, to register a double click", min = 1)
+    public int guiDoubleClickSpeed = 10;
+
     @Nonnull
     @Override
     public String getModId()

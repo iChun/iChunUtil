@@ -81,6 +81,7 @@ public class ElementTextField extends Element
     private Predicate<String> validator = s -> true;
     private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> s;
     private @Nullable Consumer<String> responder;
+    private @Nullable Consumer<String> enterResponder;
 
     private int lastLeft;
     private int lastTop;
@@ -116,6 +117,12 @@ public class ElementTextField extends Element
     public Consumer<String> getResponder()
     {
         return this.responder;
+    }
+
+    public <T extends ElementTextField> T setEnterResponder(Consumer<String> responder)
+    {
+        this.enterResponder = responder;
+        return (T)this;
     }
 
     public <T extends ElementTextField> T setMaxStringLength(int i)
@@ -225,15 +232,30 @@ public class ElementTextField extends Element
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_)
+    {
+        boolean flag = super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
+        if((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && enterResponder != null)
+        {
+            enterResponder.accept(getText());
+        }
+        return flag;
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
         if(isMouseOver(mouseX, mouseY))
         {
             setFocused(widget);
             widget.setFocused2(true);
-            if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) //TODO middle mouse pastes
+            if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
                 widget.setText("");
+            }
+            else if(button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
+            {
+                widget.writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
             }
             widget.mouseClicked(mouseX, mouseY, button);
             return true;

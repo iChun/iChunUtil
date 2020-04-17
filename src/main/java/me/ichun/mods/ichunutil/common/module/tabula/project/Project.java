@@ -330,7 +330,7 @@ public class Project extends Identifiable<Project> //Model
 
     public static class Part extends Identifiable<Part> //ModelRenderer
     {
-        public ArrayList<String> notes = new ArrayList<>();
+        public ArrayList<String> notes = new ArrayList<>(); //TODO add support for this
 
         public int texWidth = 64;
         public int texHeight = 32;
@@ -535,6 +535,9 @@ public class Project extends Identifiable<Project> //Model
             public float expandX;
             public float expandY;
             public float expandZ;
+
+            public int texOffX;
+            public int texOffY;
 
             public Box(Identifiable<?> parent)
             {

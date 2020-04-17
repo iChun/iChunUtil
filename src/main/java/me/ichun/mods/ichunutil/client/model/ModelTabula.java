@@ -126,6 +126,27 @@ public class ModelTabula extends Model
             modelRenderer.render(matrixStack, null, hideTexture ? 0 : 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
         });
 
+        //DEBUG
+        if(!models.isEmpty())
+        {
+            ModelRenderer renderer = models.get(0);
+            if(!renderer.cubeList.isEmpty())
+            {
+//                renderer.addBox(0, 0, 0, 3, 3, 3, 0.72F, 2.51F, 8.27F);
+                ModelRenderer.ModelBox box = renderer.cubeList.get(0);
+
+                float dimX = Math.abs(box.posX2 - box.posX1);
+                float dimY = Math.abs(box.posY2 - box.posY1);
+                float dimZ = Math.abs(box.posZ2 - box.posZ1);
+
+                boolean mirrored = (box.quads[2].vertexPositions[3].position.getX() - box.quads[2].vertexPositions[2].position.getX()) < 0;
+                float deltaX = (Math.max(box.quads[2].vertexPositions[3].position.getX(), box.quads[2].vertexPositions[2].position.getX()) - Math.min(box.quads[2].vertexPositions[3].position.getX(), box.quads[2].vertexPositions[2].position.getX()) - dimX) / 2F;
+                float deltaY = (Math.max(box.quads[2].vertexPositions[2].position.getY(), box.quads[4].vertexPositions[3].position.getY()) - Math.min(box.quads[2].vertexPositions[2].position.getY(), box.quads[4].vertexPositions[3].position.getY()) - dimY) / 2F;
+                float deltaZ = (Math.max(box.quads[1].vertexPositions[3].position.getZ(), box.quads[1].vertexPositions[2].position.getZ()) - Math.min(box.quads[1].vertexPositions[3].position.getZ(), box.quads[1].vertexPositions[2].position.getZ()) - dimZ) / 2F;
+                float texOffX = box.quads[1].vertexPositions[1].textureU * renderer.textureWidth;
+                float texOffY = box.quads[2].vertexPositions[1].textureV * renderer.textureHeight;
+            }
+        }
     }
 
     public void resetForSelection()
@@ -210,7 +231,11 @@ public class ModelTabula extends Model
 
         public void addBox(Project.Part.Box box)
         {
-            addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
+            int texOffX = this.textureOffsetX;
+            int texOffY = this.textureOffsetY;
+            this.setTextureOffset(this.textureOffsetX + box.texOffX, this.textureOffsetY + box.texOffY);
+            this.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
+            this.setTextureOffset(texOffX, texOffY);
             boxes.put(new BoxToBox(box, cubeList.get(cubeList.size() - 1)), null);
         }
 

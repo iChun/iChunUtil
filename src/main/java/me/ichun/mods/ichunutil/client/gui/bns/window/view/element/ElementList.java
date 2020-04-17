@@ -5,10 +5,12 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -477,6 +479,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         protected final @Nonnull M heldObject; //height 13?
         public List<Element<?>> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
+        private TriConsumer<Double, Double, Item<M>> rightClickConsumer;
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
         private @Nullable Consumer<Item<M>> doubleClickHandler;
@@ -492,6 +495,12 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public Item<M> staySelectedOnDefocus()
         {
             deselectOnUnfocus = false;
+            return this;
+        }
+
+        public Item<M> setRightClickConsumer(TriConsumer<Double, Double, Item<M>> rightClickConsumer)
+        {
+            this.rightClickConsumer = rightClickConsumer;
             return this;
         }
 
@@ -675,7 +684,14 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 }
                 else if(button == 1) //RMB
                 {
-                    selected = false;
+                    if(rightClickConsumer != null)
+                    {
+                        rightClickConsumer.accept(mouseX, mouseY, this);
+                    }
+                    else
+                    {
+                        selected = false;
+                    }
                 }
                 if(oldSelected != selected && selectionHandler != null)
                 {
@@ -690,7 +706,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                     }
                     else
                     {
-                        clickTimeout = 10; //TODO config for double click speed
+                        clickTimeout = iChunUtil.configClient.guiDoubleClickSpeed;
                     }
                 }
             }

@@ -123,12 +123,12 @@ public class WorkspaceConfigs extends Workspace
                     {
                         field.set(valueWrapper.parent, ((ElementTextField)e).getText());
                     }
-                    else if(clz.isEnum() && e instanceof ElementContextMenu) //enum!
+                    else if(clz.isEnum() && e instanceof ElementDropdownContextMenu) //enum!
                     {
                         Object[] enums = clz.getEnumConstants();
                         for(Object en : enums)
                         {
-                            if(en.toString().equals(((ElementContextMenu<?>)e).text))
+                            if(en.toString().equals(((ElementDropdownContextMenu<?>)e).text))
                             {
                                 field.set(valueWrapper.parent, en);
                                 break;
