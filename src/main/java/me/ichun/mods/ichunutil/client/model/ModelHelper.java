@@ -136,7 +136,7 @@ public class ModelHelper
         part.mirror = renderer.mirror;
         part.showModel = renderer.showModel;
 
-        for(ModelRenderer.ModelBox modelBox : renderer.cubeList)
+        for(ModelRenderer.ModelBox modelBox : renderer.cubeList) //TODO ModelRenderer can have a different texture offset per box. How do we manage this?
         {
             Project.Part.Box box = new Project.Part.Box(part);
             box.posX = modelBox.posX1;

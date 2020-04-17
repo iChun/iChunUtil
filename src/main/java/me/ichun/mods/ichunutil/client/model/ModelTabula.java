@@ -100,30 +100,30 @@ public class ModelTabula extends Model
         models.forEach(modelRenderer -> modelRenderer.render(matrixStack, iVertexBuilder, light, overlay, r, g, b, alpha));
     }
 
-    public void render(MatrixStack matrixStack, Project.Part selectedPart, Project.Part.Box selectedBox)
+    public void render(MatrixStack matrixStack, Project.Part selectedPart, Project.Part.Box selectedBox, boolean hideTexture)
     {
         this.selectedPart = selectedPart;
         this.selectedBox = selectedBox;
         if(selectedPart != null || selectedBox != null)
         {
-            render(matrixStack, 0.95F);
+            render(matrixStack, 0.95F, hideTexture);
 
             this.selectedPart = null;
             this.selectedBox = null;
-            render(matrixStack, 0.25F);
+            render(matrixStack, 0.25F, hideTexture);
         }
         else
         {
-            render(matrixStack, 1F);
+            render(matrixStack, 1F, hideTexture);
         }
     }
 
-    private void render(MatrixStack matrixStack, float alpha)
+    private void render(MatrixStack matrixStack, float alpha, boolean hideTexture)
     {
         preRender();
 
         models.forEach(modelRenderer -> {
-            modelRenderer.render(matrixStack, null, 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
+            modelRenderer.render(matrixStack, null, hideTexture ? 0 : 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
         });
 
     }
@@ -274,7 +274,7 @@ public class ModelTabula extends Model
                             parentModel.rotationPoint.render(matrixStackIn, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 0F, 0F, 1F, 1F);
                         }
 
-                        if(parentModel.project.getBufferedTexture() != null)
+                        if(parentModel.project.getBufferedTexture() != null && packedLightIn > 0)
                         {
                             type = RenderType.getEntityTranslucentCull(parentModel.project.getBufferedTextureResourceLocation());
                         }
