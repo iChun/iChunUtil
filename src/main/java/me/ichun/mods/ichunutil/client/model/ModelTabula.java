@@ -125,28 +125,6 @@ public class ModelTabula extends Model
         models.forEach(modelRenderer -> {
             modelRenderer.render(matrixStack, null, hideTexture ? 0 : 15728880, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, alpha);
         });
-
-        //DEBUG
-        if(!models.isEmpty())
-        {
-            ModelRenderer renderer = models.get(0);
-            if(!renderer.cubeList.isEmpty())
-            {
-//                renderer.addBox(0, 0, 0, 3, 3, 3, 0.72F, 2.51F, 8.27F);
-                ModelRenderer.ModelBox box = renderer.cubeList.get(0);
-
-                float dimX = Math.abs(box.posX2 - box.posX1);
-                float dimY = Math.abs(box.posY2 - box.posY1);
-                float dimZ = Math.abs(box.posZ2 - box.posZ1);
-
-                boolean mirrored = (box.quads[2].vertexPositions[3].position.getX() - box.quads[2].vertexPositions[2].position.getX()) < 0;
-                float deltaX = (Math.max(box.quads[2].vertexPositions[3].position.getX(), box.quads[2].vertexPositions[2].position.getX()) - Math.min(box.quads[2].vertexPositions[3].position.getX(), box.quads[2].vertexPositions[2].position.getX()) - dimX) / 2F;
-                float deltaY = (Math.max(box.quads[2].vertexPositions[2].position.getY(), box.quads[4].vertexPositions[3].position.getY()) - Math.min(box.quads[2].vertexPositions[2].position.getY(), box.quads[4].vertexPositions[3].position.getY()) - dimY) / 2F;
-                float deltaZ = (Math.max(box.quads[1].vertexPositions[3].position.getZ(), box.quads[1].vertexPositions[2].position.getZ()) - Math.min(box.quads[1].vertexPositions[3].position.getZ(), box.quads[1].vertexPositions[2].position.getZ()) - dimZ) / 2F;
-                float texOffX = box.quads[1].vertexPositions[1].textureU * renderer.textureWidth;
-                float texOffY = box.quads[2].vertexPositions[1].textureV * renderer.textureHeight;
-            }
-        }
     }
 
     public void resetForSelection()
@@ -301,7 +279,7 @@ public class ModelTabula extends Model
 
                         if(parentModel.project.getBufferedTexture() != null && packedLightIn > 0)
                         {
-                            type = RenderType.getEntityTranslucentCull(parentModel.project.getBufferedTextureResourceLocation());
+                            type = RenderType.getEntityTranslucent(parentModel.project.getBufferedTextureResourceLocation());
                         }
 
                         ivertexbuilder = bufferSource.getBuffer(type);

@@ -127,7 +127,7 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
 
     public int getConstraintSensitiveMinWidth(Fragment<?> child)
     {
-        int ourWidth = child.getMinHeight();
+        int ourWidth = child.getMinWidth();
         ourWidth += child.constraint.get(Constraint.Property.Type.LEFT).getDist();
         ourWidth += child.constraint.get(Constraint.Property.Type.RIGHT).getDist();
 

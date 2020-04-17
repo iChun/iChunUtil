@@ -100,6 +100,13 @@ public class ModelHelper
             }
         });
 
+        fields.forEach(((s, modelRenderer) -> {
+            if(done.containsKey(modelRenderer))
+            {
+                done.get(modelRenderer).name = s;
+            }
+        }));
+
         project.partCountProjectLife = done.size();
 
         return project;
@@ -121,7 +128,9 @@ public class ModelHelper
 
         part.boxes.clear();
         part.name = name;
-        part.matchProject = true;
+        part.texWidth = (int)renderer.textureWidth;
+        part.texHeight = (int)renderer.textureHeight;
+        part.matchProject = false;
         part.texOffX = renderer.textureOffsetX;
         part.texOffY = renderer.textureOffsetY;
 
@@ -136,40 +145,62 @@ public class ModelHelper
         part.mirror = renderer.mirror;
         part.showModel = renderer.showModel;
 
-        for(ModelRenderer.ModelBox modelBox : renderer.cubeList) //TODO ModelRenderer can have a different texture offset per box. How do we manage this?
+        if(!renderer.cubeList.isEmpty())
         {
-            Project.Part.Box box = new Project.Part.Box(part);
-            box.posX = modelBox.posX1;
-            box.posY = modelBox.posY1;
-            box.posZ = modelBox.posZ1;
+            int lowTexX = part.texWidth;
+            int lowTexY = part.texHeight;
 
-            box.dimX = Math.abs(modelBox.posX2 - modelBox.posX1);
-            box.dimY = Math.abs(modelBox.posY2 - modelBox.posY1);
-            box.dimZ = Math.abs(modelBox.posZ2 - modelBox.posZ1);
-
-            //TODO THIS WHOLE IF STATEMENT IS OFF
-            if(modelBox.quads != null) //TODO WHY DOES THE HORSE LOOK WEIRD
+            for(ModelRenderer.ModelBox box : renderer.cubeList)
             {
-                ModelRenderer.PositionTextureVertex[] vertices = modelBox.quads[1].vertexPositions;// left Quad, txOffsetX, txOffsetY + sizeZ
+                Project.Part.Box projBox = new Project.Part.Box(part);
+                projBox.posX = box.posX1;
+                projBox.posY = box.posY1;
+                projBox.posZ = box.posZ1;
 
-                part.mirror = (((vertices[part.mirror ? 1 : 2].position.getY() - vertices[part.mirror ? 3 : 0].position.getY()) - box.dimY) / 2 < 0.0D);//silly techne check to see if the model is really mirrored or not
+                projBox.dimX = Math.abs(box.posX2 - box.posX1);
+                projBox.dimY = Math.abs(box.posY2 - box.posY1);
+                projBox.dimZ = Math.abs(box.posZ2 - box.posZ1);
 
-//                part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
-//                part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
-
-                if(vertices[part.mirror ? 2 : 1].textureV > vertices[part.mirror ? 1 : 2].textureV) //Check to correct the texture offset on the y axis to fix some minecraft models
+                if(box.quads != null)
                 {
-                    part.mirror = !part.mirror;
+                    boolean mirrored = box.quads[1].vertexPositions[3].position.getY() < box.quads[1].vertexPositions[1].position.getY() || box.quads[2].vertexPositions[0].position.getZ() < box.quads[2].vertexPositions[3].position.getZ();
 
-//                    part.texOffX = (int)(vertices[part.mirror ? 2 : 1].textureU * part.texWidth);
-//                    part.texOffY = (int)(vertices[part.mirror ? 2 : 1].textureV * part.texHeight - box.dimZ);
+                    projBox.expandX = ((box.quads[2].vertexPositions[mirrored ? 2 : 3].position.getX() - box.quads[2].vertexPositions[mirrored ? 3 : 2].position.getX()) - projBox.dimX) / 2F; //x is doubly flipped in mirrored. it's a bit off.
+                    projBox.expandY = ((box.quads[4].vertexPositions[mirrored ? 0 : 3].position.getY() - box.quads[2].vertexPositions[mirrored ? 1 : 2].position.getY()) - projBox.dimY) / 2F;
+                    projBox.expandZ = ((box.quads[1].vertexPositions[mirrored ? 1 : 2].position.getZ() - box.quads[1].vertexPositions[mirrored ? 0 : 3].position.getZ()) - projBox.dimZ) / 2F;
+
+                    int texOffX = (int)(box.quads[1].vertexPositions[mirrored ? 2 : 1].textureU * renderer.textureWidth);
+                    int texOffY = (int)(Math.min(box.quads[2].vertexPositions[1].textureV, box.quads[2].vertexPositions[2].textureV) * renderer.textureHeight);
+                    if(texOffX < lowTexX)
+                    {
+                        lowTexX = texOffX;
+                    }
+                    if(texOffY < lowTexY)
+                    {
+                        lowTexY = texOffY;
+                    }
+                    projBox.texOffX = texOffX;
+                    projBox.texOffY = texOffY;
                 }
 
-                float delta = ((vertices[part.mirror ? 1 : 2].position.getY() - vertices[part.mirror ? 3 : 0].position.getY()) - box.dimY) / 2; //TODO this is delta Y only.
-//                box.expandX = box.expandY = box.expandZ = delta;
+                part.boxes.add(projBox);
             }
 
-            part.boxes.add(box);
+            part.texOffX = lowTexX;
+            part.texOffY = lowTexY;
+            for(int i = renderer.cubeList.size() - 1; i >= 0; i--)
+            {
+                ModelRenderer.ModelBox box = renderer.cubeList.get(i);
+
+                Project.Part.Box projBox = part.boxes.get(i);
+                projBox.texOffX -= lowTexX;
+                projBox.texOffY -= lowTexY;
+
+                if(i == 0)
+                {
+                    part.mirror = box.quads[1].vertexPositions[3].position.getY() < box.quads[1].vertexPositions[1].position.getY();
+                }
+            }
         }
 
         ObjectList<ModelRenderer> childModels = renderer.childModels;
