@@ -6,7 +6,7 @@ import net.minecraft.client.resources.I18n;
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementToggleTextable<T extends ElementToggle> extends ElementToggle<T>
+public class ElementToggleTextable<T extends ElementToggleTextable> extends ElementToggle<T>
 {
     public @Nonnull String offString;
     public @Nonnull String onString;
