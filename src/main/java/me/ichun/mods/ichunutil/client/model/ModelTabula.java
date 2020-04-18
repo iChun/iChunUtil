@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,11 @@ public class ModelTabula extends Model
             .build(false));
     public static final RenderType RENDER_MODEL_FLAT = RenderType.makeType("tabula_model_flat", DefaultVertexFormats.ENTITY, 7, 256, true, false, RenderType.State.getBuilder()
             .texture(RenderState.NO_TEXTURE)
+            .alpha(RenderState.DEFAULT_ALPHA)
+            .fog(RenderState.NO_FOG)
+            .build(false));
+    public static final RenderType RENDER_MODEL_COMPASS_FLAT = RenderType.makeType("tabula_model_compass_flat", DefaultVertexFormats.ENTITY, 7, 256, true, false, RenderType.State.getBuilder()
+            .texture(new RenderState.TextureState(new ResourceLocation("tabula", "textures/model/cube.png"), false, false))
             .alpha(RenderState.DEFAULT_ALPHA)
             .fog(RenderState.NO_FOG)
             .build(false));

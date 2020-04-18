@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,12 +84,6 @@ public class Project extends Identifiable<Project> //Model
         String json = SIMPLE_GSON.toJson(this);
         this.parts = parts;
         return json;
-    }
-
-    @Override
-    public void transferChildren(Project clone)
-    {
-        clone.parts = parts;
     }
 
     @Override
@@ -171,6 +167,35 @@ public class Project extends Identifiable<Project> //Model
         return false;
     }
 
+    @Override
+    public void witnessProtectionProgramme()
+    {
+        identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
+        parts.forEach(Identifiable::witnessProtectionProgramme);
+    }
+
+    @Override
+    public Project clone()
+    {
+        Project project = SIMPLE_GSON.fromJson(SIMPLE_GSON.toJson(this), Project.class);
+        project.adoptChildren();
+        return project;
+    }
+
+    //DO NOT CALL DESTROY
+    public void transferTransients(Project project) //not all transients
+    {
+        //force dirty
+        project.isDirty = true;
+
+        project.saveFile = this.saveFile;
+        project.tampered = this.tampered;
+        project.isOldTabula = this.isOldTabula;
+
+        project.bufferedTexture = this.bufferedTexture;
+        project.bufferedImageTexture = this.bufferedImageTexture;
+    }
+
     public boolean save(@Nonnull File saveFile) //file to save as
     {
         return saveProject(this, saveFile);
@@ -182,13 +207,17 @@ public class Project extends Identifiable<Project> //Model
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void markDirty()
+    public Project markDirty() //Should mostly be called by the PROJECT INFO.
     {
         isDirty = true;
 
-        updateModel();
+        if(FMLEnvironment.dist.isClient())
+        {
+            updateModel();
+        }
+
+        return this;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -196,7 +225,6 @@ public class Project extends Identifiable<Project> //Model
     {
         //destroy the model
         setBufferedTexture(null);
-
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -220,8 +248,6 @@ public class Project extends Identifiable<Project> //Model
 
     public void importProject(@Nonnull Project project, boolean texture)
     {
-        markDirty();
-
         if(texture && project.getBufferedTexture() != null)
         {
             setBufferedTexture(project.getBufferedTexture());
@@ -415,13 +441,6 @@ public class Project extends Identifiable<Project> //Model
         }
 
         @Override
-        public void transferChildren(Part clone)
-        {
-            clone.boxes = boxes;
-            clone.children = children;
-        }
-
-        @Override
         public void adoptChildren()
         {
             for(Box box : boxes)
@@ -514,6 +533,22 @@ public class Project extends Identifiable<Project> //Model
             return false;
         }
 
+        @Override
+        public void witnessProtectionProgramme()
+        {
+            identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
+            boxes.forEach(Identifiable::witnessProtectionProgramme);
+            children.forEach(Identifiable::witnessProtectionProgramme);
+        }
+
+        @Override
+        public Part clone()
+        {
+            Part part = SIMPLE_GSON.fromJson(SIMPLE_GSON.toJson(this), Part.class);
+            part.adoptChildren();
+            return part;
+        }
+
         public int[] getProjectTextureDims()
         {
             if(parent instanceof Part)
@@ -544,6 +579,12 @@ public class Project extends Identifiable<Project> //Model
             {
                 child.addAllParts(parts);
             }
+        }
+
+        public void resetPositions()
+        {
+            this.rotPX = this.rotPY = this.rotPZ = 0F;
+            children.forEach(Part::resetPositions);
         }
 
         public static class Box extends Identifiable<Box> //ModelBox
@@ -583,9 +624,6 @@ public class Project extends Identifiable<Project> //Model
             }
 
             @Override
-            public void transferChildren(Box clone){}
-
-            @Override
             public void adoptChildren(){} //boxes are infertile
 
             @Override
@@ -596,14 +634,25 @@ public class Project extends Identifiable<Project> //Model
 
             @Override
             public boolean rearrange(Identifiable<?> before, Identifiable<?> child){ return false; }
+
+            @Override
+            public void witnessProtectionProgramme()
+            {
+                identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
+            }
+
+            @Override
+            public Box clone()
+            {
+                Box box = SIMPLE_GSON.fromJson(SIMPLE_GSON.toJson(this), Box.class);
+                box.adoptChildren();
+                return box;
+            }
         }
     }
 
-    public Part addPart(Identifiable<?> parent)
+    public void addPart(Identifiable<?> parent, Part part)
     {
-        markDirty();
-
-        Part part = new Part(this, ++partCountProjectLife);
         if(parent instanceof Part) //Parts can have children
         {
             part.parent = parent;
@@ -612,36 +661,31 @@ public class Project extends Identifiable<Project> //Model
         }
         else if(parent instanceof Part.Box)
         {
-            return addPart(parent.parent);
+            addPart(parent.parent, part);
         }
         else
         {
             parts.add(part);
         }
-
-        return part;
     }
 
-    public Part.Box addBox(Identifiable<?> parent)
+    public void addBox(Identifiable<?> parent, Part.Box box)
     {
-        markDirty();
-
         if(parent instanceof Part) //Parts can have children
         {
-            Part.Box box = new Part.Box(parent);
-
+            box.parent = parent;
             ((Part)parent).boxes.add(box);
-            return box;
         }
         else if(parent instanceof Part.Box)
         {
-            return addBox(parent.parent);
+            addBox(parent.parent, box);
         }
         else
         {
             Part part = new Part(this, ++partCountProjectLife);
+            part.boxes.clear();
             parts.add(part);
-            return part.boxes.get(0);
+            addBox(part, box);
         }
     }
 
@@ -657,6 +701,5 @@ public class Project extends Identifiable<Project> //Model
             ((Part)parent).boxes.remove(child);
             ((Part)parent).children.remove(child);
         }
-        markDirty();
     }
 }

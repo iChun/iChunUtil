@@ -14,22 +14,24 @@ public abstract class Identifiable<T>
 
     public abstract Identifiable<?> getById(String id);
     public abstract String getJsonWithoutChildren();
-    public abstract void transferChildren(T clone);
     public abstract void adoptChildren();
     public abstract void disown(Identifiable<?> child);
     public abstract void adopt(Identifiable<?> child);
     public abstract boolean rearrange(Identifiable<?> before, Identifiable<?> child);
+    public abstract void witnessProtectionProgramme();
+    public abstract T clone();
 
     public Project getProject()
     {
         return parent != null ? parent.getProject() : null;
     }
 
-    public void markDirty()
+    public Project markDirty()
     {
         if(parent != null)
         {
-            parent.markDirty();
+            return parent.markDirty();
         }
+        return null;
     }
 }
