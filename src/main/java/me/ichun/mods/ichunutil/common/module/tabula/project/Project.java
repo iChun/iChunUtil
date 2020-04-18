@@ -47,6 +47,10 @@ public class Project extends Identifiable<Project> //Model
     public int projVersion = PROJ_VERSION; //TODO detect if version is old (< 5). Support? Should we support Techne?
     public ArrayList<String> notes = new ArrayList<>();
 
+    public float scaleX = 1F;
+    public float scaleY = 1F;
+    public float scaleZ = 1F;
+
     public int texWidth = 64;
     public int texHeight = 32;
 
@@ -271,6 +275,18 @@ public class Project extends Identifiable<Project> //Model
         return boxes;
     }
 
+    public ArrayList<Part> getAllParts()
+    {
+        ArrayList<Part> parts = new ArrayList<>(this.parts);
+
+        for(Part part : this.parts)
+        {
+            part.addAllParts(parts);
+        }
+
+        return parts;
+    }
+
     public void load()
     {
         repair(); //repair first.
@@ -330,7 +346,7 @@ public class Project extends Identifiable<Project> //Model
 
     public static class Part extends Identifiable<Part> //ModelRenderer
     {
-        public ArrayList<String> notes = new ArrayList<>(); //TODO add support for this
+        public ArrayList<String> notes = new ArrayList<>();
 
         public int texWidth = 64;
         public int texHeight = 32;
@@ -350,7 +366,7 @@ public class Project extends Identifiable<Project> //Model
         public float rotAZ;
 
         public boolean mirror;
-        public boolean showModel = true; //TODO allow this to be toggled
+        public boolean showModel = true;
 
         public ArrayList<Box> boxes = new ArrayList<>();
         public ArrayList<Part> children = new ArrayList<>();
@@ -518,6 +534,15 @@ public class Project extends Identifiable<Project> //Model
             for(Part child : children)
             {
                 child.addAllBoxes(boxes);
+            }
+        }
+
+        public void addAllParts(ArrayList<Part> parts)
+        {
+            parts.addAll(this.children);
+            for(Part child : children)
+            {
+                child.addAllParts(parts);
             }
         }
 

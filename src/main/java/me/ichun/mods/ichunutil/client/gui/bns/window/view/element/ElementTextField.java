@@ -142,8 +142,8 @@ public class ElementTextField extends Element
     {
         super.init();
         widget = new TextFieldWidget(getFontRenderer(), getLeft(), getTop(), width, height, "Text Field"); //TODO update this narration message?
-        widget.setText(defaultText);
         widget.setMaxStringLength(maxStringLength);
+        widget.setText(defaultText);
         widget.setValidator(validator);
         widget.setResponder(responder);
         widget.setTextFormatter(textFormatter);

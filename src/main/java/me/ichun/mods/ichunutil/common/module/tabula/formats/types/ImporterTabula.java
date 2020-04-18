@@ -121,13 +121,15 @@ public class ImporterTabula
         old.repair(); //put us at the latest version, 4.
 
         Project project = new Project();
-        project.isOldTabula = true; //TODO warn.
+        project.isOldTabula = true;
         project.name = old.modelName;
         project.author = old.authorName;
         project.notes.addAll(old.metadata);
         project.texWidth = old.textureWidth;
         project.texHeight = old.textureHeight;
-        //TODO scale is not supported
+        project.scaleX = (float)old.scale[0];
+        project.scaleY = (float)old.scale[1];
+        project.scaleZ = (float)old.scale[2];
 
         //TODO handle cube Groups
 
@@ -163,15 +165,11 @@ public class ImporterTabula
             part.rotAY = (float)cube.rotation[1];
             part.rotAZ = (float)cube.rotation[2];
 
-            //TODO scale
-
             part.texOffX = cube.txOffset[0];
             part.texOffY = cube.txOffset[1];
 
             part.mirror = cube.txMirror;
             box.expandX = box.expandY = box.expandZ = (float)cube.mcScale;
-
-            //TODO opacity
 
             part.showModel = !cube.hidden;
 
