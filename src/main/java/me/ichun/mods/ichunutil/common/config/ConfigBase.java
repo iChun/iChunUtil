@@ -190,7 +190,7 @@ public abstract class ConfigBase
         {
             builder.comment(props.comment());
         }
-        else if(iChunUtil.isDevEnvironemnt())
+        else if(iChunUtil.isDevEnvironment())
         {
             iChunUtil.LOGGER.warn("Property is not commented: {}", fieldName); //TODO switch this over to localization?
         }

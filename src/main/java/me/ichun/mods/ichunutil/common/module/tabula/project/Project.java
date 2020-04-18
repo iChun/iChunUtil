@@ -34,7 +34,7 @@ public class Project extends Identifiable<Project> //Model
     public transient File saveFile;
     public transient boolean isDirty;
     public transient boolean tampered; //file may be tampered?
-    public transient boolean isOldTabula; //*GASP* //TODO this
+    public transient boolean isOldTabula; //*GASP*
 
     //Project texture Stuffs
     private transient BufferedImage bufferedTexture;
@@ -46,7 +46,7 @@ public class Project extends Identifiable<Project> //Model
 
     //defaults
     public String author = "";
-    public int projVersion = PROJ_VERSION; //TODO detect if version is old (< 5). Support? Should we support Techne?
+    public int projVersion = PROJ_VERSION;
     public ArrayList<String> notes = new ArrayList<>();
 
     public float scaleX = 1F;
@@ -56,11 +56,12 @@ public class Project extends Identifiable<Project> //Model
     public int texWidth = 64;
     public int texHeight = 32;
 
+    public String textureFile = null; //TODO add a file name, listen to it in the textures folder every time the file is loaded
+    public String textureFileMd5 = null;
+
     public ArrayList<Part> parts = new ArrayList<>();
 
     public int partCountProjectLife = 0;
-
-    //TODO should we check for tampered files?
 
     @Override
     public Identifiable<?> getById(String id)
@@ -97,7 +98,7 @@ public class Project extends Identifiable<Project> //Model
     }
 
     @Override
-    public void disown(Identifiable child)
+    public void disown(Identifiable<?> child)
     {
         if(!parts.remove(child))
         {
@@ -324,10 +325,7 @@ public class Project extends Identifiable<Project> //Model
     {
         while(projVersion < PROJ_VERSION)
         {
-            if(projVersion <= 4) //TODO UHHH is this necessary?
-            {
-
-            }
+            //OldTabula is version 4. Nothing to repair.
             projVersion++;
         }
     }

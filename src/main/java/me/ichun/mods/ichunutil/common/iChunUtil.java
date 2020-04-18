@@ -27,14 +27,14 @@ public class iChunUtil //TODO update forge dependency to build 41
     public static final Logger LOGGER = LogManager.getLogger(); //TODO should we add Markers?
 
     private static ModLoadingStage loadingStage = ModLoadingStage.ERROR;
-    private static boolean devEnvironemnt;
+    private static boolean devEnvironment;
 
     public static ConfigClient configClient;
 
     public iChunUtil()
     {
         loadingStage = ModLoadingStage.CONSTRUCT;
-        devEnvironemnt = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
+        devEnvironment = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
@@ -64,8 +64,8 @@ public class iChunUtil //TODO update forge dependency to build 41
     {
         return loadingStage;
     }
-    public static boolean isDevEnvironemnt()
+    public static boolean isDevEnvironment()
     {
-        return devEnvironemnt;
+        return devEnvironment;
     }
 }
