@@ -8,25 +8,31 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class ModelHelper
 {
-    public static Project convertModelToProject(Model model)
+    public static Project convertModelToProject(Object o)
     {
         Project project = new Project();
         project.parts.clear();
-        project.name = model.getClass().getSimpleName();
+        project.name = o.getClass().getSimpleName();
         project.author = "Either Mojang or a mod author (Taken From Memory)";
-        project.texWidth = model.textureWidth;
-        project.texHeight = model.textureHeight;
+        if(o instanceof Model)
+        {
+            project.texWidth = ((Model)o).textureWidth;
+            project.texHeight = ((Model)o).textureHeight;
+        }
 
         HashMap<String, ModelRenderer> fields = new HashMap<>();
         HashMap<String, ModelRenderer[]> arrays = new HashMap<>();
         HashMap<String, ArrayList<ModelRenderer>> lists = new HashMap<>();
 
-        Class<? extends Model> clz = model.getClass();
-        while(clz != Model.class)
+        Class<?> clz = o.getClass();
+        while(clz != Model.class && clz != Object.class) //it could also be TileEntityRenderer??
         {
             try
             {
@@ -36,7 +42,7 @@ public class ModelHelper
                     f.setAccessible(true);
                     if(ModelRenderer.class.isAssignableFrom(f.getType()))
                     {
-                        ModelRenderer rend = (ModelRenderer)f.get(model);
+                        ModelRenderer rend = (ModelRenderer)f.get(o);
                         if(rend != null)
                         {
                             fields.put(f.getName(), rend); // Add normal parent fields
@@ -44,25 +50,25 @@ public class ModelHelper
                     }
                     else if(ModelRenderer[].class.isAssignableFrom(f.getType()))
                     {
-                        ModelRenderer[] rend = (ModelRenderer[])f.get(model);
+                        ModelRenderer[] rend = (ModelRenderer[])f.get(o);
                         if(rend != null && rend.length > 0)
                         {
                             arrays.put(f.getName(), rend);
                         }
                     }
-                    else if(f.get(model) instanceof List)
+                    else if(f.get(o) instanceof List)
                     {
-                        List<?> list = (List<?>)f.get(model);
+                        List<?> list = (List<?>)f.get(o);
                         ArrayList<ModelRenderer> catches = new ArrayList<>();
-                        for(Object o : list)
+                        for(Object o1 : list)
                         {
-                            if(o instanceof ModelRenderer)
+                            if(o1 instanceof ModelRenderer)
                             {
-                                catches.add((ModelRenderer)o);
+                                catches.add((ModelRenderer)o1);
                             }
-                            else if(o instanceof ModelRenderer[])
+                            else if(o1 instanceof ModelRenderer[])
                             {
-                                Collections.addAll(catches, (ModelRenderer[])o);
+                                Collections.addAll(catches, (ModelRenderer[])o1);
                             }
                         }
                         if(!catches.isEmpty())
@@ -74,10 +80,10 @@ public class ModelHelper
             }
             catch(Exception e)
             {
-                iChunUtil.LOGGER.error("Something went wrong parsing {}", model.getClass().getSimpleName());
+                iChunUtil.LOGGER.error("Something went wrong parsing {}", o.getClass().getSimpleName());
             }
 
-            clz = (Class<? extends Model>)clz.getSuperclass();
+            clz = clz.getSuperclass();
         }
 
         HashMap<ModelRenderer, Identifiable<?>> done = new HashMap<>();
@@ -130,6 +136,11 @@ public class ModelHelper
         part.name = name;
         part.texWidth = (int)renderer.textureWidth;
         part.texHeight = (int)renderer.textureHeight;
+        if(done.isEmpty() && parent instanceof Project) //first one
+        {
+            ((Project)parent).texWidth = part.texWidth;
+            ((Project)parent).texHeight = part.texHeight;
+        }
         part.matchProject = false;
         part.texOffX = renderer.textureOffsetX;
         part.texOffY = renderer.textureOffsetY;
