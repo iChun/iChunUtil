@@ -31,5 +31,7 @@
   "window.saveAs.fileName": "File Name",
   "window.saveAs.overwrite": "Overwrite?",
   "window.saveAs.confirmOverwrite": "File already exists! Confirm overwrite?",
-  "window.saveAs.failed": "Failed to save file."
+  "window.saveAs.failed": "Failed to save file.",
+
+  "element.button.clear": "Clear"
 }

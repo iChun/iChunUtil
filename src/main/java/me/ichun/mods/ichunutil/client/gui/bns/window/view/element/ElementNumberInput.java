@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.SoundEvents;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
@@ -197,6 +198,14 @@ public class ElementNumberInput extends ElementTextField
         {
             setFocused(widget);
             widget.setFocused2(true);
+            if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            {
+                widget.setText("");
+            }
+            else if(button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
+            {
+                widget.writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
+            }
             widget.mouseClicked(mouseX, mouseY, button);
 
             if(isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D)))

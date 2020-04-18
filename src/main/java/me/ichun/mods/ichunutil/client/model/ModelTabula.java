@@ -100,7 +100,7 @@ public class ModelTabula extends Model
         models.forEach(modelRenderer -> modelRenderer.render(matrixStack, iVertexBuilder, light, overlay, r, g, b, alpha));
     }
 
-    public void render(MatrixStack matrixStack, Project.Part selectedPart, Project.Part.Box selectedBox, boolean hideTexture)
+    public void render(MatrixStack matrixStack, Project.Part selectedPart, Project.Part.Box selectedBox, boolean hideTexture, float alpha)
     {
         this.selectedPart = selectedPart;
         this.selectedBox = selectedBox;
@@ -114,7 +114,7 @@ public class ModelTabula extends Model
         }
         else
         {
-            render(matrixStack, 1F, hideTexture);
+            render(matrixStack, alpha, hideTexture);
         }
     }
 
