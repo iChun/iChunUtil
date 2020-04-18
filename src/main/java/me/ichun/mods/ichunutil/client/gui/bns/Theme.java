@@ -2,16 +2,20 @@ package me.ichun.mods.ichunutil.client.gui.bns;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 public class Theme
 {
-    private static final transient Theme INSTANCE = new Theme(); //defaults. Try not to change this if possible.
+    private static final transient Theme INSTANCE = new Theme();
 
     public transient String filename;
     public transient Block block = Blocks.SPRUCE_PLANKS;
 
+    //defaults. Try not to change this if possible.
     public String name = "Default";
     public String author = "iChun";
 
@@ -52,13 +56,7 @@ public class Theme
     public int[] font = new int[] { 255, 255, 255 };
     public int[] fontDim = new int[] { 150, 150, 150 };
 
-    public BlockInfo workspaceBlock = new BlockInfo();
-
-    public class BlockInfo
-    {
-        public String block = "minecraft:planks";
-        public int metadata = 1;
-    }
+    public String workspaceBlock = "minecraft:spruce_planks";
 
     public static Theme getInstance()
     {
@@ -68,6 +66,11 @@ public class Theme
     public static void loadTheme(Theme themeToLoad)
     {
         loadTheme(INSTANCE, themeToLoad);
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(INSTANCE.workspaceBlock));
+        if(block != null)
+        {
+            INSTANCE.block = block;
+        }
     }
 
     public static void loadTheme(Theme theme, Theme themeToLoad)
@@ -85,16 +88,18 @@ public class Theme
             {
                 for(Field f : fields)
                 {
-                    Object obj = f.get(themeToLoad);
-                    if(obj != null)
+                    f.setAccessible(true);
+                    if(!Modifier.isStatic(f.getModifiers()))
                     {
-                        f.set(theme, obj);
+                        Object obj = f.get(themeToLoad);
+                        if(obj != null)
+                        {
+                            f.set(theme, obj);
+                        }
                     }
                 }
             }
-            catch(Exception e)
-            {
-            }
+            catch(Exception ignored){}
             clz = clz.getSuperclass();
         }
     }

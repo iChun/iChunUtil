@@ -18,6 +18,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 {
     private final ElementList<?> list;
     private int minWidth = 1;
+    private boolean killed;
 
     private WindowContextMenu(M parent)
     {
@@ -97,7 +98,11 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
     public void unfocus(@Nullable IGuiEventListener guiReplacing)
     {
         super.unfocus(guiReplacing);
-        parent.removeWindow(this);
+        if(!killed)
+        {
+            killed = true;
+            parent.removeWindow(this);
+        }
     }
 
     private class ViewContextMenu extends View<WindowContextMenu<M>>
@@ -125,7 +130,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 
     public interface IContextMenu
     {
-        @Nonnull List<Object> getObjects();
+        @Nonnull List<?> getObjects();
         @Nonnull BiConsumer<IContextMenu, ElementList.Item<?>> getReceiver();
         default @Nonnull Function<Object, String> getNameProvider() { return Object::toString; }
     }
@@ -134,7 +139,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
     {
         WindowContextMenu<M> windowContextMenu = new WindowContextMenu<>(parent);
         ElementList<?> list = windowContextMenu.getList();
-        List<Object> contextMenuObjects = iContextMenu.getObjects();
+        List<?> contextMenuObjects = iContextMenu.getObjects();
         Function<Object, String> nameProvider = iContextMenu.getNameProvider();
         BiConsumer<IContextMenu, ElementList.Item<?>> contextMenuReceiver = iContextMenu.getReceiver();
 

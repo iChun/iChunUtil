@@ -14,11 +14,11 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
         implements WindowContextMenu.IContextMenu
 {
     public @Nonnull String text;
-    public final @Nonnull List<Object> contextMenuObjects;
+    public final @Nonnull List<?> contextMenuObjects;
     public final @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
     public @Nonnull Function<Object, String> nameProvider = Object::toString;
 
-    public ElementDropdownContextMenu(@Nonnull Fragment parent, String text, @Nonnull List<Object> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementDropdownContextMenu(@Nonnull Fragment parent, String text, @Nonnull List<?> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
     {
         super(parent, e -> {});
         this.text = text;
@@ -104,7 +104,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
 
     @Nonnull
     @Override
-    public List<Object> getObjects()
+    public List<?> getObjects()
     {
         return contextMenuObjects;
     }

@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public class ViewValues extends View<WindowValues>
@@ -39,10 +40,7 @@ public class ViewValues extends View<WindowValues>
         );
         elements.add(sv);
 
-        this.list = new ElementList<>(this).setScrollVertical(sv)
-        //                .setDragHandler((i, j) -> {})
-        //                .setRearrangeHandler((i, j) -> {})
-        ;
+        this.list = new ElementList<>(this).setScrollVertical(sv);
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                 .top(this, Constraint.Property.Type.TOP, 0)
@@ -106,7 +104,6 @@ public class ViewValues extends View<WindowValues>
             props = ConfigBase.class.getDeclaredFields()[0].getAnnotation(Prop.class);
         }
 
-        //TODO hidden properties???
         Object o;
         try
         {
@@ -117,7 +114,15 @@ public class ViewValues extends View<WindowValues>
             return;
         }
 
-        if(clz == int.class)
+        if(!props.guiElementOverride().isEmpty())
+        {
+            BiConsumer<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>> valueWrapperLocalisedItemBiConsumer = ConfigBase.GUI_ELEMENT_OVERRIDES.get(props.guiElementOverride());
+            if(valueWrapperLocalisedItemBiConsumer != null)
+            {
+                valueWrapperLocalisedItemBiConsumer.accept(value, item);
+            }
+        }
+        else if(clz == int.class)
         {
             ElementNumberInput input = new ElementNumberInput(item, false);
             input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
@@ -207,6 +212,21 @@ public class ViewValues extends View<WindowValues>
 
                         if(validator != null)
                         {
+                            if(!(props.values().length == 1 && props.values()[0].isEmpty()))
+                            {
+                                String[] values = props.values();
+                                validator = validator.and(s -> {
+                                    for(String value1 : values)
+                                    {
+                                        if(value1.startsWith(s))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                });
+                            }
+
                             WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
                                 try
                                 {

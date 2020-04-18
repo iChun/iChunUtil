@@ -1,6 +1,8 @@
 package me.ichun.mods.ichunutil.common.config;
 
 import com.google.common.collect.Ordering;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
+import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -19,12 +21,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public abstract class ConfigBase
         implements Comparable<ConfigBase>
 {
     @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER. This provides the default Prop settings.
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
+    public static final HashMap<String, BiConsumer<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>>> GUI_ELEMENT_OVERRIDES = new HashMap<>(); //this is for GUI element overrides
 
     private final @Nonnull String fileName;
     public final @Nonnull TreeMap<String, HashSet<ValueWrapper<?>>> values = new TreeMap<>(Ordering.natural()); //category to value

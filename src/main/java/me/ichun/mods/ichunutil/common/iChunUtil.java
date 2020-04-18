@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.common;
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
+import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -36,6 +37,7 @@ public class iChunUtil //TODO update forge dependency to build 41
         devEnvironemnt = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            ResourceHelper.init();
             configClient = new ConfigClient().init();
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });

@@ -22,4 +22,6 @@ public @interface Prop
     boolean hidden() default false;
 
     String comment() default "undefined"; //unlocalized comment
+
+    String guiElementOverride() default "";
 }

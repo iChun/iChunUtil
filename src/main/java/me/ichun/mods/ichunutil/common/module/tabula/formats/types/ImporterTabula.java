@@ -110,7 +110,6 @@ public class ImporterTabula
         return project;
     }
 
-    //TODO announce to user if they load this kind of file
     public static Project convertProjectInfo(ProjectInfo old)
     {
         if(old == null)
@@ -131,16 +130,26 @@ public class ImporterTabula
         project.scaleY = (float)old.scale[1];
         project.scaleZ = (float)old.scale[2];
 
-        //TODO handle cube Groups
+        addGroup(old.cubeGroups, project.parts, project);
 
         addParts(old.cubes, project.parts, project);
 
-        //TODO handle Anims
+        //Animations are no longer supported!
 
         project.partCountProjectLife = old.cubeCount;
         project.setBufferedTexture(old.bufferedTexture);
 
         return project;
+    }
+
+    public static void addGroup(ArrayList<ProjectInfo.CubeGroup> cubeGroups, ArrayList<Project.Part> parts, Identifiable<?> parent)
+    {
+        for(ProjectInfo.CubeGroup group : cubeGroups)
+        {
+            addGroup(group.cubeGroups, parts, parent);
+
+            addParts(group.cubes, parts, parent);
+        }
     }
 
     public static void addParts(ArrayList<ProjectInfo.CubeInfo> cubes, ArrayList<Project.Part> parts, Identifiable<?> parent)
