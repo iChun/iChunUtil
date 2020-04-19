@@ -568,7 +568,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return true; //our window isn't even here! pretend we're obstructed
     }
 
-    public <T extends Window<?>> T getWindowType(Class<T> clz)
+    public <T extends Window<?>> T getByWindowType(Class<T> clz)
     {
         List<Window<?>> windows = children();
         for(Window<?> window : windows)

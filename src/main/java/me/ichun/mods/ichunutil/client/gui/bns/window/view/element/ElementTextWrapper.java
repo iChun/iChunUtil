@@ -3,11 +3,13 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ElementTextWrapper extends Element //TODO image element
 {
@@ -133,7 +135,7 @@ public class ElementTextWrapper extends Element //TODO image element
         {
             String line = textWrapped.get(lineNumber);
             drawString(line, (float)textX, (float)textY);
-            textY += 10;
+            textY += 12;
         }
     }
 
@@ -171,7 +173,7 @@ public class ElementTextWrapper extends Element //TODO image element
     @Override
     public int getMinHeight()
     {
-        return textWrapped.isEmpty() ? 12 : textWrapped.size() * 10 + 4;
+        return textWrapped.isEmpty() ? 12 : textWrapped.size() * 12 + 4;
     }
 
     @Override
@@ -198,4 +200,25 @@ public class ElementTextWrapper extends Element //TODO image element
             return Math.abs(s.hashCode()) & 0xffffff;
         }
     }
+
+    public static final Random RANDOM = new Random();
+    public static TextFormatting getRandomTextFormattingColorForName(String s) //I know this can be cached but meh
+    {
+        if(s.equalsIgnoreCase("System"))
+        {
+            return TextFormatting.RED;
+        }
+
+        ArrayList<TextFormatting> formats = new ArrayList<>();
+        for(int i = 1; i < 15; i++) // no black no red no white
+        {
+            if(i != 12) //no red
+            {
+                formats.add(TextFormatting.values()[i]);
+            }
+        }
+        RANDOM.setSeed(Math.abs(s.hashCode()));
+        return formats.get(RANDOM.nextInt(formats.size()));
+    }
+
 }

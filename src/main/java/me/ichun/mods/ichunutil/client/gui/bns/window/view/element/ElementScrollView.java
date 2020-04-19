@@ -42,15 +42,17 @@ public class ElementScrollView extends ElementFertile
         Element<?> anchor = elements.isEmpty() ? null : elements.get(elements.size() - 1);
 
         elements.add(e);
-        e.constraint = new Constraint(e).left(this, Constraint.Property.Type.LEFT, getBorderSize()).right(this, Constraint.Property.Type.RIGHT, getBorderSize());
-        if(anchor == null)
-        {
-            e.constraint.top(this, Constraint.Property.Type.TOP, getBorderSize());
-        }
-        else
-        {
-            e.constraint.top(anchor, Constraint.Property.Type.BOTTOM, 0);
-        }
+
+        e.setConstraint(Constraint.sizeOnly(e));
+//        e.constraint = new Constraint(e).left(this, Constraint.Property.Type.LEFT, getBorderSize()).right(this, Constraint.Property.Type.RIGHT, getBorderSize());
+//        if(anchor == null)
+//        {
+//            e.constraint.top(this, Constraint.Property.Type.TOP, getBorderSize());
+//        }
+//        else
+//        {
+//            e.constraint.top(anchor, Constraint.Property.Type.BOTTOM, 0);
+//        }
         if(hasInit)
         {
             alignItems();
