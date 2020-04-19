@@ -38,6 +38,7 @@ public class Project extends Identifiable<Project> //Model
 
     //Project texture Stuffs
     private transient BufferedImage bufferedTexture;
+    @OnlyIn(Dist.CLIENT)
     public transient BufferedImageTexture bufferedImageTexture;
 
     //Client Model
@@ -56,7 +57,7 @@ public class Project extends Identifiable<Project> //Model
     public int texWidth = 64;
     public int texHeight = 32;
 
-    public String textureFile = null; //TODO add a file name, listen to it in the textures folder every time the file is loaded
+    public String textureFile = null;
     public String textureFileMd5 = null;
 
     public ArrayList<Part> parts = new ArrayList<>();
