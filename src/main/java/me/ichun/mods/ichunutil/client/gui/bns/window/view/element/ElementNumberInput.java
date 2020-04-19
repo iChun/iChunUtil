@@ -36,7 +36,7 @@ public class ElementNumberInput extends ElementTextField
     public <T extends ElementNumberInput> T setMin(double d)
     {
         min = s -> {
-            if(s.isEmpty())
+            if(s.isEmpty() || s.equals("-"))
             {
                 return true;
             }
@@ -56,7 +56,7 @@ public class ElementNumberInput extends ElementTextField
     public <T extends ElementNumberInput> T setMax(double d)
     {
         max = s -> {
-            if(s.isEmpty())
+            if(s.isEmpty() || s.equals("-"))
             {
                 return true;
             }
@@ -322,7 +322,7 @@ public class ElementNumberInput extends ElementTextField
             }
             catch(NumberFormatException ignored){}
         }
-        else if(!s.isEmpty())
+        else if(!(s.isEmpty() || s.equals("-")))
         {
             try
             {
@@ -336,7 +336,7 @@ public class ElementNumberInput extends ElementTextField
     public double getDouble()
     {
         String s = widget.getText();
-        if(!s.isEmpty())
+        if(!(s.isEmpty() || s.equals("-")))
         {
             try
             {

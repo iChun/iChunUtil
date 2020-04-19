@@ -19,7 +19,7 @@ public class ElementTextField extends Element
 {
     public static final Predicate<String> INTEGERS = (s) ->
     {
-        if(s.isEmpty())
+        if(s.isEmpty() || s.equals("-"))
         {
             return true;
         }
@@ -39,7 +39,7 @@ public class ElementTextField extends Element
     };
     public static final Predicate<String> NUMBERS = (s) ->
     {
-        if(s.isEmpty())
+        if(s.isEmpty() || s.equals("-"))
         {
             return true;
         }

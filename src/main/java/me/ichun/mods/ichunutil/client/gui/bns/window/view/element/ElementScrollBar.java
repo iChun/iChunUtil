@@ -56,6 +56,11 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         updateSize(oldSize);
     }
 
+    public float getScrollbarSize()
+    {
+        return scrollBarSize;
+    }
+
     public void setScrollProg(float f)
     {
         float scroll = MathHelper.clamp(f, 0F, 1F);
