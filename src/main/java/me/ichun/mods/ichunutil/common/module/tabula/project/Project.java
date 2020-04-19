@@ -663,6 +663,7 @@ public class Project extends Identifiable<Project> //Model
         }
         else
         {
+            part.parent = this;
             parts.add(part);
         }
     }

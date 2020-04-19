@@ -8,7 +8,7 @@ public abstract class Identifiable<T>
 {
     @Nonnull
     public String identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
-    public transient Identifiable<?> parent = null; //TODO should this be transient?
+    public transient Identifiable<?> parent = null;
 
     public String name = "";
 

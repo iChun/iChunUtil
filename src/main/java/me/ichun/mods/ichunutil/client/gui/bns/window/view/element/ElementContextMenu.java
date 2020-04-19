@@ -12,12 +12,12 @@ import java.util.function.Function;
 public class ElementContextMenu extends Element
         implements WindowContextMenu.IContextMenu
 {
-    public final @Nonnull List<Object> contextMenuObjects;
+    public final @Nonnull List<?> contextMenuObjects;
     public final @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
     public @Nonnull Function<Object, String> nameProvider = Object::toString;
     public boolean lmbTriggers = false;
 
-    public ElementContextMenu(@Nonnull Fragment parent, @Nonnull List<Object> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementContextMenu(@Nonnull Fragment parent, @Nonnull List<?> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
     {
         super(parent);
         this.contextMenuObjects = contextMenuObjects;
@@ -70,7 +70,7 @@ public class ElementContextMenu extends Element
 
     @Nonnull
     @Override
-    public List<Object> getObjects()
+    public List<?> getObjects()
     {
         return contextMenuObjects;
     }
