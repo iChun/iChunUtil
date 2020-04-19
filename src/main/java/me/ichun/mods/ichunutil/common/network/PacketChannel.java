@@ -9,13 +9,25 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import java.util.function.Predicate;
+
 public class PacketChannel
 {
     private final SimpleChannel channel;
     private final Object2ByteOpenHashMap<Class<? extends AbstractPacket>> clzToId;
     private final Class<? extends AbstractPacket>[] idToClz;
 
+    public PacketChannel(ResourceLocation name, String protocolVersion, Class<? extends AbstractPacket>...packetTypes)
+    {
+        this(name, protocolVersion, true, true, packetTypes);
+    }
+
     public PacketChannel(ResourceLocation name, String protocolVersion, boolean clientRequired, boolean serverRequired, Class<? extends AbstractPacket>...packetTypes)
+    {
+        this(name, protocolVersion, o -> protocolVersion.equals(o) || !serverRequired, o -> protocolVersion.equals(o) || !clientRequired, packetTypes);
+    }
+
+    public PacketChannel(ResourceLocation name, String protocolVersion, Predicate<String> clientPredicate, Predicate<String> serverPredicate, Class<? extends AbstractPacket>...packetTypes)
     {
         clzToId = new Object2ByteOpenHashMap<>(packetTypes.length);
         for(int i = 0; i < packetTypes.length; i++)
@@ -24,7 +36,7 @@ public class PacketChannel
         }
         idToClz = packetTypes;
 
-        channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, anObject -> protocolVersion.equals(anObject) || !serverRequired, anObject1 -> protocolVersion.equals(anObject1) || !clientRequired);
+        channel = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, clientPredicate, serverPredicate);
         channel.registerMessage(0, PacketHolder.class,
                 (packet, buffer) -> {
                     buffer.writeByte(clzToId.getByte(packet.packet.getClass()));
