@@ -104,7 +104,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     @Override
     public int getMinWidth()
     {
-        return 15;
+        return 14;
     }
 
     @Override

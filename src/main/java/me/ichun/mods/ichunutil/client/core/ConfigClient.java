@@ -26,7 +26,7 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
     public boolean easterEgg = true;
 
-    @Prop(comment = "Renders iChunUtil's GUIs in a Minecraft Style instead")
+    @Prop(comment = "Renders iChunUtil's GUIs (Boxes & Stuff) in a Minecraft Style instead")
     public boolean guiStyleMinecraft = false;
 
     @Prop(comment = "How much padding to add to the docked windows", min = 0, max = 50)

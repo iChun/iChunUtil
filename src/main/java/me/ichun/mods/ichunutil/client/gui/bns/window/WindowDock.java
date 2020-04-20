@@ -72,6 +72,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
         docked.keySet().forEach(windows -> windows.forEach(window -> {
             window.constraint.apply();
             window.resize(Minecraft.getInstance(), this.width, this.height);
+            window.init();
         }));
     }
 

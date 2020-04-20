@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 public class ElementButton<T extends ElementButton> extends ElementClickable<T>
 {
     public @Nonnull String text;
+    public boolean renderBackground = true;
 
     public ElementButton(@Nonnull Fragment parent, String s, Consumer<T> callback)
     {
@@ -16,19 +17,28 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
         text = I18n.format(s);
     }
 
+    public ElementButton<T> disableBackground()
+    {
+        renderBackground = false;
+        return this;
+    }
+
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
         super.render(mouseX, mouseY, partialTick);
-        if(renderMinecraftStyle())
+        if(renderBackground)
         {
-            renderMinecraftStyleButton(getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
-        }
-        else
-        {
-            fill(getTheme().elementButtonBorder, 0);
-            int[] colour = parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
-            fill(colour, 1);
+            if(renderMinecraftStyle())
+            {
+                renderMinecraftStyleButton(getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+            }
+            else
+            {
+                fill(getTheme().elementButtonBorder, 0);
+                int[] colour = parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
+                fill(colour, 1);
+            }
         }
         if(!text.isEmpty())
         {
@@ -51,7 +61,7 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
     @Override
     public int getMinWidth()
     {
-        return 15;
+        return 14;
     }
 
     @Override
