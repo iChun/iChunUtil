@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 public class ElementList<P extends Fragment> extends ElementFertile<P>
@@ -483,6 +485,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public boolean selected;
         private @Nullable Consumer<Item<M>> selectionHandler;
         private @Nullable Consumer<Item<M>> doubleClickHandler;
+        private @Nullable Function<Item<M>, Boolean> enterResponder;
         private int borderSize = 1;
         private int clickTimeout;
 
@@ -501,6 +504,12 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public Item<M> setRightClickConsumer(TriConsumer<Double, Double, Item<M>> rightClickConsumer)
         {
             this.rightClickConsumer = rightClickConsumer;
+            return this;
+        }
+
+        public Item<M> setEnterResponder(Function<Item<M>, Boolean> enterResponder)
+        {
+            this.enterResponder = enterResponder;
             return this;
         }
 
@@ -681,6 +690,19 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 if(button == 0)
                 {
                     selected = true;
+
+                    if(doubleClickHandler != null)
+                    {
+                        if(clickTimeout > 0)
+                        {
+                            clickTimeout = 0;
+                            doubleClickHandler.accept(this);
+                        }
+                        else
+                        {
+                            clickTimeout = iChunUtil.configClient.guiDoubleClickSpeed;
+                        }
+                    }
                 }
                 else if(button == 1) //RMB
                 {
@@ -696,18 +718,6 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 if(oldSelected != selected && selectionHandler != null)
                 {
                     selectionHandler.accept(this);
-                }
-                if(doubleClickHandler != null)
-                {
-                    if(clickTimeout > 0)
-                    {
-                        clickTimeout = 0;
-                        doubleClickHandler.accept(this);
-                    }
-                    else
-                    {
-                        clickTimeout = iChunUtil.configClient.guiDoubleClickSpeed;
-                    }
                 }
             }
             return super.mouseReleased(mouseX, mouseY, button);
@@ -733,6 +743,63 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public List<? extends Fragment<?>> children()
         {
             return elements;
+        }
+
+        @Override
+        public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_)
+        {
+            if(parentFragment.getFocused() == this)
+            {
+                if(keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT)
+                {
+                    for(int i = 0; i < parentFragment.items.size(); i++)
+                    {
+                        Item<?> item = parentFragment.items.get(i);
+                        if(item == this)
+                        {
+                            if(i > 0)
+                            {
+                                Item item1 = parentFragment.items.get(i - 1);
+                                parentFragment.setFocused(item1);
+                                boolean oldSelected = item1.selected;
+                                item1.selected = true;
+                                if(oldSelected != item1.selected && item1.selectionHandler != null)
+                                {
+                                    item1.selectionHandler.accept(item1);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+                else if(keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_RIGHT)
+                {
+                    for(int i = 0; i < parentFragment.items.size(); i++)
+                    {
+                        Item<?> item = parentFragment.items.get(i);
+                        if(item == this)
+                        {
+                            if(i < parentFragment.items.size() - 1)
+                            {
+                                Item item1 = parentFragment.items.get(i + 1);
+                                parentFragment.setFocused(item1);
+                                boolean oldSelected = item1.selected;
+                                item1.selected = true;
+                                if(oldSelected != item1.selected && item1.selectionHandler != null)
+                                {
+                                    item1.selectionHandler.accept(item1);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            if((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && enterResponder != null)
+            {
+                return enterResponder.apply(this);
+            }
+            return super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
         }
 
         @Override

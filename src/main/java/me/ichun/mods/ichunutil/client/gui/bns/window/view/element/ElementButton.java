@@ -54,11 +54,12 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
     {
         if(!text.isEmpty())
         {
-            String s = reString(text, width - 4);
-            if(!s.equals(text))
+            String tooltip = super.tooltip(mouseX, mouseY);
+            if(tooltip != null)
             {
-                return text + " - " + super.tooltip(mouseX, mouseY);
+                return text + " - " + tooltip;
             }
+            return text;
         }
         return super.tooltip(mouseX, mouseY);
     }

@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementToggleRotatable<T extends ElementToggleRotatable> extends ElementToggle<T>
@@ -51,5 +52,24 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
 
             RenderSystem.popMatrix();
         }
+    }
+
+    @Nullable
+    @Override
+    public String tooltip(double mouseX, double mouseY)
+    {
+        if(!text.isEmpty())
+        {
+            String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
+            if(!s.equals(text))
+            {
+                if(tooltip != null)
+                {
+                    return text + " - " + tooltip;
+                }
+                return text;
+            }
+        }
+        return tooltip;
     }
 }
