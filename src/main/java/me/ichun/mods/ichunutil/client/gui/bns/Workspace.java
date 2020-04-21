@@ -2,10 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
-import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
+import me.ichun.mods.ichunutil.client.gui.bns.window.*;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
@@ -231,21 +228,61 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio)
+    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio, boolean greyout)
     {
-        window.setWidth((int)(window.getParentWidth() * widthRatio));
-        window.setHeight((int)(window.getParentHeight() * heightRatio));
+        if(widthRatio <= 1D)
+        {
+            window.setWidth((int)(window.getParentWidth() * widthRatio));
+        }
+        else
+        {
+            window.setWidth((int)widthRatio);
+        }
+        if(heightRatio <= 1D)
+        {
+            window.setHeight((int)(window.getParentHeight() * heightRatio));
+        }
+        else
+        {
+            window.setHeight((int)heightRatio);
+        }
 
-        addWindow(window);
+        if(greyout)
+        {
+            addWindowWithGreyout(window);
+        }
+        else
+        {
+            addWindow(window);
+        }
         putInCenter(window);
         setFocused(window);
 
         window.init();
     }
 
+    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio)
+    {
+        openWindowInCenter(window, widthRatio, heightRatio, false);
+    }
+
+    public void openWindowInCenter(Window<?> window, boolean greyout)
+    {
+        openWindowInCenter(window, 0.5D, 0.5D, greyout);
+    }
+
     public void openWindowInCenter(Window<?> window)
     {
-        openWindowInCenter(window, 0.5D, 0.5D);
+        openWindowInCenter(window, false);
+    }
+
+    public void addWindowWithGreyout(Window<?> window)
+    {
+        WindowGreyout<?> greyout = new WindowGreyout<>(this, window);
+        addWindow(greyout);
+        greyout.init();
+
+        addWindow(window);
     }
 
     @Override

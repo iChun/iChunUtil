@@ -89,7 +89,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             String s = reString(text, width - 4);
             if(!s.equals(text))
             {
-                return text;
+                return text + " - " + super.tooltip(mouseX, mouseY);
             }
         }
         return super.tooltip(mouseX, mouseY);

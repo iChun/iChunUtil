@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementButton<T extends ElementButton> extends ElementClickable<T>
@@ -43,16 +44,23 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
-            if(s.equals(text))
-            {
-                setTooltip(null);
-            }
-            else
-            {
-                setTooltip(text);
-            }
             drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
         }
+    }
+
+    @Nullable
+    @Override
+    public String tooltip(double mouseX, double mouseY)
+    {
+        if(!text.isEmpty())
+        {
+            String s = reString(text, width - 4);
+            if(!s.equals(text))
+            {
+                return text + " - " + super.tooltip(mouseX, mouseY);
+            }
+        }
+        return super.tooltip(mouseX, mouseY);
     }
 
     @Override
