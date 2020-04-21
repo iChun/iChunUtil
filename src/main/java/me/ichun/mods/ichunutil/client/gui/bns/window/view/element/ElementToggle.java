@@ -86,12 +86,16 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     {
         if(!text.isEmpty())
         {
-            String tooltip = super.tooltip(mouseX, mouseY);
-            if(tooltip != null)
+            String s = reString(text, width - 4);
+            if(!s.equals(text))
             {
-                return text + " - " + tooltip;
+                String tooltip = super.tooltip(mouseX, mouseY);
+                if(tooltip != null)
+                {
+                    return text + " - " + tooltip;
+                }
+                return text;
             }
-            return text;
         }
         return super.tooltip(mouseX, mouseY);
     }

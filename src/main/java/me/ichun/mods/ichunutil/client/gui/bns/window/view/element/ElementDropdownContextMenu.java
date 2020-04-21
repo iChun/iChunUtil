@@ -99,7 +99,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
     @Override
     public void onClickRelease()
     {
-        WindowContextMenu.create(getWorkspace(), this, getRight(), getBottom() - 1, width, height - 2);
+        WindowContextMenu.create(getWorkspace(), this, getLeft(), getBottom() - 1, width, height - 2);
     }
 
     @Nonnull

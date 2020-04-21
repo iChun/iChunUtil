@@ -6,9 +6,12 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 
+import java.util.function.Consumer;
+
 public class WindowGreyout<M extends Workspace> extends Window<M>
 {
     public Window<?> attachedWindow;
+    public Consumer<WindowGreyout<M>> closeConsumer;
 
     public WindowGreyout(M parent, Window<?> attached)
     {
@@ -27,6 +30,12 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
         disableDragResize();
         disableTitle();
         isNotUnique();
+    }
+
+    public WindowGreyout<M> setCloseConsumer(Consumer<WindowGreyout<M>> closeConsumer)
+    {
+        this.closeConsumer = closeConsumer;
+        return this;
     }
 
     @Override
@@ -51,6 +60,10 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
         if(!parent.children().contains(attachedWindow))
         {
             parent.removeWindow(this);
+            if(closeConsumer != null)
+            {
+                closeConsumer.accept(this);
+            }
         }
     }
 
