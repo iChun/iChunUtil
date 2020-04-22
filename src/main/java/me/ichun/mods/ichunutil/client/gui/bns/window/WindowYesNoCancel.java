@@ -19,6 +19,8 @@ public class WindowYesNoCancel extends Window<Workspace>
 
         setView(new ViewConfirmation(this, title, text, callbackYes, callbackNo, callbackCancel));
         disableDockingEntirely();
+
+        isNotUnique();
     }
 
     public static class ViewConfirmation extends View<WindowYesNoCancel>
@@ -80,6 +82,6 @@ public class WindowYesNoCancel extends Window<Workspace>
 
     public static void popup(Workspace parent, double widthRatio, double heightRatio, String title, String text, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)
     {
-        parent.openWindowInCenter(new WindowYesNoCancel(parent, title, text, callbackYes, callbackNo, callbackCancel), widthRatio, heightRatio);
+        parent.openWindowInCenter(new WindowYesNoCancel(parent, title, text, callbackYes, callbackNo, callbackCancel), widthRatio, heightRatio, true);
     }
 }

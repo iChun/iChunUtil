@@ -28,7 +28,8 @@ public class ElementTextWrapper extends Element //TODO image element
 
     public <T extends ElementTextWrapper> T setText(List<String> text)
     {
-        this.text = text;
+        this.text.clear();
+        this.text.addAll(text);
         return (T)this;
     }
 

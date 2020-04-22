@@ -41,6 +41,11 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
                 fill(colour, 1);
             }
         }
+        renderText();
+    }
+
+    public void renderText()
+    {
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);

@@ -5,7 +5,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
@@ -23,6 +22,8 @@ public class WindowPopup extends Window<Workspace>
         disableDocking();
         disableDockStacking();
         disableUndocking();
+
+        isNotUnique();
     }
 
     public static class ViewPopup extends View<WindowPopup>
@@ -65,6 +66,6 @@ public class WindowPopup extends Window<Workspace>
 
     public static void popup(Workspace parent, double widthRatio, double heightRatio, String title, Consumer<Workspace> callback, String...text)
     {
-        parent.openWindowInCenter(new WindowPopup(parent, title, callback, text), widthRatio, heightRatio);
+        parent.openWindowInCenter(new WindowPopup(parent, title, callback, text), widthRatio, heightRatio, true);
     }
 }
