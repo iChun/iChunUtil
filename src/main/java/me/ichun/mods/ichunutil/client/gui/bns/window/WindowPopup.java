@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
@@ -35,11 +36,11 @@ public class WindowPopup extends Window<Workspace>
             ElementTextWrapper text = new ElementTextWrapper(this);
             if(text1.length == 1)
             {
-                text.setNoWrap().setText(text1[0]);
+                text.setText(text1[0]);
             }
             else
             {
-                text.setNoWrap().setText(Arrays.asList(text1));
+                text.setText(Arrays.asList(text1));
             }
             text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
             elements.add(text);
@@ -56,6 +57,24 @@ public class WindowPopup extends Window<Workspace>
             button.setSize(60, 20);
             button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 20));
             elements.add(button);
+        }
+
+        @Override
+        public void init()
+        {
+            ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
+            text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
+
+            super.init();
+        }
+
+        @Override
+        public void resize(Minecraft mc, int width, int height)
+        {
+            ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
+            text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
+
+            super.resize(mc, width, height);
         }
     }
 

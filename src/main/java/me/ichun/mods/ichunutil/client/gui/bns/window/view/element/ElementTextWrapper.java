@@ -16,7 +16,7 @@ public class ElementTextWrapper extends Element //TODO image element
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
     private boolean doNotWrap;
-    private int longestLine;
+    public int longestLine;
     public @Nullable Integer color;
 
     //TODO text formatter?
@@ -96,9 +96,9 @@ public class ElementTextWrapper extends Element //TODO image element
             }
         }
 
+        textWrapped = text;
         if(doNotWrap)
         {
-            textWrapped = text;
             longestLine = tooltipTextWidth;
             return textWrapped.size() != lines;
         }
