@@ -16,7 +16,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
 
     public String tooltip;
 
-    public Element(@Nonnull P parent) //TODO Make aligned element, which counts the gaps between elements and equally distributes widht/height to each
+    public Element(@Nonnull P parent)
     {
         super(parent);
     }

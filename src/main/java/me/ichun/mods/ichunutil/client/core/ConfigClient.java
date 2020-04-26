@@ -29,20 +29,31 @@ public class ConfigClient extends ConfigBase
     @Prop(comment = "Renders iChunUtil's GUIs (Boxes & Stuff) in a Minecraft Style instead")
     public boolean guiStyleMinecraft = false;
 
-    @Prop(comment = "How much padding to add to the docked windows", min = 0, max = 50)
+    @Prop(min = 0, max = 50, comment = "How much padding to add to the docked windows")
     public int guiDockPadding = 0;
 
-    @Prop(comment = "Number of ticks before showing a tooltip", min = 0)
+    @Prop(min = 0, comment = "Number of ticks before showing a tooltip")
     public int guiTooltipCooldown = 20;
 
-    @Prop(comment = "Number of pixels before iChunUtil thinks you're trying to dock a window", min = 1)
+    @Prop(min = 1, comment = "Number of pixels before iChunUtil thinks you're trying to dock a window")
     public int guiDockBorder = 8;
 
-    @Prop(comment = "Speed, in ticks, to register a double click", min = 1)
+    @Prop(min = 1, comment = "Speed, in ticks, to register a double click")
     public int guiDoubleClickSpeed = 10;
 
-    @Prop(comment = "Default Theme for Boxes & Stuff", guiElementOverride = "iChunUtil:guiDefaultTheme")
+    @Prop(guiElementOverride = "iChunUtil:guiDefaultTheme", comment = "Default Theme for Boxes & Stuff")
     public String guiDefaultTheme = "default";
+
+    //TODO localise them all
+    @Prop(comment = "Override the Options button so pressing Shift when clicking it shows the Mods list.")
+    public boolean buttonOptionsShiftOpensMods = true;
+
+    @CategoryDivider(name = "headTracking")
+    @Prop(min = 0, max = 2, comment = "Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?\n1 = All Entities\n2 = Players Only")
+    public int aggressiveHeadTracking = 1;
+
+    @Prop(comment = "Enable the easter egg where the horse/llama's \"head\" is its behind. This is an easter egg on how Hats used to put hats on Horses.")
+    public boolean horseEasterEgg = true;
 
     @Override
     public <T extends ConfigBase> T init()

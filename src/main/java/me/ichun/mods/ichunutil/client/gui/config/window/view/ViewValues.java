@@ -250,7 +250,7 @@ public class ViewValues extends View<WindowValues>
                                             }
                                         }
                                     }
-                                    value.value.field.set(value.value.parent, list1);
+                                    value.value.field.set(value.value.parent, list);
                                     value.value.parent.save();
                                 }
                                 catch(IllegalAccessException ignored){}

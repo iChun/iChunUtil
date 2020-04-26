@@ -22,6 +22,13 @@
   "config.ichunutil.prop.guiTooltipCooldown.name": "Tooltip Cooldown",
   "config.ichunutil.prop.guiTooltipCooldown.desc": "Number of ticks before showing a tooltip",
 
+  "config.ichunutil.cat.headTracking.name": "Head Model Tracking",
+  "config.ichunutil.cat.headTracking.comment": "Head Model Tracking related configs.\nUsed by Googly Eyes and Hats.",
+  "config.ichunutil.prop.aggressiveHeadTracking.name": "Aggressive Head Tracking",
+  "config.ichunutil.prop.aggressiveHeadTracking.comment": "Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?\n1 = All Entities\n2 = Players Only",
+  "config.ichunutil.prop.horseEasterEgg.name": "Enable Horse/Llama Easter Egg?",
+  "config.ichunutil.prop.horseEasterEgg.comment": "Enable the easter egg where the horse/llama's \"head\" is its behind. This is an easter egg on how Hats used to put hats on Horses.",
+
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.options": "Options",
 

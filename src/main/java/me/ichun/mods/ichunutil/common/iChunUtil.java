@@ -6,12 +6,14 @@ import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -26,30 +28,38 @@ public class iChunUtil //TODO update forge dependency to build 41
 
     public static final Logger LOGGER = LogManager.getLogger(); //TODO should we add Markers?
 
-    private static ModLoadingStage loadingStage = ModLoadingStage.ERROR;
+    private static ModLoadingStage loadingStage = ModLoadingStage.ERROR; //TODO spider fox easter egg
     private static boolean devEnvironment;
 
     public static ConfigClient configClient;
+
+    public static EventHandlerClient eventHandlerClient;
 
     public iChunUtil()
     {
         loadingStage = ModLoadingStage.CONSTRUCT;
         devEnvironment = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
 
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
+
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
             configClient = new ConfigClient().init();
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initClient);
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
     }
 
     private void init(final FMLCommonSetupEvent event)
     {
         loadingStage = ModLoadingStage.COMMON_SETUP;
         //TODO do I wanna check for mod updates
+    }
+
+    private void initClient(final FMLClientSetupEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());
     }
 
     private void finishLoading(FMLLoadCompleteEvent event)

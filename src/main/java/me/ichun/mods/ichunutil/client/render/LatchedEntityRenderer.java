@@ -10,9 +10,9 @@ import javax.annotation.Nullable;
 
 public class LatchedEntityRenderer<T extends LatchedEntity> extends EntityRenderer<T>
 {
-    protected LatchedEntityRenderer(EntityRendererManager p_i46179_1_)
+    protected LatchedEntityRenderer(EntityRendererManager manager)
     {
-        super(p_i46179_1_);
+        super(manager);
     }
 
     @Nullable

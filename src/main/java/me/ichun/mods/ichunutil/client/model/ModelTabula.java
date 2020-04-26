@@ -112,7 +112,7 @@ public class ModelTabula extends Model
         this.selectedBox = selectedBox;
         if(selectedPart != null || selectedBox != null)
         {
-            render(matrixStack, 0.95F, hideTexture);
+            render(matrixStack, 0.85F, hideTexture);
 
             this.selectedPart = null;
             this.selectedBox = null;

@@ -70,6 +70,8 @@ public abstract class ConfigBase
             configBuilder.pop();
         }
 
+        buildAdditionalConfigs(configBuilder);
+
         //Taken from ModLoadingContext.get().registerConfig
         ModLoadingContext.get().getActiveContainer().addConfig(config = new ModConfig(getConfigType(), configBuilder.build(), ModLoadingContext.get().getActiveContainer(), fileName));
         //End registerConfig
@@ -87,6 +89,8 @@ public abstract class ConfigBase
         reveal.addAll(Arrays.asList(name));
         return (T)this;
     }
+
+    public void buildAdditionalConfigs(ForgeConfigSpec.Builder builder){} //in case any configs aren't fields.
 
     private void loadConfig() //massive reflective method here. Sorry cpw!
     {
@@ -192,7 +196,7 @@ public abstract class ConfigBase
         }
         else if(iChunUtil.isDevEnvironment())
         {
-            iChunUtil.LOGGER.warn("Property is not commented: {}", fieldName); //TODO switch this over to localization?
+            iChunUtil.LOGGER.warn("Property from {} is not commented: {}", getConfigName(), fieldName);
         }
         builder.translation("config." + getModId() + ".prop." + fieldName + ".desc");
 
@@ -355,6 +359,7 @@ public abstract class ConfigBase
         if(save)
         {
             config.getSpec().save();
+            onConfigLoaded();
         }
     }
 

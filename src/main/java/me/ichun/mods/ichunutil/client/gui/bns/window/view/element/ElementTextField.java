@@ -77,7 +77,7 @@ public class ElementTextField extends Element
 //    private List<IGuiEventListener> children = Lists.newArrayList();
     protected TextFieldWidget widget;
     private String defaultText = "";
-    private int maxStringLength = 256;
+    private int maxStringLength = 32767;
     private Predicate<String> validator = s -> true;
     private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> s;
     private @Nullable Consumer<String> responder;
