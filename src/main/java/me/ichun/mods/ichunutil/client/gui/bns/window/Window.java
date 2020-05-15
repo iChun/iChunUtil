@@ -211,9 +211,9 @@ public abstract class Window<M extends IWindows> extends Fragment
             double top = 0;
             double right = getWorkspace().getWidth();
             double bottom = getWorkspace().getHeight();
-            for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : dock.docked.entrySet())
+            for(Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type> e : dock.docked.entrySet())
             {
-                for(Window<?> key : e.getKey())
+                for(Window<?> key : e.getKey().windows)
                 {
                     Constraint.Property.Type value = e.getValue();
                     switch(value)

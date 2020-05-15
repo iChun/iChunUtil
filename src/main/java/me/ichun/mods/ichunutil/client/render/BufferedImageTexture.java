@@ -23,7 +23,7 @@ public class BufferedImageTexture extends Texture
     public BufferedImageTexture(@Nonnull BufferedImage image)
     {
         this.image = image;
-        this.resourceLocation = new ResourceLocation("tabula", "project_texture_" + Math.abs(image.hashCode()));
+        this.resourceLocation = new ResourceLocation("ichunutil", "buffered_image_" + Math.abs(image.hashCode()));
     }
 
     @Override

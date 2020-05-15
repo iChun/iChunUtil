@@ -13,7 +13,7 @@ import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constrain
 
 public class WindowDock<M extends IWindows> extends Window<M>
 {
-    public LinkedHashMap<ArrayList<Window<?>>, Constraint.Property.Type> docked = new LinkedHashMap<>();
+    public LinkedHashMap<ArrayListHolder, Constraint.Property.Type> docked = new LinkedHashMap<>();
     public HashMap<Window<?>, WindowSize> dockedOriSize = new HashMap<>();
     public HashSet<Constraint.Property.Type> disabledDocks = new HashSet<>();
 
@@ -69,7 +69,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public void init()
     {
         constraint.apply();
-        docked.keySet().forEach(windows -> windows.forEach(window -> {
+        docked.keySet().forEach(h -> h.windows.forEach(window -> {
             window.constraint.apply();
             window.resize(Minecraft.getInstance(), this.width, this.height);
             window.init();
@@ -79,10 +79,10 @@ public class WindowDock<M extends IWindows> extends Window<M>
     @Override
     public void render(int mouseX, int mouseY, float partialTick)
     {
-        List<ArrayList<Window<?>>> keys = new ArrayList<>(docked.keySet());
+        List<ArrayListHolder> keys = new ArrayList<>(docked.keySet());
         for(int i = keys.size() - 1; i >= 0; i--)
         {
-            ArrayList<Window<?>> windows = keys.get(i);
+            ArrayList<Window<?>> windows = keys.get(i).windows;
             windows.forEach(window -> window.render(mouseX, mouseY, partialTick));
         }
     }
@@ -91,7 +91,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();
-        docked.keySet().forEach(windows -> windows.forEach(window -> {
+        docked.keySet().forEach(h -> h.windows.forEach(window -> {
             window.constraint.apply();
             window.resize(Minecraft.getInstance(), this.width, this.height);
         }));
@@ -145,9 +145,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
         if(isMouseOver(mouseX, mouseY))
         {
             Fragment<?> fragment = this;
-            for(ArrayList<Window<?>> windows : this.docked.keySet())
+            for(ArrayListHolder h : this.docked.keySet())
             {
-                for(Window<?> window : windows)
+                for(Window<?> window : h.windows)
                 {
                     Fragment<?> fragment1 = window.getTopMostFragment(mouseX, mouseY);
                     if(fragment1 != null)
@@ -163,9 +163,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public boolean isDocked(Window<?> window)
     {
-        for(ArrayList<Window<?>> windows : docked.keySet())
+        for(ArrayListHolder h : docked.keySet())
         {
-            if(windows.contains(window))
+            if(h.windows.contains(window))
             {
                 return true;
             }
@@ -175,11 +175,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public boolean sameDockStack(IConstrainable window, IConstrainable window1)
     {
-        for(ArrayList<Window<?>> windows : docked.keySet())
+        for(ArrayListHolder h : docked.keySet())
         {
-            if(windows.contains(window))
+            if(h.windows.contains(window))
             {
-                return windows.contains(window1);
+                return h.windows.contains(window1);
             }
         }
         return false;
@@ -205,9 +205,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
         double top = 0;
         double right = width;
         double bottom = height;
-        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
+        for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
-            for(Window<?> key : e.getKey())
+            for(Window<?> key : e.getKey().windows)
             {
                 Constraint.Property.Type value = e.getValue();
                 switch(value)
@@ -277,14 +277,14 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public boolean addToDocked(Window<?> dockedWin, Window<?> window)
     {
-        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
+        for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
-            if(e.getKey().contains(dockedWin))
+            if(e.getKey().windows.contains(dockedWin))
             {
                 dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
 
                 Constraint.Property.Type dockType = e.getValue();
-                ArrayList<Window<?>> dockStack = e.getKey();
+                ArrayList<Window<?>> dockStack = e.getKey().windows;
                 Window<?> lastInStack = dockStack.get(dockStack.size() - 1); // we stack downwards and to the right.
 
                 int maxWidth = -1;
@@ -349,7 +349,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
                     }
                 }
 
-                e.getKey().add(window);
+                e.getKey().windows.add(window);
                 window.setConstraint(constraint);
 
                 for(Window<?> window1 : dockStack)
@@ -397,7 +397,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
         ArrayList<Window<?>> windows = new ArrayList<>();
         windows.add(window);
-        docked.put(windows, type);
+        docked.put(new WindowDock.ArrayListHolder(windows), type);
         window.setConstraint(constraint);
         window.constraint.apply();
         if(getWorkspace().hasInit())
@@ -410,11 +410,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
     {
         boolean redoConstraints = false;
 
-        Iterator<Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type>> iterator = docked.entrySet().iterator();
+        Iterator<Map.Entry<ArrayListHolder, Constraint.Property.Type>> iterator = docked.entrySet().iterator();
         while(iterator.hasNext())
         {
-            Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e = iterator.next();
-            ArrayList<Window<?>> windows = e.getKey();
+            Map.Entry<ArrayListHolder, Constraint.Property.Type> e = iterator.next();
+            ArrayList<Window<?>> windows = e.getKey().windows;
 
             //redo the constraints
             EnumMap<Constraint.Property.Type, Constraint.Property> anchors = new EnumMap<>(Constraint.Property.Type.class);
@@ -552,11 +552,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
     public @Nullable IConstrainable getAnchor(Constraint.Property.Type type, IConstrainable ignored) //gets the element to anchor on based on type
     {
         IConstrainable typeMost = null;
-        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
+        for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
-            if(e.getValue() == type && (ignored == null || !e.getKey().contains(ignored)))
+            if(e.getValue() == type && (ignored == null || !e.getKey().windows.contains(ignored)))
             {
-                typeMost = e.getKey().get(0);
+                typeMost = e.getKey().windows.get(0);
             }
         }
         return typeMost;
@@ -582,9 +582,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public Constraint.Property.Type getAnchorType(Window<?> window)
     {
-        for(Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e : docked.entrySet())
+        for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
-            if(e.getKey().contains(window))
+            if(e.getKey().windows.contains(window))
             {
                 return e.getValue();
             }
@@ -594,9 +594,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public Window<?> getWindowOver(double mouseX, double mouseY)
     {
-        for(ArrayList<Window<?>> windows : docked.keySet())
+        for(ArrayListHolder h : docked.keySet())
         {
-            for(Window<?> window : windows)
+            for(Window<?> window : h.windows)
             {
                 if(window.isMouseOver(mouseX, mouseY))
                 {
@@ -609,11 +609,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
 
     public @Nonnull ArrayList<Window<?>> getDockStack(Window<?> window)
     {
-        for(ArrayList<Window<?>> windows : docked.keySet())
+        for(ArrayListHolder h : docked.keySet())
         {
-            if(windows.contains(window))
+            if(h.windows.contains(window))
             {
-                return windows;
+                return h.windows;
             }
         }
         return new ArrayList<>();
@@ -658,5 +658,12 @@ public class WindowDock<M extends IWindows> extends Window<M>
             this.width = width;
             this.height = height;
         }
+    }
+
+    public static class ArrayListHolder //this is to have a consistent hashcode for hashmaps
+    {
+        public final ArrayList<Window<?>> windows;
+
+        public ArrayListHolder(ArrayList<Window<?>> windows) {this.windows = windows;}
     }
 }

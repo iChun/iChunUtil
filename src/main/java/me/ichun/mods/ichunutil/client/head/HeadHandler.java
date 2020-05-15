@@ -5,7 +5,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.passive.fish.CodEntity;
@@ -93,17 +92,4 @@ public class HeadHandler
         }
         return helper;
     }
-
-
-    //TODO Redo This
-    //    @Nullable
-    //    public static CubeInfo getHeadInfo(HeadBase helper)
-    //    {
-    //        if(helper.headInfo == null && helper.headModel != null && !helper.headModel[0].cubeList.isEmpty())
-    //        {
-    //            ModelBox box = helper.headModel[0].cubeList.get(0);
-    //            helper.headInfo = ModelHelper.createCubeInfoFromModelBox(helper.headModel[0], box, box.boxName != null ? (box.boxName.substring(box.boxName.lastIndexOf(".") + 1)) : "");
-    //        }
-    //        return (CubeInfo)helper.headInfo;
-    //    }
 }

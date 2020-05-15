@@ -10,7 +10,6 @@ import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 
 public class HeadHorse extends HeadBase<AbstractHorseEntity>
 {
-    //TODO update for new model.
     public float[] eyeOffsetNormal = new float[] { 0F, 9.5F/16F, -1F/16F }; //I love that I can use Tabula for this.
     public float halfInterpupillaryDistanceNormal = 3F/16F;
     public float eyeScaleNormal = 0.6F;

@@ -39,7 +39,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
         return flag;
     }
 
-    protected void trigger()
+    public void trigger()
     {
         if(renderMinecraftStyle())
         {

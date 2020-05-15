@@ -50,12 +50,6 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
         return (T)this;
     }
 
-    public <T extends LatchedEntity> T ignoreFrustumCheck()
-    {
-        ignoreFrustumCheck = true;
-        return (T)this;
-    }
-
     @Override
     public void registerData()
     {

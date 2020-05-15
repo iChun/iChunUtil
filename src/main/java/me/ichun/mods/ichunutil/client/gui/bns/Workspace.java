@@ -143,11 +143,18 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
             windows.forEach(Fragment::init);
         }
+        this.minecraft.keyboardListener.enableRepeatEvents(true);
     }
 
     public boolean hasInit()
     {
         return hasInit;
+    }
+
+    @Override
+    public void removed()
+    {
+        this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -161,7 +168,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 Window<?> window = windows.get(i);
                 if(window instanceof WindowDock)
                 {
-                    ((WindowDock<?>)window).docked.keySet().forEach(winds::addAll);
+                    ((WindowDock<?>)window).docked.keySet().forEach(h -> winds.addAll(h.windows));
                 }
                 else
                 {
@@ -521,7 +528,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
-        super.resize(mc, width, height);
+        this.minecraft = mc;
+        this.itemRenderer = mc.getItemRenderer();
+        this.font = mc.fontRenderer;
+        this.width = width;
+        this.height = height;
+        this.setFocused(null);
 
         //resize windows
         windows.forEach(window -> window.resize(mc, width, height));

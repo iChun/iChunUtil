@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.model.*;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.RavagerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,11 +26,10 @@ public class HeadBase<E extends LivingEntity>
     public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
 
     public ModelRenderer[] headModel = null;
-    public Object headInfo = null;
 
     //Defaults. Works on Bipeds
     public float[] headJoint = new float[3];
-    public float[] eyeOffset = new float[] { 0F, 4F/16F, 4F/16F }; //I love that I can use Tabula for this.
+    public float[] eyeOffset = new float[] { 0F, 4F/16F, 4F/16F }; //I love that I can use Tabula for this. (I still do -iChun 2020)
     public float[] irisColour = new float[] { 0.9F, 0.9F, 0.9F };
     public float[] pupilColour = new float[] { 0.0F, 0.0F, 0.0F };
     public float halfInterpupillaryDistance = 2F/16F;
@@ -329,6 +327,4 @@ public class HeadBase<E extends LivingEntity>
             this.headModel[0] = ((VillagerModel)model).villagerHead;
         }
     }
-
-    //TODO third party support?
 }

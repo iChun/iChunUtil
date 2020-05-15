@@ -64,11 +64,11 @@ public class WorkspaceConfigs extends Workspace
     public void destroyWindowValues()
     {
         WindowDock<?> dock = getDock();
-        Iterator<Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type>> ite = dock.docked.entrySet().iterator();
+        Iterator<Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type>> ite = dock.docked.entrySet().iterator();
         while(ite.hasNext())
         {
-            Map.Entry<ArrayList<Window<?>>, Constraint.Property.Type> e = ite.next();
-            ArrayList<Window<?>> windows = e.getKey();
+            Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type> e = ite.next();
+            ArrayList<Window<?>> windows = e.getKey().windows;
             for(int i = windows.size() - 1; i >= 0; i--)
             {
                 Window<?> window = windows.get(i);

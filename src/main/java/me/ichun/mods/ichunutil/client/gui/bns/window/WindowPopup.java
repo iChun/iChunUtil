@@ -62,19 +62,21 @@ public class WindowPopup extends Window<Workspace>
         @Override
         public void init()
         {
+            super.init();
+
             ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
             text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
-
-            super.init();
+            text.init();
         }
 
         @Override
         public void resize(Minecraft mc, int width, int height)
         {
+            super.resize(mc, width, height);
+
             ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
             text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
-
-            super.resize(mc, width, height);
+            text.init();
         }
     }
 

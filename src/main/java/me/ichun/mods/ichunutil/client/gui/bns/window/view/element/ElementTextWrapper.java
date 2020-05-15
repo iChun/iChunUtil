@@ -96,10 +96,10 @@ public class ElementTextWrapper extends Element //TODO image element
             }
         }
 
-        textWrapped = text;
+        longestLine = tooltipTextWidth;
         if(doNotWrap)
         {
-            longestLine = tooltipTextWidth;
+            textWrapped = text;
             return textWrapped.size() != lines;
         }
 
