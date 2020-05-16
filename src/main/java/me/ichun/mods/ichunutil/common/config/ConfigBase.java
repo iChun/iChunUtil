@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModLoadingStage;
@@ -194,7 +195,7 @@ public abstract class ConfigBase
         {
             builder.comment(props.comment());
         }
-        else if(iChunUtil.isDevEnvironment())
+        else if(ObfHelper.isDevEnvironment())
         {
             iChunUtil.LOGGER.warn("Property from {} is not commented: {}", getConfigName(), fieldName);
         }
@@ -395,7 +396,7 @@ public abstract class ConfigBase
 
         private void checkForChange()
         {
-            if(configValue.get() != lastObj)
+            if(!configValue.get().equals(lastObj))
             {
                 try
                 {
@@ -418,7 +419,7 @@ public abstract class ConfigBase
             {
                 field.setAccessible(true);
                 Object o = field.get(parent);
-                if(o != lastObj)
+                if(!o.equals(lastObj))
                 {
                     Object old = lastObj;
                     lastObj = (T)o;

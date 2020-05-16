@@ -5,6 +5,8 @@ import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.entity.EntityHelper;
+import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -29,7 +31,6 @@ public class iChunUtil //TODO update forge dependency to build 41
     public static final Logger LOGGER = LogManager.getLogger(); //TODO should we add Markers?
 
     private static ModLoadingStage loadingStage = ModLoadingStage.ERROR; //TODO spider fox easter egg
-    private static boolean devEnvironment;
 
     public static ConfigClient configClient;
 
@@ -38,7 +39,7 @@ public class iChunUtil //TODO update forge dependency to build 41
     public iChunUtil()
     {
         loadingStage = ModLoadingStage.CONSTRUCT;
-        devEnvironment = !ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_71197_b").equals("func_71197_b");
+        ObfHelper.detectDevEnvironment();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
@@ -46,6 +47,7 @@ public class iChunUtil //TODO update forge dependency to build 41
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
             configClient = new ConfigClient().init();
+            EntityHelper.injectMinecraftPlayerGameProfile();
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initClient);
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });
@@ -73,9 +75,5 @@ public class iChunUtil //TODO update forge dependency to build 41
     public static ModLoadingStage getLoadingStage()
     {
         return loadingStage;
-    }
-    public static boolean isDevEnvironment()
-    {
-        return devEnvironment;
     }
 }

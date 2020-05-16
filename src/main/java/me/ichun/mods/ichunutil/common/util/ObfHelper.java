@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
@@ -17,6 +18,16 @@ import java.lang.reflect.Method;
 public class ObfHelper
 {
     private static final String OBF_VERSION = "1.15.2";
+    private static boolean devEnvironment;
+
+    public static void detectDevEnvironment()
+    {
+        devEnvironment = FMLLoader.getNaming().equals("mcp");
+    }
+    public static boolean isDevEnvironment()
+    {
+        return devEnvironment;
+    }
 
     @OnlyIn(Dist.CLIENT)
     @Nullable

@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -230,7 +231,12 @@ public class ViewValues extends View<WindowValues>
                             WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
                                 try
                                 {
-                                    list.clear();
+                                    List listToUse = list;
+                                    if(list instanceof ArrayList)
+                                    {
+                                        listToUse = (List)((ArrayList)list).clone();
+                                    }
+                                    listToUse.clear();
                                     for(ElementList.Item<?> item1 : list1.items)
                                     {
                                         ElementTextField oriText = (ElementTextField)item1.elements.get(0);
@@ -238,19 +244,19 @@ public class ViewValues extends View<WindowValues>
                                         {
                                             if(types[0] == String.class)
                                             {
-                                                list.add(oriText.getText());
+                                                listToUse.add(oriText.getText());
                                             }
                                             else if(types[0] == Double.class)
                                             {
-                                                list.add(Double.parseDouble(oriText.getText()));
+                                                listToUse.add(Double.parseDouble(oriText.getText()));
                                             }
                                             else if(types[0] == Integer.class)
                                             {
-                                                list.add(Integer.parseInt(oriText.getText()));
+                                                listToUse.add(Integer.parseInt(oriText.getText()));
                                             }
                                         }
                                     }
-                                    value.value.field.set(value.value.parent, list);
+                                    value.value.field.set(value.value.parent, listToUse);
                                     value.value.parent.save();
                                 }
                                 catch(IllegalAccessException ignored){}

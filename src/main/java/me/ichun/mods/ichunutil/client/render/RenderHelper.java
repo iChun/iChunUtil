@@ -4,7 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
@@ -22,10 +25,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
 
 public class RenderHelper
 {
@@ -249,4 +250,61 @@ public class RenderHelper
 
         RenderHelper.endGlScissor();
     }
+
+    public static void renderTestStencil()
+    {
+        //Basic stencil test
+        Minecraft mc = Minecraft.getInstance();
+        MainWindow reso = mc.getMainWindow();
+
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+
+        GlStateManager.colorMask(false, false, false, false);
+        GlStateManager.depthMask(false);
+
+        GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+
+        GL11.glStencilMask(0xFF);
+        GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+
+        RenderHelper.drawColour(0xffffff, 255, 0, 0, 60, 60, 0);
+
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.depthMask(true);
+
+        GL11.glStencilMask(0x00);
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 0, 0xFF);
+
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+
+        RenderHelper.drawColour(0xffffff, 255, 0, 0, reso.getScaledWidth(), reso.getScaledHeight(), 0);
+
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+    }
+
+    public static HashSet<Framebuffer> frameBuffers = new HashSet<>();
+
+    public static Framebuffer createFrameBuffer()
+    {
+        Minecraft mc = Minecraft.getInstance();
+        Framebuffer render = new Framebuffer(mc.getMainWindow().getFramebufferWidth(), mc.getMainWindow().getFramebufferHeight(), true, Minecraft.IS_RUNNING_ON_MAC);
+        if(mc.getFramebuffer().isStencilEnabled()) //if the main framebuffer is using a stencil, we might as well, too.
+        {
+            render.enableStencil();
+        }
+        frameBuffers.add(render);
+        return render;
+    }
+
+    public static void deleteFrameBuffer(Framebuffer buffer)
+    {
+        if(buffer.framebufferObject >= 0)
+        {
+            buffer.deleteFramebuffer();
+        }
+        frameBuffers.remove(buffer);
+    }
+
 }
