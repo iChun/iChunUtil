@@ -75,6 +75,11 @@ public class PacketChannel
         channel.send(packetTarget, new PacketHolder(packet));
     }
 
+    public void reply(AbstractPacket packet, NetworkEvent.Context context)
+    {
+        channel.reply(new PacketHolder(packet), context);
+    }
+
     public static class PacketHolder
     {
         private AbstractPacket packet;

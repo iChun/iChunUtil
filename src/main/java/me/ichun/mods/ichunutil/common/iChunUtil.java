@@ -1,11 +1,11 @@
 package me.ichun.mods.ichunutil.common;
 
-import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.entity.EntityHelper;
+import me.ichun.mods.ichunutil.common.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,7 +14,6 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(iChunUtil.MOD_ID)
-public class iChunUtil //TODO update forge dependency to build 41
+public class iChunUtil //TODO update forge dependency to build 31.2.0
 {
     public static final String MOD_ID = "ichunutil";
     public static final String MOD_NAME = "iChunUtil";
@@ -34,32 +33,33 @@ public class iChunUtil //TODO update forge dependency to build 41
 
     public static ConfigClient configClient;
 
-    public static EventHandlerClient eventHandlerClient;
+    public static EventHandlerClient eventHandlerClient; //TODO if we have a packet channel we should only need it if a mod dep needs it.
 
     public iChunUtil()
     {
         loadingStage = ModLoadingStage.CONSTRUCT;
         ObfHelper.detectDevEnvironment();
+        EventCalendar.checkDate();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
             configClient = new ConfigClient().init();
             EntityHelper.injectMinecraftPlayerGameProfile();
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::initClient);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });
     }
 
-    private void init(final FMLCommonSetupEvent event)
+    private void setup(final FMLCommonSetupEvent event)
     {
         loadingStage = ModLoadingStage.COMMON_SETUP;
         //TODO do I wanna check for mod updates
     }
 
-    private void initClient(final FMLClientSetupEvent event)
+    private void setupClient(final FMLClientSetupEvent event)
     {
         MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());
     }

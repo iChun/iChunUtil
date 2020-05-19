@@ -43,9 +43,9 @@ public abstract class ConfigBase
         this(ModLoadingContext.get().getActiveContainer().getModId() + ".toml");
     }
 
-    public ConfigBase(@Nonnull String pathName)
+    public ConfigBase(@Nonnull String fileName)
     {
-        this.fileName = pathName;
+        this.fileName = fileName;
         CONFIGS.add(this);
     }
 
@@ -56,7 +56,7 @@ public abstract class ConfigBase
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
 
         Field[] fields = this.getClass().getDeclaredFields();
-        String[] lastCat = new String[] { "" };
+        String[] lastCat = new String[] { "" }; //an array so to pass on the object through multiple functions
         for(Field field : fields)
         {
             field.setAccessible(true);
