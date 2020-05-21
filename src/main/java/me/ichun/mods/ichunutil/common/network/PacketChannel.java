@@ -2,17 +2,23 @@ package me.ichun.mods.ichunutil.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class PacketChannel
 {
+    public static final PacketDistributor<ServerPlayerEntity> ALL_EXCEPT = new PacketDistributor<>(PacketChannel::allExcept, NetworkDirection.PLAY_TO_CLIENT);
+
     private final SimpleChannel channel;
     private final Object2ByteOpenHashMap<Class<? extends AbstractPacket>> clzToId;
     private final Class<? extends AbstractPacket>[] idToClz;
@@ -82,10 +88,25 @@ public class PacketChannel
 
     public static class PacketHolder
     {
-        private AbstractPacket packet;
+        private final AbstractPacket packet;
         private PacketHolder(AbstractPacket packet)
         {
             this.packet = packet;
         }
+    }
+
+    private static Consumer<IPacket<?>> allExcept(PacketDistributor<ServerPlayerEntity> packetDistributor, Supplier<ServerPlayerEntity> entityPlayerMPSupplier)
+    {
+        return p -> {
+            ServerPlayerEntity player = entityPlayerMPSupplier.get();
+            for(ServerPlayerEntity serverPlayerEntity : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            {
+                if(serverPlayerEntity == player)
+                {
+                    continue;
+                }
+                serverPlayerEntity.connection.sendPacket(p);
+            }
+        };
     }
 }

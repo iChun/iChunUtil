@@ -96,6 +96,21 @@ public class EntityHelper
         profileCache = new PlayerProfileCache(gameprofilerepository, new File(Minecraft.getInstance().gameDir, MinecraftServer.USER_CACHE_FILE.getName()));
     }
 
+    public static PlayerEntity getClientPlayer()
+    {
+        if(FMLEnvironment.dist.isClient())
+        {
+            return getMinecraftPlayer();
+        }
+        return null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static PlayerEntity getMinecraftPlayer()
+    {
+        return Minecraft.getInstance().player;
+    }
+
     public static float updateRotation(float oriRot, float intendedRot, float maxChange)
     {
         float var4 = MathHelper.wrapDegrees(intendedRot - oriRot);

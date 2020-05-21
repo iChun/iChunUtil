@@ -37,7 +37,7 @@ public class Project extends Identifiable<Project> //Model
     public transient boolean isOldTabula; //*GASP*
 
     //Project texture Stuffs
-    private transient BufferedImage bufferedTexture;
+    private transient BufferedImage bufferedTexture; //TODO switch to NativeImage. BufferedImage is broken on Macs.
     @OnlyIn(Dist.CLIENT)
     public transient BufferedImageTexture bufferedImageTexture;
 

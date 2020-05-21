@@ -20,7 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +30,7 @@ public final class ClientEntityTracker
 {
     private static boolean hasInit;
     private static final AtomicInteger NEXT_ENTITY_ID = new AtomicInteger(-70000000);// -70 million. We reduce even further as we use this more, negative ent IDs prevent collision with real entities (with positive IDs starting with 0)
-    private static final HashMap<EntityHolder, EntityTracker> TRACKERS = new HashMap<>();
+    private static final IdentityHashMap<Entity, EntityTracker> TRACKERS = new IdentityHashMap<>();
 
     public static void init(IEventBus bus) //event bus from constructor
     {
@@ -58,9 +58,9 @@ public final class ClientEntityTracker
     public static EntityTracker getOrCreate(Entity ent)
     {
         EntityTracker tracker = null;
-        for(Map.Entry<EntityHolder, EntityTracker> e : TRACKERS.entrySet())
+        for(Map.Entry<Entity, EntityTracker> e : TRACKERS.entrySet())
         {
-            if(e.getKey().entity == ent)
+            if(e.getKey() == ent)
             {
                 tracker = e.getValue();
                 break;
@@ -69,12 +69,12 @@ public final class ClientEntityTracker
         if(tracker == null)
         {
             tracker = new EntityTracker(EntityTypes.TRACKER.get(), ent.world);
-            TRACKERS.put(new EntityHolder(ent), tracker);
+            TRACKERS.put(ent, tracker);
         }
 
         if(!tracker.isAlive()) // our tracker is dead. create a new one
         {
-            TRACKERS.put(new EntityHolder(ent), tracker = new EntityTracker(EntityTypes.TRACKER.get(), ent.world));
+            TRACKERS.put(ent, tracker = new EntityTracker(EntityTypes.TRACKER.get(), ent.world));
         }
         tracker.setParent(ent);
         if(!tracker.isAddedToWorld())
@@ -93,14 +93,14 @@ public final class ClientEntityTracker
             if(Minecraft.getInstance().player != null && !Minecraft.getInstance().isGamePaused()) //ingame, not paused.
             {
                 EntityTracker playerTracker = null;
-                Iterator<Map.Entry<EntityHolder, EntityTracker>> ite = TRACKERS.entrySet().iterator();
+                Iterator<Map.Entry<Entity, EntityTracker>> ite = TRACKERS.entrySet().iterator();
                 while(ite.hasNext())
                 {
-                    Map.Entry<EntityHolder, EntityTracker> e = ite.next();
+                    Map.Entry<Entity, EntityTracker> e = ite.next();
                     EntityTracker tracker = e.getValue();
                     if(!tracker.isAlive() || Minecraft.getInstance().player.ticksExisted - tracker.lastUpdate > 10)
                     {
-                        if(e.getKey().entity == Minecraft.getInstance().player && tracker.lastUpdate == -1)
+                        if(e.getKey() == Minecraft.getInstance().player && tracker.lastUpdate == -1)
                         {
                             //we didn't even get to tick, the poor guy just got spawncamped
                             playerTracker = tracker;
@@ -122,10 +122,10 @@ public final class ClientEntityTracker
     {
         if(event.getWorld().isRemote())
         {
-            Iterator<Map.Entry<EntityHolder, EntityTracker>> ite = TRACKERS.entrySet().iterator();
+            Iterator<Map.Entry<Entity, EntityTracker>> ite = TRACKERS.entrySet().iterator();
             while(ite.hasNext())
             {
-                Map.Entry<EntityHolder, EntityTracker> e = ite.next();
+                Map.Entry<Entity, EntityTracker> e = ite.next();
                 EntityTracker tracker = e.getValue();
                 if(tracker.parent.getEntityWorld() == event.getWorld())
                 {
@@ -133,13 +133,6 @@ public final class ClientEntityTracker
                 }
             }
         }
-    }
-
-    private static class EntityHolder //to fix the issue of entities changing IDs and thus changing their HashCode
-    {
-        public final Entity entity;
-
-        private EntityHolder(Entity entity) {this.entity = entity;}
     }
 
     private static class EntityTypes

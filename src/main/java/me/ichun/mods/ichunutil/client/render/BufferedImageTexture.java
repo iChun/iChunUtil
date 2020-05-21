@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BufferedImageTexture extends Texture
+public class BufferedImageTexture extends Texture //TODO get rid of this! We have to use NativeImage
 {
     @Nonnull
     public final BufferedImage image;
