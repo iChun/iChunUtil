@@ -50,7 +50,7 @@ public final class ClientEntityTracker
         RenderingRegistry.registerEntityRenderingHandler(EntityTypes.TRACKER.get(), new RenderTracker.RenderFactory());
     }
 
-    private static int getNextEntId()
+    public static int getNextEntId()
     {
         return NEXT_ENTITY_ID.getAndDecrement();
     }

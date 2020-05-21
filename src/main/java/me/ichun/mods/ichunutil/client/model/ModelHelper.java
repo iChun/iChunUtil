@@ -1,20 +1,21 @@
 package me.ichun.mods.ichunutil.client.model;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ModelHelper
 {
+    public static final HashMap<Class<?>, ModelRenderers> RENDERERS_FOR_CLASS = new HashMap<>();
+
     public static Project convertModelToProject(Object o)
     {
         Project project = new Project();
@@ -27,9 +28,48 @@ public class ModelHelper
             project.texHeight = ((Model)o).textureHeight;
         }
 
-        HashMap<String, ModelRenderer> fields = new HashMap<>();
-        HashMap<String, ModelRenderer[]> arrays = new HashMap<>();
-        HashMap<String, ArrayList<ModelRenderer>> lists = new HashMap<>();
+        ModelRenderers renderers = digForModelRenderers(o);
+
+        HashMap<ModelRenderer, Identifiable<?>> done = new HashMap<>();
+
+        renderers.fields.forEach((s, modelRenderer) -> {
+            createPartFor(s, modelRenderer, done, project);
+        });
+
+        renderers.arrays.forEach((s, modelRenderers) -> {
+            for(int i = 0; i < modelRenderers.length; i++)
+            {
+                createPartFor(s + "_" + i, modelRenderers[i], done, project);
+            }
+        });
+
+        renderers.lists.forEach((s, modelRenderers) -> {
+            for(int i = 0; i < modelRenderers.size(); i++)
+            {
+                createPartFor(s + "_" + i, modelRenderers.get(i), done, project);
+            }
+        });
+
+        renderers.fields.forEach(((s, modelRenderer) -> {
+            if(done.containsKey(modelRenderer))
+            {
+                done.get(modelRenderer).name = s;
+            }
+        }));
+
+        project.partCountProjectLife = done.size();
+
+        return project;
+    }
+
+    private static ModelRenderers digForModelRenderers(Object o)
+    {
+        if(RENDERERS_FOR_CLASS.containsKey(o.getClass()))
+        {
+            return RENDERERS_FOR_CLASS.get(o.getClass());
+        }
+
+        ModelRenderers renderers = new ModelRenderers();
 
         Class<?> clz = o.getClass();
         while(clz != Model.class && clz != Object.class) //it could also be TileEntityRenderer??
@@ -45,7 +85,7 @@ public class ModelHelper
                         ModelRenderer rend = (ModelRenderer)f.get(o);
                         if(rend != null)
                         {
-                            fields.put(f.getName(), rend); // Add normal parent fields
+                            renderers.fields.put(f.getName(), rend); // Add normal parent fields
                         }
                     }
                     else if(ModelRenderer[].class.isAssignableFrom(f.getType()))
@@ -53,7 +93,7 @@ public class ModelHelper
                         ModelRenderer[] rend = (ModelRenderer[])f.get(o);
                         if(rend != null && rend.length > 0)
                         {
-                            arrays.put(f.getName(), rend);
+                            renderers.arrays.put(f.getName(), rend);
                         }
                     }
                     else if(f.get(o) instanceof List)
@@ -73,7 +113,7 @@ public class ModelHelper
                         }
                         if(!catches.isEmpty())
                         {
-                            lists.put(f.getName(), catches);
+                            renderers.lists.put(f.getName(), catches);
                         }
                     }
                 }
@@ -86,36 +126,81 @@ public class ModelHelper
             clz = clz.getSuperclass();
         }
 
-        HashMap<ModelRenderer, Identifiable<?>> done = new HashMap<>();
+        RENDERERS_FOR_CLASS.put(o.getClass(), renderers);
 
-        fields.forEach((s, modelRenderer) -> {
-            createPartFor(s, modelRenderer, done, project);
+        return renderers;
+    }
+
+    public static ArrayList<ModelRenderer> createModelPartsFromProject(@Nonnull Project project)
+    {
+        ArrayList<ModelRenderer> models = new ArrayList<>();
+
+        project.parts.forEach(part -> populateModel(models, part));
+
+        return models;
+    }
+
+    private static void populateModel(Collection<? super ModelRenderer> parts, Project.Part part)
+    {
+        int[] dims = part.getProjectTextureDims();
+        if(!part.matchProject)
+        {
+            dims[0] = part.texWidth;
+            dims[1] = part.texHeight;
+        }
+        ModelRenderer modelPart = new ModelRenderer(dims[0], dims[1], part.texOffX, part.texOffY);
+        modelPart.rotationPointX = part.rotPX;
+        modelPart.rotationPointY = part.rotPY;
+        modelPart.rotationPointZ = part.rotPZ;
+
+        modelPart.rotateAngleX = (float)Math.toRadians(part.rotAX);
+        modelPart.rotateAngleY = (float)Math.toRadians(part.rotAY);
+        modelPart.rotateAngleZ = (float)Math.toRadians(part.rotAZ);
+
+        modelPart.mirror = part.mirror;
+        modelPart.showModel = part.showModel;
+
+        part.boxes.forEach(box -> {
+            int texOffX = modelPart.textureOffsetX;
+            int texOffY = modelPart.textureOffsetY;
+            modelPart.setTextureOffset(modelPart.textureOffsetX + box.texOffX, modelPart.textureOffsetY + box.texOffY);
+            modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
+            modelPart.setTextureOffset(texOffX, texOffY);
         });
+        part.children.forEach(part1 -> populateModel(modelPart.childModels, part1));
 
-        arrays.forEach((s, modelRenderers) -> {
-            for(int i = 0; i < modelRenderers.length; i++)
-            {
-                createPartFor(s + "_" + i, modelRenderers[i], done, project);
-            }
-        });
+        parts.add(modelPart);
+    }
 
-        lists.forEach((s, modelRenderers) -> {
-            for(int i = 0; i < modelRenderers.size(); i++)
-            {
-                createPartFor(s + "_" + i, modelRenderers.get(i), done, project);
-            }
-        });
+    public static ArrayList<ModelRenderer> explode(ArrayList<ModelRenderer> parts) //separates the children from their parents (YOU MONSTER >:( )
+    {
+        ArrayList<ModelRenderer> models = new ArrayList<>();
 
-        fields.forEach(((s, modelRenderer) -> {
-            if(done.containsKey(modelRenderer))
-            {
-                done.get(modelRenderer).name = s;
-            }
-        }));
+        parts.forEach(part -> explodeRecursive(models, part));
 
-        project.partCountProjectLife = done.size();
+        return models;
+    }
 
-        return project;
+    private static void explodeRecursive(ArrayList<ModelRenderer> parts, ModelRenderer part)
+    {
+        parts.add(part);
+
+        ObjectListIterator<ModelRenderer> iterator = part.childModels.iterator();
+        while(iterator.hasNext())
+        {
+            ModelRenderer next = iterator.next();
+
+            iterator.remove();
+
+            next.rotationPointX += part.rotationPointX;
+            next.rotationPointY += part.rotationPointY;
+            next.rotationPointZ += part.rotationPointZ;
+            next.rotateAngleX += part.rotateAngleX;
+            next.rotateAngleY += part.rotateAngleY;
+            next.rotateAngleZ += part.rotateAngleZ;
+
+            explodeRecursive(parts, next);
+        }
     }
 
     private static void createPartFor(String name, ModelRenderer renderer, HashMap<ModelRenderer, Identifiable<?>> done, Identifiable<?> parent)
@@ -230,5 +315,12 @@ public class ModelHelper
             ((Project.Part)parent).children.add(part);
         }
         done.put(renderer, part);
+    }
+
+    private static class ModelRenderers
+    {
+        private final HashMap<String, ModelRenderer> fields = new HashMap<>();
+        private final HashMap<String, ModelRenderer[]> arrays = new HashMap<>();
+        private final HashMap<String, ArrayList<ModelRenderer>> lists = new HashMap<>();
     }
 }

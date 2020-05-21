@@ -54,7 +54,7 @@ public class ObfHelper
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <T extends LivingRenderer<V, ?>, V extends LivingEntity> void invokePreRenderCallback(T rend, Class clz, V ent, MatrixStack stack, float rendTick)
+    public static <T extends LivingRenderer<?, ?>, V extends LivingEntity> void invokePreRenderCallback(T rend, Class clz, V ent, MatrixStack stack, float rendTick)
     {
         try
         {
