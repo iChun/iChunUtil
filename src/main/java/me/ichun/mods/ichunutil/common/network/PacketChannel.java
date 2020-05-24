@@ -23,16 +23,19 @@ public class PacketChannel
     private final Object2ByteOpenHashMap<Class<? extends AbstractPacket>> clzToId;
     private final Class<? extends AbstractPacket>[] idToClz;
 
+    @SafeVarargs
     public PacketChannel(ResourceLocation name, String protocolVersion, Class<? extends AbstractPacket>...packetTypes)
     {
         this(name, protocolVersion, true, true, packetTypes);
     }
 
+    @SafeVarargs
     public PacketChannel(ResourceLocation name, String protocolVersion, boolean clientRequired, boolean serverRequired, Class<? extends AbstractPacket>...packetTypes)
     {
         this(name, protocolVersion, o -> protocolVersion.equals(o) || !serverRequired, o -> protocolVersion.equals(o) || !clientRequired, packetTypes);
     }
 
+    @SafeVarargs
     public PacketChannel(ResourceLocation name, String protocolVersion, Predicate<String> clientPredicate, Predicate<String> serverPredicate, Class<? extends AbstractPacket>...packetTypes)
     {
         clzToId = new Object2ByteOpenHashMap<>(packetTypes.length);

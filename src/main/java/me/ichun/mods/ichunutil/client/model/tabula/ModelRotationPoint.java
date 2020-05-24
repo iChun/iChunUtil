@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.client.model;
+package me.ichun.mods.ichunutil.client.model.tabula;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

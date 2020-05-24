@@ -2,7 +2,7 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.ichun.mods.ichunutil.client.model.ModelTabula;
+import me.ichun.mods.ichunutil.client.model.tabula.ModelTabula;
 import me.ichun.mods.ichunutil.client.render.BufferedImageTexture;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;

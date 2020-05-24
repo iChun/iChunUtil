@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.commons.io.FileUtils;
 
@@ -19,6 +20,10 @@ import java.util.zip.ZipInputStream;
 
 public class ResourceHelper
 {
+    public static final ResourceLocation TEX_TAMED_WOLF = new ResourceLocation("textures/entity/wolf/wolf_tame.png");
+    public static final ResourceLocation TEX_WOLF_COLLAR = new ResourceLocation("textures/entity/wolf/wolf_collar.png");
+
+
     private static Path workingDir;
     private static Path themesDir;
 

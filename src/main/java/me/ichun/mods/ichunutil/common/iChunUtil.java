@@ -4,7 +4,7 @@ import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
-import me.ichun.mods.ichunutil.common.entity.EntityHelper;
+import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.api.distmarker.Dist;

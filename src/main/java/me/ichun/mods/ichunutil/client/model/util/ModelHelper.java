@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.client.model;
+package me.ichun.mods.ichunutil.client.model.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;

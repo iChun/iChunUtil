@@ -29,13 +29,18 @@ public class ObfHelper
         return devEnvironment;
     }
 
+    public static final String getEntityTexture = "func_110775_a"; //IEntityRenderer
+    public static final String preRenderCallback = "func_225620_a_"; //LivingRenderer
+    public static final String getHurtSound = "func_184601_bQ"; //LivingEntity
+    public static final String getDeathSound = "func_184615_bR"; //LivingEntity
+
     @OnlyIn(Dist.CLIENT)
     @Nullable
     public static <T extends EntityRenderer<?>, V extends Entity> ResourceLocation getEntityTexture(T rend, Class clz, V ent)
     {
         try
         {
-            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_110775_a"), Entity.class);
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.getEntityTexture), Entity.class);
             m.setAccessible(true);
             return (ResourceLocation)m.invoke(rend, ent);
         }
@@ -58,7 +63,7 @@ public class ObfHelper
     {
         try
         {
-            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, "func_225620_a_"), LivingEntity.class, MatrixStack.class, float.class);
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.preRenderCallback), LivingEntity.class, MatrixStack.class, float.class);
             m.setAccessible(true);
             m.invoke(rend, ent, stack, rendTick);
         }
