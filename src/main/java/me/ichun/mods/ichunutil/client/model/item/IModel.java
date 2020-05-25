@@ -15,7 +15,6 @@ public interface IModel //has to extend ItemStackTileEntityRenderer!
     default void setToOrigin(MatrixStack stack)
     {
         stack.translate(0.5D, 0.5D, 0.5D); //reset the translation in ItemRenderer
-        stack.translate(0.0D, 1.5D, 0.0D); //translate down to the base of models
         stack.scale(-1F, -1F, 1F); //flip the models so it renders upright
     }
 

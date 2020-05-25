@@ -17,6 +17,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
@@ -142,6 +145,71 @@ public class EntityHelper
         }
 
         return oriRot + var4;
+    }
+
+    public static int countInInventory(IInventory inv, Item item)
+    {
+        int totalCount = 0;
+
+        for(int i = 0; i < inv.getSizeInventory(); i++)
+        {
+            ItemStack is = inv.getStackInSlot(i);
+            if(!is.isEmpty() && is.getItem() == item)
+            {
+                totalCount += is.getCount();
+            }
+        }
+
+        return totalCount;
+    }
+
+    public static boolean consumeInventoryItem(IInventory inventory, Item item)
+    {
+        return consumeInventoryItem(inventory, item, 1);
+    }
+
+    /**
+     * @param inventory inventory to access
+     * @param itemIn item to check for, null for any item
+     * @param removeCount amount to remove, negative numbers to remove entire stack.
+     * @return if items were removed successfully (or removeCount == 0).
+     */
+    public static boolean consumeInventoryItem(IInventory inventory, Item itemIn, int removeCount)
+    {
+        if(removeCount > 0 && countInInventory(inventory, itemIn) < removeCount)
+        {
+            return false;
+        }
+
+        if (removeCount != 0)
+        {
+            int removed = 0;
+            for(int j = inventory.getSizeInventory() - 1; j >= 0; --j)
+            {
+                ItemStack itemstack = inventory.getStackInSlot(j);
+
+                if(!itemstack.isEmpty() && (itemIn == null || itemstack.getItem() == itemIn))
+                {
+                    int removeFromStack = removeCount < 0 ? itemstack.getCount() : Math.min(removeCount - removed, itemstack.getCount());
+                    removed += removeFromStack;
+
+                    itemstack.shrink(removeFromStack);
+
+                    if(itemstack.isEmpty())
+                    {
+                        inventory.setInventorySlotContents(j, ItemStack.EMPTY);
+                        inventory.markDirty();
+                    }
+
+                    if(removeCount < 0 || removed >= removeCount)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return removeCount == 0;
     }
 
     public static void putEntityWithinAABB(Entity ent, AxisAlignedBB aabb)

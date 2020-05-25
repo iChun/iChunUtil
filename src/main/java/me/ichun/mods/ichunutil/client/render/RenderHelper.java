@@ -43,7 +43,7 @@ public class RenderHelper
         renderQuads(matrixStackIn, bufferIn, modelIn.getQuads((BlockState)null, (Direction)null, random), stack, combinedLightIn, combinedOverlayIn);
     }
 
-    public static void renderQuads(MatrixStack matrixStackIn, IVertexBuilder bufferIn, List<BakedQuad> quadsIn, ItemStack itemStackIn, int combinedLightIn, int combinedOverlayIn) {
+    private static void renderQuads(MatrixStack matrixStackIn, IVertexBuilder bufferIn, List<BakedQuad> quadsIn, ItemStack itemStackIn, int combinedLightIn, int combinedOverlayIn) {
         boolean flag = !itemStackIn.isEmpty();
         MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
 
@@ -63,6 +63,16 @@ public class RenderHelper
 
     public static void renderBakedModel(IBakedModel modelIn, ItemStack itemStackIn)
     {
+        renderBakedModel(modelIn, itemStackIn, null);
+    }
+
+    public static void renderBakedModel(IBakedModel modelIn, ItemStack itemStackIn, RenderType renderTypeOverride)
+    {
+        renderBakedModel(modelIn, itemStackIn, renderTypeOverride, new MatrixStack(), Minecraft.getInstance().getRenderTypeBuffers().getBufferSource());
+    }
+
+    public static void renderBakedModel(IBakedModel modelIn, ItemStack itemStackIn, RenderType renderTypeOverride, MatrixStack matrixStackIn, IRenderTypeBuffer buffer)
+    {
         Minecraft mc = Minecraft.getInstance();
 
         //ItemRenderer.renderItemModelIntoGUI
@@ -76,8 +86,6 @@ public class RenderHelper
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         //setupGuiTransform removed
-        MatrixStack matrixStackIn = new MatrixStack();
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         boolean flag4 = !modelIn.func_230044_c_();
         if (flag4) {
             net.minecraft.client.renderer.RenderHelper.setupGuiFlatDiffuseLighting();
@@ -95,25 +103,32 @@ public class RenderHelper
             if (!modelIn.isBuiltInRenderer()) {
                 RenderType rendertype = RenderTypeLookup.getRenderType(itemStackIn);
                 RenderType rendertype1;
-                if (Objects.equals(rendertype, Atlases.getTranslucentBlockType())) {
+                if(renderTypeOverride != null)
+                {
+                    rendertype1 = renderTypeOverride;
+                }
+                else if (Objects.equals(rendertype, Atlases.getTranslucentBlockType())) {
                     rendertype1 = Atlases.getTranslucentCullBlockType();
                 } else {
                     rendertype1 = rendertype;
                 }
 
-                IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(irendertypebuffer$impl, rendertype1, true, itemStackIn.hasEffect());
+                IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(buffer, rendertype1, true, itemStackIn.hasEffect());
                 //renderModel
                 renderModel(modelIn, itemStackIn, 15728880, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
                 //end renderModel
             } else {
-                itemStackIn.getItem().getItemStackTileEntityRenderer().render(itemStackIn, matrixStackIn, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY);
+                itemStackIn.getItem().getItemStackTileEntityRenderer().render(itemStackIn, matrixStackIn, buffer, 15728880, OverlayTexture.NO_OVERLAY);
             }
 
             matrixStackIn.pop();
         }
         //end renderitem
 
-        irendertypebuffer$impl.finish();
+        if(buffer instanceof IRenderTypeBuffer.Impl)
+        {
+            ((IRenderTypeBuffer.Impl)buffer).finish();
+        }
         RenderSystem.enableDepthTest();
         if (flag4) {
             net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
