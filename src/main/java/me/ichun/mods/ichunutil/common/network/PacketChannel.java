@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.ResourceLocation;
@@ -59,7 +60,11 @@ public class PacketChannel
                         packet = clz.newInstance();
                         packet.readFrom(buffer);
                     }
-                    catch(InstantiationException | IllegalAccessException ignored){}
+                    catch(InstantiationException | IllegalAccessException e)
+                    {
+                        iChunUtil.LOGGER.error("Error initialising packet.");
+                        e.printStackTrace();
+                    }
                     return new PacketHolder(packet);
                 },
                 (packet, contextSupplier) -> {
@@ -89,7 +94,7 @@ public class PacketChannel
         channel.reply(new PacketHolder(packet), context);
     }
 
-    public static class PacketHolder
+    private static class PacketHolder
     {
         private final AbstractPacket packet;
         private PacketHolder(AbstractPacket packet)

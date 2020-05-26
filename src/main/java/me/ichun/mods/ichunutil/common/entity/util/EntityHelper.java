@@ -10,6 +10,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -21,16 +22,19 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -259,10 +263,10 @@ public class EntityHelper
         return rayTrace(ent.world, ent.getEyePosition(partialTick), ent.getEyePosition(partialTick).add(ent.getLook(partialTick).mul(d, d, d)), ent, checkEntities, RayTraceContext.BlockMode.COLLIDER, b -> true, RayTraceContext.FluidMode.NONE, e -> true);
     }
 
-    public static RayTraceResult rayTrace(World world, Vec3d origin, Vec3d dest, @Nonnull Entity exception, boolean checkEntityCollision, RayTraceContext.BlockMode blockMode, Predicate<BlockState> blockFilter, RayTraceContext.FluidMode fluidMode, Predicate<Entity> filter) {
+    public static RayTraceResult rayTrace(World world, Vec3d origin, Vec3d dest, @Nonnull Entity exception, boolean checkEntityCollision, RayTraceContext.BlockMode blockMode, Predicate<BlockInfo> blockFilter, RayTraceContext.FluidMode fluidMode, Predicate<Entity> filter) {
         RayTraceResult raytraceresult = IBlockReader.doRayTrace(new RayTraceContext(origin, dest, blockMode, fluidMode, exception), (context, pos) -> {
             BlockState blockstate = world.getBlockState(pos);
-            if(blockFilter.test(blockstate))
+            if(blockFilter.test(new BlockInfo(world, blockstate, pos)))
             {
                 IFluidState ifluidstate = world.getFluidState(pos);
                 Vec3d vec3d = context.getStartVec();
@@ -318,12 +322,110 @@ public class EntityHelper
         facer.rotationYaw = updateRotation(facer.rotationYaw, f2, maxYaw);
     }
 
-    public static void playSoundAtEntity(Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
+    public static Vec3d getVectorForRotation(float pitch, float yaw) {
+        float f = pitch * ((float)Math.PI / 180F);
+        float f1 = -yaw * ((float)Math.PI / 180F);
+        float f2 = MathHelper.cos(f1);
+        float f3 = MathHelper.sin(f1);
+        float f4 = MathHelper.cos(f);
+        float f5 = MathHelper.sin(f);
+        return new Vec3d(f3 * f4, -f5, f2 * f4);
+    }
+
+    public static Vec3d getVectorRenderYawOffset(float renderYawOffset) {
+        return getVectorForRotation(0, renderYawOffset);
+    }
+
+    public static void playSound(@Nonnull Entity ent, SoundEvent soundEvent, SoundCategory soundCategory, float volume, float pitch)
     {
         ent.getEntityWorld().playSound(ent.getEntityWorld().isRemote ? getClientPlayer() : null, ent.getPosX(), ent.getPosY() + ent.getEyeHeight(), ent.getPosZ(), soundEvent, soundCategory, volume, pitch); // sound will not play if the world is a WorldClient unless the entity == mc.player.
     }
 
-    public static <T extends LivingEntity> SoundEvent getHurtSound(T ent, Class<?> clz, DamageSource source)
+    public static boolean destroyBlocksInAABB(Entity ent, AxisAlignedBB aabb, Predicate<BlockInfo> blockFilter)
+    {
+        int i = MathHelper.floor(aabb.minX);
+        int j = MathHelper.floor(aabb.minY);
+        int k = MathHelper.floor(aabb.minZ);
+        int l = MathHelper.floor(aabb.maxX);
+        int i1 = MathHelper.floor(aabb.maxY);
+        int j1 = MathHelper.floor(aabb.maxZ);
+        boolean flag = false;
+        boolean flag1 = false;
+
+        for(int k1 = i; k1 <= l; ++k1)
+        {
+            for(int l1 = j; l1 <= i1; ++l1)
+            {
+                for(int i2 = k; i2 <= j1; ++i2)
+                {
+                    BlockPos blockpos = new BlockPos(k1, l1, i2);
+                    BlockState blockstate = ent.world.getBlockState(blockpos);
+
+                    if (!blockstate.isAir(ent.world, blockpos) && blockstate.getMaterial() != Material.FIRE) {
+                        if (ForgeEventFactory.getMobGriefingEvent(ent.world, ent) && blockstate.canEntityDestroy(ent.world, blockpos, ent) && (!(ent instanceof LivingEntity) || ForgeEventFactory.onEntityDestroyBlock((LivingEntity)ent, blockpos, blockstate)) && blockFilter.test(new BlockInfo(ent.world, blockstate, blockpos))) {
+                            flag1 = ent.world.removeBlock(blockpos, false) || flag1;
+                        } else {
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(flag1)
+        {
+            BlockPos blockpos1 = new BlockPos(i + ent.world.rand.nextInt(l - i + 1), j + ent.world.rand.nextInt(i1 - j + 1), k + ent.world.rand.nextInt(j1 - k + 1));
+            ent.world.playEvent(2008, blockpos1, 0);
+        }
+
+        return flag;
+    }
+
+    public static CompoundNBT getPlayerPersistentData(@Nonnull PlayerEntity player, @Nullable String name) //if null returns the whole persisted data tag. else get a tag by the name
+    {
+        CompoundNBT persistedTag = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+        player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, persistedTag);
+        if(name == null)
+        {
+            return persistedTag;
+        }
+        CompoundNBT specificTag = persistedTag.getCompound(name);
+        persistedTag.put(name, specificTag);
+        return specificTag;
+    }
+
+    public static boolean isFakePlayer(@Nonnull ServerPlayerEntity player) //Fake Players extend ServerPlayerEntity. Please check or cast first
+    {
+        return player instanceof FakePlayer || player.connection == null; // || player.getName().getUnformattedComponentText().toLowerCase().startsWith("fakeplayer") || player.getName().getUnformattedComponentText().toLowerCase().startsWith("[minecraft]");
+    }
+
+    //REFLECTIVE methods
+    public static <T extends LivingEntity> SoundEvent getHurtSound(T ent, DamageSource source)
+    {
+        return getHurtSound(ent, ent.getClass(), source);
+    }
+
+    public static <T extends LivingEntity> SoundEvent getDeathSound(T ent)
+    {
+        return getDeathSound(ent, ent.getClass());
+    }
+
+    public static <T extends LivingEntity> float getSoundVolume(T ent)
+    {
+        return getSoundVolume(ent, ent.getClass());
+    }
+
+    public static <T extends LivingEntity> float getSoundPitch(T ent)
+    {
+        return getSoundPitch(ent, ent.getClass());
+    }
+
+    public static <T extends LivingEntity> void onChangedPotionEffect(T ent, EffectInstance effect, boolean reapply)
+    {
+        onChangedPotionEffect(ent, ent.getClass(), effect, reapply);
+    }
+
+    private static <T extends LivingEntity> SoundEvent getHurtSound(T ent, Class<?> clz, DamageSource source)
     {
         try
         {
@@ -345,7 +447,7 @@ public class EntityHelper
         return SoundEvents.ENTITY_GENERIC_HURT;
     }
 
-    public static <T extends LivingEntity> SoundEvent getDeathSound(T ent, Class<?> clz)
+    private static <T extends LivingEntity> SoundEvent getDeathSound(T ent, Class<?> clz)
     {
         try
         {
@@ -367,21 +469,82 @@ public class EntityHelper
         return SoundEvents.ENTITY_GENERIC_DEATH;
     }
 
-    public static CompoundNBT getPlayerPersistentData(@Nonnull PlayerEntity player, @Nullable String name) //if null returns the whole persisted data tag. else get a tag by the name
+    private static <T extends LivingEntity> float getSoundVolume(T ent, Class<?> clz)
     {
-        CompoundNBT persistedTag = player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
-        player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, persistedTag);
-        if(name == null)
+        try
         {
-            return persistedTag;
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.getSoundVolume));
+            m.setAccessible(true);
+            return (float)m.invoke(ent);
         }
-        CompoundNBT specificTag = persistedTag.getCompound(name);
-        persistedTag.put(name, specificTag);
-        return specificTag;
+        catch(NoSuchMethodException e)
+        {
+            if(clz != LivingEntity.class)
+            {
+                return getSoundVolume(ent, clz.getSuperclass());
+            }
+        }
+        catch(Throwable e)
+        {
+            e.printStackTrace();
+        }
+        return 1F;
     }
 
-    public static boolean isFakePlayer(@Nonnull ServerPlayerEntity player) //Fake Players extend ServerPlayerEntity. Please check or cast first
+    private static <T extends LivingEntity> float getSoundPitch(T ent, Class<?> clz)
     {
-        return player instanceof FakePlayer || player.connection == null; // || player.getName().getUnformattedComponentText().toLowerCase().startsWith("fakeplayer") || player.getName().getUnformattedComponentText().toLowerCase().startsWith("[minecraft]");
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.getSoundPitch));
+            m.setAccessible(true);
+            return (float)m.invoke(ent);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != LivingEntity.class)
+            {
+                return getSoundPitch(ent, clz.getSuperclass());
+            }
+        }
+        catch(Throwable e)
+        {
+            e.printStackTrace();
+        }
+        return ent.isChild() ? (ent.getRNG().nextFloat() - ent.getRNG().nextFloat()) * 0.2F + 1.5F : (ent.getRNG().nextFloat() - ent.getRNG().nextFloat()) * 0.2F + 1.0F;
+    }
+
+    private static <T extends LivingEntity> void onChangedPotionEffect(T ent, Class<?> clz, EffectInstance effect, boolean reapply)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.onChangedPotionEffect), EffectInstance.class, boolean.class);
+            m.setAccessible(true);
+            m.invoke(ent, effect, reapply);
+            return;
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != LivingEntity.class)
+            {
+                onChangedPotionEffect(ent, clz.getSuperclass(), effect, reapply);
+            }
+        }
+        catch(Throwable e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static class BlockInfo
+    {
+        public final IWorldReader world;
+        public final BlockState state;
+        public final BlockPos pos;
+
+        public BlockInfo(IWorldReader world, BlockState state, BlockPos pos) {
+            this.world = world;
+            this.state = state;
+            this.pos = pos;
+        }
     }
 }

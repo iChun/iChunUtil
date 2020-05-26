@@ -4,6 +4,7 @@ import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowPopup;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
@@ -15,6 +16,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -49,14 +52,23 @@ public class WorkspaceConfigs extends Workspace
 
             destroyWindowValues();
 
-            WindowValues window = new WindowValues(this, (ConfigInfo)item.getObject(), item.id);
-            addToDock(window, Constraint.Property.Type.LEFT);
-            window.constraint.right(getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)getDock().borderSize.get());
-            window.constraint.apply();
-            if(hasInit())
+            ConfigInfo config = (ConfigInfo)item.getObject();
+
+            if(config.config.getConfigType().equals(ModConfig.Type.SERVER) && Minecraft.getInstance().player != null && ServerLifecycleHooks.getCurrentServer() == null) //is on dedicated server
             {
-                window.init();
-                window.resize(Minecraft.getInstance(), this.width, this.height);
+                WindowPopup.popup(this, 0.6D, 140, null, I18n.format("gui.ichunutil.configs.noEditingServerConfig"));
+            }
+            else
+            {
+                WindowValues window = new WindowValues(this, config, item.id);
+                addToDock(window, Constraint.Property.Type.LEFT);
+                window.constraint.right(getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)getDock().borderSize.get());
+                window.constraint.apply();
+                if(hasInit())
+                {
+                    window.init();
+                    window.resize(Minecraft.getInstance(), this.width, this.height);
+                }
             }
         }
     }

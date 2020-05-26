@@ -32,6 +32,8 @@
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.options": "Options",
 
+  "gui.ichunutil.configs.noEditingServerConfig": "You can't edit a Server config whilst on a Dedicated Server!",
+
   "window.popup.title": "Alert!",
 
   "window.saveAs.title": "Save As",

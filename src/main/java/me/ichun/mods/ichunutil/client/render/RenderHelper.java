@@ -4,29 +4,40 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import me.ichun.mods.ichunutil.common.iChunUtil;
+import cpw.mods.modlauncher.api.INameMappingService;
+import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class RenderHelper
 {
@@ -75,20 +86,23 @@ public class RenderHelper
     {
         Minecraft mc = Minecraft.getInstance();
 
-        //ItemRenderer.renderItemModelIntoGUI
-        RenderSystem.pushMatrix();
-        mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.defaultAlphaFunc();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //setupGuiTransform removed
         boolean flag4 = !modelIn.func_230044_c_();
-        if (flag4) {
-            net.minecraft.client.renderer.RenderHelper.setupGuiFlatDiffuseLighting();
+        if(renderTypeOverride != null)
+        {
+            //ItemRenderer.renderItemModelIntoGUI
+            RenderSystem.pushMatrix();
+            mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.defaultAlphaFunc();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            //setupGuiTransform removed
+            if (flag4) {
+                net.minecraft.client.renderer.RenderHelper.setupGuiFlatDiffuseLighting();
+            }
         }
 
         //renderitem
@@ -129,15 +143,18 @@ public class RenderHelper
         {
             ((IRenderTypeBuffer.Impl)buffer).finish();
         }
-        RenderSystem.enableDepthTest();
-        if (flag4) {
-            net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
+        if(renderTypeOverride != null)
+        {
+            RenderSystem.enableDepthTest();
+            if(flag4)
+            {
+                net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
+            }
+
+            RenderSystem.disableAlphaTest();
+            RenderSystem.disableRescaleNormal();
+            RenderSystem.popMatrix();
         }
-
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableRescaleNormal();
-        RenderSystem.popMatrix();
-
     }
 
     public static void drawTexture(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
@@ -322,4 +339,63 @@ public class RenderHelper
         frameBuffers.remove(buffer);
     }
 
+    //REFLECTIVE METHODS
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    public static <T extends EntityRenderer<?>, V extends Entity> ResourceLocation getEntityTexture(T rend, V ent)
+    {
+        return getEntityTexture(rend, rend.getClass(), ent);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <T extends LivingRenderer<?, ?>, V extends LivingEntity> void invokePreRenderCallback(T rend, V ent, MatrixStack stack, float rendTick)
+    {
+        invokePreRenderCallback(rend, rend.getClass(), ent, stack, rendTick);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private static <T extends EntityRenderer<?>, V extends Entity> ResourceLocation getEntityTexture(T rend, Class clz, V ent)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.getEntityTexture), Entity.class);
+            m.setAccessible(true);
+            return (ResourceLocation)m.invoke(rend, ent);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != EntityRenderer.class)
+            {
+                return getEntityTexture(rend, clz.getSuperclass(), ent);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static <T extends LivingRenderer<?, ?>, V extends LivingEntity> void invokePreRenderCallback(T rend, Class clz, V ent, MatrixStack stack, float rendTick)
+    {
+        try
+        {
+            Method m = clz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(INameMappingService.Domain.METHOD, ObfHelper.preRenderCallback), LivingEntity.class, MatrixStack.class, float.class);
+            m.setAccessible(true);
+            m.invoke(rend, ent, stack, rendTick);
+        }
+        catch(NoSuchMethodException e)
+        {
+            if(clz != LivingRenderer.class)
+            {
+                invokePreRenderCallback(rend, clz.getSuperclass(), ent, stack, rendTick);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
