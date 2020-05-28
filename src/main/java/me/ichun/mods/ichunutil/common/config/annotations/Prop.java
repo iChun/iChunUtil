@@ -19,7 +19,7 @@ public @interface Prop
 
     String validator() default "undefined"; //points to method in within class that takes an Object as first argument and returns a boolean
 
-    boolean hidden() default false;
+//    boolean hidden() default false;
 
     String comment() default "undefined"; //unlocalized comment
 

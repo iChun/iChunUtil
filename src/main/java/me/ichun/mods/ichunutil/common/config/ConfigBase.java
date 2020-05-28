@@ -33,7 +33,7 @@ public abstract class ConfigBase
 
     private final @Nonnull String fileName;
     public final @Nonnull TreeMap<String, HashSet<ValueWrapper<?>>> values = new TreeMap<>(Ordering.natural()); //category to value
-    private final @Nonnull HashSet<String> reveal = new HashSet<>();
+//    private final @Nonnull HashSet<String> reveal = new HashSet<>();
 
     private boolean init;
     private ModConfig config; //our mod config
@@ -85,11 +85,11 @@ public abstract class ConfigBase
         return (T)this;
     }
 
-    public <T extends ConfigBase> T reveal(String...name)
-    {
-        reveal.addAll(Arrays.asList(name));
-        return (T)this;
-    }
+//    public <T extends ConfigBase> T reveal(String...name)
+//    {
+//        reveal.addAll(Arrays.asList(name));
+//        return (T)this;
+//    }
 
     public void buildAdditionalConfigs(ForgeConfigSpec.Builder builder){} //in case any configs aren't fields.
 
@@ -186,10 +186,10 @@ public abstract class ConfigBase
             props = ConfigBase.class.getDeclaredFields()[0].getAnnotation(Prop.class);
         }
 
-        if(props.hidden() && !reveal.contains(fieldName)) //this is a hidden property that hasn't been revealed. Do not create it.
-        {
-            return;
-        }
+//        if(props.hidden() && !reveal.contains(fieldName)) //this is a hidden property that hasn't been revealed. Do not create it.
+//        {
+//            return;
+//        }
 
         if(!props.comment().equals("undefined"))
         {
