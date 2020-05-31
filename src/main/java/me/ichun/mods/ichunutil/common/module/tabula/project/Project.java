@@ -3,9 +3,10 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.model.tabula.ModelTabula;
-import me.ichun.mods.ichunutil.client.render.BufferedImageTexture;
+import me.ichun.mods.ichunutil.client.render.NativeImageTexture;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,10 +15,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -37,9 +38,9 @@ public class Project extends Identifiable<Project> //Model
     public transient boolean isOldTabula; //*GASP*
 
     //Project texture Stuffs
-    private transient BufferedImage bufferedTexture; //TODO switch to NativeImage. BufferedImage is broken on Macs.
+    private transient byte[] textureBytes; //TODO switch to NativeImage. BufferedImage is broken on Macs.
     @OnlyIn(Dist.CLIENT)
-    public transient BufferedImageTexture bufferedImageTexture;
+    public transient NativeImageTexture nativeImageTexture;
 
     //Client Model
     @OnlyIn(Dist.CLIENT)
@@ -194,8 +195,8 @@ public class Project extends Identifiable<Project> //Model
         project.tampered = this.tampered;
         project.isOldTabula = this.isOldTabula;
 
-        project.bufferedTexture = this.bufferedTexture;
-        project.bufferedImageTexture = this.bufferedImageTexture;
+        project.textureBytes = this.textureBytes;
+        project.nativeImageTexture = this.nativeImageTexture;
     }
 
     public boolean save(@Nonnull File saveFile) //file to save as
@@ -226,7 +227,7 @@ public class Project extends Identifiable<Project> //Model
     public void destroy()
     {
         //destroy the model
-        setBufferedTexture(null);
+        setImageBytes(null);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -250,45 +251,53 @@ public class Project extends Identifiable<Project> //Model
 
     public void importProject(@Nonnull Project project, boolean texture)
     {
-        if(texture && project.getBufferedTexture() != null)
+        if(texture && project.getTextureBytes() != null)
         {
-            setBufferedTexture(project.getBufferedTexture());
+            setImageBytes(project.getTextureBytes());
         }
         parts.addAll(project.parts);
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public void setBufferedTexture(BufferedImage texture)
+    public void setImageBytes(byte[] bytes)
     {
-        if(bufferedImageTexture != null)
+        if(nativeImageTexture != null)
         {
-            Minecraft.getInstance().getTextureManager().deleteTexture(bufferedImageTexture.getResourceLocation());
+            Minecraft.getInstance().getTextureManager().deleteTexture(nativeImageTexture.getResourceLocation());
 
-            bufferedImageTexture = null;
+            nativeImageTexture = null;
         }
-        this.bufferedTexture = texture;
+        this.textureBytes = bytes;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public ResourceLocation getBufferedTextureResourceLocation()
+    public ResourceLocation getNativeImageResourceLocation()
     {
-        if(bufferedTexture != null)
+        if(textureBytes != null)
         {
-            if(bufferedImageTexture == null)
+            if(nativeImageTexture == null)
             {
-                bufferedImageTexture = new BufferedImageTexture(bufferedTexture);
-                Minecraft.getInstance().getTextureManager().loadTexture(bufferedImageTexture.getResourceLocation(), bufferedImageTexture);
+                try (NativeImage image = NativeImage.read(new ByteArrayInputStream(textureBytes)))
+                {
+                    nativeImageTexture = new NativeImageTexture(image);
+                    Minecraft.getInstance().getTextureManager().loadTexture(nativeImageTexture.getResourceLocation(), nativeImageTexture);
+                }
+                catch(IOException e)
+                {
+                    iChunUtil.LOGGER.error("Failed to read NativeImage for project: " + name);
+                    e.printStackTrace();
+                }
             }
 
-            return bufferedImageTexture.getResourceLocation();
+            return nativeImageTexture.getResourceLocation();
         }
         return null;
     }
 
-    public BufferedImage getBufferedTexture()
+    public byte[] getTextureBytes()
     {
-        return bufferedTexture;
+        return textureBytes;
     }
 
     public ArrayList<Part.Box> getAllBoxes()
@@ -345,10 +354,10 @@ public class Project extends Identifiable<Project> //Model
             out.write(data, 0, data.length);
             out.closeEntry();
 
-            if(project.bufferedTexture != null)
+            if(project.textureBytes != null)
             {
                 out.putNextEntry(new ZipEntry("texture.png"));
-                ImageIO.write(project.bufferedTexture, "png", out);
+                out.write(project.textureBytes, 0, project.textureBytes.length);
                 out.closeEntry();
             }
 

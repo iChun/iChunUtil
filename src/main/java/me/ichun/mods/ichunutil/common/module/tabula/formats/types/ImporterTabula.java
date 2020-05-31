@@ -7,7 +7,6 @@ import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import org.apache.commons.io.IOUtils;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,7 +102,7 @@ public class ImporterTabula
 
         if(image != null)
         {
-            project.setBufferedTexture(ImageIO.read(image));
+            project.setImageBytes(IOUtils.toByteArray(image));
             image.close();
         }
 
@@ -137,7 +136,7 @@ public class ImporterTabula
         //Animations are no longer supported!
 
         project.partCountProjectLife = old.cubeCount;
-        project.setBufferedTexture(old.bufferedTexture);
+        project.setImageBytes(old.textureBytes);
 
         return project;
     }

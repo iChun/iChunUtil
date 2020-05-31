@@ -246,7 +246,7 @@ public class ImportTabulaLegacy
             InputStream stream = images.get("texture.png");
             if(stream != null)
             {
-                project.bufferedTexture = ImageIO.read(stream);
+                project.textureBytes = IOUtils.toByteArray(stream);
                 stream.close();
             }
         }

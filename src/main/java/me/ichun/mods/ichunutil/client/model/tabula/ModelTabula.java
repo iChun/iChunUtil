@@ -283,9 +283,9 @@ public class ModelTabula extends Model
                             parentModel.rotationPoint.render(matrixStackIn, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 0F, 0F, 1F, 1F);
                         }
 
-                        if(parentModel.project.getBufferedTexture() != null && packedLightIn > 0)
+                        if(parentModel.project.getTextureBytes() != null && packedLightIn > 0)
                         {
-                            type = RenderType.getEntityTranslucent(parentModel.project.getBufferedTextureResourceLocation());
+                            type = RenderType.getEntityTranslucent(parentModel.project.getNativeImageResourceLocation());
                         }
 
                         ivertexbuilder = bufferSource.getBuffer(type);
