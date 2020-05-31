@@ -4,11 +4,13 @@ import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,6 +35,7 @@ public class iChunUtil //TODO update forge dependency to build 31.2.0
 
     public static ConfigClient configClient;
 
+    public static EventHandlerServer eventHandlerServer;
     public static EventHandlerClient eventHandlerClient; //TODO if we have a packet channel we should only need it if a mod dep needs it.
 
     public iChunUtil()
@@ -41,14 +44,20 @@ public class iChunUtil //TODO update forge dependency to build 31.2.0
         ObfHelper.detectDevEnvironment();
         EventCalendar.checkDate();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::finishLoading);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        bus.addListener(this::setup);
+        bus.addListener(this::finishLoading);
+
+        MinecraftForge.EVENT_BUS.register(eventHandlerServer = new EventHandlerServer());
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
             configClient = new ConfigClient().init();
             EntityHelper.injectMinecraftPlayerGameProfile();
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient);
+
+            bus.addListener(this::setupClient);
+
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> EventHandlerClient::getConfigGui);
         });
     }

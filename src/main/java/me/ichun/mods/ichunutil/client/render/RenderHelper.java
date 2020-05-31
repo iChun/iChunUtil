@@ -17,8 +17,11 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -31,6 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.lang.reflect.Method;
@@ -41,7 +45,7 @@ import java.util.Random;
 
 public class RenderHelper
 {
-    private static void renderModel(IBakedModel modelIn, ItemStack stack, int combinedLightIn, int combinedOverlayIn, MatrixStack matrixStackIn, IVertexBuilder bufferIn) {
+    public static void renderModel(IBakedModel modelIn, ItemStack stack, int combinedLightIn, int combinedOverlayIn, MatrixStack matrixStackIn, IVertexBuilder bufferIn) {
         Random random = new Random();
         long i = 42L;
 
@@ -155,6 +159,11 @@ public class RenderHelper
             RenderSystem.disableRescaleNormal();
             RenderSystem.popMatrix();
         }
+    }
+
+    public static TextureAtlasSprite buildTASFromNativeImage(@Nonnull ResourceLocation rl, @Nonnull NativeImage image)
+    {
+        return new TextureAtlasSprite(Minecraft.getInstance().getModelManager().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE), new TextureAtlasSprite.Info(rl, image.getWidth(), image.getHeight(), AnimationMetadataSection.EMPTY), Minecraft.getInstance().gameSettings.mipmapLevels, image.getWidth(), image.getHeight(), 0, 0, image);
     }
 
     public static void drawTexture(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)

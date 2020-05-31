@@ -24,6 +24,9 @@ public class ResourceHelper
     public static final ResourceLocation TEX_WOLF_COLLAR = new ResourceLocation("textures/entity/wolf/wolf_collar.png");
     public static final ResourceLocation TEX_PIG = new ResourceLocation("textures/entity/pig/pig.png");
 
+    public static final ResourceLocation TEX_RESOURCE_PACKS = new ResourceLocation("textures/gui/resource_packs.png");
+    public static final ResourceLocation TEX_SPECTATOR_WIDGETS = new ResourceLocation("textures/gui/spectator_widgets.png");
+
 
     private static Path workingDir;
     private static Path themesDir;
