@@ -23,36 +23,35 @@ import java.util.Collections;
 public class ConfigClient extends ConfigBase
 {
     @CategoryDivider(name = "clientOnly")
-    @Prop(comment = "Enables (most) Client-Side Easter Eggs for iChun's Mods")
+    @Prop
     public boolean easterEgg = true;
 
-    @Prop(comment = "Renders iChunUtil's GUIs (Boxes & Stuff) in a Minecraft Style instead")
+    @Prop
     public boolean guiStyleMinecraft = false;
 
-    @Prop(min = 0, max = 50, comment = "How much padding to add to the docked windows")
+    @Prop(min = 0, max = 50)
     public int guiDockPadding = 0;
 
-    @Prop(min = 0, comment = "Number of ticks before showing a tooltip")
+    @Prop(min = 0)
     public int guiTooltipCooldown = 20;
 
-    @Prop(min = 1, comment = "Number of pixels before iChunUtil thinks you're trying to dock a window")
+    @Prop(min = 1)
     public int guiDockBorder = 8;
 
-    @Prop(min = 1, comment = "Speed, in ticks, to register a double click")
+    @Prop(min = 1)
     public int guiDoubleClickSpeed = 10;
 
-    @Prop(guiElementOverride = "iChunUtil:guiDefaultTheme", comment = "Default Theme for Boxes & Stuff")
+    @Prop(guiElementOverride = "iChunUtil:guiDefaultTheme")
     public String guiDefaultTheme = "default";
 
-    //TODO localise them all
-    @Prop(comment = "Override the Options button so pressing Shift when clicking it shows the Mods list.")
+    @Prop
     public boolean buttonOptionsShiftOpensMods = true;
 
     @CategoryDivider(name = "headTracking")
-    @Prop(min = 0, max = 2, comment = "Track the head model aggressively to try and fix improper head tracking that may be caused by mod conflicts?\n1 = All Entities\n2 = Players Only")
+    @Prop(min = 0, max = 2)
     public int aggressiveHeadTracking = 1;
 
-    @Prop(comment = "Enable the easter egg where the horse/llama's \"head\" is its behind. This is an easter egg on how Hats used to put hats on Horses.")
+    @Prop
     public boolean horseEasterEgg = true;
 
     @Override

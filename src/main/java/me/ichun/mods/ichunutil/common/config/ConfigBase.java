@@ -1,6 +1,8 @@
 package me.ichun.mods.ichunutil.common.config;
 
 import com.google.common.collect.Ordering;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
@@ -16,13 +18,17 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import javax.annotation.Nonnull;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public abstract class ConfigBase
         implements Comparable<ConfigBase>
@@ -195,9 +201,30 @@ public abstract class ConfigBase
         {
             builder.comment(props.comment());
         }
-        else if(ObfHelper.isDevEnvironment())
+        else
         {
-            iChunUtil.LOGGER.warn("Property from {} is not commented: {}", getConfigName(), fieldName);
+            boolean hasComment = false;
+            try(InputStream in = this.getClass().getResourceAsStream("/assets/" + getModId() + "/lang/en_us.json"))
+            {
+                Map<String, String> localization = (new Gson()).fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), new TypeToken<Map<String, String>>() {}.getType());
+
+                String commentKey = "config." + getModId() + ".prop." + fieldName + ".desc";
+                if(localization.containsKey(commentKey))
+                {
+                    hasComment = true;
+                    builder.comment(localization.get(commentKey));
+                }
+            }
+            catch(IOException e)
+            {
+                iChunUtil.LOGGER.warn("Error getting localization for config {} is not commented: {}", getConfigName(), fieldName);
+                e.printStackTrace();
+            }
+
+            if(!hasComment && ObfHelper.isDevEnvironment())
+            {
+                iChunUtil.LOGGER.warn("Property from {} is not commented: {}", getConfigName(), fieldName);
+            }
         }
         builder.translation("config." + getModId() + ".prop." + fieldName + ".desc");
 

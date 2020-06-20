@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(iChunUtil.MOD_ID)
-public class iChunUtil //TODO update forge dependency to build 31.2.0
+public class iChunUtil //TODO update forge dependency to build 31.2.8
 {
     public static final String MOD_ID = "ichunutil";
     public static final String MOD_NAME = "iChunUtil";

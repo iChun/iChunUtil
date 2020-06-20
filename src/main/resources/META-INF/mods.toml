@@ -16,7 +16,7 @@ issueTrackerURL="https://github.com/iChun/iChunUtil/issues"
 [[dependencies.ichunutil]]
     modId="forge"
     mandatory=true
-    versionRange="[31.2,)"
+    versionRange="[31.2.9,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.ichunutil]]

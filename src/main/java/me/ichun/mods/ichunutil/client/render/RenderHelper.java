@@ -133,7 +133,7 @@ public class RenderHelper
 
                 IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(buffer, rendertype1, true, itemStackIn.hasEffect());
                 //renderModel
-                renderModel(modelIn, itemStackIn, 15728880, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
+                renderModel(modelIn, itemStackIn, 0xf000f0, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
                 //end renderModel
             } else {
                 itemStackIn.getItem().getItemStackTileEntityRenderer().render(itemStackIn, matrixStackIn, buffer, 15728880, OverlayTexture.NO_OVERLAY);
