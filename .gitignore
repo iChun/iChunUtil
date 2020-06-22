@@ -5,6 +5,7 @@ bin
 .metadata
 .classpath
 .project
+eclipse
 
 # idea
 out
@@ -17,15 +18,10 @@ out
 build
 .gradle
 libs
-
-# other
-eclipse
 run
+src/api
 
 # java
 *.class
 *.war
 *.ear
-
-# Temp
-src/main/java/me/ichun/mods/ichunutil/old
