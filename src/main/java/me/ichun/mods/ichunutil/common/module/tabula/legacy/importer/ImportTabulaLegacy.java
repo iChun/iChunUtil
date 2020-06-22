@@ -7,9 +7,9 @@ import me.ichun.mods.ichunutil.common.module.tabula.legacy.project.ProjectInfo;
 import me.ichun.mods.ichunutil.common.module.tabula.legacy.project.TechneConverter;
 import me.ichun.mods.ichunutil.common.module.techne.TC1Json;
 import me.ichun.mods.ichunutil.common.module.techne.TC2Info;
+import net.minecraft.client.renderer.texture.NativeImage;
 import org.apache.commons.io.IOUtils;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -231,7 +231,7 @@ public class ImportTabulaLegacy
                     InputStream stream = images.get(model.Model.texture);
                     if(stream != null)
                     {
-                        model.Model.image = ImageIO.read(stream);
+                        model.Model.image = NativeImage.read(stream);
                         stream.close();
                     }
                 }

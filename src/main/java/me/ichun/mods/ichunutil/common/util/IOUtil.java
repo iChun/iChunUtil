@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.common.util;
 
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.renderer.texture.NativeImage;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
@@ -14,7 +14,7 @@ public class IOUtil
 {
     public static final int IDENTIFIER_LENGTH = 20; //Typical string length for an identifier.
 
-    public static boolean areBufferedImagesEqual(BufferedImage img1, BufferedImage img2)
+    public static boolean areNativeImagesEqual(NativeImage img1, NativeImage img2)
     {
         if(img1 == null && img2 == null)
         {
@@ -30,7 +30,7 @@ public class IOUtil
             {
                 for(int y = 0; y < img1.getHeight(); y++)
                 {
-                    if(img1.getRGB(x, y) != img2.getRGB(x, y))
+                    if(img1.getPixelRGBA(x, y) != img2.getPixelRGBA(x, y))
                     {
                         return false;
                     }

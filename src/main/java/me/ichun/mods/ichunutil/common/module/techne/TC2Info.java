@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.renderer.texture.NativeImage;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -75,7 +74,7 @@ public class TC2Info
         public String BaseClass = "ModelBase";
         public Group Geometry = new Group();
 
-        public transient BufferedImage image;
+        public transient NativeImage image;
     }
 
     public class Group
@@ -360,7 +359,7 @@ public class TC2Info
                     InputStream stream = images.get(model.Model.texture);
                     if(stream != null)
                     {
-                        model.Model.image = ImageIO.read(stream);
+                        model.Model.image = NativeImage.read(stream);
                     }
                 }
             }
@@ -545,7 +544,7 @@ public class TC2Info
                 InputStream stream = images.get(model.Model.texture);
                 if(stream != null)
                 {
-                    model.Model.image = ImageIO.read(stream);
+                    model.Model.image = NativeImage.read(stream);
                     stream.close();
                 }
             }
@@ -595,7 +594,7 @@ public class TC2Info
                     entry = new ZipEntry(model.Model.texture);
                     out.putNextEntry(entry);
 
-                    ImageIO.write(model.Model.image, "png", out);
+                    out.write(model.Model.image.getBytes());
 
                     out.closeEntry();
                 }
