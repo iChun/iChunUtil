@@ -22,10 +22,7 @@ import java.util.Collections;
 
 public class ConfigClient extends ConfigBase
 {
-    @CategoryDivider(name = "clientOnly")
-    @Prop
-    public boolean easterEgg = true;
-
+    @CategoryDivider(name = "bns")
     @Prop
     public boolean guiStyleMinecraft = false;
 
@@ -43,6 +40,10 @@ public class ConfigClient extends ConfigBase
 
     @Prop(guiElementOverride = "iChunUtil:guiDefaultTheme")
     public String guiDefaultTheme = "default";
+
+    @CategoryDivider(name = "clientOnly")
+    @Prop
+    public boolean easterEgg = true;
 
     @Prop
     public boolean buttonOptionsShiftOpensMods = true;
