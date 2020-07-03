@@ -77,19 +77,21 @@ public class HeadHandler
     @Nullable
     public static HeadBase<?> getHelperBase(Class<? extends LivingEntity> clz)
     {
-        HeadBase<?> helper = MODEL_OFFSET_HELPERS.get(clz);
+        if(MODEL_OFFSET_HELPERS.containsKey(clz))
+        {
+            return MODEL_OFFSET_HELPERS.get(clz);
+        }
+        HeadBase<?> helper = null;
         Class clzz = clz.getSuperclass();
-        while(helper == null && clzz != LivingEntity.class)
+        if(clzz != LivingEntity.class)
         {
             helper = getHelperBase(clzz);
             if(helper != null)
             {
                 helper = helper.clone();
-                MODEL_OFFSET_HELPERS.put(clz, helper);
-                break;
             }
-            clzz = clzz.getSuperclass();
         }
+        MODEL_OFFSET_HELPERS.put(clz, helper);
         return helper;
     }
 }

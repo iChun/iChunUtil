@@ -11,14 +11,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -37,7 +35,7 @@ public final class ClientEntityTracker
         if(!hasInit)
         {
             hasInit = true;
-            EntityTypes.REGISTRY.register(bus);
+            bus.addListener(ClientEntityTracker.EntityTypes::onEntityTypeRegistry);
             bus.addListener(ClientEntityTracker::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(ClientEntityTracker::onWorldTick);
             MinecraftForge.EVENT_BUS.addListener(ClientEntityTracker::onWorldUnload);
@@ -47,7 +45,7 @@ public final class ClientEntityTracker
     private static void onClientSetup(FMLClientSetupEvent event)
     {
         iChunUtil.LOGGER.info("That was an intended override. Nothing to worry about. No broken mod here. Not a Dangerous alternative prefix at all. Nope. Nossirree.");
-        RenderingRegistry.registerEntityRenderingHandler(EntityTypes.TRACKER.get(), new RenderTracker.RenderFactory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityTypes.TRACKER, new RenderTracker.RenderFactory());
     }
 
     public static int getNextEntId()
@@ -68,13 +66,13 @@ public final class ClientEntityTracker
         }
         if(tracker == null)
         {
-            tracker = new EntityTracker(EntityTypes.TRACKER.get(), ent.world);
+            tracker = new EntityTracker(EntityTypes.TRACKER, ent.world);
             TRACKERS.put(ent, tracker);
         }
 
         if(!tracker.isAlive()) // our tracker is dead. create a new one
         {
-            TRACKERS.put(ent, tracker = new EntityTracker(EntityTypes.TRACKER.get(), ent.world));
+            TRACKERS.put(ent, tracker = new EntityTracker(EntityTypes.TRACKER, ent.world));
         }
         tracker.setParent(ent);
         if(!tracker.isAddedToWorld())
@@ -137,14 +135,15 @@ public final class ClientEntityTracker
 
     private static class EntityTypes
     {
-        private static final DeferredRegister<EntityType<?>> REGISTRY = new DeferredRegister<>(ForgeRegistries.ENTITIES, iChunUtil.MOD_ID);
-
-        public static final RegistryObject<EntityType<EntityTracker>> TRACKER = REGISTRY.register("tracker", () -> EntityType.Builder.create(EntityTracker::new, EntityClassification.MISC)
-                .size(0.1F, 0.1F)
-                .disableSerialization()
-                .disableSummoning()
-                .immuneToFire()
-                .build("from " + iChunUtil.MOD_NAME + ". Ignore this.")
-        );
+        public static EntityType<EntityTracker> TRACKER;
+        public static void onEntityTypeRegistry(final RegistryEvent.Register<EntityType<?>> entityTypeRegistryEvent) //we're doing it this way because it's a client-side entity and we don't want to sync registry values
+        {
+            TRACKER = EntityType.Builder.create(EntityTracker::new, EntityClassification.MISC)
+                    .size(0.1F, 0.1F)
+                    .disableSerialization()
+                    .disableSummoning()
+                    .immuneToFire()
+                    .build("from " + iChunUtil.MOD_NAME + ". Ignore this.");
+        }
     }
 }

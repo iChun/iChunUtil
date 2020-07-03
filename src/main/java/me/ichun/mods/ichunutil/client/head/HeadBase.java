@@ -21,7 +21,7 @@ import java.util.function.BooleanSupplier;
  * @param <E>
  */
 @OnlyIn(Dist.CLIENT)
-public class HeadBase<E extends LivingEntity>
+public class HeadBase<E extends LivingEntity> implements Cloneable
 {
     public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
 
@@ -220,22 +220,36 @@ public class HeadBase<E extends LivingEntity>
         stack.rotate(Vector3f.XP.rotation(renderer.rotateAngleX));
     }
 
-    public HeadBase clone()
+    @Override
+    public HeadBase<?> clone()
     {
         try
         {
-            HeadBase clone = this.getClass().newInstance();
+            HeadBase<?> clone = (HeadBase<?>)super.clone();
+            clone.headModel = null;
+            clone.livingRand = new Random();
+
             for(int i = 0; i < 3; i++)
             {
                 clone.headJoint[i] = this.headJoint[i];
                 clone.eyeOffset[i] = this.eyeOffset[i];
+                clone.irisColour[i] = this.irisColour[i];
+                clone.pupilColour[i] = this.pupilColour[i];
             }
             clone.halfInterpupillaryDistance = this.halfInterpupillaryDistance;
             clone.eyeScale = this.eyeScale;
+            clone.sideEyed = this.sideEyed;
+
+            clone.headTop = this.headTop;
+            clone.headFront = this.headFront;
             return clone;
         }
-        catch(Exception e){}
-        return new HeadBase();
+        catch(Exception e)
+        {
+            iChunUtil.LOGGER.error("Error cloning class: {}", this.getClass());
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @SuppressWarnings("rawtypes")
