@@ -5,7 +5,8 @@ import me.ichun.mods.ichunutil.client.item.ItemEffectHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -129,7 +130,7 @@ public class ItemModelRenderer implements IBakedModel
         }
 
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity)
+        public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) //getModelWithOverrides
         {
             itemModel.model.handleItemState(stack, world, entity);
             return originalModel;

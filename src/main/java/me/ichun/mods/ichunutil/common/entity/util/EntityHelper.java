@@ -17,7 +17,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +28,7 @@ import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -263,26 +264,26 @@ public class EntityHelper
         return rayTrace(ent.world, ent.getEyePosition(partialTick), ent.getEyePosition(partialTick).add(ent.getLook(partialTick).mul(d, d, d)), ent, checkEntities, RayTraceContext.BlockMode.COLLIDER, b -> true, RayTraceContext.FluidMode.NONE, e -> true);
     }
 
-    public static RayTraceResult rayTrace(World world, Vec3d origin, Vec3d dest, @Nonnull Entity exception, boolean checkEntityCollision, RayTraceContext.BlockMode blockMode, Predicate<BlockInfo> blockFilter, RayTraceContext.FluidMode fluidMode, Predicate<Entity> filter) {
-        RayTraceResult raytraceresult = IBlockReader.doRayTrace(new RayTraceContext(origin, dest, blockMode, fluidMode, exception), (context, pos) -> {
+    public static RayTraceResult rayTrace(World world, Vector3d origin, Vector3d dest, @Nonnull Entity exception, boolean checkEntityCollision, RayTraceContext.BlockMode blockMode, Predicate<BlockInfo> blockFilter, RayTraceContext.FluidMode fluidMode, Predicate<Entity> filter) {
+        RayTraceResult raytraceresult = IBlockReader.func_217300_a(new RayTraceContext(origin, dest, blockMode, fluidMode, exception), (context, pos) -> { //doRayTrace
             BlockState blockstate = world.getBlockState(pos);
-            if(blockFilter.test(new BlockInfo(world, blockstate, pos)))
+            if(blockFilter.test(new BlockInfo(world, blockstate, pos))) //Taken from IBlockReader.rayTraceBlocks
             {
-                IFluidState ifluidstate = world.getFluidState(pos);
-                Vec3d vec3d = context.getStartVec();
-                Vec3d vec3d1 = context.getEndVec();
+                FluidState ifluidstate = world.getFluidState(pos);
+                Vector3d vec3d = context.func_222253_b(); //getStartVec
+                Vector3d vec3d1 = context.func_222250_a(); //getEndVec
                 VoxelShape voxelshape = context.getBlockShape(blockstate, world, pos);
                 BlockRayTraceResult blockraytraceresult = world.rayTraceBlocks(vec3d, vec3d1, pos, voxelshape, blockstate);
                 VoxelShape voxelshape1 = context.getFluidShape(ifluidstate, world, pos);
                 BlockRayTraceResult blockraytraceresult1 = voxelshape1.rayTrace(vec3d, vec3d1, pos);
-                double d0 = blockraytraceresult == null ? Double.MAX_VALUE : context.getStartVec().squareDistanceTo(blockraytraceresult.getHitVec());
-                double d1 = blockraytraceresult1 == null ? Double.MAX_VALUE : context.getStartVec().squareDistanceTo(blockraytraceresult1.getHitVec());
+                double d0 = blockraytraceresult == null ? Double.MAX_VALUE : context.func_222253_b().squareDistanceTo(blockraytraceresult.getHitVec()); //getStartVec
+                double d1 = blockraytraceresult1 == null ? Double.MAX_VALUE : context.func_222253_b().squareDistanceTo(blockraytraceresult1.getHitVec()); //getStartVec
                 return d0 <= d1 ? blockraytraceresult : blockraytraceresult1;
             }
             return null;
         }, (context) -> {
-            Vec3d vec3d = context.getStartVec().subtract(context.getEndVec());
-            return BlockRayTraceResult.createMiss(context.getEndVec(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(context.getEndVec()));
+            Vector3d vec3d = context.func_222253_b().subtract(context.func_222250_a()); //getStartVec, getEndVec
+            return BlockRayTraceResult.createMiss(context.func_222250_a(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(context.func_222250_a())); //getEndVec
         });
         if (checkEntityCollision) {
             if (raytraceresult.getType() != RayTraceResult.Type.MISS) {
@@ -322,17 +323,17 @@ public class EntityHelper
         facer.rotationYaw = updateRotation(facer.rotationYaw, f2, maxYaw);
     }
 
-    public static Vec3d getVectorForRotation(float pitch, float yaw) {
+    public static Vector3d getVectorForRotation(float pitch, float yaw) {
         float f = pitch * ((float)Math.PI / 180F);
         float f1 = -yaw * ((float)Math.PI / 180F);
         float f2 = MathHelper.cos(f1);
         float f3 = MathHelper.sin(f1);
         float f4 = MathHelper.cos(f);
         float f5 = MathHelper.sin(f);
-        return new Vec3d(f3 * f4, -f5, f2 * f4);
+        return new Vector3d(f3 * f4, -f5, f2 * f4);
     }
 
-    public static Vec3d getVectorRenderYawOffset(float renderYawOffset) {
+    public static Vector3d getVectorRenderYawOffset(float renderYawOffset) {
         return getVectorForRotation(0, renderYawOffset);
     }
 

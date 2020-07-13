@@ -65,7 +65,7 @@ public class EventHandlerClient
             String optionsText = I18n.format("menu.options");
             for(Widget widget : event.getWidgetList())
             {
-                if(optionsText.equals(widget.getMessage()) && widget instanceof Button)
+                if(optionsText.equals(widget.getMessage().getUnformattedComponentText()) && widget instanceof Button)
                 {
                     Button.IPressable oriPress = ((Button)widget).onPress;
                     ((Button)widget).onPress = button -> {

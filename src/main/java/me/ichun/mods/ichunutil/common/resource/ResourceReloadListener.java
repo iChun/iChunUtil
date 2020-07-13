@@ -2,14 +2,14 @@ package me.ichun.mods.ichunutil.common.resource;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class ResourceReloadListener<T> extends JsonReloadListener
         this.classType = classType;
         this.parser = gsonParser;
 
-        MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
+        MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
     }
 
     public <K extends ResourceReloadListener<T>> K setDefault(T defaultObj)
@@ -47,7 +47,7 @@ public class ResourceReloadListener<T> extends JsonReloadListener
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonObject> json, IResourceManager iResourceManager, IProfiler iProfiler)
+    protected void apply(Map<ResourceLocation, JsonElement> json, IResourceManager iResourceManager, IProfiler iProfiler)
     {
         json.forEach((k, v) -> {
             try
@@ -66,8 +66,8 @@ public class ResourceReloadListener<T> extends JsonReloadListener
         return objects.containsKey(key) ? objects.get(key) : defaultObj;
     }
 
-    private void onServerAboutToStart(FMLServerAboutToStartEvent event)
+    private void onAddReloadListener(AddReloadListenerEvent event)
     {
-        event.getServer().getResourceManager().addReloadListener(this);
+        event.addListener(this);
     }
 }

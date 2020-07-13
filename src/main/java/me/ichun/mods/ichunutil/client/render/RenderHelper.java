@@ -6,7 +6,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BreakableBlock;
+import net.minecraft.block.StainedGlassPaneBlock;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -25,6 +28,7 @@ import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
@@ -40,7 +44,6 @@ import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class RenderHelper
@@ -119,24 +122,43 @@ public class RenderHelper
             modelIn = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStackIn, modelIn, ItemCameraTransforms.TransformType.NONE, false);
             matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
             if (!modelIn.isBuiltInRenderer()) {
-                RenderType rendertype = RenderTypeLookup.getRenderType(itemStackIn);
-                RenderType rendertype1;
-                if(renderTypeOverride != null)
-                {
-                    rendertype1 = renderTypeOverride;
-                }
-                else if (Objects.equals(rendertype, Atlases.getTranslucentBlockType())) {
-                    rendertype1 = Atlases.getTranslucentCullBlockType();
+                boolean flag1;
+                if (!ItemCameraTransforms.TransformType.NONE.func_241716_a_() && itemStackIn.getItem() instanceof BlockItem) {
+                    Block block = ((BlockItem)itemStackIn.getItem()).getBlock();
+                    flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
                 } else {
-                    rendertype1 = rendertype;
+                    flag1 = true;
                 }
+                if (modelIn.isLayered()) { net.minecraftforge.client.ForgeHooksClient.drawItemLayered(Minecraft.getInstance().getItemRenderer(), modelIn, itemStackIn, matrixStackIn, buffer, 0xf000f0, OverlayTexture.NO_OVERLAY, flag1); }
+                else {
+                    RenderType rendertype = renderTypeOverride != null ? renderTypeOverride : RenderTypeLookup.func_239219_a_(itemStackIn, flag1);
+                    IVertexBuilder ivertexbuilder;
+                    if (itemStackIn.getItem() == Items.COMPASS && itemStackIn.hasEffect()) {
+                        matrixStackIn.push();
+                        MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+                        if (ItemCameraTransforms.TransformType.NONE.func_241716_a_()) {
+                            matrixstack$entry.getMatrix().mul(0.75F);
+                        }
 
-                IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(buffer, rendertype1, true, itemStackIn.hasEffect());
-                //renderModel
-                renderModel(modelIn, itemStackIn, 0xf000f0, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
-                //end renderModel
+                        if (flag1) {
+                            ivertexbuilder = ItemRenderer.func_241732_b_(buffer, rendertype, matrixstack$entry);
+                        } else {
+                            ivertexbuilder = ItemRenderer.func_241731_a_(buffer, rendertype, matrixstack$entry);
+                        }
+
+                        matrixStackIn.pop();
+                    } else if (flag1) {
+                        ivertexbuilder = ItemRenderer.func_239391_c_(buffer, rendertype, true, itemStackIn.hasEffect());
+                    } else {
+                        ivertexbuilder = ItemRenderer.getBuffer(buffer, rendertype, true, itemStackIn.hasEffect());
+                    }
+
+                    //renderModel
+                    renderModel(modelIn, itemStackIn, 0xf000f0, OverlayTexture.NO_OVERLAY, matrixStackIn, ivertexbuilder);
+                    //end renderModel
+                }
             } else {
-                itemStackIn.getItem().getItemStackTileEntityRenderer().render(itemStackIn, matrixStackIn, buffer, 15728880, OverlayTexture.NO_OVERLAY);
+                itemStackIn.getItem().getItemStackTileEntityRenderer().func_239207_a_(itemStackIn, ItemCameraTransforms.TransformType.NONE, matrixStackIn, buffer, 15728880, OverlayTexture.NO_OVERLAY);
             }
 
             matrixStackIn.pop();

@@ -2,13 +2,13 @@ package me.ichun.mods.ichunutil.client.head;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.*;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +21,8 @@ import java.util.function.BooleanSupplier;
  * @param <E>
  */
 @OnlyIn(Dist.CLIENT)
-public class HeadBase<E extends LivingEntity> implements Cloneable
+public class
+HeadBase<E extends LivingEntity> implements Cloneable
 {
     public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
 

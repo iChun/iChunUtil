@@ -2,9 +2,9 @@ package me.ichun.mods.ichunutil.client.model.item;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
@@ -22,5 +22,5 @@ public interface IModel //has to extend ItemStackTileEntityRenderer!
 
     void handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat);
 
-    void handleItemState(ItemStack stack, @Nullable World world, @Nullable LivingEntity entity);
+    void handleItemState(ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity);
 }

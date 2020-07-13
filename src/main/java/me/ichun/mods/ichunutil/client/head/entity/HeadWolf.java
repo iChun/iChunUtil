@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.client.head.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.head.HeadBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.WolfModel;
@@ -50,7 +50,7 @@ public class HeadWolf extends HeadBase<WolfEntity>
     @Override
     public float[] getIrisColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        if(living.isAngry())
+        if(living.func_233678_J__()) //isAngry
         {
             return irisColourAngry;
         }
@@ -60,7 +60,7 @@ public class HeadWolf extends HeadBase<WolfEntity>
     @Override
     public float[] getPupilColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        if(living.isAngry())
+        if(living.func_233678_J__()) //isAngry
         {
             return pupilColourAngry;
         }

@@ -43,7 +43,7 @@ public class HeadBee extends HeadBase<BeeEntity>
     @Override
     public float[] getIrisColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        if(living.isAngry())
+        if(living.func_233678_J__()) //isAngry
         {
             return irisColourAngry;
         }
@@ -53,7 +53,7 @@ public class HeadBee extends HeadBase<BeeEntity>
     @Override
     public float[] getPupilColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        if(living.isAngry())
+        if(living.func_233678_J__()) //isAngry
         {
             return pupilColourAngry;
         }

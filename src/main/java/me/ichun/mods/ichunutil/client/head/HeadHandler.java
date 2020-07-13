@@ -51,7 +51,7 @@ public class HeadHandler
         put(ParrotEntity.class, new HeadParrot());
         put(PhantomEntity.class, new HeadPhantom());
         put(PigEntity.class, new HeadBase<>().setEyeOffset(0F, 0.5F/16F, 8F/16F).setHalfInterpupillaryDistance(3F/16F));
-        put(ZombiePigmanEntity.class, new HeadPigZombie());
+//        put(ZombiePigmanEntity.class, new HeadPigZombie()); //TODO piglins
         put(PolarBearEntity.class, new HeadBase<>().setEyeOffset(0F, -0.5F/16F, 3F/16F).setEyeScale(0.4F));
         put(PufferfishEntity.class, new HeadPufferfish());
         put(RabbitEntity.class, new HeadRabbit());

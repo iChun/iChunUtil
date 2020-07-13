@@ -128,7 +128,7 @@ public class EntityTracker extends Entity
             return;
         }
 
-        if(!parent.isAlive() || !parent.dimension.equals(dimension)) //parent is "dead"
+        if(!parent.isAlive() || !parent.world.func_234923_W_().equals(world.func_234923_W_())) //parent is "dead"
         {
             if(maxPersistAfterDeath > 0)
             {

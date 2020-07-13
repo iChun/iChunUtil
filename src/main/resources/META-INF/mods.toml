@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)" #forge version dep
+loaderVersion="[32,)" #forge version dep
 issueTrackerURL="https://github.com/iChun/iChunUtil/issues"
 
 [[mods]]
@@ -16,12 +16,12 @@ issueTrackerURL="https://github.com/iChun/iChunUtil/issues"
 [[dependencies.ichunutil]]
     modId="forge"
     mandatory=true
-    versionRange="[31.2.9,)"
+    versionRange="[32,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.ichunutil]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2,1.16)"
+    versionRange="[1.16.1,1.17)"
     ordering="NONE"
     side="BOTH"

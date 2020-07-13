@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
 public class RenderTracker extends EntityRenderer<EntityTracker>
@@ -25,7 +25,7 @@ public class RenderTracker extends EntityRenderer<EntityTracker>
 
         //we need the parent's rendering position, not the tracker's
         //we need to get the camera position. Get the current active render info
-        Vec3d vec3d = this.renderManager.info.getProjectedView();
+        Vector3d vec3d = this.renderManager.info.getProjectedView();
         double camX = vec3d.getX();
         double camY = vec3d.getY();
         double camZ = vec3d.getZ();
@@ -36,7 +36,7 @@ public class RenderTracker extends EntityRenderer<EntityTracker>
         double d2 = MathHelper.lerp((double)partialTick, tracker.parent.lastTickPosZ, tracker.parent.getPosZ());
 
         int parentPackedLight = this.renderManager.getPackedLight(tracker.parent, partialTick);
-        Vec3d renderOffset = this.getRenderOffset(tracker, partialTick);
+        Vector3d renderOffset = this.getRenderOffset(tracker, partialTick);
         double pX = d0 - camX + renderOffset.getX();
         double pY = d1 - camY + renderOffset.getY();
         double pZ = d2 - camZ + renderOffset.getZ();
