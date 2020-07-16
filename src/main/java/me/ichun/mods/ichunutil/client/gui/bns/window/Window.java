@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
@@ -180,27 +181,27 @@ public abstract class Window<M extends IWindows> extends Fragment
     public boolean isUnique() { return isUnique; }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         //render dock highlight
-        renderDockHighlight(mouseX, mouseY, partialTick);
+        renderDockHighlight(stack, mouseX, mouseY, partialTick);
 
         setScissor();
 
         //render our background
-        renderBackground();
+        renderBackground(stack);
         if(hasTitle())
         {
-            drawString(currentView.title, getLeft() + borderSize.get() + 1, getTop() + borderSize.get());
+            drawString(stack, currentView.title, getLeft() + borderSize.get() + 1, getTop() + borderSize.get());
         }
 
         //render the current view
-        currentView.render(mouseX, mouseY, partialTick);
+        currentView.render(stack, mouseX, mouseY, partialTick);
 
         endScissor();
     }
 
-    public void renderDockHighlight(int mouseX, int mouseY, float partialTick)
+    public void renderDockHighlight(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {
@@ -344,7 +345,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
 
-    public void renderBackground()
+    public void renderBackground(MatrixStack stack)
     {
         if(renderMinecraftStyle())
         {

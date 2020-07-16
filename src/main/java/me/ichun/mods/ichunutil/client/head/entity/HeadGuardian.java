@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.client.head.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.head.HeadBase;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;

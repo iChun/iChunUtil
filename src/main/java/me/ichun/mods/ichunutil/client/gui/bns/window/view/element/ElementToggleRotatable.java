@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
@@ -29,7 +30,7 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
     }
 
     @Override
-    public void renderText()
+    public void renderText(MatrixStack stack)
     {
         if(!text.isEmpty())
         {
@@ -43,11 +44,11 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
             //draw the text
             if(renderMinecraftStyle())
             {
-                getFontRenderer().drawStringWithShadow(s, 0, 0, getMinecraftFontColour());
+                getFontRenderer().drawStringWithShadow(stack, s, 0, 0, getMinecraftFontColour());
             }
             else
             {
-                getFontRenderer().drawString(s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                getFontRenderer().drawString(stack, s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
 
             RenderSystem.popMatrix();

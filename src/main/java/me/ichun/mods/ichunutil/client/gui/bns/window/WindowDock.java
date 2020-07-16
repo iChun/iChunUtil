@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -77,13 +78,13 @@ public class WindowDock<M extends IWindows> extends Window<M>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         List<ArrayListHolder> keys = new ArrayList<>(docked.keySet());
         for(int i = keys.size() - 1; i >= 0; i--)
         {
             ArrayList<Window<?>> windows = keys.get(i).windows;
-            windows.forEach(window -> window.render(mouseX, mouseY, partialTick));
+            windows.forEach(window -> window.render(stack, mouseX, mouseY, partialTick));
         }
     }
 

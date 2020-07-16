@@ -18,7 +18,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import javax.annotation.Nonnull;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,8 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public abstract class ConfigBase
         implements Comparable<ConfigBase>

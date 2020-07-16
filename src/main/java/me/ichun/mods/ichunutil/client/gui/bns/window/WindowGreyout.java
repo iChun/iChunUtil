@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
@@ -51,7 +52,7 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
@@ -57,7 +58,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
         //render our background
@@ -68,7 +69,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
         //render attached elements
         for(Element<?> element : elements)
         {
-            element.render(mouseX, mouseY, partialTick);
+            element.render(stack, mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();

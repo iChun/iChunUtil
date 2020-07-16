@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
 
@@ -25,9 +26,9 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        super.render(mouseX, mouseY, partialTick);
+        super.render(stack, mouseX, mouseY, partialTick);
         if(renderBackground)
         {
             if(renderMinecraftStyle())
@@ -41,15 +42,15 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
                 fill(colour, 1);
             }
         }
-        renderText();
+        renderText(stack);
     }
 
-    public void renderText()
+    public void renderText(MatrixStack stack)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
-            drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
+            drawString(stack, s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
         }
     }
 

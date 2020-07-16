@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
@@ -169,7 +170,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderBackground)
         {
@@ -188,11 +189,11 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         }
 
         setScissor();
-        items.forEach(item -> item.render(mouseX, mouseY, partialTick));
+        items.forEach(item -> item.render(stack, mouseX, mouseY, partialTick));
 
         if(getFocused() instanceof Item)
         {
-            ((Item<?>)getFocused()).render(mouseX, mouseY, partialTick);
+            ((Item<?>)getFocused()).render(stack, mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();
@@ -581,7 +582,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         }
 
         @Override
-        public void render(int mouseX, int mouseY, float partialTick)
+        public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
         {
             if(shouldRender())
             {
@@ -672,7 +673,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                     fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parentFragment.isDragging() && parentFragment.getFocused() != this)) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
                 }
 
-                elements.forEach(element -> element.render(mouseX, mouseY, partialTick));
+                elements.forEach(element -> element.render(stack, mouseX, mouseY, partialTick));
 
                 if(draggingUs)
                 {

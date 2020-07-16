@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
@@ -96,12 +97,12 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public void drawTextBox(int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle())
         {
             widget.setEnableBackgroundDrawing(true);
-            widget.render(mouseX, mouseY, partialTick);
+            widget.render(stack, mouseX, mouseY, partialTick);
             RenderSystem.color4f(1F, 1F, 1F, 1F);
             RenderSystem.enableAlphaTest();
 
@@ -127,7 +128,7 @@ public class ElementNumberInput extends ElementTextField
             fill(getTheme().elementInputBorder, 0);
             fill(colour, 1);
             widget.setEnableBackgroundDrawing(false);
-            widget.render(mouseX, mouseY, partialTick);
+            widget.render(stack, mouseX, mouseY, partialTick);
             RenderSystem.color4f(1F, 1F, 1F, 1F);
 
             //handle top half
@@ -163,8 +164,8 @@ public class ElementNumberInput extends ElementTextField
             RenderSystem.pushMatrix();
             float scale = 0.5F;
             RenderSystem.scalef(scale, scale, scale);
-            drawString("\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
-            drawString("\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
+            drawString(stack, "\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
+            drawString(stack, "\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
             RenderSystem.popMatrix();
         }
     }

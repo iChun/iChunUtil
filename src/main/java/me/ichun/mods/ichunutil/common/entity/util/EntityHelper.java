@@ -265,25 +265,25 @@ public class EntityHelper
     }
 
     public static RayTraceResult rayTrace(World world, Vector3d origin, Vector3d dest, @Nonnull Entity exception, boolean checkEntityCollision, RayTraceContext.BlockMode blockMode, Predicate<BlockInfo> blockFilter, RayTraceContext.FluidMode fluidMode, Predicate<Entity> filter) {
-        RayTraceResult raytraceresult = IBlockReader.func_217300_a(new RayTraceContext(origin, dest, blockMode, fluidMode, exception), (context, pos) -> { //doRayTrace
+        RayTraceResult raytraceresult = IBlockReader.doRayTrace(new RayTraceContext(origin, dest, blockMode, fluidMode, exception), (context, pos) -> {
             BlockState blockstate = world.getBlockState(pos);
             if(blockFilter.test(new BlockInfo(world, blockstate, pos))) //Taken from IBlockReader.rayTraceBlocks
             {
                 FluidState ifluidstate = world.getFluidState(pos);
-                Vector3d vec3d = context.func_222253_b(); //getStartVec
-                Vector3d vec3d1 = context.func_222250_a(); //getEndVec
+                Vector3d vec3d = context.getStartVec();
+                Vector3d vec3d1 = context.getEndVec();
                 VoxelShape voxelshape = context.getBlockShape(blockstate, world, pos);
                 BlockRayTraceResult blockraytraceresult = world.rayTraceBlocks(vec3d, vec3d1, pos, voxelshape, blockstate);
                 VoxelShape voxelshape1 = context.getFluidShape(ifluidstate, world, pos);
                 BlockRayTraceResult blockraytraceresult1 = voxelshape1.rayTrace(vec3d, vec3d1, pos);
-                double d0 = blockraytraceresult == null ? Double.MAX_VALUE : context.func_222253_b().squareDistanceTo(blockraytraceresult.getHitVec()); //getStartVec
-                double d1 = blockraytraceresult1 == null ? Double.MAX_VALUE : context.func_222253_b().squareDistanceTo(blockraytraceresult1.getHitVec()); //getStartVec
+                double d0 = blockraytraceresult == null ? Double.MAX_VALUE : context.getStartVec().squareDistanceTo(blockraytraceresult.getHitVec());
+                double d1 = blockraytraceresult1 == null ? Double.MAX_VALUE : context.getStartVec().squareDistanceTo(blockraytraceresult1.getHitVec());
                 return d0 <= d1 ? blockraytraceresult : blockraytraceresult1;
             }
             return null;
         }, (context) -> {
-            Vector3d vec3d = context.func_222253_b().subtract(context.func_222250_a()); //getStartVec, getEndVec
-            return BlockRayTraceResult.createMiss(context.func_222250_a(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(context.func_222250_a())); //getEndVec
+            Vector3d vec3d = context.getStartVec().subtract(context.getEndVec()); //getStartVec, getEndVec
+            return BlockRayTraceResult.createMiss(context.getEndVec(), Direction.getFacingFromVector(vec3d.x, vec3d.y, vec3d.z), new BlockPos(context.getEndVec()));
         });
         if (checkEntityCollision) {
             if (raytraceresult.getType() != RayTraceResult.Type.MISS) {

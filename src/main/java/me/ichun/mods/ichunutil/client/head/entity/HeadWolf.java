@@ -3,11 +3,11 @@ package me.ichun.mods.ichunutil.client.head.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.head.HeadBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.WolfModel;
 import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.util.math.vector.Vector3f;
 
 public class HeadWolf extends HeadBase<WolfEntity>
 {

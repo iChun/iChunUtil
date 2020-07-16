@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -113,7 +114,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(width <= 0 || height <= 0)
         {

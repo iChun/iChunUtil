@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
@@ -26,9 +27,9 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        super.render(mouseX, mouseY, partialTick);
+        super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
             renderMinecraftStyleButton(getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
@@ -59,10 +60,10 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             }
             fill(colour, 1);
         }
-        renderText();
+        renderText(stack);
     }
 
-    public void renderText()
+    public void renderText(MatrixStack stack)
     {
         if(!text.isEmpty())
         {
@@ -71,11 +72,11 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             //draw the text
             if(renderMinecraftStyle())
             {
-                getFontRenderer().drawStringWithShadow(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, getMinecraftFontColour());
+                getFontRenderer().drawStringWithShadow(stack, s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, getMinecraftFontColour());
             }
             else
             {
-                getFontRenderer().drawString(s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                getFontRenderer().drawString(stack, s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
         }
     }

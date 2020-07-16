@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -22,7 +23,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         hover = isMouseOver(mouseX, mouseY) || parentFragment.getFocused() == this;
     }

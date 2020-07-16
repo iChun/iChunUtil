@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import net.minecraft.client.Minecraft;
@@ -81,10 +82,10 @@ public class ElementScrollView extends ElementFertile
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
-        elements.forEach(item -> item.render(mouseX, mouseY, partialTick));
+        elements.forEach(item -> item.render(stack, mouseX, mouseY, partialTick));
         resetScissorToParent();
     }
 

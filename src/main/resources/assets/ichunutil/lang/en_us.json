@@ -44,6 +44,8 @@
 
   "gui.ichunutil.configs.noEditingServerConfig": "You can't edit a Server config whilst on a Dedicated Server!",
 
+  "gui.ichunutil.element.textField": "Text Field",
+
   "window.popup.title": "Alert!",
 
   "window.saveAs.title": "Save As",

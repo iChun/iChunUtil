@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.*;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
@@ -12,9 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
@@ -313,29 +319,29 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableAlphaTest();
-        renderBackground();
+        renderBackground(stack);
 
-        renderWindows(mouseX, mouseY, partialTick);
+        renderWindows(stack, mouseX, mouseY, partialTick);
 
-        renderTooltip(mouseX, mouseY, partialTick);
+        renderTooltip(stack, mouseX, mouseY, partialTick);
 
         resetBackground();
         RenderSystem.enableAlphaTest();
     }
 
-    public void renderWindows(int mouseX, int mouseY, float partialTick)
+    public void renderWindows(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
             Window<?> window = windows.get(i);
-            window.render(mouseX, mouseY, partialTick);
+            window.render(stack, mouseX, mouseY, partialTick);
         }
     }
 
-    public void renderTooltip(int mouseX, int mouseY, float partialTick)
+    public void renderTooltip(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         //render tooltip
         Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
@@ -358,27 +364,31 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
         if(lastTooltip != null && tooltipCooldown < 0)
         {
-            renderTooltip(lastTooltip, mouseX, mouseY);
+            renderTooltip(stack, lastTooltip, mouseX, mouseY);
         }
     }
 
-    @Override
-    public void renderTooltip(@Nonnull String tooltip, int mouseX, int mouseY)
+    public void renderTooltip(MatrixStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
     {
+        List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
+        List<ITextProperties> textLines = new ArrayList<>();
+        for(String s : textStrings)
+        {
+            textLines.add(new StringTextComponent(s));
+        }
         if(renderMinecraftStyle)
         {
-            super.renderTooltip(Splitter.on("\n").splitToList(tooltip), mouseX, mouseY);
+            super.renderTooltip(stack, textLines, mouseX, mouseY);
         }
-        else
+        else //Mostly taken from GuiUtils
         {
-            ItemStack stack = ItemStack.EMPTY;
-            List<String> textLines = Splitter.on("\n").splitToList(tooltip);
+            ItemStack itemstack = ItemStack.EMPTY;
             int screenWidth = width;
             int screenHeight = height;
             int maxTextWidth = -1;
             FontRenderer font = getFontRenderer();
 
-            RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(stack, textLines, mouseX, mouseY, screenWidth, screenHeight, maxTextWidth, font);
+            RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(itemstack, textLines, stack, mouseX, mouseY, screenWidth, screenHeight, maxTextWidth, font);
             if (MinecraftForge.EVENT_BUS.post(event)) {
                 return;
             }
@@ -392,9 +402,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
-            for (String textLine : textLines)
+            for (ITextProperties textLine : textLines)
             {
-                int textLineWidth = font.getStringWidth(textLine);
+                int textLineWidth = font.func_238414_a_(textLine);
 
                 if (textLineWidth > tooltipTextWidth)
                 {
@@ -432,19 +442,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
             if (needsWrap)
             {
                 int wrappedTooltipWidth = 0;
-                List<String> wrappedTextLines = new ArrayList<String>();
+                List<ITextProperties> wrappedTextLines = new ArrayList<>();
                 for (int i = 0; i < textLines.size(); i++)
                 {
-                    String textLine = textLines.get(i);
-                    List<String> wrappedLine = font.listFormattedStringToWidth(textLine, tooltipTextWidth);
+                    ITextProperties textLine = textLines.get(i);
+                    List<ITextProperties> wrappedLine = font.func_238425_b_(textLine, tooltipTextWidth);
                     if (i == 0)
                     {
                         titleLinesCount = wrappedLine.size();
                     }
 
-                    for (String line : wrappedLine)
+                    for (ITextProperties line : wrappedLine)
                     {
-                        int lineWidth = font.getStringWidth(line);
+                        int lineWidth = font.func_238414_a_(line);
                         if (lineWidth > wrappedTooltipWidth)
                         {
                             wrappedTooltipWidth = lineWidth;
@@ -485,16 +495,27 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 tooltipY = screenHeight - tooltipHeight - 4;
             }
 
-            RenderHelper.drawColour(getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, 300);
-            RenderHelper.drawColour(getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, 300);
+            final int zLevel = 400;
+            stack.push();
+            Matrix4f mat = stack.getLast().getMatrix();
 
-            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
+            RenderHelper.drawColour(getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
+            RenderHelper.drawColour(getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
+
+            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(itemstack, textLines, stack, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
+
+            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+            stack.translate(0.0D, 0.0D, zLevel);
+
             int tooltipTop = tooltipY;
 
             for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber)
             {
-                String line = textLines.get(lineNumber);
-                font.drawStringWithShadow(line, (float)tooltipX, (float)tooltipY, -1);
+                ITextProperties line = textLines.get(lineNumber);
+                if(line != null)
+                {
+                    font.func_238416_a_(line, (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
+                }
 
                 if (lineNumber + 1 == titleLinesCount)
                 {
@@ -504,7 +525,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 tooltipY += 10;
             }
 
-            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(stack, textLines, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
+            renderType.finish();
+            stack.pop();
+
+            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(itemstack, textLines, stack, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
 
             RenderSystem.enableDepthTest();
         }
@@ -540,11 +564,11 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void renderBackground()
+    public void renderBackground(MatrixStack stack)
     {
         if(renderMinecraftStyle)
         {
-            super.renderBackground();
+            super.renderBackground(stack);
         }
         else
         {

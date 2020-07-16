@@ -1,11 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -141,7 +143,7 @@ public class ElementTextField extends Element
     public void init()
     {
         super.init();
-        widget = new TextFieldWidget(getFontRenderer(), getLeft(), getTop(), width, height, "Text Field"); //TODO update this narration message?
+        widget = new TextFieldWidget(getFontRenderer(), getLeft(), getTop(), width, height, new TranslationTextComponent("gui.ichunutil.element.textField")); //TODO update this narration message?
         widget.setMaxStringLength(maxStringLength);
         widget.setText(defaultText);
         widget.setValidator(validator);
@@ -165,7 +167,7 @@ public class ElementTextField extends Element
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(lastLeft != getLeft() || lastTop != getTop())
         {
@@ -174,15 +176,15 @@ public class ElementTextField extends Element
             lastTop = getTop();
         }
 
-        drawTextBox(mouseX, mouseY, partialTick);
+        drawTextBox(stack, mouseX, mouseY, partialTick);
     }
 
-    public void drawTextBox(int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle())
         {
             widget.setEnableBackgroundDrawing(true);
-            widget.render(mouseX, mouseY, partialTick);
+            widget.render(stack, mouseX, mouseY, partialTick);
         }
         else
         {
@@ -198,7 +200,7 @@ public class ElementTextField extends Element
             fill(getTheme().elementInputBorder, 0);
             fill(colour, 1);
             widget.setEnableBackgroundDrawing(false);
-            widget.render(mouseX, mouseY, partialTick);
+            widget.render(stack, mouseX, mouseY, partialTick);
         }
         RenderSystem.color4f(1F, 1F, 1F, 1F);
     }

@@ -1,8 +1,11 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -116,7 +119,11 @@ public class ElementTextWrapper extends Element //TODO image element
             List<String> wrappedTextLines = new ArrayList<>();
             for(String textLine : text)
             {
-                wrappedTextLines.addAll(getFontRenderer().listFormattedStringToWidth(textLine, tooltipTextWidth));
+                List<ITextProperties> texts = getFontRenderer().func_238425_b_(new StringTextComponent(textLine), tooltipTextWidth);
+                for(ITextProperties text : texts)
+                {
+                    wrappedTextLines.add(text.getString());
+                }
             }
             textWrapped = wrappedTextLines;
         }
@@ -128,28 +135,28 @@ public class ElementTextWrapper extends Element //TODO image element
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         int textX = getLeft() + 2;
         int textY = getTop() + 4;
         for (int lineNumber = 0; lineNumber < textWrapped.size(); ++lineNumber)
         {
             String line = textWrapped.get(lineNumber);
-            drawString(line, (float)textX, (float)textY);
+            drawString(stack, line, (float)textX, (float)textY);
             textY += 12;
         }
     }
 
     @Override
-    public void drawString(String s, float posX, float posY)
+    public void drawString(MatrixStack stack, String s, float posX, float posY)
     {
         if(renderMinecraftStyle())
         {
-            getFontRenderer().drawStringWithShadow(s, posX, posY, color != null ? color : getMinecraftFontColour());
+            getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color != null ? color : getMinecraftFontColour());
         }
         else
         {
-            getFontRenderer().drawString(s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
+            getFontRenderer().drawString(stack, s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
         }
     }
 

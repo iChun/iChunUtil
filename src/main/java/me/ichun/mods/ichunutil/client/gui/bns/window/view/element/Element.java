@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -60,7 +61,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick){}
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick){}
 
     @Override
     public void resize(Minecraft mc, int width, int height)

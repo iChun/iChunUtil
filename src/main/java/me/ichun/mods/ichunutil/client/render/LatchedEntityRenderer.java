@@ -7,8 +7,6 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-import javax.annotation.Nullable;
-
 public class LatchedEntityRenderer<T extends LatchedEntity> extends EntityRenderer<T>
 {
     protected LatchedEntityRenderer(EntityRendererManager manager)

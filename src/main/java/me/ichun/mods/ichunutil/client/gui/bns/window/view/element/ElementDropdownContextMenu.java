@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
@@ -33,9 +34,9 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        super.render(mouseX, mouseY, partialTick);
+        super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
             RenderHelper.drawColour(-6250336, 255, getLeft(), getTop(), width - ElementNumberInput.BUTTON_WIDTH, height, 0);
@@ -72,7 +73,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             RenderSystem.pushMatrix();
             float scale = 0.5F;
             RenderSystem.scalef(scale, scale, scale);
-            drawString("\u25BC", (getRight() - ElementNumberInput.BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((height / 2d) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
+            drawString(stack, "\u25BC", (getRight() - ElementNumberInput.BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((height / 2d) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
             RenderSystem.popMatrix();
         }
         if(!text.isEmpty())
@@ -86,7 +87,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             {
                 setTooltip(text);
             }
-            drawString(s, getLeft() + 5, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
+            drawString(stack, s, getLeft() + 5, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
         }
     }
 

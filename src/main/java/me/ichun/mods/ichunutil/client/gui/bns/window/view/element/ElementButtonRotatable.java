@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 
@@ -28,7 +29,7 @@ public class ElementButtonRotatable<T extends ElementButtonRotatable> extends El
     }
 
     @Override
-    public void renderText()
+    public void renderText(MatrixStack stack)
     {
         if(!text.isEmpty())
         {
@@ -40,7 +41,7 @@ public class ElementButtonRotatable<T extends ElementButtonRotatable> extends El
             RenderSystem.translatef(- getFontRenderer().getStringWidth(s) / 2F,  - (getFontRenderer().FONT_HEIGHT) / 2F + 1, 0F);
 
             //draw the text
-            drawString(s, 0, 0);
+            drawString(stack, s, 0, 0);
             RenderSystem.popMatrix();
         }
     }

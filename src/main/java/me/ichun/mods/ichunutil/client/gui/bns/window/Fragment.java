@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
@@ -110,20 +111,20 @@ public abstract class Fragment<P extends Fragment>
         return parentFragment.getFontRenderer();
     }
 
-    public void drawString(String s, float posX, float posY)
+    public void drawString(MatrixStack stack, String s, float posX, float posY)
     {
-        drawString(s, posX, posY, renderMinecraftStyle() ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
+        drawString(stack, s, posX, posY, renderMinecraftStyle() ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
     }
 
-    public void drawString(String s, float posX, float posY, int color)
+    public void drawString(MatrixStack stack, String s, float posX, float posY, int color)
     {
         if(renderMinecraftStyle())
         {
-            getFontRenderer().drawStringWithShadow(s, posX, posY, color);
+            getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color);
         }
         else
         {
-            getFontRenderer().drawString(s, posX, posY, color);
+            getFontRenderer().drawString(stack, s, posX, posY, color);
         }
     }
 

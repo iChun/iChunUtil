@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 
 import javax.annotation.Nonnull;
@@ -22,9 +23,9 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTick)
+    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        super.render(mouseX, mouseY, partialTick);
+        super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
             renderMinecraftStyleButton(getLeft(), getTop(), width, height, (parentFragment.isDragging() && parentFragment.getFocused() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));
@@ -49,7 +50,7 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
         }
         if(toggleState)
         {
-            drawString("X", getLeft() + 2, getTop() + 1);
+            drawString(stack, "X", getLeft() + 2, getTop() + 1);
         }
     }
 

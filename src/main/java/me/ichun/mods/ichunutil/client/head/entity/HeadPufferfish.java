@@ -3,7 +3,10 @@ package me.ichun.mods.ichunutil.client.head.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.client.head.HeadBase;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.*;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PufferFishBigModel;
+import net.minecraft.client.renderer.entity.model.PufferFishMediumModel;
+import net.minecraft.client.renderer.entity.model.PufferFishSmallModel;
 import net.minecraft.entity.passive.fish.PufferfishEntity;
 
 public class HeadPufferfish extends HeadBase<PufferfishEntity>
