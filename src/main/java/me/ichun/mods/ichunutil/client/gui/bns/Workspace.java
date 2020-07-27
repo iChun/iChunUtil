@@ -134,7 +134,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void onClose()
+    public void closeScreen()
     {
         this.minecraft.displayGuiScreen(lastScreen);
     }
@@ -158,13 +158,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void removed()
+    public void onClose()
     {
         this.minecraft.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public List<Window<?>> children()
+    public List<Window<?>> getEventListeners()
     {
         if(canDockWindows())
         {
@@ -192,7 +192,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         if(window.isUnique()) // aw how cute
         {
-            List<Window<?>> allWindows = children();
+            List<Window<?>> allWindows = getEventListeners();
             for(int i = allWindows.size() - 1; i >= 0; i--)
             {
                 Window<?> window1 = allWindows.get(i);
@@ -217,9 +217,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void removeWindow(Window<?> window)
     {
-        if(getFocused() == window)
+        if(getListener() == window)
         {
-            setFocused(null);
+            setListener(null);
         }
         window.onClose(); //TODO this might bite me in the ass. how can we tell if the window was removed or destroyed????? dock???
         windows.remove(window);
@@ -269,7 +269,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
             addWindow(window);
         }
         putInCenter(window);
-        setFocused(window);
+        setListener(window);
 
         window.init();
     }
@@ -301,14 +301,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void tick()
     {
-        children().forEach(Fragment::tick);
+        getEventListeners().forEach(Fragment::tick);
         tooltipCooldown--;
     }
 
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
     {
         Fragment<?> o = null;
-        for(IGuiEventListener child : children())
+        for(IGuiEventListener child : getEventListeners())
         {
             if(o == null && child instanceof Fragment)
             {
@@ -321,6 +321,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
+        stack.push();
         RenderSystem.enableAlphaTest();
         renderBackground(stack);
 
@@ -330,6 +331,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
         resetBackground();
         RenderSystem.enableAlphaTest();
+        stack.pop();
     }
 
     public void renderWindows(MatrixStack stack, int mouseX, int mouseY, float partialTick)
@@ -337,6 +339,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         for(int i = windows.size() - 1; i >= 0; i--)
         {
             Window<?> window = windows.get(i);
+            stack.translate(0D, 0D, 10D);
             window.render(stack, mouseX, mouseY, partialTick);
         }
     }
@@ -499,8 +502,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
             stack.push();
             Matrix4f mat = stack.getLast().getMatrix();
 
-            RenderHelper.drawColour(getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
-            RenderHelper.drawColour(getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
+            RenderHelper.drawColour(stack, getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
+            RenderHelper.drawColour(stack, getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
 
             MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(itemstack, textLines, stack, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
 
@@ -537,7 +540,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
         Fragment<?> o = null;
-        List<Window<?>> children = children();
+        List<Window<?>> children = getEventListeners();
         for(int i = children.size() - 1; i >= 0; i--) //furthest back to front
         {
             Fragment<?> o1 = children.get(i).getTopMostFragment(mouseX, mouseY);
@@ -557,7 +560,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         this.font = mc.fontRenderer;
         this.width = width;
         this.height = height;
-        this.setFocused(null);
+        this.setListener(null);
 
         //resize windows
         windows.forEach(window -> window.resize(mc, width, height));
@@ -625,13 +628,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
         this.setDragging(false);
-        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
+        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean isObstructed(Window<?> window, double mouseX, double mouseY)
     {
-        for(Window<?> window1 : children())
+        for(Window<?> window1 : getEventListeners())
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {
@@ -643,7 +646,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public <T extends Window<?>> T getByWindowType(Class<T> clz)
     {
-        List<Window<?>> windows = children();
+        List<Window<?>> windows = getEventListeners();
         for(Window<?> window : windows)
         {
             if(clz.isAssignableFrom(window.getClass()))
@@ -725,9 +728,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void setFocused(@Nullable IGuiEventListener gui)
+    public void setListener(@Nullable IGuiEventListener gui)
     {
-        IGuiEventListener lastFocused = getFocused();
+        IGuiEventListener lastFocused = getListener();
         if(lastFocused instanceof Fragment && gui != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(gui);
@@ -736,7 +739,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             bringToFront((Window<?>)gui);
         }
-        super.setFocused(gui);
+        super.setListener(gui);
     }
 
     //IConstrainable

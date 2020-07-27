@@ -136,7 +136,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public List<View<?>> children()
+    public List<View<?>> getEventListeners()
     {
         return views;
     }
@@ -203,7 +203,7 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public void renderDockHighlight(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
+        if(getWorkspace().canDockWindows() && getWorkspace().getListener() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {
             WindowDock<?> dock = getWorkspace().getDock();
 
@@ -306,7 +306,7 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                if(renderMinecraftStyle())
+                if(renderMinecraftStyle()) //glint render taken from 1.12.2 RenderItem.renderEffect //TODO test that this doesn't uses matrix stack
                 {
                     float scale = 8;
                     float scaleTex = 512F;
@@ -320,14 +320,14 @@ public abstract class Window<M extends IWindows> extends Fragment
                     float f = (float)(Util.milliTime() % 3000L) / 3000.0F / (float)scale;
                     RenderSystem.translatef(f, 0.0F, 0.0F);
                     RenderSystem.rotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-                    RenderHelper.draw(left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
                     RenderSystem.popMatrix();
                     RenderSystem.pushMatrix();
                     RenderSystem.scalef((float)scale, (float)scale, (float)scale);
                     float f1 = (float)(Util.milliTime() % 4873L) / 4873.0F / (float)scale;
                     RenderSystem.translatef(-f1, 0.0F, 0.0F);
                     RenderSystem.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
-                    RenderHelper.draw(left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
                     RenderSystem.popMatrix();
                     RenderSystem.matrixMode(5888);
                     RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -336,7 +336,7 @@ public abstract class Window<M extends IWindows> extends Fragment
                 }
                 else
                 {
-                    RenderHelper.drawColour(getTheme().tabBorder[0], getTheme().tabBorder[1], getTheme().tabBorder[2], 150, left, top, right - left, bottom - top, 0);
+                    RenderHelper.drawColour(stack, getTheme().tabBorder[0], getTheme().tabBorder[1], getTheme().tabBorder[2], 150, left, top, right - left, bottom - top, 0);
                 }
                 RenderSystem.disableBlend();
             }
@@ -354,23 +354,23 @@ public abstract class Window<M extends IWindows> extends Fragment
             bindTexture(Fragment.VANILLA_TABS);
 
             //fill space
-            RenderHelper.draw(getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 4D/256D, 24D/256D, 36D/256D, 60D/256D); //fill space
+            RenderHelper.draw(stack, getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 4D/256D, 24D/256D, 36D/256D, 60D/256D); //fill space
 
             //draw borders
-            RenderHelper.draw(getLeft(), getTop() + 4, 4, height - 8, 0, 0D/256D, 4D/256D, 36D/256D, 60D/256D); //left border
-            RenderHelper.draw(getLeft() + 4, getTop(), width - 8, 4, 0, 4D/256D, 24D/256D, 32D/256D, 36D/256D); //top border
-            RenderHelper.draw(getRight() - 4, getTop() + 4, 4, height - 8, 0, 24D/256D, 28D/256D, 36D/256D, 60D/256D); //right border
-            RenderHelper.draw(getLeft() + 4, getBottom() - 4, width - 8, 4, 0, 4D/256D, 24D/256D, 124D/256D, 128D/256D); //bottom left
+            RenderHelper.draw(stack, getLeft(), getTop() + 4, 4, height - 8, 0, 0D/256D, 4D/256D, 36D/256D, 60D/256D); //left border
+            RenderHelper.draw(stack, getLeft() + 4, getTop(), width - 8, 4, 0, 4D/256D, 24D/256D, 32D/256D, 36D/256D); //top border
+            RenderHelper.draw(stack, getRight() - 4, getTop() + 4, 4, height - 8, 0, 24D/256D, 28D/256D, 36D/256D, 60D/256D); //right border
+            RenderHelper.draw(stack, getLeft() + 4, getBottom() - 4, width - 8, 4, 0, 4D/256D, 24D/256D, 124D/256D, 128D/256D); //bottom left
 
             //draw corners
-            RenderHelper.draw(getLeft(), getTop(), 4, 4, 0, 0D/256D, 4D/256D, 32D/256D, 36D/256D); //top left
-            RenderHelper.draw(getRight() - 4, getTop(), 4, 4, 0, 24D/256D, 28D/256D, 32D/256D, 36D/256D); //top right
-            RenderHelper.draw(getLeft(), getBottom() - 4, 4, 4, 0, 0D/256D, 4D/256D, 124D/256D, 128D/256D); //bottom left
-            RenderHelper.draw(getRight() - 4, getBottom() - 4, 4, 4, 0, 24D/256D, 28D/256D, 124D/256D, 128D/256D); //bottom left
+            RenderHelper.draw(stack, getLeft(), getTop(), 4, 4, 0, 0D/256D, 4D/256D, 32D/256D, 36D/256D); //top left
+            RenderHelper.draw(stack, getRight() - 4, getTop(), 4, 4, 0, 24D/256D, 28D/256D, 32D/256D, 36D/256D); //top right
+            RenderHelper.draw(stack, getLeft(), getBottom() - 4, 4, 4, 0, 0D/256D, 4D/256D, 124D/256D, 128D/256D); //bottom left
+            RenderHelper.draw(stack, getRight() - 4, getBottom() - 4, 4, 4, 0, 24D/256D, 28D/256D, 124D/256D, 128D/256D); //bottom left
         }
         else
         {
-            fill(getTheme().windowBorder, 0);
+            fill(stack, getTheme().windowBorder, 0);
         }
     }
 
@@ -561,7 +561,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parent.getFocused() == this)
+        if(parent.getListener() == this)
         {
             return super.changeFocus(direction); //TODO make sure our children is just the current view
         }

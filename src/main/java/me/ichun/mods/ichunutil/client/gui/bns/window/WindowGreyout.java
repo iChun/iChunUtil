@@ -56,9 +56,9 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
     {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderHelper.drawColour(0, 0, 0, 150, getLeft(), getTop(), width, height, 0);
+        RenderHelper.drawColour(stack, 0, 0, 0, 150, getLeft(), getTop(), width, height, 0);
         RenderSystem.disableBlend();
-        if(!parent.children().contains(attachedWindow))
+        if(!parent.getEventListeners().contains(attachedWindow))
         {
             parent.removeWindow(this);
             if(closeConsumer != null)

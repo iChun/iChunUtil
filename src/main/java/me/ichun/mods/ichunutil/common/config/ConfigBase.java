@@ -446,7 +446,7 @@ public abstract class ConfigBase
             {
                 field.setAccessible(true);
                 Object o = field.get(parent);
-                if(!o.equals(lastObj))
+                if(lastObj != null && !o.equals(lastObj)) //lastObj will be null in server configs prior to connecting to a server.
                 {
                     Object old = lastObj;
                     lastObj = (T)o;

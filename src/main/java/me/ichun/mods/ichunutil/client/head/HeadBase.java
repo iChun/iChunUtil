@@ -36,6 +36,7 @@ HeadBase<E extends LivingEntity> implements Cloneable
     public float halfInterpupillaryDistance = 2F/16F;
     public float eyeScale = 0.75F;
     public boolean sideEyed = false;
+    public boolean topEyed = false; //thanks hoglins
 
     //Stuff for hats
     public float headTop = 8F/16F;
@@ -86,6 +87,12 @@ HeadBase<E extends LivingEntity> implements Cloneable
         return this;
     }
 
+    public HeadBase setTopEyed()
+    {
+        topEyed = true;
+        return this;
+    }
+
     public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int eye)
     {
         headJoint[0] = -(headModel[0].rotationPointX / 16F);
@@ -121,7 +128,12 @@ HeadBase<E extends LivingEntity> implements Cloneable
 
     public float getEyeRotation(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return sideEyed ? (eye == 0 ? 90F : -90F) : 0F;
+        return sideEyed ? (eye % 2 == 0 ? 90F : -90F) : 0F;
+    }
+
+    public float getEyeTopRotation(E living, MatrixStack stack, float partialTick, int eye)
+    {
+        return topEyed ? -90F : 0F;
     }
 
     public float getPupilScale(E living, MatrixStack stack, float partialTick, int eye)
@@ -256,9 +268,13 @@ HeadBase<E extends LivingEntity> implements Cloneable
     @SuppressWarnings("rawtypes")
     public void setHeadModel(LivingRenderer renderer) //actually gets the most parent ModelRenderer. we translate to the head in the functions if necessary.
     {
-        if(this.headModel == null || iChunUtil.configClient.aggressiveHeadTracking == 1 || iChunUtil.configClient.aggressiveHeadTracking == 2 && renderer instanceof PlayerRenderer)
+        boolean flag = this.headModel == null;
+        if(flag)
         {
             this.headModel = new ModelRenderer[1];
+        }
+        if(flag || iChunUtil.configClient.aggressiveHeadTracking == 1 || iChunUtil.configClient.aggressiveHeadTracking == 2 && renderer instanceof PlayerRenderer)
+        {
             setHeadModelFromRenderer(renderer);
             for(ModelRenderer head : this.headModel)
             {
@@ -285,6 +301,10 @@ HeadBase<E extends LivingEntity> implements Cloneable
             this.headModel[0] = ((QuadrupedModel)model).headModel;
         }
         //specific models
+        else if(model instanceof BoarModel)
+        {
+            this.headModel[0] = ((BoarModel)model).field_239106_a_;
+        }
         else if(model instanceof BlazeModel)
         {
             this.headModel[0] = ((BlazeModel)model).blazeHead;
@@ -336,6 +356,10 @@ HeadBase<E extends LivingEntity> implements Cloneable
         else if(model instanceof SquidModel)
         {
             this.headModel[0] = ((SquidModel)model).body;
+        }
+        else if(model instanceof StriderModel)
+        {
+            this.headModel[0] = ((StriderModel)model).field_239120_f_;
         }
         else if(model instanceof VillagerModel)
         {

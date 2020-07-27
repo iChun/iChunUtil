@@ -11,6 +11,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.shader.Framebuffer;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -62,10 +63,9 @@ public class EventHandlerClient
     {
         if((iChunUtil.configClient.buttonOptionsShiftOpensMods || ObfHelper.isDevEnvironment()) && event.getGui() instanceof IngameMenuScreen)
         {
-            String optionsText = I18n.format("menu.options");
             for(Widget widget : event.getWidgetList())
             {
-                if(optionsText.equals(widget.getMessage().getUnformattedComponentText()) && widget instanceof Button)
+                if(widget instanceof Button && widget.getMessage() instanceof TranslationTextComponent && ((TranslationTextComponent)widget.getMessage()).getKey().equals("menu.options"))
                 {
                     Button.IPressable oriPress = ((Button)widget).onPress;
                     ((Button)widget).onPress = button -> {

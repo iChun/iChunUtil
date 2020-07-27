@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -137,13 +138,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    RenderHelper.draw(getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
+                    RenderHelper.draw(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.draw(getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                RenderHelper.draw(getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                RenderHelper.draw(stack, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                RenderHelper.draw(stack, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
                 bindTexture(Fragment.VANILLA_TABS);
@@ -156,13 +157,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.draw(getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
+                    RenderHelper.draw(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.draw(getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
-                RenderHelper.draw(getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                RenderHelper.draw(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
+                RenderHelper.draw(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
             }
             else
             {
@@ -172,13 +173,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    draw(x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
+                    draw(stack, x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
                     i -= dist;
                     x += dist;
                 }
 
-                draw(getLeft(), getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                draw(getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                draw(stack, getLeft(), getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                draw(stack, getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
                 bindTexture(Fragment.VANILLA_TABS);
@@ -190,37 +191,37 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    draw(x, getTop() + 1, dist, 12, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
+                    draw(stack, x, getTop() + 1, dist, 12, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
                     i -= dist;
                     x += dist;
                 }
 
-                draw(getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
-                draw(getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                draw(stack, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
+                draw(stack, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
 
             }
         }
         else
         {
             //draw bg
-            fill(getTheme().elementTreeScrollBar, 0);
+            fill(stack, getTheme().elementTreeScrollBar, 0);
             if(orientation == Orientation.VERTICAL)
             {
                 //draw track
-                RenderHelper.drawColour(getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 6, getTop() + 4, 2, height - 8, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 6, getTop() + 4, 2, height - 8, 0);
 
                 //draw bar
-                RenderHelper.drawColour(getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft(), getTop() + preSpace, 14, scrollBar, 0);
-                RenderHelper.drawColour(getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + 1, getTop() + preSpace + 1, 12, scrollBar - 2, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft(), getTop() + preSpace, 14, scrollBar, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + 1, getTop() + preSpace + 1, 12, scrollBar - 2, 0);
             }
             else
             {
                 //draw track
-                RenderHelper.drawColour(getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 4, getTop() + 6, width - 8, 2, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 4, getTop() + 6, width - 8, 2, 0);
 
                 //draw bar
-                RenderHelper.drawColour(getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + preSpace, getTop(), scrollBar, 14, 0);
-                RenderHelper.drawColour(getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + preSpace + 1, getTop() + 1, scrollBar - 2, 12, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + preSpace, getTop(), scrollBar, 14, 0);
+                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + preSpace + 1, getTop() + 1, scrollBar - 2, 12, 0);
             }
         }
     }
@@ -300,8 +301,8 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     {
         pos = null;
         super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
-        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
+        parentFragment.setListener(null); //we're a one time click, stop focusing on us
+        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -334,15 +335,16 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
-    public static void draw(double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //TODO check this
+    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
     {
+        Matrix4f matrix = stack.getLast().getMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(posX, posY + height, zLevel)        .tex((float)u2, (float)v1).endVertex();
-        bufferbuilder.pos(posX + width, posY + height, zLevel).tex((float)u2, (float)v2).endVertex();
-        bufferbuilder.pos(posX + width, posY, zLevel)         .tex((float)u1, (float)v2).endVertex();
-        bufferbuilder.pos(posX, posY, zLevel)                 .tex((float)u1, (float)v1).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .tex((float)u2, (float)v1).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).tex((float)u2, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .tex((float)u1, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)posY, (float)zLevel)                     .tex((float)u1, (float)v1).endVertex();
         tessellator.draw();
     }
 }

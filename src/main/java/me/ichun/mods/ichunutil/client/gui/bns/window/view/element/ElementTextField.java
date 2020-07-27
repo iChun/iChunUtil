@@ -197,8 +197,8 @@ public class ElementTextField extends Element
             {
                 colour = getTheme().elementInputBackgroundInactive;
             }
-            fill(getTheme().elementInputBorder, 0);
-            fill(colour, 1);
+            fill(stack, getTheme().elementInputBorder, 0);
+            fill(stack, colour, 1);
             widget.setEnableBackgroundDrawing(false);
             widget.render(stack, mouseX, mouseY, partialTick);
         }
@@ -249,7 +249,7 @@ public class ElementTextField extends Element
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            setFocused(widget);
+            setListener(widget);
             widget.setFocused2(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
@@ -270,15 +270,15 @@ public class ElementTextField extends Element
     {
         super.unfocus(guiReplacing);
         widget.setFocused2(false);
-        setFocused(null);
+        setListener(null);
     }
 
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parentFragment.getFocused() != this)
+        if(parentFragment.getListener() != this)
         {
-            setFocused(widget);
+            setListener(widget);
             widget.setFocused2(true);
             return true;
         }

@@ -25,14 +25,14 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        hover = isMouseOver(mouseX, mouseY) || parentFragment.getFocused() == this;
+        hover = isMouseOver(mouseX, mouseY) || parentFragment.getListener() == this;
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
         boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
+        parentFragment.setListener(null); //we're a one time click, stop focusing on us
         if(isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
             trigger();
@@ -66,6 +66,6 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public int getMinecraftFontColour()
     {
-        return parentFragment.isDragging() && parentFragment.getFocused() == this ? 10526880 : hover ? 16777120 : 14737632;
+        return parentFragment.isDragging() && parentFragment.getListener() == this ? 10526880 : hover ? 16777120 : 14737632;
     }
 }

@@ -205,7 +205,7 @@ public class ElementScrollView extends ElementFertile
     }
 
     @Override
-    public List<? extends Element<?>> children()
+    public List<? extends Element<?>> getEventListeners()
     {
         return elements;
     }

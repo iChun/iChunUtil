@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,14 +36,14 @@ public class ElementButtonRotatable<T extends ElementButtonRotatable> extends El
         {
             String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
 
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
-            RenderSystem.rotatef(90F * rotationCount, 0F, 0F, 1F);
-            RenderSystem.translatef(- getFontRenderer().getStringWidth(s) / 2F,  - (getFontRenderer().FONT_HEIGHT) / 2F + 1, 0F);
+            stack.push();
+            stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
+            stack.rotate(Vector3f.ZP.rotationDegrees(90F * rotationCount));
+            stack.translate(- getFontRenderer().getStringWidth(s) / 2F,  - (getFontRenderer().FONT_HEIGHT) / 2F + 1, 0F);
 
             //draw the text
             drawString(stack, s, 0, 0);
-            RenderSystem.popMatrix();
+            stack.pop();
         }
     }
 

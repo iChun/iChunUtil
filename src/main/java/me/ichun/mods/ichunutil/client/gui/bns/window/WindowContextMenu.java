@@ -145,7 +145,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 
         contextMenuObjects.forEach(o -> {
             list.addItem(o).addTextWrapper(nameProvider.apply(o)).setSelectionHandler(item -> {
-                item.getWorkspace().setFocused(null);
+                item.getWorkspace().setListener(null);
                 contextMenuReceiver.accept(iContextMenu, item);
             });
         });
@@ -155,7 +155,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         }
         windowContextMenu.setupAround(posX, posY, minWidth, yFlipHeight);
         windowContextMenu.getWorkspace().addWindow(windowContextMenu);
-        windowContextMenu.getWorkspace().setFocused(windowContextMenu);
+        windowContextMenu.getWorkspace().setListener(windowContextMenu);
 
         return windowContextMenu;
     }

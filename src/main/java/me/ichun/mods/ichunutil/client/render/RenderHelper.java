@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -188,51 +189,53 @@ public class RenderHelper
         return new TextureAtlasSprite(Minecraft.getInstance().getModelManager().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE), new TextureAtlasSprite.Info(rl, image.getWidth(), image.getHeight(), AnimationMetadataSection.EMPTY), Minecraft.getInstance().gameSettings.mipmapLevels, image.getWidth(), image.getHeight(), 0, 0, image);
     }
 
-    public static void drawTexture(ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
+    public static void drawTexture(MatrixStack stack, ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
     {
         Minecraft.getInstance().getTextureManager().bindTexture(resource);
-        draw(posX, posY, width, height, zLevel);
+        draw(stack, posX, posY, width, height, zLevel);
     }
 
-    public static void draw(double posX, double posY, double width, double height, double zLevel)
+    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel)
     {
-        draw(posX, posY, width, height, zLevel, 0D, 1D, 0D, 1D);
+        draw(stack, posX, posY, width, height, zLevel, 0D, 1D, 0D, 1D);
     }
 
-    public static void draw(double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
     {
+        Matrix4f matrix = stack.getLast().getMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(posX, posY + height, zLevel).tex((float)u1, (float)v2).endVertex();
-        bufferbuilder.pos(posX + width, posY + height, zLevel).tex((float)u2, (float)v2).endVertex();
-        bufferbuilder.pos(posX + width, posY, zLevel).tex((float)u2, (float)v1).endVertex();
-        bufferbuilder.pos(posX, posY, zLevel).tex((float)u1, (float)v1).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)(posY + height), (float)zLevel).tex((float)u1, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).tex((float)u2, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)posY, (float)zLevel).tex((float)u2, (float)v1).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)posY, (float)zLevel).tex((float)u1, (float)v1).endVertex();
         tessellator.draw();
     }
 
-    public static void drawColour(int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
+    public static void drawColour(MatrixStack stack, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         int r = (colour >> 16 & 0xff);
         int g = (colour >> 8 & 0xff);
         int b = (colour & 0xff);
-        drawColour(r, g, b, alpha, posX, posY, width, height, zLevel);
+        drawColour(stack, r, g, b, alpha, posX, posY, width, height, zLevel);
     }
 
-    public static void drawColour(int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
+    public static void drawColour(MatrixStack stack, int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         if(width <= 0 || height <= 0)
         {
             return;
         }
+        Matrix4f matrix = stack.getLast().getMatrix();
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos(posX, posY + height, zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.pos(posX + width, posY + height, zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.pos(posX + width, posY, zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.pos(posX, posY, zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)(posY + height), (float)zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)posY, (float)zLevel).color(r, g, b, alpha).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)posY, (float)zLevel).color(r, g, b, alpha).endVertex();
         tessellator.draw();
         RenderSystem.enableTexture();
     }
@@ -295,7 +298,7 @@ public class RenderHelper
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    public static void renderTestScissor()
+    public static void renderTestScissor(MatrixStack stack)
     {
         //Basic scissor test
         Minecraft mc = Minecraft.getInstance();
@@ -307,14 +310,14 @@ public class RenderHelper
 
         //        RenderSystem.translatef(-15F, 15F, 0F);
 
-        RenderHelper.drawColour(0xffffff, 255, 0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight(), 0);
+        RenderHelper.drawColour(stack, 0xffffff, 255, 0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight(), 0);
 
         RenderSystem.popMatrix();
 
         RenderHelper.endGlScissor();
     }
 
-    public static void renderTestStencil()
+    public static void renderTestStencil(MatrixStack stack)
     {
         //Basic stencil test
         Minecraft mc = Minecraft.getInstance();
@@ -331,7 +334,7 @@ public class RenderHelper
         GL11.glStencilMask(0xFF);
         GlStateManager.clear(GL11.GL_STENCIL_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
 
-        RenderHelper.drawColour(0xffffff, 255, 0, 0, 60, 60, 0);
+        RenderHelper.drawColour(stack, 0xffffff, 255, 0, 0, 60, 60, 0);
 
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.depthMask(true);
@@ -342,7 +345,7 @@ public class RenderHelper
 
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
 
-        RenderHelper.drawColour(0xffffff, 255, 0, 0, reso.getScaledWidth(), reso.getScaledHeight(), 0);
+        RenderHelper.drawColour(stack, 0xffffff, 255, 0, 0, reso.getScaledWidth(), reso.getScaledHeight(), 0);
 
         GL11.glDisable(GL11.GL_STENCIL_TEST);
     }

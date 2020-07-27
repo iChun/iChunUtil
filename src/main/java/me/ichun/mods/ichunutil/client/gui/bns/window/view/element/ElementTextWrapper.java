@@ -119,6 +119,11 @@ public class ElementTextWrapper extends Element //TODO image element
             List<String> wrappedTextLines = new ArrayList<>();
             for(String textLine : text)
             {
+                if(textLine.isEmpty())
+                {
+                    wrappedTextLines.add(textLine);
+                    continue;
+                }
                 List<ITextProperties> texts = getFontRenderer().func_238425_b_(new StringTextComponent(textLine), tooltipTextWidth);
                 for(ITextProperties text : texts)
                 {

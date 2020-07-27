@@ -34,14 +34,14 @@ public class ElementTexture extends Element
 
         if(warping)
         {
-            RenderHelper.draw(getLeft() + 2, getTop() + 2, width - 4, height - 4, 0);
+            RenderHelper.draw(stack, getLeft() + 2, getTop() + 2, width - 4, height - 4, 0);
         }
         else
         {
             int length = Math.min(width, height) - 4;
             int x = (int)(getLeft() + (width / 2D) - (length / 2D));
             int y = (int)(getTop() + (height / 2D) - (length / 2D));
-            RenderHelper.draw(x , y, length, length, 0);
+            RenderHelper.draw(stack, x , y, length, length, 0);
         }
     }
 }

@@ -28,13 +28,13 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
-            renderMinecraftStyleButton(getLeft(), getTop(), width, height, (parentFragment.isDragging() && parentFragment.getFocused() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, (parentFragment.isDragging() && parentFragment.getListener() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));
         }
         else
         {
-            fill(getTheme().elementButtonBorder, 0);
+            fill(stack, getTheme().elementButtonBorder, 0);
             int[] colour;
-            if(parentFragment.isDragging() && parentFragment.getFocused() == this)
+            if(parentFragment.isDragging() && parentFragment.getListener() == this)
             {
                 colour = getTheme().elementButtonClick;
             }
@@ -46,7 +46,7 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
             {
                 colour = getTheme().elementButtonBackgroundInactive;
             }
-            fill(colour, 1);
+            fill(stack, colour, 1);
         }
         if(toggleState)
         {

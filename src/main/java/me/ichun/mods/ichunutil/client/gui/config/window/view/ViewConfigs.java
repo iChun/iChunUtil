@@ -22,7 +22,7 @@ public class ViewConfigs extends View<WindowConfigs>
         super(parent, s);
 
         ElementButton<?> btn = new ElementButton<>(this, "gui.done", button -> {
-            parent.parent.onClose();
+            parent.parent.closeScreen();
         });
         btn.setWidth(60);
         btn.setHeight(20);
@@ -59,7 +59,7 @@ public class ViewConfigs extends View<WindowConfigs>
                     {
                         if(item1.getObject() == e.getValue().first())
                         {
-                            item.parentFragment.setFocused(item);
+                            item.parentFragment.setListener(item);
                             item1.selected = true;
                             parent.parent.selectItem(item1);
                             break;

@@ -23,7 +23,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     {
         super(parent);
         title = I18n.format(s);
-        constraint = Constraint.matchParent(this, parent, parent.borderSize.get()); //TODO might have to redo
+        constraint = Constraint.matchParent(this, parent, parent.borderSize.get());
         if(parent.canShowTitle() && !s.isEmpty())
         {
             constraint.top(parent, Constraint.Property.Type.TOP, parent.titleSize.get());
@@ -52,7 +52,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     }
 
     @Override
-    public List<Element<?>> children()
+    public List<Element<?>> getEventListeners()
     {
         return elements;
     }
@@ -64,7 +64,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
         //render our background
         if(!renderMinecraftStyle())
         {
-            fill(getTheme().windowBackground, 0);
+            fill(stack, getTheme().windowBackground, 0);
         }
         //render attached elements
         for(Element<?> element : elements)
@@ -85,7 +85,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parentFragment.getFocused() == this)
+        if(parentFragment.getListener() == this)
         {
             boolean flag = super.changeFocus(direction);
             if(!flag)

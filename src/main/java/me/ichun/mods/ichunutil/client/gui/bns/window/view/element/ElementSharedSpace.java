@@ -26,7 +26,7 @@ public class ElementSharedSpace extends ElementFertile
     }
 
     @Override
-    public List<? extends Fragment<?>> children()
+    public List<? extends Fragment<?>> getEventListeners()
     {
         return elements;
     }

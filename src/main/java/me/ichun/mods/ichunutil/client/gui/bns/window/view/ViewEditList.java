@@ -45,7 +45,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         );
 
         ElementButton<?> btn = new ElementButton<>(this, "gui.cancel", button -> {
-            parent.parent.setFocused(null);
+            parent.parent.setListener(null);
             parent.parent.removeWindow(parent);
         });
         btn.setSize(60, 20);
@@ -56,7 +56,7 @@ public class ViewEditList extends View<WindowEditList<?>>
 
         ElementButton<?> btn1 = new ElementButton<>(this, "gui.done", button -> {
             responder.accept(list);
-            parent.parent.setFocused(null);
+            parent.parent.setListener(null);
             parent.parent.removeWindow(parent);
         });
         btn1.setSize(60, 20);
@@ -87,7 +87,7 @@ public class ViewEditList extends View<WindowEditList<?>>
             {
                 if(str.isEmpty()) //if the text changed is empty, remove all the fields and only add the ones with text. And one empty field
                 {
-                    list.setFocused(null);
+                    list.setListener(null);
                     List<ElementList.Item<?>> oriItems = new ArrayList<>(list.items);
                     list.items.clear();
                     for(ElementList.Item<?> oriItem : oriItems)

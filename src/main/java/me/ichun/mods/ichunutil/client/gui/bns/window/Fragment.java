@@ -61,7 +61,7 @@ public abstract class Fragment<P extends Fragment>
 
     public abstract void init();
     @Override
-    public abstract List<? extends Fragment<?>> children();
+    public abstract List<? extends Fragment<?>> getEventListeners();
 
     public <T extends Workspace> T getWorkspace()
     {
@@ -70,12 +70,12 @@ public abstract class Fragment<P extends Fragment>
 
     public void tick()
     {
-        children().forEach(Fragment::tick);
+        getEventListeners().forEach(Fragment::tick);
     }
 
     public void onClose()
     {
-        children().forEach(Fragment::onClose);
+        getEventListeners().forEach(Fragment::onClose);
     }
 
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
@@ -85,7 +85,7 @@ public abstract class Fragment<P extends Fragment>
             return (T)this;
         }
         Fragment<?> o = null;
-        for(IGuiEventListener child : children())
+        for(IGuiEventListener child : getEventListeners())
         {
             if(o == null && child instanceof Fragment)
             {
@@ -138,7 +138,7 @@ public abstract class Fragment<P extends Fragment>
         if(isMouseOver(mouseX, mouseY))
         {
             Fragment<?> fragment = this;
-            for(IGuiEventListener child : this.children())
+            for(IGuiEventListener child : this.getEventListeners())
             {
                 if(child instanceof Fragment)
                 {
@@ -181,14 +181,14 @@ public abstract class Fragment<P extends Fragment>
         RenderHelper.endGlScissor();
     }
 
-    public void fill(int[] colours, int border)
+    public void fill(MatrixStack stack, int[] colours, int border)
     {
-        fill(colours, 255, border);
+        fill(stack, colours, 255, border);
     }
 
-    public void fill(int[] colours, int alpha, int border)
+    public void fill(MatrixStack stack, int[] colours, int alpha, int border)
     {
-        RenderHelper.drawColour(colours[0], colours[1], colours[2], alpha, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
+        RenderHelper.drawColour(stack, colours[0], colours[1], colours[2], alpha, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
     }
 
     public @Nullable String tooltip(double mouseX, double mouseY)
@@ -229,15 +229,15 @@ public abstract class Fragment<P extends Fragment>
 
     @Nullable
     @Override
-    public IGuiEventListener getFocused()
+    public IGuiEventListener getListener()
     {
         return focused;
     }
 
     @Override
-    public void setFocused(@Nullable IGuiEventListener iGuiEventListener)
+    public void setListener(@Nullable IGuiEventListener iGuiEventListener)
     {
-        IGuiEventListener lastFocused = getFocused();
+        IGuiEventListener lastFocused = getListener();
         if(lastFocused instanceof Fragment && iGuiEventListener != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(iGuiEventListener);
@@ -247,11 +247,11 @@ public abstract class Fragment<P extends Fragment>
 
     public void unfocus(@Nullable IGuiEventListener guiReplacing) // pass the unfocused event down. Unfocus triggers before focus is set
     {
-        IGuiEventListener lastFocused = getFocused();
+        IGuiEventListener lastFocused = getListener();
         if(lastFocused instanceof Fragment && guiReplacing != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(guiReplacing);
-            setFocused(null); //set focus to nothing. MouseClicked will handle the focus of the new object.
+            setListener(null); //set focus to nothing. MouseClicked will handle the focus of the new object.
         }
     }
 
@@ -259,7 +259,7 @@ public abstract class Fragment<P extends Fragment>
     public boolean mouseReleased(double mouseX, double mouseY, int button) //pass down the mouse released to the focused event
     {
         this.setDragging(false);
-        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
+        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -268,9 +268,9 @@ public abstract class Fragment<P extends Fragment>
         if(isMouseOver(mouseX, mouseY)) //only return true if we're clicking on us
         {
             boolean hasElement = INestedGuiEventHandler.super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
-            if(!hasElement && getFocused() instanceof Fragment)
+            if(!hasElement && getListener() instanceof Fragment)
             {
-                setFocused(null);
+                setListener(null);
             }
             return true;
         }

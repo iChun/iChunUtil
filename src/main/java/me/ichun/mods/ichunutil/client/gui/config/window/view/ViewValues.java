@@ -57,7 +57,7 @@ public class ViewValues extends View<WindowValues>
                     Element<?> e = getControlElement(itemObj);
                     if(e != null)
                     {
-                        e.parentFragment.setFocused(e);
+                        e.parentFragment.setListener(e);
                         e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                         e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                     }

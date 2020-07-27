@@ -6,6 +6,7 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.passive.fish.CodEntity;
 import net.minecraft.entity.passive.fish.PufferfishEntity;
@@ -42,6 +43,7 @@ public class HeadHandler
         put(FoxEntity.class, new HeadBase<>().setEyeOffset(-1F/16F, -1.5F/16F, 5F/16F).setHalfInterpupillaryDistance(3F/16F).setEyeScale(0.65F));
         put(GhastEntity.class, new HeadGhast());
         put(GuardianEntity.class, new HeadGuardian());
+        put(HoglinEntity.class, new HeadBase<>().setEyeOffset(0F, 3F/16F, 8.5F/16F).setHalfInterpupillaryDistance(5.5F/15F).setEyeScale(0.95F).setTopEyed());
         put(IronGolemEntity.class, new HeadBase<>().setEyeOffset(0F, 6F/16F, 5.5F/16F));
         put(LlamaEntity.class, new HeadLlama());
         put(MagmaCubeEntity.class, new HeadMagmaCube());
@@ -51,7 +53,7 @@ public class HeadHandler
         put(ParrotEntity.class, new HeadParrot());
         put(PhantomEntity.class, new HeadPhantom());
         put(PigEntity.class, new HeadBase<>().setEyeOffset(0F, 0.5F/16F, 8F/16F).setHalfInterpupillaryDistance(3F/16F));
-//        put(ZombiePigmanEntity.class, new HeadPigZombie()); //TODO piglins
+        put(PiglinEntity.class, new HeadBase<>().setHalfInterpupillaryDistance(3F/16F));
         put(PolarBearEntity.class, new HeadBase<>().setEyeOffset(0F, -0.5F/16F, 3F/16F).setEyeScale(0.4F));
         put(PufferfishEntity.class, new HeadPufferfish());
         put(RabbitEntity.class, new HeadRabbit());
@@ -64,14 +66,17 @@ public class HeadHandler
         put(SnowGolemEntity.class, new HeadSnowman());
         put(SpiderEntity.class, new HeadSpider());
         put(SquidEntity.class, new HeadBase<>().setEyeOffset(0F, 1F/16F, 6F/16F).setHalfInterpupillaryDistance(3F/16F));
+        put(StriderEntity.class, new HeadBase<>().setEyeOffset(0F, -3.5F/16F, 8F/16F).setHalfInterpupillaryDistance(5.5F/15F).setEyeScale(0.75F));
         put(TropicalFishEntity.class, new HeadTropicalFish());
         put(TurtleEntity.class, new HeadBase<>().setEyeOffset(0F, -1.5F/16F, 1F/16F).setHalfInterpupillaryDistance(3F/16F).setEyeScale(0.65F).setSideEyed());
         put(VexEntity.class, new HeadBase<>());
         put(WitchEntity.class, new HeadBase<>().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
         put(WitherEntity.class, new HeadWither());
         put(WolfEntity.class, new HeadWolf());
+        put(ZoglinEntity.class, new HeadBase<>().setEyeOffset(0F, 3F/16F, 8.5F/16F).setHalfInterpupillaryDistance(5.5F/15F).setEyeScale(0.95F).setTopEyed());
         put(ZombieEntity.class, new HeadBase<>());
         put(ZombieVillagerEntity.class, new HeadBase<>().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
+        put(ZombifiedPiglinEntity.class, new HeadBase<>().setHalfInterpupillaryDistance(3F/16F));
     }};
 
     @Nullable

@@ -177,23 +177,23 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
             if(renderMinecraftStyle())
             {
                 bindTexture(Fragment.VANILLA_HORSE);
-                cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+                cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
             }
             else
             {
-                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
-                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
-                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
-                RenderHelper.drawColour(getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
+                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
+                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
+                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
             }
         }
 
         setScissor();
         items.forEach(item -> item.render(stack, mouseX, mouseY, partialTick));
 
-        if(getFocused() instanceof Item)
+        if(getListener() instanceof Item)
         {
-            ((Item<?>)getFocused()).render(stack, mouseX, mouseY, partialTick);
+            ((Item<?>)getListener()).render(stack, mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();
@@ -242,9 +242,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     pos = new MousePosItem((int)mouseX, (int)mouseY, getItemAt(mouseX, mouseY));
                 }
-                else if(getFocused() instanceof Fragment)
+                else if(getListener() instanceof Fragment)
                 {
-                    setFocused(null);
+                    setListener(null);
                 }
             }
             return true;
@@ -428,7 +428,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public List<? extends Item<?>> children()
+    public List<? extends Item<?>> getEventListeners()
     {
         return items;
     }
@@ -586,16 +586,16 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         {
             if(shouldRender())
             {
-                boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
+                boolean draggingUs = parentFragment.isDragging() && parentFragment.getListener() == this && parentFragment.pos != null;
                 ElementList<?> list = parentFragment;
                 MousePosItem pos = list.pos;
 
                 if(draggingUs)
                 {
-                    RenderSystem.pushMatrix();
+                    stack.push();
                     double x = (mouseX - pos.x);
                     double y = (mouseY - pos.y);
-                    RenderSystem.translated(x, y, 0D);
+                    stack.translate(x, y, 0D);
                 }
 
                 if(renderMinecraftStyle())
@@ -631,11 +631,11 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
                     if(canRearrange)
                     {
-                        cropAndStitch(getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+                        cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
                     }
                     else
                     {
-                        cropAndStitch(getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256);
+                        cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256);
                     }
                 }
                 else
@@ -669,15 +669,15 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                     }
 
                     //RENDER
-                    fill(borderColour, 0);
-                    fill(parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parentFragment.isDragging() && parentFragment.getFocused() != this)) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
+                    fill(stack, borderColour, 0);
+                    fill(stack, parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parentFragment.isDragging() && parentFragment.getListener() != this)) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
                 }
 
                 elements.forEach(element -> element.render(stack, mouseX, mouseY, partialTick));
 
                 if(draggingUs)
                 {
-                    RenderSystem.popMatrix();
+                    stack.pop();
                 }
             }
         }
@@ -685,7 +685,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int button)
         {
-            if(parentFragment.getFocused() == this && isMouseOver(mouseX, mouseY))
+            if(parentFragment.getListener() == this && isMouseOver(mouseX, mouseY))
             {
                 boolean oldSelected = selected;
                 if(button == 0)
@@ -737,11 +737,11 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         public boolean shouldRender()
         {
             return getRight() > parentFragment.getLeft() && getLeft() < parentFragment.getRight() && getBottom() > parentFragment.getTop() && getTop() < parentFragment.getBottom() ||
-                    parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
+                    parentFragment.isDragging() && parentFragment.getListener() == this && parentFragment.pos != null;
         }
 
         @Override
-        public List<? extends Fragment<?>> children()
+        public List<? extends Fragment<?>> getEventListeners()
         {
             return elements;
         }
@@ -749,7 +749,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         @Override
         public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_)
         {
-            if(parentFragment.getFocused() == this)
+            if(parentFragment.getListener() == this)
             {
                 if(keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT)
                 {
@@ -761,7 +761,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                             if(i > 0)
                             {
                                 Item item1 = parentFragment.items.get(i - 1);
-                                parentFragment.setFocused(item1);
+                                parentFragment.setListener(item1);
                                 boolean oldSelected = item1.selected;
                                 item1.selected = true;
                                 if(oldSelected != item1.selected && item1.selectionHandler != null)
@@ -783,7 +783,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                             if(i < parentFragment.items.size() - 1)
                             {
                                 Item item1 = parentFragment.items.get(i + 1);
-                                parentFragment.setFocused(item1);
+                                parentFragment.setListener(item1);
                                 boolean oldSelected = item1.selected;
                                 item1.selected = true;
                                 if(oldSelected != item1.selected && item1.selectionHandler != null)
