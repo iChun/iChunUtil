@@ -5,7 +5,6 @@ bin
 .metadata
 .classpath
 .project
-eclipse
 
 # idea
 out
@@ -18,9 +17,12 @@ out
 build
 .gradle
 libs
-run
 src/api
 logs
+
+# other
+eclipse
+run
 
 # java
 *.class
