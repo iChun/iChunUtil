@@ -20,6 +20,7 @@ build
 libs
 run
 src/api
+logs
 
 # java
 *.class

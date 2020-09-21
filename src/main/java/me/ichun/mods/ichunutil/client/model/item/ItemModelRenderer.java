@@ -61,7 +61,7 @@ public class ItemModelRenderer implements IBakedModel
     }
 
     @Override
-    public boolean func_230044_c_()
+    public boolean isSideLit()
     {
         return true;
     }
@@ -129,7 +129,7 @@ public class ItemModelRenderer implements IBakedModel
         }
 
         @Override
-        public IBakedModel func_239290_a_(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) //getModelWithOverrides
+        public IBakedModel getOverrideModel(IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) //getModelWithOverrides
         {
             itemModel.model.handleItemState(stack, world, entity);
             return originalModel;

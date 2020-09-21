@@ -7,6 +7,8 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -81,7 +83,7 @@ public class ElementTextField extends Element
     private String defaultText = "";
     private int maxStringLength = 32767;
     private Predicate<String> validator = s -> true;
-    private BiFunction<String, Integer, String> textFormatter = (s, cursorPos) -> s;
+    private BiFunction<String, Integer, IReorderingProcessor> textFormatter = (s, cursorPos) -> IReorderingProcessor.fromString(s, Style.EMPTY);
     private @Nullable Consumer<String> responder;
     private @Nullable Consumer<String> enterResponder;
 
@@ -133,7 +135,7 @@ public class ElementTextField extends Element
         return (T)this;
     }
 
-    public <T extends ElementTextField> T setTextFormatter(BiFunction<String, Integer, String> textFormatter)
+    public <T extends ElementTextField> T setTextFormatter(BiFunction<String, Integer, IReorderingProcessor> textFormatter)
     {
         this.textFormatter = textFormatter;
         return (T)this;

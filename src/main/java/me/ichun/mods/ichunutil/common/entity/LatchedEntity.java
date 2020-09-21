@@ -128,7 +128,7 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
                 return;
             }
         }
-        else if(!parent.world.func_234923_W_().equals(world.func_234923_W_()))
+        else if(!parent.world.getDimensionKey().equals(world.getDimensionKey()))
         {
             parentDifferentDimension();
             return;

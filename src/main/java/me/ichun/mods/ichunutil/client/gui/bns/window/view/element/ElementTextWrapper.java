@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class ElementTextWrapper extends Element //TODO image element
+public class
+ElementTextWrapper extends Element //TODO image element
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
@@ -124,7 +126,7 @@ public class ElementTextWrapper extends Element //TODO image element
                     wrappedTextLines.add(textLine);
                     continue;
                 }
-                List<ITextProperties> texts = getFontRenderer().func_238425_b_(new StringTextComponent(textLine), tooltipTextWidth);
+                List<ITextProperties> texts = getFontRenderer().getCharacterManager().func_238362_b_(new StringTextComponent(textLine), tooltipTextWidth, Style.EMPTY);
                 for(ITextProperties text : texts)
                 {
                     wrappedTextLines.add(text.getString());

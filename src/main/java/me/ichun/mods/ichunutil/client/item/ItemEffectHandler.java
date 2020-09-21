@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.item;
 
 import me.ichun.mods.ichunutil.common.item.DualHandedItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -28,7 +29,7 @@ public class ItemEffectHandler
         }
     }
 
-    public static int lastThirdPersonView;
+    public static PointOfView lastPoV;
 
     public static int dualHandedAnimationRight;
     public static int dualHandedAnimationLeft;
@@ -45,7 +46,7 @@ public class ItemEffectHandler
             //disable using the hand so that we can actually use this in third person
             ItemStack is = mc.player.getHeldItem(Hand.MAIN_HAND);
             ItemStack is1 = mc.player.getHeldItem(Hand.OFF_HAND);
-            boolean bowLike = (is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, mc.player) || is1.getItem() instanceof DualHandedItem && ((DualHandedItem)is1.getItem()).isHeldLikeBow(is1, mc.player)) && mc.gameSettings.thirdPersonView != 0;
+            boolean bowLike = (is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, mc.player) || is1.getItem() instanceof DualHandedItem && ((DualHandedItem)is1.getItem()).isHeldLikeBow(is1, mc.player)) && mc.gameSettings.getPointOfView() != PointOfView.FIRST_PERSON;
             if(bowLike)
             {
                 mc.player.resetActiveHand();
@@ -102,7 +103,7 @@ public class ItemEffectHandler
                         }
                     }
                 }
-                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0))
+                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON))
                 {
                     if(player.getItemInUseCount() <= 0)
                     {
@@ -137,7 +138,7 @@ public class ItemEffectHandler
                         }
                     }
                 }
-                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0))
+                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON))
                 {
                     if(player.getItemInUseCount() <= 0)
                     {
@@ -151,14 +152,14 @@ public class ItemEffectHandler
                 }
             }
 
-            if(player == mc.getRenderViewEntity() && mc.gameSettings.thirdPersonView == 0 && !(!is.isEmpty() && is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player)) && lastThirdPersonView != 0)
+            if(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON && !(!is.isEmpty() && is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player)) && lastPoV != PointOfView.FIRST_PERSON)
             {
                 player.resetActiveHand();
             }
 
             if(player == mc.getRenderViewEntity())
             {
-                lastThirdPersonView = mc.gameSettings.thirdPersonView;
+                lastPoV = mc.gameSettings.getPointOfView();
             }
         }
     }

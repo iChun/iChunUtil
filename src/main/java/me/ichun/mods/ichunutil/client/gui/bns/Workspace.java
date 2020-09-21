@@ -18,9 +18,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
@@ -374,17 +372,23 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void renderTooltip(MatrixStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
     {
         List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
-        List<ITextProperties> textLines = new ArrayList<>();
-        for(String s : textStrings)
-        {
-            textLines.add(new StringTextComponent(s));
-        }
         if(renderMinecraftStyle)
         {
-            super.renderTooltip(stack, textLines, mouseX, mouseY);
+            List<ITextComponent> textLines = new ArrayList<>();
+            for(String s : textStrings)
+            {
+                textLines.add(new StringTextComponent(s));
+            }
+            super.func_243308_b(stack, textLines, mouseX, mouseY);
         }
         else //Mostly taken from GuiUtils
         {
+            List<ITextProperties> textLines = new ArrayList<>();
+            for(String s : textStrings)
+            {
+                textLines.add(new StringTextComponent(s));
+            }
+
             ItemStack itemstack = ItemStack.EMPTY;
             int screenWidth = width;
             int screenHeight = height;
@@ -407,7 +411,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
             for (ITextProperties textLine : textLines)
             {
-                int textLineWidth = font.func_238414_a_(textLine);
+                int textLineWidth = font.getStringPropertyWidth(textLine);
 
                 if (textLineWidth > tooltipTextWidth)
                 {
@@ -449,7 +453,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 for (int i = 0; i < textLines.size(); i++)
                 {
                     ITextProperties textLine = textLines.get(i);
-                    List<ITextProperties> wrappedLine = font.func_238425_b_(textLine, tooltipTextWidth);
+                    List<ITextProperties> wrappedLine = font.getCharacterManager().func_238362_b_(textLine, tooltipTextWidth, Style.EMPTY);
                     if (i == 0)
                     {
                         titleLinesCount = wrappedLine.size();
@@ -457,7 +461,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
                     for (ITextProperties line : wrappedLine)
                     {
-                        int lineWidth = font.func_238414_a_(line);
+                        int lineWidth = font.getStringPropertyWidth(line);
                         if (lineWidth > wrappedTooltipWidth)
                         {
                             wrappedTooltipWidth = lineWidth;
@@ -517,7 +521,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 ITextProperties line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.func_238416_a_(line, (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
+                    font.func_238416_a_(LanguageMap.getInstance().func_241870_a(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)

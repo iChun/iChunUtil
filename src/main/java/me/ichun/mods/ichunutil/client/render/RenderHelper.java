@@ -94,7 +94,7 @@ public class RenderHelper
     {
         Minecraft mc = Minecraft.getInstance();
 
-        boolean flag4 = !modelIn.func_230044_c_();
+        boolean flag4 = !modelIn.isSideLit();
         if(renderTypeOverride != null)
         {
             //ItemRenderer.renderItemModelIntoGUI
@@ -124,7 +124,7 @@ public class RenderHelper
             matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
             if (!modelIn.isBuiltInRenderer()) {
                 boolean flag1;
-                if (!ItemCameraTransforms.TransformType.NONE.func_241716_a_() && itemStackIn.getItem() instanceof BlockItem) {
+                if (!ItemCameraTransforms.TransformType.NONE.isFirstPerson() && itemStackIn.getItem() instanceof BlockItem) {
                     Block block = ((BlockItem)itemStackIn.getItem()).getBlock();
                     flag1 = !(block instanceof BreakableBlock) && !(block instanceof StainedGlassPaneBlock);
                 } else {
@@ -137,19 +137,19 @@ public class RenderHelper
                     if (itemStackIn.getItem() == Items.COMPASS && itemStackIn.hasEffect()) {
                         matrixStackIn.push();
                         MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
-                        if (ItemCameraTransforms.TransformType.NONE.func_241716_a_()) {
+                        if (ItemCameraTransforms.TransformType.NONE.isFirstPerson()) {
                             matrixstack$entry.getMatrix().mul(0.75F);
                         }
 
                         if (flag1) {
-                            ivertexbuilder = ItemRenderer.func_241732_b_(buffer, rendertype, matrixstack$entry);
+                            ivertexbuilder = ItemRenderer.getDirectGlintVertexBuilder(buffer, rendertype, matrixstack$entry);
                         } else {
-                            ivertexbuilder = ItemRenderer.func_241731_a_(buffer, rendertype, matrixstack$entry);
+                            ivertexbuilder = ItemRenderer.getGlintVertexBuilder(buffer, rendertype, matrixstack$entry);
                         }
 
                         matrixStackIn.pop();
                     } else if (flag1) {
-                        ivertexbuilder = ItemRenderer.func_239391_c_(buffer, rendertype, true, itemStackIn.hasEffect());
+                        ivertexbuilder = ItemRenderer.getEntityGlintVertexBuilder(buffer, rendertype, true, itemStackIn.hasEffect());
                     } else {
                         ivertexbuilder = ItemRenderer.getBuffer(buffer, rendertype, true, itemStackIn.hasEffect());
                     }
