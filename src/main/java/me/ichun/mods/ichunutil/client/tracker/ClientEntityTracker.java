@@ -35,7 +35,7 @@ public final class ClientEntityTracker
         if(!hasInit)
         {
             hasInit = true;
-            bus.addListener(ClientEntityTracker.EntityTypes::onEntityTypeRegistry);
+            bus.addGenericListener(EntityType.class, ClientEntityTracker.EntityTypes::onEntityTypeRegistry);
             bus.addListener(ClientEntityTracker::onClientSetup);
             MinecraftForge.EVENT_BUS.addListener(ClientEntityTracker::onWorldTick);
             MinecraftForge.EVENT_BUS.addListener(ClientEntityTracker::onWorldUnload);
