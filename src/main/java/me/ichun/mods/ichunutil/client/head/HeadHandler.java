@@ -6,6 +6,7 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
 import net.minecraft.entity.monster.*;
+import net.minecraft.entity.monster.piglin.AbstractPiglinEntity;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.passive.fish.CodEntity;
@@ -24,6 +25,7 @@ public class HeadHandler
     public static HashMap<Class<? extends LivingEntity>, HeadBase<?>> MODEL_OFFSET_HELPERS = new HashMap<Class<? extends LivingEntity>, HeadBase<?>>() {{
         put(AbstractHorseEntity.class, new HeadHorse());
         put(AbstractIllagerEntity.class, new HeadBase<>().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F));
+        put(AbstractPiglinEntity.class, new HeadBase<>().setHalfInterpupillaryDistance(3F/16F));
         put(AbstractSkeletonEntity.class, new HeadBase<>());
         put(AbstractVillagerEntity.class, new HeadBase<>().setEyeOffset(0F, 3.2F/16F, 4F/16F).setHalfInterpupillaryDistance(1.9F / 16F).setEyeScale(0.7F).setPupilColour(0F, 150F/255F, 17F/255F));
         put(PlayerEntity.class, new HeadBase<>());
@@ -53,7 +55,6 @@ public class HeadHandler
         put(ParrotEntity.class, new HeadParrot());
         put(PhantomEntity.class, new HeadPhantom());
         put(PigEntity.class, new HeadBase<>().setEyeOffset(0F, 0.5F/16F, 8F/16F).setHalfInterpupillaryDistance(3F/16F));
-        put(PiglinEntity.class, new HeadBase<>().setHalfInterpupillaryDistance(3F/16F));
         put(PolarBearEntity.class, new HeadBase<>().setEyeOffset(0F, -0.5F/16F, 3F/16F).setEyeScale(0.4F));
         put(PufferfishEntity.class, new HeadPufferfish());
         put(RabbitEntity.class, new HeadRabbit());
