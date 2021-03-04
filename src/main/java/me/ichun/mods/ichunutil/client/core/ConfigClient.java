@@ -3,12 +3,15 @@ package me.ichun.mods.ichunutil.client.core;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowPopup;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementDropdownContextMenu;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import me.ichun.mods.ichunutil.common.head.HeadHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.config.ModConfig;
 
 import javax.annotation.Nonnull;
@@ -52,7 +55,7 @@ public class ConfigClient extends ConfigBase
     @Prop(min = 0, max = 2)
     public int aggressiveHeadTracking = 1;
 
-    @Prop
+    @Prop(guiElementOverride = "iChunUtil:reloadHeadsButton")//we're mounting this to add a button underneath
     public boolean horseEasterEgg = true;
 
     @Override
@@ -69,7 +72,9 @@ public class ConfigClient extends ConfigBase
             }
             catch(IllegalAccessException e)
             {
-                return;
+                iChunUtil.LOGGER.error("Error accessing config field {} when creating config. Stopping config creation.", field.getName());
+                e.printStackTrace();
+                return true;
             }
 
 
@@ -118,6 +123,53 @@ public class ConfigClient extends ConfigBase
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);
 
+            return true;
+        });
+        GUI_ELEMENT_OVERRIDES.put("iChunUtil:reloadHeadsButton", (value, itemOri) -> {
+
+            ElementList.Item<?> item = itemOri.parentFragment.addItem(value).setBorderSize(0);
+            item.setSelectionHandler(itemObj -> {
+                if(itemObj.selected)
+                {
+                    for(Element<?> element : itemObj.elements)
+                    {
+                        if(element instanceof ElementTextWrapper || element instanceof ElementPadding)
+                        {
+                            continue;
+                        }
+                        element.parentFragment.setListener(element);
+                        element.mouseClicked(element.getLeft() + element.getWidth() / 2D, element.getTop() + element.getHeight() / 2D, 0);
+                        element.mouseReleased(element.getLeft() + element.getWidth() / 2D, element.getTop() + element.getHeight() / 2D, 0);
+                        break;
+                    }
+                }
+            });
+            ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(I18n.format("config.ichunutil.headTracking.reload.desc"));
+            wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 90));
+            wrapper.setTooltip(value.desc);
+            item.addElement(wrapper);
+            ElementPadding padding = new ElementPadding(item, 0, 20);
+            padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
+            item.addElement(padding);
+
+            ElementButton<?> button = new ElementButton<>(item, "config.ichunutil.headTracking.reload.btn", btn ->
+            {
+                if(HeadHandler.hasInit())
+                {
+                    int count = HeadHandler.loadHeadInfos();
+                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.reload.count", count));
+                }
+                else
+                {
+                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.notLoaded"));
+                }
+            });
+            button.setTooltip(I18n.format("config.ichunutil.headTracking.reload.desc"));
+            button.setSize(80, 14);
+            button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+            item.addElement(button);
+
+            return false; //we still want the button to generate, this is a hook in.
         });
         return super.init();
     }

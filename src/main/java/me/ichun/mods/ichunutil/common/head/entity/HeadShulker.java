@@ -1,22 +1,15 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.ShulkerModel;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadShulker extends HeadBase<ShulkerEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadShulker extends HeadInfo<ShulkerEntity>
 {
-    public HeadShulker()
-    {
-        eyeOffset = new float[] { 0F, -3.5F/16F, 3F/16F };
-        halfInterpupillaryDistance = 2F/16F;
-        eyeScale = 0.6F;
-    }
-
     @Override
     public float getEyeScale(ShulkerEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -70,13 +63,8 @@ public class HeadShulker extends HeadBase<ShulkerEntity>
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    public float getHeadPitch(ShulkerEntity living, float partialTick, int eye)
     {
-        EntityModel model = renderer.getEntityModel();
-        if(model instanceof ShulkerModel)
-        {
-            this.headModel[0] = ((ShulkerModel)model).head;
-        }
+        return 0F;
     }
 }

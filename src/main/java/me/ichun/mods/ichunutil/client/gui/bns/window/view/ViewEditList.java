@@ -7,10 +7,13 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextField;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.IReorderingProcessor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -21,6 +24,11 @@ public class ViewEditList extends View<WindowEditList<?>>
     public final Consumer<ElementList<?>> responder;
 
     public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder)
+    {
+        this(parent, s, objectList, validator, responder, null);
+    }
+
+    public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, IReorderingProcessor> textFormatter)
     {
         super(parent, s);
         this.objectList = objectList;
@@ -101,6 +109,10 @@ public class ViewEditList extends View<WindowEditList<?>>
                             textField.setDefaultText(ori);
                             textField.setValidator(oriText.getValidator());
                             textField.setResponder(oriText.getResponder());
+                            if(textFormatter != null)
+                            {
+                                textField.setTextFormatter(textFormatter);
+                            }
                             textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
                             item.addElement(textField);
                             textField.init();
@@ -114,6 +126,10 @@ public class ViewEditList extends View<WindowEditList<?>>
                         textField.setDefaultText("");
                         textField.setValidator(validatorFinal);
                         textField.setResponder(anyResponder);
+                        if(textFormatter != null)
+                        {
+                            textField.setTextFormatter(textFormatter);
+                        }
                         textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
                         item.addElement(textField);
                         textField.init();
@@ -128,6 +144,10 @@ public class ViewEditList extends View<WindowEditList<?>>
                         textField.setDefaultText("");
                         textField.setValidator(validatorFinal);
                         textField.setResponder(anyResponder);
+                        if(textFormatter != null)
+                        {
+                            textField.setTextFormatter(textFormatter);
+                        }
                         textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
                         item.addElement(textField);
                         textField.init();
@@ -144,6 +164,10 @@ public class ViewEditList extends View<WindowEditList<?>>
             textField.setDefaultText(ori);
             textField.setValidator(validator);
             textField.setResponder(sharedResponder);
+            if(textFormatter != null)
+            {
+                textField.setTextFormatter(textFormatter);
+            }
             textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
             item.addElement(textField);
         }
@@ -152,6 +176,10 @@ public class ViewEditList extends View<WindowEditList<?>>
         textField.setDefaultText("");
         textField.setValidator(validator);
         textField.setResponder(sharedResponder);
+        if(textFormatter != null)
+        {
+            textField.setTextFormatter(textFormatter);
+        }
         textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
         item.addElement(textField);
         elements.add(list);

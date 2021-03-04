@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class ViewValues extends View<WindowValues>
@@ -115,163 +115,166 @@ public class ViewValues extends View<WindowValues>
             return;
         }
 
+        boolean handled = false;
         if(!props.guiElementOverride().isEmpty())
         {
-            BiConsumer<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>> valueWrapperLocalisedItemBiConsumer = ConfigBase.GUI_ELEMENT_OVERRIDES.get(props.guiElementOverride());
-            if(valueWrapperLocalisedItemBiConsumer != null)
+            BiFunction<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>, Boolean> valueWrapperLocalisedItemBiFunction = ConfigBase.GUI_ELEMENT_OVERRIDES.get(props.guiElementOverride());
+            if(valueWrapperLocalisedItemBiFunction != null && valueWrapperLocalisedItemBiFunction.apply(value, item))
             {
-                valueWrapperLocalisedItemBiConsumer.accept(value, item);
+                handled = true;
             }
         }
-        else if(clz == int.class)
+        if(!handled)
         {
-            ElementNumberInput input = new ElementNumberInput(item, false);
-            input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
-            input.setMax(props.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)props.max());
-            input.setDefaultText(o.toString());
-            input.setSize(80, 14);
-            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(input);
-        }
-        else if(clz == double.class)
-        {
-            ElementNumberInput input = new ElementNumberInput(item, true);
-            input.setMin(props.min());
-            input.setMax(props.max());
-            input.setMaxDec(2);
-            input.setDefaultText(o.toString());
-            input.setSize(80, 14);
-            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(input);
-        }
-        else if(clz == boolean.class)
-        {
-            ElementToggleTextable<?> toggle = new ElementToggleTextable<>(item, value.name, elementClickable -> {}).setToggled((boolean)o);
-            toggle.setSize(80, 14);
-            toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(toggle);
-        }
-        else if(clz == String.class)
-        {
-            ElementTextField input = new ElementTextField(item);
-            input.setDefaultText(o.toString());
-            input.setSize(80, 14);
-            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(input);
-        }
-        else if(clz.isEnum()) //enum!
-        {
-            ElementDropdownContextMenu<?> input = new ElementDropdownContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
+            if(clz == int.class)
             {
-                if(listItem.selected)
-                {
-                    ElementDropdownContextMenu<?> contextMenu = (ElementDropdownContextMenu<?>)menu;
-                    contextMenu.text = listItem.getObject().toString();
-                }
-            });
-            input.setSize(80, 14);
-            input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(input);
-        }
-        else if(o instanceof List) //lists
-        {
-            StringBuilder sb = new StringBuilder();
-            final List list = (List)o;
-            for(int i = 0; i < list.size(); i++)
-            {
-                Object o1 = list.get(i);
-                sb.append(o1);
-                if(i < list.size() - 1)
-                {
-                    sb.append("\n");
-                }
+                ElementNumberInput input = new ElementNumberInput(item, false);
+                input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
+                input.setMax(props.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)props.max());
+                input.setDefaultText(o.toString());
+                input.setSize(80, 14);
+                input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(input);
             }
-            ElementButton<?> button = new ElementButton<>(item, "selectWorld.edit", btn ->
+            else if(clz == double.class)
             {
-                value.value.field.setAccessible(true);
-                Type typefield = value.value.field.getGenericType();
-                if(typefield instanceof ParameterizedType)
+                ElementNumberInput input = new ElementNumberInput(item, true);
+                input.setMin(props.min());
+                input.setMax(props.max());
+                input.setMaxDec(2);
+                input.setDefaultText(o.toString());
+                input.setSize(80, 14);
+                input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(input);
+            }
+            else if(clz == boolean.class)
+            {
+                ElementToggleTextable<?> toggle = new ElementToggleTextable<>(item, value.name, elementClickable -> {}).setToggled((boolean)o);
+                toggle.setSize(80, 14);
+                toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(toggle);
+            }
+            else if(clz == String.class)
+            {
+                ElementTextField input = new ElementTextField(item);
+                input.setDefaultText(o.toString());
+                input.setSize(80, 14);
+                input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(input);
+            }
+            else if(clz.isEnum()) //enum!
+            {
+                ElementDropdownContextMenu<?> input = new ElementDropdownContextMenu<>(item, o.toString(), Arrays.asList(clz.getEnumConstants()), (menu, listItem) ->
                 {
-                    ParameterizedType type = (ParameterizedType)typefield;
-                    Type[] types = type.getActualTypeArguments();
-
-                    if(types.length == 1)
+                    if(listItem.selected)
                     {
-                        Predicate<String> validator = null; //get which kind of validator we should use
-                        if(types[0] == String.class)
-                        {
-                            validator = str -> true;
-                        }
-                        else if(types[0] == Double.class)
-                        {
-                            validator = ElementTextField.NUMBERS;
-                        }
-                        else if(types[0] == Integer.class)
-                        {
-                            validator = ElementTextField.INTEGERS;
-                        }
-
-                        if(validator != null)
-                        {
-                            if(!(props.values().length == 1 && props.values()[0].isEmpty()))
-                            {
-                                String[] values = props.values();
-                                validator = validator.and(s -> {
-                                    for(String value1 : values)
-                                    {
-                                        if(value1.startsWith(s))
-                                        {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                });
-                            }
-
-                            WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
-                                try
-                                {
-                                    List listToUse = list;
-                                    if(list instanceof ArrayList)
-                                    {
-                                        listToUse = (List)((ArrayList)list).clone();
-                                    }
-                                    listToUse.clear();
-                                    for(ElementList.Item<?> item1 : list1.items)
-                                    {
-                                        ElementTextField oriText = (ElementTextField)item1.elements.get(0);
-                                        if(!oriText.getText().isEmpty())
-                                        {
-                                            if(types[0] == String.class)
-                                            {
-                                                listToUse.add(oriText.getText());
-                                            }
-                                            else if(types[0] == Double.class)
-                                            {
-                                                listToUse.add(Double.parseDouble(oriText.getText()));
-                                            }
-                                            else if(types[0] == Integer.class)
-                                            {
-                                                listToUse.add(Integer.parseInt(oriText.getText()));
-                                            }
-                                        }
-                                    }
-                                    value.value.field.set(value.value.parent, listToUse);
-                                    value.value.parent.save();
-                                }
-                                catch(IllegalAccessException ignored){}
-                            });
-                            getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
-                            window.init();//reinit cause we're using lists and they're weird
-                        }
+                        ElementDropdownContextMenu<?> contextMenu = (ElementDropdownContextMenu<?>)menu;
+                        contextMenu.text = listItem.getObject().toString();
+                    }
+                });
+                input.setSize(80, 14);
+                input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(input);
+            }
+            else if(o instanceof List) //lists
+            {
+                StringBuilder sb = new StringBuilder();
+                final List list = (List)o;
+                for(int i = 0; i < list.size(); i++)
+                {
+                    Object o1 = list.get(i);
+                    sb.append(o1);
+                    if(i < list.size() - 1)
+                    {
+                        sb.append("\n");
                     }
                 }
-            });
-            button.setTooltip(sb.toString());
-            button.setSize(80, 14);
-            button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-            item.addElement(button);
+                ElementButton<?> button = new ElementButton<>(item, "selectWorld.edit", btn ->
+                {
+                    value.value.field.setAccessible(true);
+                    Type typefield = value.value.field.getGenericType();
+                    if(typefield instanceof ParameterizedType)
+                    {
+                        ParameterizedType type = (ParameterizedType)typefield;
+                        Type[] types = type.getActualTypeArguments();
+
+                        if(types.length == 1)
+                        {
+                            Predicate<String> validator = null; //get which kind of validator we should use
+                            if(types[0] == String.class)
+                            {
+                                validator = str -> true;
+                            }
+                            else if(types[0] == Double.class)
+                            {
+                                validator = ElementTextField.NUMBERS;
+                            }
+                            else if(types[0] == Integer.class)
+                            {
+                                validator = ElementTextField.INTEGERS;
+                            }
+
+                            if(validator != null)
+                            {
+                                if(!(props.values().length == 1 && props.values()[0].isEmpty()))
+                                {
+                                    String[] values = props.values();
+                                    validator = validator.and(s -> {
+                                        for(String value1 : values)
+                                        {
+                                            if(value1.startsWith(s))
+                                            {
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    });
+                                }
+
+                                WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
+                                    try
+                                    {
+                                        List listToUse = list;
+                                        if(list instanceof ArrayList)
+                                        {
+                                            listToUse = (List)((ArrayList)list).clone();
+                                        }
+                                        listToUse.clear();
+                                        for(ElementList.Item<?> item1 : list1.items)
+                                        {
+                                            ElementTextField oriText = (ElementTextField)item1.elements.get(0);
+                                            if(!oriText.getText().isEmpty())
+                                            {
+                                                if(types[0] == String.class)
+                                                {
+                                                    listToUse.add(oriText.getText());
+                                                }
+                                                else if(types[0] == Double.class)
+                                                {
+                                                    listToUse.add(Double.parseDouble(oriText.getText()));
+                                                }
+                                                else if(types[0] == Integer.class)
+                                                {
+                                                    listToUse.add(Integer.parseInt(oriText.getText()));
+                                                }
+                                            }
+                                        }
+                                        value.value.field.set(value.value.parent, listToUse);
+                                        value.value.parent.save();
+                                    }
+                                    catch(IllegalAccessException ignored){}
+                                });
+                                getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
+                                window.init();//reinit cause we're using lists and they're weird
+                            }
+                        }
+                    }
+                });
+                button.setTooltip(sb.toString());
+                button.setSize(80, 14);
+                button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
+                item.addElement(button);
+            }
         }
     }
-
 }

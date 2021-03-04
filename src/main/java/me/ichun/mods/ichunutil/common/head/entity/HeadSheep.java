@@ -1,21 +1,15 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.QuadrupedModel;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadSheep extends HeadBase<SheepEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadSheep extends HeadInfo<SheepEntity>
 {
-    public HeadSheep()
-    {
-        eyeOffset = new float[]{ 0F, 1.5F/16F, 6F/16F };
-        eyeScale = 0.65F;
-    }
-
     @Override
     public float getPupilScale(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -31,8 +25,8 @@ public class HeadSheep extends HeadBase<SheepEntity>
     {
         if (living.hasCustomName() && "jeb_".equals(living.getName().getUnformattedComponentText()))
         {
-            livingRand.setSeed(Math.abs(living.hashCode()) * 9823 * (eye + 1));
-            int i = living.ticksExisted / 25 + living.getEntityId() + livingRand.nextInt(25);
+            rand.setSeed(Math.abs(living.hashCode()) * 9823L * (eye + 1));
+            int i = living.ticksExisted / 25 + living.getEntityId() + rand.nextInt(25);
             int j = DyeColor.values().length;
             int k = i % j;
             int l = (i + 1) % j;
@@ -54,8 +48,8 @@ public class HeadSheep extends HeadBase<SheepEntity>
     {
         if (living.hasCustomName() && "jeb_".equals(living.getName().getUnformattedComponentText()))
         {
-            livingRand.setSeed(Math.abs(living.hashCode()) * 2145 * (eye + 1));
-            int i = living.ticksExisted / 25 + living.getEntityId() + livingRand.nextInt(25);
+            rand.setSeed(Math.abs(living.hashCode()) * 2145L * (eye + 1));
+            int i = living.ticksExisted / 25 + living.getEntityId() + rand.nextInt(25);
             int j = DyeColor.values().length;
             int k = i % j;
             int l = (i + 1) % j;
@@ -73,21 +67,9 @@ public class HeadSheep extends HeadBase<SheepEntity>
             DyeColor clr = living.getFleeceColor();
             if(clr != DyeColor.WHITE)
             {
-                float[] afloat = SheepEntity.getDyeRgb(clr);
-                return afloat;
+                return SheepEntity.getDyeRgb(clr);
             }
             return pupilColour;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
-    {
-        EntityModel model = renderer.getEntityModel();
-        if(model instanceof QuadrupedModel)
-        {
-            this.headModel[0] = ((QuadrupedModel)model).headModel;
         }
     }
 }

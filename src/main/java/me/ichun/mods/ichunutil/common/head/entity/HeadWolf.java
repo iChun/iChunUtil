@@ -1,25 +1,22 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.WolfModel;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadWolf extends HeadBase<WolfEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadWolf extends HeadInfo<WolfEntity>
 {
     public float[] eyeOffsetTame = new float[] { -1F/16F, 1F/16F, 2F/16F };
     public float[] irisColourAngry = new float[] { 182F / 255F, 15F / 255F, 15F / 255F };
     public float[] pupilColourAngry = new float[] { 228F / 255F, 46F / 255F, 46F / 255F };
-
-    public HeadWolf()
-    {
-        eyeOffset = new float[] { -1F/16F, 0.5F/16F, 2F/16F };
-        eyeScale = 0.65F;
-    }
 
     @Override
     public float getEyeScale(WolfEntity living, MatrixStack stack, float partialTick, int eye)
@@ -68,19 +65,8 @@ public class HeadWolf extends HeadBase<WolfEntity>
     }
 
     @Override
-    public float getHeadRoll(WolfEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadRoll(WolfEntity living, float partialTick, int eye)
     {
-        return 0F;
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
-    {
-        EntityModel model = renderer.getEntityModel();
-        if(model instanceof WolfModel)
-        {
-            this.headModel[0] = ((WolfModel)model).head;
-        }
+        return living.getInterestedAngle(partialTick) + living.getShakeAngle(partialTick, 0.0F);
     }
 }

@@ -1,10 +1,10 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.entity.LivingEntity;
 
-public class HeadTesting extends HeadBase<LivingEntity>
+public class HeadTesting extends HeadInfo<LivingEntity>
 {
     @Override
     public float getEyeSideOffset(LivingEntity living, MatrixStack stack, float partialTick, int eye)

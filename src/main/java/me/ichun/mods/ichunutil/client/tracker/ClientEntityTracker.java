@@ -143,7 +143,7 @@ public final class ClientEntityTracker
                     .disableSerialization()
                     .disableSummoning()
                     .immuneToFire()
-                    .build("from " + iChunUtil.MOD_NAME + ". Ignore this.");
+                    .build("an entity from " + iChunUtil.MOD_NAME + ". Ignore this.");
         }
     }
 }

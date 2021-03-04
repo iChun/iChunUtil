@@ -1,24 +1,19 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.TropicalFishAModel;
 import net.minecraft.client.renderer.entity.model.TropicalFishBModel;
 import net.minecraft.entity.passive.fish.TropicalFishEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadTropicalFish extends HeadBase<TropicalFishEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadTropicalFish extends HeadInfo<TropicalFishEntity>
 {
     public float[] eyeOffsetB = new float[] { 0F, -0.5F/16F, 1.5F/16F };
-
-    public HeadTropicalFish() // defaults are for BIG
-    {
-        eyeOffset = new float[] { 0F/16F, 0F/16F, 2.5F/ 16F };
-        halfInterpupillaryDistance = 1F / 16F;
-        eyeScale = 0.4F;
-        sideEyed = true;
-    }
 
     @Override
     public float[] getEyeOffsetFromJoint(TropicalFishEntity living, MatrixStack stack, float partialTick, int eye)

@@ -4,7 +4,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 
 public class ObfHelper
 {
-    private static final String OBF_VERSION = "1.15.2";
+    private static final String OBF_VERSION = "1.16.5";
     private static boolean devEnvironment;
 
     public static void detectDevEnvironment()

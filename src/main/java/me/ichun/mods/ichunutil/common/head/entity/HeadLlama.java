@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -6,16 +6,12 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.LlamaModel;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class HeadLlama extends HeadHorse
 {
-    public HeadLlama()
-    {
-        eyeOffset = new float[] { 0F, 2F/16F, 8F/16F };
-        halfInterpupillaryDistance = 3F/16F;
-        eyeScale = 0.9F;
-    }
-
     @Override
     public float getEyeRotation(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -25,10 +21,13 @@ public class HeadLlama extends HeadHorse
     @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        eyeOffsetNormal = new float[] { 0F, 14.2F/16F, 6F/16F };
-        halfInterpupillaryDistanceNormal = 2.3F/16F;
-        eyeScaleNormal = 0.8F;
         return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, stack, partialTick, eye);
+    }
+
+    @Override
+    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye)
+    {
+        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, partialTick, eye);
     }
 
     @Override

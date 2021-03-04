@@ -9,13 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class WindowPopup extends Window<Workspace>
 {
     //title will be localised, text won't.
-    public WindowPopup(Workspace parent, String title, Consumer<Workspace> callback, String...text)
+    public WindowPopup(Workspace parent, String title, @Nullable Consumer<Workspace> callback, String...text)
     {
         super(parent);
 
@@ -29,7 +30,7 @@ public class WindowPopup extends Window<Workspace>
 
     public static class ViewPopup extends View<WindowPopup>
     {
-        public ViewPopup(@Nonnull WindowPopup parent, String title, Consumer<Workspace> callback, String...text1)
+        public ViewPopup(@Nonnull WindowPopup parent, String title, @Nullable Consumer<Workspace> callback, String...text1)
         {
             super(parent, title);
 

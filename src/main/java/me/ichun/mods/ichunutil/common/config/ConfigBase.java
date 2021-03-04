@@ -29,13 +29,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public abstract class ConfigBase
         implements Comparable<ConfigBase>
 {
     @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER. This provides the default Prop settings.
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile
-    public static final HashMap<String, BiConsumer<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>>> GUI_ELEMENT_OVERRIDES = new HashMap<>(); //this is for GUI element overrides
+    public static final HashMap<String, BiFunction<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>, Boolean>> GUI_ELEMENT_OVERRIDES = new HashMap<>(); //this is for GUI element overrides
 
     private final @Nonnull String fileName;
     public final @Nonnull TreeMap<String, HashSet<ValueWrapper<?>>> values = new TreeMap<>(Ordering.natural()); //category to value

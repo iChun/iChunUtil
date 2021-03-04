@@ -39,6 +39,11 @@
   "config.ichunutil.prop.horseEasterEgg.name": "Enable Horse/Llama Easter Egg?",
   "config.ichunutil.prop.horseEasterEgg.desc": "Enable the easter egg where the horse/llama's \"head\" is its behind. This is an easter egg on how Hats used to put hats on Horses.",
 
+  "config.ichunutil.headTracking.reload.desc": "Reload All HeadInfo Trackers?",
+  "config.ichunutil.headTracking.reload.btn": "Reload",
+  "config.ichunutil.headTracking.notLoaded": "No mods are using HeadInfo Trackers. No HeadInfos reloaded.",
+  "config.ichunutil.headTracking.reload.count": "Reloaded %s HeadInfo Trackers.",
+
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.options": "Options",
 

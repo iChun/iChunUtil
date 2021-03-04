@@ -1,15 +1,18 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PufferFishBigModel;
 import net.minecraft.client.renderer.entity.model.PufferFishMediumModel;
 import net.minecraft.client.renderer.entity.model.PufferFishSmallModel;
 import net.minecraft.entity.passive.fish.PufferfishEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadPufferfish extends HeadBase<PufferfishEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadPufferfish extends HeadInfo<PufferfishEntity>
 {
     public float[] eyeOffsetSmall = new float[] { 0F, 2.5F/16F, 1.5F/16F };
     public float[] eyeOffsetMedium = new float[] { 0F, 3.5F/16F, 2.5F/16F};
@@ -17,14 +20,6 @@ public class HeadPufferfish extends HeadBase<PufferfishEntity>
     public float eyeScaleMedium = 0.4F;
     public float interpSmall = 1.5F / 16F;
     public float interpMedium = 2F / 16F;
-
-    public HeadPufferfish() // defaults are for BIG
-    {
-        pupilColour = new float[] { 29F / 255F, 44F / 255F, 28F / 255F };
-        eyeOffset = new float[] { 0F/16F, 6.5F/16F, 4F/16F };
-        halfInterpupillaryDistance = 2F / 16F;
-        eyeScale = 1.25F;
-    }
 
     @Override
     public float getEyeScale(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)

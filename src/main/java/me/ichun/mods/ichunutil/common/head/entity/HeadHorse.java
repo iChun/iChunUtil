@@ -1,25 +1,21 @@
-package me.ichun.mods.ichunutil.client.head.entity;
+package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.client.head.HeadBase;
+import me.ichun.mods.ichunutil.common.head.HeadInfo;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.HorseModel;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadHorse extends HeadBase<AbstractHorseEntity>
+@OnlyIn(Dist.CLIENT)
+public class HeadHorse extends HeadInfo<AbstractHorseEntity>
 {
     public float[] eyeOffsetNormal = new float[] { 0F, 9.5F/16F, -1F/16F }; //I love that I can use Tabula for this.
     public float halfInterpupillaryDistanceNormal = 3F/16F;
     public float eyeScaleNormal = 0.6F;
-
-    public HeadHorse()
-    {
-        eyeOffset = new float[] { 0F, 6F/16F, 5F/16F };
-        halfInterpupillaryDistance = 3F/16F;
-        eyeScale = 0.9F;
-    }
 
     @Override
     public float[] getEyeOffsetFromJoint(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
@@ -52,9 +48,21 @@ public class HeadHorse extends HeadBase<AbstractHorseEntity>
     }
 
     @Override
+    public float getHeadYaw(AbstractHorseEntity living, float partialTick, int eye)
+    {
+        return iChunUtil.configClient.horseEasterEgg ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, eye);
+    }
+
+    @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return iChunUtil.configClient.horseEasterEgg ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, stack, partialTick, eye);
+    }
+
+    @Override
+    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye)
+    {
+        return iChunUtil.configClient.horseEasterEgg ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, eye);
     }
 
     @Override
