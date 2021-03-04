@@ -5,7 +5,6 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -22,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
@@ -34,6 +34,7 @@ public class HeadHandler
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
             .registerTypeAdapter(HeadInfo.class, new HeadInfo.Serializer())
             .create();
+    public static final HashSet<String> IMC_HEAD_INFO = new HashSet<>();
     public static final int HEAD_INFO_VERSION = 1;
 
 
@@ -129,7 +130,7 @@ public class HeadHandler
 
                 loadHeadInfos();
 
-//                MinecraftForge.EVENT_BUS.register(new SerialiserHelper());
+                //                MinecraftForge.EVENT_BUS.register(new SerialiserHelper());
             }
             catch(IOException e)
             {
@@ -189,6 +190,35 @@ public class HeadHandler
         }
 
         iChunUtil.LOGGER.info("Loaded {} HeadInfo object(s)", count);
+
+        if(!IMC_HEAD_INFO.isEmpty())
+        {
+            count = 0;
+            for(String s : IMC_HEAD_INFO)
+            {
+                try
+                {
+                    if(readHeadInfoJson(s))
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        iChunUtil.LOGGER.error("Error reading IMC HeadInfo file: {}", s);
+                    }
+                }
+                catch(JsonSyntaxException e)
+                {
+                    iChunUtil.LOGGER.error("Error reading IMC HeadInfo file: {}", s);
+                    e.printStackTrace();
+                }
+                catch(ClassNotFoundException e)
+                {
+                    iChunUtil.LOGGER.error("Class not found for IMC HeadInfo file: {}", s);
+                }
+            }
+            iChunUtil.LOGGER.info("Loaded {} IMC HeadInfo object(s)", count);
+        }
 
         return count;
     }

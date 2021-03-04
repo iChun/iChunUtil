@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
+import me.ichun.mods.ichunutil.common.head.HeadHandler;
 import me.ichun.mods.ichunutil.common.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,6 +50,7 @@ public class iChunUtil
 
         bus.addListener(this::setup);
         bus.addListener(this::finishLoading);
+        bus.addListener(this::processIMC);
 
         MinecraftForge.EVENT_BUS.register(eventHandlerServer = new EventHandlerServer());
 
@@ -78,6 +81,21 @@ public class iChunUtil
         loadingStage = ModLoadingStage.COMPLETE;
         ConfigBase.CONFIGS.forEach(c -> {
             if(!c.hasInit()) throw new RuntimeException("Config class created but never initialized: " + c.getConfigName());
+        });
+    }
+
+    private void processIMC(InterModProcessEvent event)
+    {
+        event.getIMCStream(m -> m.equalsIgnoreCase("headinfo")).forEach(msg -> {
+            Object o = msg.getMessageSupplier().get();
+            if(!(o instanceof String))
+            {
+                iChunUtil.LOGGER.warn("IMC-headinfo: {} passed HeadInfo object is not a string: {}", msg.getSenderModId(), o);
+                return;
+            }
+            String s = (String)o;
+            HeadHandler.IMC_HEAD_INFO.add(s);
+            iChunUtil.LOGGER.info("IMC-headinfo: Added HeadInfo json for interpretation later from: {}", msg.getSenderModId());
         });
     }
 
