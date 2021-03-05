@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.common.head.HeadInfo;
+import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -10,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class HeadRabbit extends HeadInfo<RabbitEntity>
 {
     @Override
-    public float[] getHeadJointOffset(RabbitEntity living, MatrixStack stack, float partialTick, int eye)
+    public void preChildEntHeadRenderCalls(RabbitEntity living, MatrixStack stack, LivingRenderer<RabbitEntity, ?> render)
     {
         float scale = 0.0625F;
         if(living.isChild())
@@ -23,6 +24,5 @@ public class HeadRabbit extends HeadInfo<RabbitEntity>
             stack.scale(0.6F, 0.6F, 0.6F);
             stack.translate(0.0F, 16.0F * scale, 0.0F);
         }
-        return super.getHeadJointOffset(living, stack, partialTick, eye);
     }
 }

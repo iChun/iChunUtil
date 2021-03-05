@@ -181,7 +181,10 @@ public class ImporterTabula
 
             part.showModel = !cube.hidden;
 
-            part.notes.addAll(cube.metadata);
+            if(cube.metadata != null)
+            {
+                part.notes.addAll(cube.metadata);
+            }
 
             addParts(cube.children, part.children, part);
 

@@ -19,9 +19,9 @@ public class HeadTesting extends HeadInfo<LivingEntity>
     }
 
     @Override
-    public float[] getHeadJointOffset(LivingEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getHeadJointOffset(LivingEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return super.getHeadJointOffset(living, stack, partialTick, eye);
+        return super.getHeadJointOffset(living, stack, partialTick, eye, head);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class HeadTesting extends HeadInfo<LivingEntity>
     }
 
     @Override
-    public float getHeadRoll(LivingEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadRoll(LivingEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return super.getHeadRoll(living, stack, partialTick, eye);
+        return super.getHeadRoll(living, stack, partialTick, eye, head);
     }
 }

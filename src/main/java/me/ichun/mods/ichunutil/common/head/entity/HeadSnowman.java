@@ -11,6 +11,8 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
 {
     public float[] eyeOffsetNoPumpkinLeft = new float[] { 0F, 5.5F/16F, 3.5F/16F };
     public float[] eyeOffsetNoPumpkinRight = new float[] { 0F, 6F/16F, 3.5F/16F };
+    public float[] headTopCenterNoPumpkin = new float[] { 0.0F, 0.46875F, 0.0F };
+    public float headScaleNoPumpkin = 0.875F;
 
     @Override
     public float[] getEyeOffsetFromJoint(SnowGolemEntity living, MatrixStack stack, float partialTick, int eye)
@@ -39,6 +41,33 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
         else
         {
             return eye == 0 ? 0.65F : 0.75F;
+        }
+    }
+
+    @Override
+    public float[] getHatOffsetFromJoint(SnowGolemEntity living, MatrixStack stack, float partialTick, int head)
+    {
+        if(living.isPumpkinEquipped())
+        {
+            return super.getHatOffsetFromJoint(living, stack, partialTick, head);
+        }
+        else
+        {
+            return headTopCenterNoPumpkin;
+        }
+
+    }
+
+    @Override
+    public float getHatScale(SnowGolemEntity living, MatrixStack stack, float partialTick, int head)
+    {
+        if(living.isPumpkinEquipped())
+        {
+            return super.getHatScale(living, stack, partialTick, head);
+        }
+        else
+        {
+            return headScaleNoPumpkin;
         }
     }
 }

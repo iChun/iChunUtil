@@ -29,19 +29,25 @@ public class HeadWolf extends HeadInfo<WolfEntity>
     }
 
     @Override
-    public float[] getEyeOffsetFromJoint(WolfEntity living, MatrixStack stack, float partialTick, int eye)
+    public void postHeadTranslation(WolfEntity living, MatrixStack stack, float partialTick)
     {
+        super.postHeadTranslation(living, stack, partialTick);
+
         EntityModel model = ((LivingRenderer)Minecraft.getInstance().getRenderManager().getRenderer(living)).getEntityModel();
         if(model instanceof WolfModel)
         {
             stack.rotate(Vector3f.ZP.rotation(((WolfModel)model).headChild.rotateAngleZ)); //silly workaround
         }
+    }
 
+    @Override
+    public float[] getEyeOffsetFromJoint(WolfEntity living, MatrixStack stack, float partialTick, int eye)
+    {
         if(living.isTamed())
         {
             return eyeOffsetTame;
         }
-        return eyeOffset;
+        return super.getEyeOffsetFromJoint(living, stack, partialTick, eye);
     }
 
     @Override
@@ -65,7 +71,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
     }
 
     @Override
-    public float getHeadRoll(WolfEntity living, float partialTick, int eye)
+    public float getHeadRoll(WolfEntity living, float partialTick, int eye, int head)
     {
         return living.getInterestedAngle(partialTick) + living.getShakeAngle(partialTick, 0.0F);
     }

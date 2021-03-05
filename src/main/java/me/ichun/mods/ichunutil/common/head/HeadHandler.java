@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +26,7 @@ import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class HeadHandler
+public class HeadHandler //TODO remove all teh ATs we don't need anymore
 {
     public static final HashMap<Class<? extends LivingEntity>, String> MODEL_OFFSET_HELPERS_JSON = new HashMap<>();
     public static final HashMap<Class<? extends LivingEntity>, HeadInfo<?>> MODEL_OFFSET_HELPERS = new HashMap<>();
@@ -82,7 +81,7 @@ public class HeadHandler
 
     private static boolean init;
     public static boolean hasInit() { return init; }
-    public static void init() //should be initialised in FMLLoadCompleteEvent stage
+    public static synchronized void init() //should be initialised in FMLLoadCompleteEvent stage
     {
         if(!init)
         {
@@ -112,15 +111,27 @@ public class HeadHandler
                             {
                                 continue;
                             }
-                            FileOutputStream out = new FileOutputStream(file);
 
-                            byte[] buffer = new byte[8192];
-                            int len;
-                            while((len = zipStream.read(buffer)) != -1)
+                            if(entry.isDirectory())
                             {
-                                out.write(buffer, 0, len);
+                                if(!file.exists())
+                                {
+                                    file.mkdirs();
+                                }
                             }
-                            out.close();
+                            else
+                            {
+
+                                FileOutputStream out = new FileOutputStream(file);
+
+                                byte[] buffer = new byte[8192];
+                                int len;
+                                while((len = zipStream.read(buffer)) != -1)
+                                {
+                                    out.write(buffer, 0, len);
+                                }
+                                out.close();
+                            }
                         }
                         zipStream.close();
                     }
@@ -150,57 +161,19 @@ public class HeadHandler
         MODEL_OFFSET_HELPERS_JSON.clear();
         MODEL_OFFSET_HELPERS.clear();
 
-        ArrayList<File> files = new ArrayList<>();
-        File[] headHelpers = getHeadsDir().toFile().listFiles();
-        if(headHelpers != null)
-        {
-            for(File file : headHelpers)
-            {
-                if(!file.isDirectory() && file.getName().endsWith(".json"))
-                {
-                    files.add(file);
-                }
-            }
-        }
-
-        int count = 0;
-        for(File file : files)
-        {
-            try
-            {
-                String json = FileUtils.readFileToString(file, "UTF-8");
-                if(readHeadInfoJson(json))
-                {
-                    count++;
-                }
-                else
-                {
-                    iChunUtil.LOGGER.error("Error reading HeadInfo file, no forClass: {}", file);
-                }
-            }
-            catch(IOException | JsonSyntaxException e)
-            {
-                iChunUtil.LOGGER.error("Error reading HeadInfo file: {}", file);
-                e.printStackTrace();
-            }
-            catch(ClassNotFoundException e)
-            {
-                iChunUtil.LOGGER.error("Class not found for HeadInfo file: {}", file);
-            }
-        }
-
+        int count = scourDirectory(getHeadsDir().toFile());
         iChunUtil.LOGGER.info("Loaded {} HeadInfo object(s)", count);
 
+        int modCount = 0;
         if(!IMC_HEAD_INFO.isEmpty())
         {
-            count = 0;
             for(String s : IMC_HEAD_INFO)
             {
                 try
                 {
                     if(readHeadInfoJson(s))
                     {
-                        count++;
+                        modCount++;
                     }
                     else
                     {
@@ -217,11 +190,50 @@ public class HeadHandler
                     iChunUtil.LOGGER.error("Class not found for IMC HeadInfo file: {}", s);
                 }
             }
-            iChunUtil.LOGGER.info("Loaded {} IMC HeadInfo object(s)", count);
+            iChunUtil.LOGGER.info("Loaded {} IMC HeadInfo object(s)", modCount);
         }
 
+        return count + modCount;
+    }
+
+    private static int scourDirectory(File dir) //TODO save from server as MD5
+    {
+        int count = 0;
+        File[] files = dir.listFiles();
+        for(File file : files)
+        {
+            if(file.isDirectory())
+            {
+                count += scourDirectory(file);
+            }
+            else if(file.getName().endsWith(".json")) //oh hey we found a json
+            {
+                try
+                {
+                    String json = FileUtils.readFileToString(file, "UTF-8");
+                    if(readHeadInfoJson(json))
+                    {
+                        count++;
+                    }
+                    else
+                    {
+                        iChunUtil.LOGGER.error("Error reading HeadInfo file, no forClass: {}", file);
+                    }
+                }
+                catch(IOException | JsonSyntaxException e)
+                {
+                    iChunUtil.LOGGER.error("Error reading HeadInfo file: {}", file);
+                    e.printStackTrace();
+                }
+                catch(ClassNotFoundException e)
+                {
+                    iChunUtil.LOGGER.error("Class not found for HeadInfo file: {}", file);
+                }
+            }
+        }
         return count;
     }
+
 
     public static boolean readHeadInfoJson(String json) throws ClassNotFoundException, JsonSyntaxException
     {
@@ -232,6 +244,11 @@ public class HeadHandler
             String className = jsonObject.get("forClass").getAsString();
 
             Class clz = Class.forName(className);
+
+            if(MODEL_OFFSET_HELPERS_JSON.containsKey(clz))
+            {
+                iChunUtil.LOGGER.warn("We already have another HeadInfo for {}", clz.getName());
+            }
 
             MODEL_OFFSET_HELPERS_JSON.put(clz, json);
 
@@ -276,6 +293,11 @@ public class HeadHandler
 
             e.getValue().forClass = e.getKey().getName();
 
+            //            if(!(e.getKey() == WitherEntity.class))
+            //            {
+            //                continue;
+            //            }
+
             File file = new File(HeadHandler.getHeadsDir().toFile(), e.getKey().getSimpleName() + ".json");
             try
             {
@@ -300,7 +322,7 @@ public class HeadHandler
         {
             if(event.phase == TickEvent.Phase.END)
             {
-                if(shiftKeyDown && !Screen.hasShiftDown())
+                if(shiftKeyDown && !Screen.hasShiftDown() && Screen.hasControlDown())
                 {
                     System.out.println("dump");
                     HeadHandler.serializeHeadInfos();

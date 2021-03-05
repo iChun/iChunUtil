@@ -18,7 +18,7 @@ public class ItemEffectHandler
 {
     private static boolean hasInit = false;
 
-    public static void init()
+    public static synchronized void init()
     {
         if(!hasInit)
         {

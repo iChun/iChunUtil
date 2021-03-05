@@ -171,7 +171,7 @@ public class Project extends Identifiable<Project> //Model
     }
 
     @Override
-    public void witnessProtectionProgramme()
+    public void witnessProtectionProgramme() //change the identity of the part
     {
         identifier = RandomStringUtils.randomAscii(Project.IDENTIFIER_LENGTH);
         parts.forEach(Identifiable::witnessProtectionProgramme);
@@ -678,7 +678,7 @@ public class Project extends Identifiable<Project> //Model
         }
     }
 
-    public void addBox(Identifiable<?> parent, Part.Box box)
+    public Part addBox(Identifiable<?> parent, Part.Box box)
     {
         if(parent instanceof Part) //Parts can have children
         {
@@ -695,7 +695,10 @@ public class Project extends Identifiable<Project> //Model
             part.boxes.clear();
             parts.add(part);
             addBox(part, box);
+
+            return part;
         }
+        return null;
     }
 
     public void delete(Identifiable<?> child)

@@ -21,7 +21,7 @@ public class HeadShulker extends HeadInfo<ShulkerEntity>
     }
 
     @Override
-    public float[] getHeadJointOffset(ShulkerEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getHeadJointOffset(ShulkerEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
         switch (living.getAttachmentFacing())
         {
@@ -53,17 +53,17 @@ public class HeadShulker extends HeadInfo<ShulkerEntity>
                 stack.rotate(Vector3f.XP.rotationDegrees(180.0F));
                 stack.translate(0.0F, -2.0F, 0.0F);
         }
-        return super.getHeadJointOffset(living, stack, partialTick, eye);
+        return super.getHeadJointOffset(living, stack, partialTick, eye, head);
     }
 
     @Override
-    public float getHeadPitch(ShulkerEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadPitch(ShulkerEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
         return 0F;
     }
 
     @Override
-    public float getHeadPitch(ShulkerEntity living, float partialTick, int eye)
+    public float getHeadPitch(ShulkerEntity living, float partialTick, int eye, int head)
     {
         return 0F;
     }

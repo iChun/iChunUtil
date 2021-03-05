@@ -14,12 +14,17 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class HeadPufferfish extends HeadInfo<PufferfishEntity>
 {
+    //parent fields are for the BIG pufferfish.
     public float[] eyeOffsetSmall = new float[] { 0F, 2.5F/16F, 1.5F/16F };
     public float[] eyeOffsetMedium = new float[] { 0F, 3.5F/16F, 2.5F/16F};
     public float eyeScaleSmall = 0.65F;
     public float eyeScaleMedium = 0.4F;
     public float interpSmall = 1.5F / 16F;
     public float interpMedium = 2F / 16F;
+    public float[] headTopCenterSmall = new float[] { 0F, 8F/16F, 0F };
+    public float[] headTopCenterMedium = new float[] { 0F, 8F/16F, 0F };
+    public float headScaleSmall = 1F;
+    public float headScaleMedium = 1F;
 
     @Override
     public float getEyeScale(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)
@@ -75,6 +80,37 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
             return (eye == 0 ? 30F : -30F);
         }
         return super.getEyeRotation(living, stack, partialTick, eye);
+    }
+
+
+    @Override
+    public float[] getHatOffsetFromJoint(PufferfishEntity living, MatrixStack stack, float partialTick, int head)
+    {
+        int i = living.getPuffState();
+        if(i == 0)
+        {
+            return headTopCenterSmall;
+        }
+        else if(i == 1)
+        {
+            return headTopCenterMedium;
+        }
+        return headTopCenter;
+    }
+
+    @Override
+    public float getHatScale(PufferfishEntity living, MatrixStack stack, float partialTick, int head)
+    {
+        int i = living.getPuffState();
+        if(i == 0)
+        {
+            return headScaleSmall;
+        }
+        else if(i == 1)
+        {
+            return headScaleMedium;
+        }
+        return headScale;
     }
 
     @Override

@@ -14,6 +14,8 @@ public class HeadWither extends HeadInfo<WitherEntity>
     public float[] eyeOffsetSideHead = new float[] { 1F/16F, 2F/16F, 4F/16F };
     public float halfInterpupillaryDistanceSideHead = 2.5F / 16F;
     public float eyeScaleSideHead = 0.75F;
+    public float headScaleSideHead = 0.75F;
+    public float[] headTopCenterSideHead = new float[] { 1F/16F, 4F/16F, 1F/16F };
 
     @Override
     public float getEyeScale(WitherEntity living, MatrixStack stack, float partialTick, int eye)
@@ -26,69 +28,130 @@ public class HeadWither extends HeadInfo<WitherEntity>
     }
 
     @Override
-    public float getHeadYaw(WitherEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHatScale(WitherEntity living, MatrixStack stack, float partialTick, int head)
     {
-        if(eye <= 1)
+        if(head >= 1)
         {
-            return super.getHeadYaw(living, stack, partialTick, eye);
+            return headScaleSideHead;
+        }
+        return super.getHatScale(living, stack, partialTick, head);
+    }
+
+    @Override
+    public float getHeadYaw(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    {
+        if(head >= 0)
+        {
+            return (float)Math.toDegrees(headModel[head == 1 ? 2 : head == 2 ? 1 : 0].rotateAngleY);
         }
         else
         {
-            return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleY);
+            if(eye <= 1)
+            {
+                return super.getHeadYaw(living, stack, partialTick, eye, head);
+            }
+            else
+            {
+                return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleY);
+            }
         }
     }
 
     @Override
-    public float getHeadYaw(WitherEntity living, float partialTick, int eye)
+    public float getHeadYaw(WitherEntity living, float partialTick, int eye, int head)
     {
-        if(eye <= 1)
+        if(head >= 0)
         {
-            return super.getHeadYaw(living, partialTick, eye);
+            if(head == 0)
+            {
+                return super.getHeadYaw(living, partialTick, eye, head);
+            }
+            else
+            {
+                return living.getHeadYRotation(head % 2); //Bear in mind the function is only in the client.
+            }
         }
         else
         {
-            return living.getHeadYRotation(eye <= 3 ? 2 : 1); //Bear in mind the function is only in the client.
+            if(eye <= 1)
+            {
+                return super.getHeadYaw(living, partialTick, eye, head);
+            }
+            else
+            {
+                return living.getHeadYRotation(eye <= 3 ? 1 : 0); //Bear in mind the function is only in the client.
+            }
         }
     }
 
     @Override
-    public float getHeadPitch(WitherEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadPitch(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        if(eye <= 1)
+        if(head >= 0)
         {
-            return super.getHeadPitch(living, stack, partialTick, eye);
+            return (float)Math.toDegrees(headModel[head == 1 ? 2 : head == 2 ? 1 : 0].rotateAngleX);
         }
         else
         {
-            return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleX);
+            if(eye <= 1)
+            {
+                return super.getHeadPitch(living, stack, partialTick, eye, head);
+            }
+            else
+            {
+                return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleX);
+            }
         }
     }
 
     @Override
-    public float getHeadPitch(WitherEntity living, float partialTick, int eye)
+    public float getHeadPitch(WitherEntity living, float partialTick, int eye, int head)
     {
-        if(eye <= 1)
+        if(head >= 0)
         {
-            return super.getHeadPitch(living, partialTick, eye);
+            if(head == 0)
+            {
+                return super.getHeadPitch(living, partialTick, eye, head);
+            }
+            else
+            {
+                return living.getHeadXRotation(head % 2); //Bear in mind the function is only in the client.
+            }
         }
         else
         {
-            return living.getHeadXRotation(eye <= 3 ? 2 : 1); //Bear in mind the function is only in the client.
+            if(eye <= 1)
+            {
+                return super.getHeadPitch(living, partialTick, eye, head);
+            }
+            else
+            {
+                return living.getHeadXRotation(eye <= 3 ? 1 : 0); //Bear in mind the function is only in the client.
+            }
         }
     }
 
     @Override
-    public float getHeadRoll(WitherEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadRoll(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        if(eye <= 1)
+        if(head >= 0)
         {
-            return super.getHeadRoll(living, stack, partialTick, eye);
+            return (float)Math.toDegrees(headModel[head].rotateAngleZ);
         }
         else
         {
-            return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleZ);
+            if(eye <= 1)
+            {
+                return super.getHeadRoll(living, stack, partialTick, eye, head);
+            }
+            else
+            {
+                return (float)Math.toDegrees(headModel[eye <= 3 ? 2 : 1].rotateAngleZ);
+            }
         }
     }
+
+    //We don't override the math based headRoll because there is no roll, so it's 0.
 
     @Override
     public float getEyeSideOffset(WitherEntity living, MatrixStack stack, float partialTick, int eye)
@@ -117,19 +180,50 @@ public class HeadWither extends HeadInfo<WitherEntity>
     }
 
     @Override
-    public float[] getHeadJointOffset(WitherEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getHatOffsetFromJoint(WitherEntity living, MatrixStack stack, float partialTick, int head)
     {
-        if(eye <= 1)
+        if(head == 0)
         {
-            return super.getHeadJointOffset(living, stack, partialTick, eye);
-        }
-        else if(eye <= 3)
-        {
-            return headJointSideHeadLeft;
+            return super.getHatOffsetFromJoint(living, stack, partialTick, head);
         }
         else
         {
-            return headJointSideHeadRight;
+            return headTopCenterSideHead;
+        }
+    }
+
+    @Override
+    public float[] getHeadJointOffset(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    {
+        if(head >= 0)
+        {
+            if(head == 0)
+            {
+                return super.getHeadJointOffset(living, stack, partialTick, eye, head);
+            }
+            else if(head == 1)
+            {
+                return headJointSideHeadLeft;
+            }
+            else
+            {
+                return headJointSideHeadRight;
+            }
+        }
+        else
+        {
+            if(eye <= 1)
+            {
+                return super.getHeadJointOffset(living, stack, partialTick, eye, head);
+            }
+            else if(eye <= 3)
+            {
+                return headJointSideHeadLeft;
+            }
+            else
+            {
+                return headJointSideHeadRight;
+            }
         }
     }
 }

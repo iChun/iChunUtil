@@ -19,15 +19,15 @@ public class HeadLlama extends HeadHorse
     }
 
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, stack, partialTick, eye);
+        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, stack, partialTick, eye, head);
     }
 
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye)
+    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, partialTick, eye);
+        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, partialTick, eye, head);
     }
 
     @Override

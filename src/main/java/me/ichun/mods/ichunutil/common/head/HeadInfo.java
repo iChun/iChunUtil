@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common.head;
 
+import com.google.common.base.Splitter;
 import com.google.gson.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,14 +29,18 @@ import java.util.Random;
 
 public class HeadInfo<E extends LivingEntity>
 {
+    public static final Splitter DOT_SPLITTER = Splitter.on(".").trimResults().omitEmptyStrings();
+
     //Used during serialisation
     public transient boolean hasStrippedInfo = false;
 
     //Functional fields
     @OnlyIn(Dist.CLIENT)
     public transient ModelRenderer[] headModel = null;
-    public transient Field field;
-    public transient int list = -2;
+    @OnlyIn(Dist.CLIENT)
+    public transient ModelRenderer[] childTranslates = null;
+    public transient Field[] fields = null;
+    public transient int[] fieldIndex = null;
 
     public transient float[] headJoint = new float[3]; //so that GC doesn't hate us
     public transient Random rand = new Random();
@@ -63,11 +69,15 @@ public class HeadInfo<E extends LivingEntity>
 
     //Hats Stuff
     public Boolean noTopInfo = false; //Use this to disable Hats support
-    public Boolean useDefinedInfo = false; //Use this to force Hats to use the JSON values rather than calculating the top of the head. //TODO Default to center of the top of the head?
     public float[] headTopCenter = new float[] { 0F, 8F/16F, 0F };
-    public Float headScale = 1F; //Compared to the a player head.
+    public Float headScale = 1F; //Top of the head. Compared to the a player head.
+    public Integer headCount = 1;
+    public Float hatTiltPitch = 0F;
+    public Float hatTiltYaw = 0F;
+    public float[] headArmorOffset = new float[] { 0F, 1F/16F, 0F };
+    public Float headArmorScale = 10F / 8F; //Armor is usually 1.0F expansion, both directions.
 
-    public boolean affectedByInvisibility(E living, int eye)
+    public boolean affectedByInvisibility(E living, int eye, int head)
     {
         return affectedByInvisibility;
     }
@@ -82,9 +92,14 @@ public class HeadInfo<E extends LivingEntity>
         return eyeCount;
     }
 
+    public int getHeadCount(E living)
+    {
+        return headCount;
+    }
+
 
     @OnlyIn(Dist.CLIENT)
-    public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int eye)
+    public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int eye, int head) //if head == -1, check eye instead
     {
         headJoint[0] = -(headModel[0].rotationPointX / 16F);
         headJoint[1] = -(headModel[0].rotationPointY / 16F);
@@ -154,50 +169,88 @@ public class HeadInfo<E extends LivingEntity>
         return pupilColour;
     }
 
+
+    //HEAD FUNCTIONS
     @OnlyIn(Dist.CLIENT)
-    public float[] getHatOffset(E living, MatrixStack stack, float partialTick)
+    public float[] getHatOffsetFromJoint(E living, MatrixStack stack, float partialTick, int head)
     {
         return headTopCenter;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHatScale(E living, MatrixStack stack, float partialTick)
+    public float getHatScale(E living, MatrixStack stack, float partialTick, int head)
     {
         return headScale;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadYaw(E living, MatrixStack stack, float partialTick, int eye)
+    public float getHatYaw(E living, MatrixStack stack, float partialTick, int head)
+    {
+        return hatTiltYaw;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getHatPitch(E living, MatrixStack stack, float partialTick, int head)
+    {
+        return hatTiltPitch;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getHeadYaw(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
         return (float)Math.toDegrees(headModel[0].rotateAngleY);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadPitch(E living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadPitch(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
         return (float)Math.toDegrees(headModel[0].rotateAngleX);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadRoll(E living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadRoll(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
         return (float)Math.toDegrees(headModel[0].rotateAngleZ);
     }
 
     //Mathed functions that don't share the model/require matrixstack (during rendering)
-    public float getHeadYaw(E living, float partialTick, int eye)
+    public float getHeadYaw(E living, float partialTick, int eye, int head)
     {
         return living.prevRotationYawHead + (living.rotationYawHead - living.prevRotationYawHead) * partialTick;
     }
 
-    public float getHeadPitch(E living, float partialTick, int eye)
+    public float getHeadPitch(E living, float partialTick, int eye, int head)
     {
         return living.prevRotationPitch + (living.rotationPitch - living.prevRotationPitch) * partialTick;
     }
 
-    public float getHeadRoll(E living, float partialTick, int eye)
+    public float getHeadRoll(E living, float partialTick, int eye, int head)
     {
         return 0F;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float[] getHeadArmorOffset(E living, MatrixStack stack, float partialTick, int head)
+    {
+        return !living.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty() ? headArmorOffset : null;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getHeadArmorScale(E living, MatrixStack stack, float partialTick, int head)
+    {
+        return !living.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty() ? headArmorScale : 1F;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void postHeadTranslation(E living, MatrixStack stack, float partialTick)
+    {
+        if(childTranslates != null)
+        {
+            for(ModelRenderer child : childTranslates)
+            {
+                translateRotateToChild(stack, child);
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -263,70 +316,144 @@ public class HeadInfo<E extends LivingEntity>
     protected void setHeadModelFromRenderer(LivingRenderer renderer)
     {
         EntityModel model = renderer.getEntityModel();
-        if(field == null && list == -2) //we haven't looked it up yet?
+        if(fieldIndex == null) //we haven't looked it up yet?
         {
-            String fieldName = modelFieldName;
-            list = -1;
-            if(fieldName.contains("[")) //it is an array or a list
+            List<String> fieldNames = DOT_SPLITTER.splitToList(modelFieldName);
+            fields = new Field[fieldNames.size()];
+            fieldIndex = new int[fieldNames.size()];
+            boolean flag = false; //true if we errored.
+            for(int i = 0; i < fieldNames.size(); i++)
             {
-                fieldName = modelFieldName.substring(0, modelFieldName.indexOf("["));
-                try
+                String fieldNameFull = fieldNames.get(i);
+                String fieldName = fieldNameFull;
+                int index = -1;
+                if(fieldName.contains("[")) //it is an array, list, or get child.
                 {
-                    list = Integer.parseInt(modelFieldName.substring(modelFieldName.indexOf("[") + 1, modelFieldName.length() - 1));
+                    fieldName = fieldNameFull.substring(0, fieldNameFull.indexOf("["));
+                    try
+                    {
+                        index = Integer.parseInt(fieldNameFull.substring(fieldNameFull.indexOf("[") + 1, fieldNameFull.length() - 1));
+                    }
+                    catch(NumberFormatException e)
+                    {
+                        iChunUtil.LOGGER.error("Error parsing modelFieldName of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                        flag = true;
+                        index = -3; //we look for -1 and higher to confirm parsing. -2 means we haven't parsed yet.
+                    }
                 }
-                catch(NumberFormatException e)
+                Field field = findField(model.getClass(), ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName));
+                if(field != null)
                 {
-                    iChunUtil.LOGGER.error("Error parsing modelFieldName of {} for {}", modelFieldName, this.getClass().getSimpleName());
-                    list = -3; //we look for -1 and higher to confirm parsing. -2 means we haven't parsed yet.
+                    fields[i] = field;
+                    fieldIndex[i] = index;
+                }
+                else
+                {
+                    flag = true;
+                    iChunUtil.LOGGER.error("Error finding field of {} from {} for {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                 }
             }
-            if(list >= -1)
+            if(fieldIndex.length > 1 && !flag)
             {
-                field = findField(model.getClass(), ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName));
+                childTranslates = new ModelRenderer[fieldIndex.length - 1];
             }
         }
 
-        if(field != null)
+        if(fields != null)
         {
-            field.setAccessible(true);
-            if(field.getDeclaringClass().isInstance(model)) //model is instance of the class declaring our field
+            for(int i = 0; i < fields.length; i++)
             {
+                Field field = fields[i];
+                if(field == null)
+                {
+                    break;
+                }
+
+                field.setAccessible(true);
+
+                if(i == 0 && !field.getDeclaringClass().isInstance(model)) //all our fields are from the same class. Check once only. model is instance of the class declaring our field
+                {
+                    break;
+                }
+
+                int index = fieldIndex[i];
                 try
                 {
                     Object o = field.get(model);
-                    if(o instanceof ModelRenderer)
+                    if(i == 0) //we're still looking for the parent heads.
                     {
-                        this.headModel[0] = ((ModelRenderer)o);
+                        if(o instanceof ModelRenderer)
+                        {
+                            if(index >= 0)
+                            {
+                                this.headModel[0] = ((ModelRenderer)o).childModels.get(index);
+                            }
+                            else
+                            {
+                                this.headModel[0] = ((ModelRenderer)o);
+                            }
+                        }
+                        else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
+                        {
+                            if(index >= 0)
+                            {
+                                this.headModel[0] = ((ModelRenderer[])o)[index];
+                            }
+                            else
+                            {
+                                this.headModel = ((ModelRenderer[])o);
+                            }
+                        }
+                        else if(o instanceof List)
+                        {
+                            Object o2 = ((List<?>)o).get(index);
+                            if(o2 instanceof ModelRenderer)
+                            {
+                                this.headModel[0] = ((ModelRenderer)o2);
+                            }
+                        }
                     }
-                    else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
+                    else
                     {
-                        if(list >= 0)
+                        if(o instanceof ModelRenderer)
                         {
-                            this.headModel[0] = ((ModelRenderer[])o)[list];
+                            if(index >= 0)
+                            {
+                                this.childTranslates[i - 1] = ((ModelRenderer)o).childModels.get(index);
+                            }
+                            else
+                            {
+                                this.childTranslates[i - 1] = ((ModelRenderer)o);
+                            }
                         }
-                        else
+                        else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
                         {
-                            this.headModel = ((ModelRenderer[])o);
+                            if(index >= 0)
+                            {
+                                this.childTranslates[i - 1] = ((ModelRenderer[])o)[index];
+                            }
+                            else
+                            {
+                                this.childTranslates = ((ModelRenderer[])o);
+                            }
                         }
-                    }
-                    else if(o instanceof List)
-                    {
-                        Object o2 = ((List<?>)o).get(list);
-                        if(o2 instanceof ModelRenderer)
+                        else if(o instanceof List)
                         {
-                            this.headModel[0] = ((ModelRenderer)o2);
+                            Object o2 = ((List<?>)o).get(index);
+                            if(o2 instanceof ModelRenderer)
+                            {
+                                this.childTranslates[i - 1] = ((ModelRenderer)o2);
+                            }
                         }
+
                     }
                 }
-                catch(IllegalAccessException e)
+                catch(NullPointerException | IllegalAccessException e)
                 {
+                    iChunUtil.LOGGER.error("Error getting head info of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                     e.printStackTrace();
                 }
             }
-        }
-        else
-        {
-            iChunUtil.LOGGER.warn("We can't find the field {} for {} from renderer {}", modelFieldName, model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
         }
     }
 
@@ -449,7 +576,7 @@ public class HeadInfo<E extends LivingEntity>
                     Class clz = Class.forName(customClass);
 
                     HeadInfo deserialized = context.deserialize(json, clz);
-                    HeadInfo defaultInfo = new HeadInfo();
+                    HeadInfo defaultInfo = (HeadInfo)clz.newInstance();
 
                     for(Field field : HeadInfo.class.getDeclaredFields())
                     {
@@ -475,6 +602,11 @@ public class HeadInfo<E extends LivingEntity>
                 catch(ClassNotFoundException e)
                 {
                     iChunUtil.LOGGER.error("Cannot find custom head info class: " + customClass);
+                    e.printStackTrace();
+                }
+                catch(IllegalAccessException | InstantiationException | ClassCastException e)
+                {
+                    iChunUtil.LOGGER.error("Error creating custom class: " + customClass);
                     e.printStackTrace();
                 }
             }

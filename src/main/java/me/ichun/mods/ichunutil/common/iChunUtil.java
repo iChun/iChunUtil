@@ -54,7 +54,7 @@ public class iChunUtil
 
         MinecraftForge.EVENT_BUS.register(eventHandlerServer = new EventHandlerServer());
 
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             ResourceHelper.init();
             configClient = new ConfigClient().init();
             EntityHelper.injectMinecraftPlayerGameProfile();
