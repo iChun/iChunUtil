@@ -198,7 +198,6 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
 
                 draw(stack, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
                 draw(stack, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
-
             }
         }
         else

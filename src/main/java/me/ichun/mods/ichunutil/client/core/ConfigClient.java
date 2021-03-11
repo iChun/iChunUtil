@@ -26,7 +26,6 @@ import java.util.Collections;
 public class ConfigClient extends ConfigBase
 {
     @CategoryDivider(name = "bns")
-    @Prop
     public boolean guiStyleMinecraft = false;
 
     @Prop(min = 0, max = 50)
@@ -45,10 +44,8 @@ public class ConfigClient extends ConfigBase
     public String guiDefaultTheme = "default";
 
     @CategoryDivider(name = "clientOnly")
-    @Prop
     public boolean easterEgg = true;
 
-    @Prop
     public boolean buttonOptionsShiftOpensMods = true;
 
     @CategoryDivider(name = "headTracking")

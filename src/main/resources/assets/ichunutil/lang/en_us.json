@@ -47,7 +47,7 @@
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.options": "Options",
 
-  "gui.ichunutil.configs.noEditingServerConfig": "You can't edit a Server config whilst on a Dedicated Server!",
+  "gui.ichunutil.configs.noEditingServerConfig": "You can't edit a Server config whilst in a Multiplayer environment!",
 
   "gui.ichunutil.element.textField": "Text Field",
 

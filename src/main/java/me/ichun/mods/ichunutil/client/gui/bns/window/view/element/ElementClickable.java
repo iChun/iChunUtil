@@ -15,6 +15,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
 {
     public @Nonnull Consumer<T> callback;
     public boolean hover; //for rendering
+    public boolean disabled;
 
     public ElementClickable(@Nonnull Fragment parent, Consumer<T> callback)
     {
@@ -22,10 +23,20 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
         this.callback = callback;
     }
 
+    public <T extends ElementClickable<?>> T setDisabled(boolean flag)
+    {
+        disabled = flag;
+        return (T)this;
+    }
+
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        hover = isMouseOver(mouseX, mouseY) || parentFragment.getListener() == this;
+        hover = false;
+        if(!disabled)
+        {
+            hover = isMouseOver(mouseX, mouseY) || parentFragment.getListener() == this;
+        }
     }
 
     @Override
@@ -33,7 +44,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     {
         boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
         parentFragment.setListener(null); //we're a one time click, stop focusing on us
-        if(isMouseOver(mouseX, mouseY) && button == 0) //lmb
+        if(!disabled && isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
             trigger();
         }
@@ -55,7 +66,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public boolean keyPressed(int key, int scancode, int listener)
     {
-        if(key == GLFW.GLFW_KEY_SPACE || key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER)
+        if(!disabled && (key == GLFW.GLFW_KEY_SPACE || key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER))
         {
             trigger();
             return true;

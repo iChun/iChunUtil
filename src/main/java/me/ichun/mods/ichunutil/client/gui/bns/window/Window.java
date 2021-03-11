@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -128,6 +129,11 @@ public abstract class Window<M extends IWindows> extends Fragment
         return (T)this;
     }
 
+    public <V extends View<?>> V getCurrentView()
+    {
+        return (V)currentView;
+    }
+
     @Override
     public void init()
     {
@@ -138,12 +144,17 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public List<View<?>> getEventListeners()
     {
-        return views;
+        return currentView != null ? ImmutableList.of(currentView) : views;
     }
 
     public void setView(View<?> v)
     {
         this.views.add(v);
+        setCurrentView(v);
+    }
+
+    public void setCurrentView(View<?> v)
+    {
         this.currentView = v;
     }
 
@@ -183,6 +194,35 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
+        if(isMouseOver(mouseX, mouseY))
+        {
+            if(canDrag() || canDragResize()) //dragging
+            {
+                boolean isDocked = parent.isDocked(this);
+                EdgeGrab grab = new EdgeGrab(
+                        (!isDocked && !constraint.hasLeft() || isDocked && (!constraint.hasLeft() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.LEFT).getReference()))) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
+                        (!isDocked && !constraint.hasRight() || isDocked && (!constraint.hasRight() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.RIGHT).getReference()))) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
+                        (!isDocked && !constraint.hasTop() || isDocked && (!constraint.hasTop() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.TOP).getReference()))) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
+                        (!isDocked && !constraint.hasBottom() || isDocked && (!constraint.hasBottom() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.BOTTOM).getReference()))) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
+                        (!isDocked || canBeUndocked()) && isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
+                        (int)mouseX,
+                        (int)mouseY
+                );
+
+                if(grab.isActive())
+                {
+                    if(grab.titleGrab)
+                    {
+                        getWorkspace().cursorState = Workspace.CURSOR_CROSSHAIR;
+                    }
+                    else
+                    {
+                        getWorkspace().cursorState = grab.left || grab.right ? Workspace.CURSOR_HRESIZE : Workspace.CURSOR_VRESIZE;
+                    }
+                }
+            }
+        }
+
         //render dock highlight
         renderDockHighlight(stack, mouseX, mouseY, partialTick);
 
@@ -396,10 +436,10 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 boolean isDocked = parent.isDocked(this);
                 EdgeGrab grab = new EdgeGrab(
-                        (!isDocked || (!constraint.hasLeft() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.LEFT).getReference()))) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
-                        (!isDocked || (!constraint.hasRight() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.RIGHT).getReference()))) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
-                        (!isDocked || (!constraint.hasTop() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.TOP).getReference()))) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
-                        (!isDocked || (!constraint.hasBottom() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.BOTTOM).getReference()))) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
+                        (!isDocked && !constraint.hasLeft() || isDocked && (!constraint.hasLeft() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.LEFT).getReference()))) && isMouseBetween(mouseX, getLeft(), getLeft() + borderSize.get()),
+                        (!isDocked && !constraint.hasRight() || isDocked && (!constraint.hasRight() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.RIGHT).getReference()))) && isMouseBetween(mouseX, getRight() - borderSize.get(), getRight()),
+                        (!isDocked && !constraint.hasTop() || isDocked && (!constraint.hasTop() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.TOP).getReference()))) && isMouseBetween(mouseY, getTop(), getTop() + borderSize.get()),
+                        (!isDocked && !constraint.hasBottom() || isDocked && (!constraint.hasBottom() || parent.sameDockStack(this, constraint.get(Constraint.Property.Type.BOTTOM).getReference()))) && isMouseBetween(mouseY, getBottom() - borderSize.get(), getBottom()),
                         (!isDocked || canBeUndocked()) && isMouseBetween(mouseY, getTop() + borderSize.get(), getTop() + titleSize.get()) && hasTitle(),
                         (int)mouseX,
                         (int)mouseY

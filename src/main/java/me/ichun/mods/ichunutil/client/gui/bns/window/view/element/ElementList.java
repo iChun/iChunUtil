@@ -328,7 +328,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     if(scrollHori != null)
                     {
-                        scrollHori.secondHandScroll(dist);
+                        scrollHori.secondHandScroll((dist * 70 / getTotalItemHeight()) * 2D);
                         return true;
                     }
                 }
@@ -336,7 +336,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     if(scrollVert != null)
                     {
-                        scrollVert.secondHandScroll(dist);
+                        scrollVert.secondHandScroll((dist * 70 / getTotalItemHeight()) * 2D);
                         return true;
                     }
                 }
@@ -589,6 +589,11 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 boolean draggingUs = parentFragment.isDragging() && parentFragment.getListener() == this && parentFragment.pos != null;
                 ElementList<?> list = parentFragment;
                 MousePosItem pos = list.pos;
+
+                if(isMouseOver(mouseX, mouseY) && parentFragment.dragHandler != null || draggingUs)
+                {
+                    getWorkspace().cursorState = Workspace.CURSOR_CROSSHAIR;
+                }
 
                 if(draggingUs)
                 {

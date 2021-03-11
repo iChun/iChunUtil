@@ -7,15 +7,13 @@ import me.ichun.mods.ichunutil.common.module.tabula.project.Identifiable;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class ImporterTabula
         implements Importer
@@ -75,6 +73,70 @@ public class ImporterTabula
         catch (Exception e1)
         {
             iChunUtil.LOGGER.warn("Something went wrong loading Tabula file: {}", file.getName());
+            e1.printStackTrace();
+            return null;
+        }
+    }
+
+    public Project createProject(InputStream in)
+    {
+        try
+        {
+            ZipInputStream zipStream = new ZipInputStream(in);
+            ZipEntry entry = null;
+
+            InputStream modelInfo = null;
+            InputStream image = null;
+
+            boolean tampered = false;
+
+            while((entry = zipStream.getNextEntry()) != null)
+            {
+                if(!entry.isDirectory())
+                {
+                    if(entry.getName().endsWith(".png") && entry.getCrc() != Long.decode("0xf970c898")) //is this Techne legacy? 1x1 white pixel was it?
+                    {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        IOUtils.copy(zipStream, baos);
+                        image = new ByteArrayInputStream(baos.toByteArray());
+                    }
+                    if(entry.getName().endsWith(".json"))
+                    {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        IOUtils.copy(zipStream, baos);
+                        modelInfo = new ByteArrayInputStream(baos.toByteArray());
+                    }
+                    if(!(entry.getName().endsWith(".png") || entry.getName().endsWith(".json")))
+                    {
+                        tampered = true;
+                    }
+                }
+
+            }
+
+            Project info = null;
+            if(modelInfo != null)
+            {
+                info = readModelFile(modelInfo, image);
+            }
+
+            zipStream.close();
+
+            if(info == null || info.projVersion <= 4) //somehow our file is still null. Let's try piping it into our Legacy loader.
+            {
+                iChunUtil.LOGGER.error("We have a null/old tabula file. Please no! We don't know how to handle this!");
+                Thread.dumpStack();
+            }
+            else if(tampered)
+            {
+                info.tampered = true;
+                iChunUtil.LOGGER.warn("Loaded a tampered Tabula model file.");
+            }
+            return info;
+        }
+        catch (Exception e1)
+        {
+            iChunUtil.LOGGER.warn("Something went wrong loading Tabula input stream.");
             e1.printStackTrace();
             return null;
         }

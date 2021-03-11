@@ -4,6 +4,7 @@ import com.google.gson.*;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,7 +74,7 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
         {
             json = getHelperJson(clzz);
         }
-        MODEL_OFFSET_HELPERS_JSON.put(clz, json);
+        //We don't cache on upper layers. We just want the raw for the top-most class
         return json;
     }
 
@@ -141,7 +142,7 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
 
                 loadHeadInfos();
 
-                //                MinecraftForge.EVENT_BUS.register(new SerialiserHelper());
+//                net.minecraftforge.common.MinecraftForge.EVENT_BUS.register(new SerialiserHelper());
             }
             catch(IOException e)
             {
@@ -293,10 +294,10 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
 
             e.getValue().forClass = e.getKey().getName();
 
-            //            if(!(e.getKey() == WitherEntity.class))
-            //            {
-            //                continue;
-            //            }
+                        if(!(e.getKey() == EnderDragonEntity.class))
+                        {
+                            continue;
+                        }
 
             File file = new File(HeadHandler.getHeadsDir().toFile(), e.getKey().getSimpleName() + ".json");
             try

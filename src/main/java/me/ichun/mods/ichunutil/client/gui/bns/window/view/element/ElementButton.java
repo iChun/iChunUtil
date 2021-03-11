@@ -33,12 +33,12 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
         {
             if(renderMinecraftStyle())
             {
-                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
             }
             else
             {
                 fill(stack, getTheme().elementButtonBorder, 0);
-                int[] colour = parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
+                int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
                 fill(stack, colour, 1);
             }
         }

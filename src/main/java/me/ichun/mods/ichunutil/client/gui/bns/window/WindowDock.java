@@ -319,6 +319,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 for(int i = values.length - 1; i >= 0; i--)
                 {
                     Constraint.Property.Type type1 = values[i];
+                    if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+                    {
+                        continue;
+                    }
+
                     IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
                     if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
                     {
@@ -382,6 +387,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
         Constraint constraint = new Constraint(window);
         for(Constraint.Property.Type type1 : Constraint.Property.Type.values())
         {
+            if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+            {
+                continue;
+            }
+
             IConstrainable constrainable = getAnchor(type1);
             if(type1 != type.getOpposite())
             {
@@ -423,6 +433,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
             {
                 for(Constraint.Property.Type type : Constraint.Property.Type.values())
                 {
+                    if(type.equals(WIDTH) || type.equals(HEIGHT))
+                    {
+                        continue;
+                    }
+
                     Constraint.Property stackAnchor = getStackAnchor(windows, type);
                     if(stackAnchor != null)
                     {
@@ -486,6 +501,11 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         for(int ii = values.length - 1; ii >= 0; ii--)
                         {
                             Constraint.Property.Type type1 = values[ii];
+                            if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+                            {
+                                continue;
+                            }
+
                             IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
                             if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
                             {

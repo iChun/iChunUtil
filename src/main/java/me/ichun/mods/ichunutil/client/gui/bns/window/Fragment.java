@@ -43,6 +43,15 @@ public abstract class Fragment<P extends Fragment>
         return (T)this;
     }
 
+    public @Nonnull Constraint constraints()
+    {
+        if(this.constraint == Constraint.NONE)
+        {
+            this.constraint = new Constraint(this);
+        }
+        return this.constraint;
+    }
+
     public <T extends Fragment<?>> T setId(String id)
     {
         this.id = id;

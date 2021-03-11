@@ -30,6 +30,10 @@ public final class ClientEntityTracker
     private static final AtomicInteger NEXT_ENTITY_ID = new AtomicInteger(-70000000);// -70 million. We reduce even further as we use this more, negative ent IDs prevent collision with real entities (with positive IDs starting with 0)
     private static final IdentityHashMap<Entity, EntityTracker> TRACKERS = new IdentityHashMap<>();
 
+    /**
+     * Call this during mod constructor events
+     * @param bus FML event bus.
+     */
     public static synchronized void init(IEventBus bus) //event bus from constructor
     {
         if(!hasInit)

@@ -13,11 +13,13 @@ public class Constraint
     private Property right;
     private Property top;
     private Property bottom;
+    private Property width;
+    private Property height;
 
     public Constraint(IConstrained parent) //TODO several elements constrained to each other then back to the same parent?
     {
         this.parent = parent;
-        left = right = top = bottom = Property.NONE;
+        left = right = top = bottom = width = height = Property.NONE;
     }
 
     public Constraint left(IConstrainable c, Property.Type type, int i)
@@ -44,6 +46,18 @@ public class Constraint
         return this;
     }
 
+    public Constraint width(IConstrainable c, Property.Type type, int i)
+    {
+        width = c == null ? Property.NONE : new Property(c, Property.Type.WIDTH, type, i);
+        return this;
+    }
+
+    public Constraint height(IConstrainable c, Property.Type type, int i)
+    {
+        height = c == null ? Property.NONE : new Property(c, Property.Type.HEIGHT, type, i);
+        return this;
+    }
+
     public Constraint type(Property.Type link, IConstrainable c, Property.Type type, int i)
     {
         switch(link)
@@ -52,6 +66,8 @@ public class Constraint
             case RIGHT : return right(c, type, i);
             case TOP : return top(c, type, i);
             case BOTTOM : return bottom(c, type, i);
+            case WIDTH: return width(c, type, i);
+            case HEIGHT: return height(c, type, i);
         }
         return this;
     }
@@ -63,7 +79,9 @@ public class Constraint
             case LEFT: return left;
             case RIGHT: return right;
             case TOP: return top;
-            default: case BOTTOM: return bottom;
+            case BOTTOM: return bottom;
+            case WIDTH: return width;
+            default: case HEIGHT:return height;
         }
     }
 
@@ -87,6 +105,10 @@ public class Constraint
         return bottom != Property.NONE;
     }
 
+    public boolean hasWidth() { return width != Property.NONE; }
+
+    public boolean hasHeight() { return height != Property.NONE; }
+
     public static Constraint matchParent(@Nonnull IConstrained c1, @Nonnull IConstrainable c, int i)
     {
         return new Constraint(c1)
@@ -94,6 +116,13 @@ public class Constraint
                 .right(c, Property.Type.RIGHT, i)
                 .top(c, Property.Type.TOP, i)
                 .bottom(c, Property.Type.BOTTOM, i);
+    }
+
+    public static Constraint matchParentRatio(@Nonnull IConstrained c1, @Nonnull IConstrainable c, int i) // specifically for width/height ratio
+    {
+        return new Constraint(c1)
+                .width(c, Property.Type.WIDTH, i)
+                .height(c, Property.Type.HEIGHT, i);
     }
 
     public static Constraint sizeOnly(@Nonnull IConstrained c)
@@ -124,6 +153,11 @@ public class Constraint
             parent.expandX(parent.getMinWidth());
             parent.expandY(parent.getMinHeight());
 
+            //apply our width/heights before we follow the boundary constraints
+            width.apply(this);
+            height.apply(this);
+
+            //do the boundary constraints
             if(!(left.apply(this) | right.apply(this)))
             {
                 if(hasTop() || hasBottom())
@@ -183,7 +217,9 @@ public class Constraint
             LEFT, // +
             RIGHT, // -
             TOP, // +
-            BOTTOM; // -
+            BOTTOM, // -
+            WIDTH, //dist = value/100
+            HEIGHT; //dist = value/100
 
             public int get(IConstrainable reference)
             {
@@ -193,6 +229,8 @@ public class Constraint
                     case RIGHT: return reference.getRight();
                     case TOP: return reference.getTop();
                     case BOTTOM: return reference.getBottom();
+                    case WIDTH: return reference.getWidth();
+                    case HEIGHT: return reference.getHeight();
                 }
                 return -1;
             }
@@ -204,7 +242,9 @@ public class Constraint
                     case LEFT: return RIGHT;
                     case RIGHT: return LEFT;
                     case TOP: return BOTTOM;
-                    default: case BOTTOM: return TOP;
+                    case BOTTOM: return TOP;
+                    case WIDTH: return HEIGHT;
+                    default: case HEIGHT: return WIDTH;
                 }
             }
 
@@ -214,9 +254,11 @@ public class Constraint
                 {
                     case LEFT:
                     case RIGHT:
+                    case WIDTH:
                         return Direction.Axis.X;
                     case TOP:
                     case BOTTOM:
+                    case HEIGHT:
                         return Direction.Axis.Y;
                     default:
                         return Direction.Axis.Z;
@@ -276,6 +318,16 @@ public class Constraint
                     {
                         c.parent.setTop(type.get(reference) - dist - c.parent.getHeight()); //move the entire thing down
                     }
+                    return true;
+                }
+                case WIDTH:
+                {
+                    c.parent.setWidth((int)(type.get(reference) * dist / 100F)); //get the reference object's width, * dist / 100 for ratio
+                    return true;
+                }
+                case HEIGHT:
+                {
+                    c.parent.setHeight((int)(type.get(reference) * dist / 100F)); //get the reference object's width, * dist / 100 for ratio
                     return true;
                 }
             }

@@ -6,4 +6,6 @@ public interface IConstrainable
     int getRight();
     int getTop();
     int getBottom();
+    int getWidth();
+    int getHeight();
 }

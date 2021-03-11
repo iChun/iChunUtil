@@ -62,10 +62,8 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     {
         setScissor();
         //render our background
-        if(!renderMinecraftStyle())
-        {
-            fill(stack, getTheme().windowBackground, 0);
-        }
+        renderBackground(stack);
+
         //render attached elements
         for(Element<?> element : elements)
         {
@@ -73,6 +71,14 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
         }
 
         resetScissorToParent();
+    }
+
+    public void renderBackground(MatrixStack stack)
+    {
+        if(!renderMinecraftStyle())
+        {
+            fill(stack, getTheme().windowBackground, 0);
+        }
     }
 
     @Override

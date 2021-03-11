@@ -17,7 +17,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<T> callback)
     {
         super(parent, callback);
-        text = I18n.format(s);
+        text = !s.isEmpty() ? I18n.format(s) : "";
     }
 
     public <T extends ElementToggle<?>> T setToggled(boolean flag)
@@ -32,13 +32,17 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle())
         {
-            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
         }
         else
         {
             fill(stack, getTheme().elementButtonBorder, 0);
             int[] colour;
-            if(parentFragment.isDragging() && parentFragment.getListener() == this)
+            if(disabled)
+            {
+                colour = getTheme().elementButtonBackgroundInactive;
+            }
+            else if(parentFragment.isDragging() && parentFragment.getListener() == this)
             {
                 colour = getTheme().elementButtonClick;
             }

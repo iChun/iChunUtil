@@ -45,7 +45,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             RenderSystem.color4f(1F, 1F, 1F, 1F);
             RenderSystem.enableAlphaTest();
 
-            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
 
             bindTexture(Fragment.VANILLA_STATS_ICON);
             int size = 4;
@@ -54,7 +54,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
         else
         {
             fill(stack, getTheme().elementButtonBorder, 0);
-            int[] colour = parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
+            int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
             fill(stack, colour, 1);
 
             if(parentFragment.isDragging() && parentFragment.getListener() == this)

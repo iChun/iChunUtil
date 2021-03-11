@@ -21,6 +21,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.*;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,14 @@ import java.util.function.Function;
 public abstract class Workspace extends Screen //boxes and stuff!
         implements IConstrainable, IWindows
 {
-    public static final String ELLIPSIS = "…";
+    public static final long CURSOR_ARROW = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
+    public static final long CURSOR_IBEAM = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
+    public static final long CURSOR_CROSSHAIR = GLFW.glfwCreateStandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR);
+    public static final long CURSOR_HAND = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HAND_CURSOR);
+    public static final long CURSOR_HRESIZE = GLFW.glfwCreateStandardCursor(GLFW.GLFW_HRESIZE_CURSOR);
+    public static final long CURSOR_VRESIZE = GLFW.glfwCreateStandardCursor(GLFW.GLFW_VRESIZE_CURSOR);
+
+    public static final String ELLIPSIS = "\u2026";//"…";
 
     private static HashMap<Class<?>, Function<Object, List<String>>> OBJECT_INTERPRETER = new HashMap<>();
     {
@@ -88,6 +96,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public String lastTooltip;
     public int tooltipCooldown;
+
+    public long cursorState;
 
     public Workspace(Screen lastScreen, ITextComponent title, boolean mcStyle)
     {
@@ -159,6 +169,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void onClose()
     {
         this.minecraft.keyboardListener.enableRepeatEvents(false);
+
+        GLFW.glfwSetCursor(this.minecraft.getMainWindow().getHandle(), 0);
     }
 
     @Override
@@ -319,6 +331,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
+        cursorState = CURSOR_ARROW;
+
         stack.push();
         RenderSystem.enableAlphaTest();
         renderBackground(stack);
@@ -330,6 +344,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
         resetBackground();
         RenderSystem.enableAlphaTest();
         stack.pop();
+
+        GLFW.glfwSetCursor(this.minecraft.getMainWindow().getHandle(), cursorState);
     }
 
     public void renderWindows(MatrixStack stack, int mouseX, int mouseY, float partialTick)

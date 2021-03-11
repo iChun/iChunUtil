@@ -226,7 +226,7 @@ public class Project extends Identifiable<Project> //Model
     @OnlyIn(Dist.CLIENT)
     public void destroy()
     {
-        //destroy the model
+        //destroy the texture
         setImageBytes(null);
     }
 
@@ -256,6 +256,7 @@ public class Project extends Identifiable<Project> //Model
             setImageBytes(project.getTextureBytes());
         }
         parts.addAll(project.parts);
+        adoptChildren();
     }
 
 
