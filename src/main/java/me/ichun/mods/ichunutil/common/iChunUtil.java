@@ -31,7 +31,7 @@ public class iChunUtil
     public static final String MOD_ID = "ichunutil";
     public static final String MOD_NAME = "iChunUtil";
 
-    public static final Logger LOGGER = LogManager.getLogger(); //TODO should we add Markers?
+    public static final Logger LOGGER = LogManager.getLogger();
 
     private static ModLoadingStage loadingStage = ModLoadingStage.ERROR; //TODO spider fox easter egg
 

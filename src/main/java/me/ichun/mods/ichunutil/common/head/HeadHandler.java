@@ -197,7 +197,7 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
         return count + modCount;
     }
 
-    private static int scourDirectory(File dir) //TODO save from server as MD5
+    private static int scourDirectory(File dir)
     {
         int count = 0;
         File[] files = dir.listFiles();
@@ -226,10 +226,10 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
                     iChunUtil.LOGGER.error("Error reading HeadInfo file: {}", file);
                     e.printStackTrace();
                 }
-                catch(ClassNotFoundException e)
-                {
-                    iChunUtil.LOGGER.error("Class not found for HeadInfo file: {}", file);
-                }
+                catch(ClassNotFoundException ignored){}
+//                {
+//                    iChunUtil.LOGGER.error("Class not found for HeadInfo file: {}", file);
+//                }
             }
         }
         return count;

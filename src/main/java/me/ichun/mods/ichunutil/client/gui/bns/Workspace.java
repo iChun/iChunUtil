@@ -537,7 +537,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 ITextProperties line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.func_238416_a_(LanguageMap.getInstance().func_241870_a(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
+                    font.drawEntityText(LanguageMap.getInstance().func_241870_a(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)

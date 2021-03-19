@@ -384,7 +384,6 @@ public abstract class Window<M extends IWindows> extends Fragment
         }
     }
 
-
     public void renderBackground(MatrixStack stack)
     {
         if(renderMinecraftStyle())

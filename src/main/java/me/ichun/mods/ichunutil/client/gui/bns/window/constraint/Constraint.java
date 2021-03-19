@@ -6,7 +6,10 @@ import javax.annotation.Nonnull;
 
 public class Constraint
 {
-    public static final Constraint NONE = new Constraint(null);
+    public static final Constraint NONE = new Constraint(null) {
+        @Override
+        public void apply() {} //Do nothing
+    };
 
     protected final IConstrained parent;
     private Property left;

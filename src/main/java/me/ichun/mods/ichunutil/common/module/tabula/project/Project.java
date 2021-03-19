@@ -568,7 +568,7 @@ public class Project extends Identifiable<Project> //Model
             {
                 return new int[] { ((Project)parent).texWidth, ((Project)parent).texHeight };
             }
-            iChunUtil.LOGGER.error("We can't find out parent's texture dimensions, we have an orphaned Part. Uh oh! Their name is {} and their identifier is {}", name, identifier);
+            iChunUtil.LOGGER.error("We can't find our parent's texture dimensions, we have an orphaned Part. Uh oh! Their name is {} and their identifier is {}", name, identifier);
             return new int[] { texWidth, texHeight };
         }
 

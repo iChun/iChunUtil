@@ -51,8 +51,9 @@ public class HeadInfo<E extends LivingEntity>
     public String customClass = null;
 
     //Find the field name
-    //    public String modelFieldName = null;
     public String modelFieldName = "THIS SHOULD BE FILLED UP";
+
+    public Boolean isBoss = false;
 
     //GooglyEyes Stuff
     public Boolean noFaceInfo = false; //Use this to disable googly eye support

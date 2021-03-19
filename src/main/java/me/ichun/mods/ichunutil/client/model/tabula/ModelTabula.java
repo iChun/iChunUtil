@@ -286,7 +286,7 @@ public class ModelTabula extends Model
 
                         if(parentModel.selectedPart != null && parentModel.partMap.get(parentModel.selectedPart) == this)
                         {
-                            parentModel.rotationPoint.render(matrixStackIn, ivertexbuilder, 15728880, OverlayTexture.NO_OVERLAY, 0F, 0F, 1F, 1F);
+                            parentModel.rotationPoint.render(matrixStackIn, ivertexbuilder, 0xF000F0, OverlayTexture.NO_OVERLAY, 0F, 0F, 1F, 1F);
                         }
 
                         if(parentModel.project.getTextureBytes() != null && packedLightIn > 0)
