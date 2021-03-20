@@ -260,8 +260,17 @@ public class Project extends Identifiable<Project> //Model
     }
 
 
-    @OnlyIn(Dist.CLIENT)
     public void setImageBytes(byte[] bytes)
+    {
+        if(FMLEnvironment.dist.isClient())
+        {
+            deleteClientTexture();
+        }
+        this.textureBytes = bytes;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void deleteClientTexture()
     {
         if(nativeImageTexture != null)
         {
@@ -269,7 +278,6 @@ public class Project extends Identifiable<Project> //Model
 
             nativeImageTexture = null;
         }
-        this.textureBytes = bytes;
     }
 
     @OnlyIn(Dist.CLIENT)
