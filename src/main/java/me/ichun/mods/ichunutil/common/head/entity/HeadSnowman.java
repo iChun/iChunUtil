@@ -6,7 +6,6 @@ import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadSnowman extends HeadInfo<SnowGolemEntity>
 {
     public float[] eyeOffsetNoPumpkinLeft = new float[] { 0F, 5.5F/16F, 3.5F/16F };
@@ -14,6 +13,7 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
     public float[] headTopCenterNoPumpkin = new float[] { 0.0F, 0.46875F, 0.0F };
     public float headScaleNoPumpkin = 0.875F;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(SnowGolemEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -31,6 +31,7 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(SnowGolemEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -44,6 +45,7 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHatOffsetFromJoint(SnowGolemEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -58,6 +60,7 @@ public class HeadSnowman extends HeadInfo<SnowGolemEntity>
 
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHatScale(SnowGolemEntity living, MatrixStack stack, float partialTick, int head)
     {

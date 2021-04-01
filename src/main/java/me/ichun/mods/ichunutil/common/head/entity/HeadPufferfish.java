@@ -11,7 +11,6 @@ import net.minecraft.entity.passive.fish.PufferfishEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadPufferfish extends HeadInfo<PufferfishEntity>
 {
     //parent fields are for the BIG pufferfish.
@@ -26,6 +25,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
     public float headScaleSmall = 1F;
     public float headScaleMedium = 1F;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -41,6 +41,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
         return eyeScale;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -56,6 +57,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
         return eyeOffset;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeSideOffset(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -71,6 +73,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
         return eye == 0 ? halfInterpupillaryDistance : -halfInterpupillaryDistance;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeRotation(PufferfishEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -83,6 +86,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
     }
 
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHatOffsetFromJoint(PufferfishEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -98,6 +102,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
         return headTopCenter;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHatScale(PufferfishEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -113,6 +118,7 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
         return headScale;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
     protected void setHeadModelFromRenderer(LivingRenderer renderer)

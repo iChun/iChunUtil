@@ -36,9 +36,9 @@ public class HeadInfo<E extends LivingEntity>
 
     //Functional fields
     @OnlyIn(Dist.CLIENT)
-    public transient ModelRenderer[] headModel = null;
+    public transient ModelRenderer[] headModel;
     @OnlyIn(Dist.CLIENT)
-    public transient ModelRenderer[] childTranslates = null;
+    public transient ModelRenderer[] childTranslates;
     public transient Field[] fields = null;
     public transient int[] fieldIndex = null;
 
@@ -76,7 +76,7 @@ public class HeadInfo<E extends LivingEntity>
     public Float hatTiltPitch = 0F;
     public Float hatTiltYaw = 0F;
     public float[] headArmorOffset = new float[] { 0F, 1F/16F, 0F };
-    public Float headArmorScale = 10F / 8F; //Armor is usually 1.0F expansion, both directions.
+    public Float headArmorScale = 10.125F / 8F; //Armor is usually 1.0F expansion, both directions.
 
     public boolean affectedByInvisibility(E living, int eye, int head)
     {

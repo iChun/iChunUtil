@@ -11,13 +11,13 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadWolf extends HeadInfo<WolfEntity>
 {
     public float[] eyeOffsetTame = new float[] { -1F/16F, 1F/16F, 2F/16F };
     public float[] irisColourAngry = new float[] { 182F / 255F, 15F / 255F, 15F / 255F };
     public float[] pupilColourAngry = new float[] { 228F / 255F, 46F / 255F, 46F / 255F };
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -28,6 +28,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
         return eyeScale;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void postHeadTranslation(WolfEntity living, MatrixStack stack, float partialTick)
     {
@@ -40,6 +41,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -50,6 +52,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
         return super.getEyeOffsetFromJoint(living, stack, partialTick, eye);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getIrisColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -60,6 +63,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
         return irisColour;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getPupilColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {

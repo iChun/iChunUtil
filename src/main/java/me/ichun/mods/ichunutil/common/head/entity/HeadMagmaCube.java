@@ -6,9 +6,9 @@ import net.minecraft.entity.monster.MagmaCubeEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadMagmaCube extends HeadInfo<MagmaCubeEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(MagmaCubeEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -23,6 +23,7 @@ public class HeadMagmaCube extends HeadInfo<MagmaCubeEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHeadJointOffset(MagmaCubeEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -37,6 +38,7 @@ public class HeadMagmaCube extends HeadInfo<MagmaCubeEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadArmorScale(MagmaCubeEntity living, MatrixStack stack, float partialTick, int head)
     {

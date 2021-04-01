@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadHorse extends HeadInfo<AbstractHorseEntity>
 {
     public float[] eyeOffsetNormal = new float[] { 0F, 9.5F/16F, -1F/16F }; //I love that I can use Tabula for this.
@@ -23,30 +22,35 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
     public float[] headTopCenterNormal = new float[] { 0.003125F, 0.6875F, -0.09375F };
     public float headScaleNormal = 0.875F;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return iChunUtil.configClient.horseEasterEgg ? eyeOffset : eyeOffsetNormal;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeSideOffset(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return iChunUtil.configClient.horseEasterEgg ? (eye == 0 ? halfInterpupillaryDistance : -halfInterpupillaryDistance) : (eye == 0 ? halfInterpupillaryDistanceNormal : -halfInterpupillaryDistanceNormal);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return iChunUtil.configClient.horseEasterEgg ? eyeScale : eyeScaleNormal;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeRotation(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return iChunUtil.configClient.horseEasterEgg ? 0F : eye == 0 ? 90F: -90F;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadYaw(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -59,6 +63,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         return iChunUtil.configClient.horseEasterEgg ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, eye, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -71,18 +76,21 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         return iChunUtil.configClient.horseEasterEgg ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, eye, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHatScale(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
         return iChunUtil.configClient.horseEasterEgg ? super.getHatScale(living, stack, partialTick, head) : headScaleNormal;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHatOffsetFromJoint(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
         return iChunUtil.configClient.horseEasterEgg ? super.getHatOffsetFromJoint(living, stack, partialTick, head) : headTopCenterNormal;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHeadArmorOffset(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -94,6 +102,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         return super.getHeadArmorOffset(living, stack, partialTick, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadArmorScale(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -105,6 +114,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         return super.getHeadArmorScale(living, stack, partialTick, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void preChildEntHeadRenderCalls(AbstractHorseEntity living, MatrixStack stack, LivingRenderer render)
     {
@@ -124,6 +134,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
     protected void setHeadModelFromRenderer(LivingRenderer renderer)

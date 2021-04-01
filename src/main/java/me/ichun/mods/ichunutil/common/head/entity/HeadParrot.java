@@ -6,9 +6,9 @@ import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadParrot extends HeadInfo<ParrotEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getPupilScale(ParrotEntity living, MatrixStack stack, float partialTick, int eye)
     {

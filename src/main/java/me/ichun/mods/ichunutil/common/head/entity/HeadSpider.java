@@ -6,7 +6,6 @@ import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadSpider extends HeadInfo<SpiderEntity>
 {
     public float halfInterpupillaryDistance2 = 2F / 16F;
@@ -14,6 +13,7 @@ public class HeadSpider extends HeadInfo<SpiderEntity>
     public float[] eyeOffset2 = new float[] { 0F, 3F/16F, 8F / 16F };
     public float[] eyeOffset3 = new float[] { 0F, 1F/16F, 7.5F / 16F };
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeSideOffset(SpiderEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -31,6 +31,7 @@ public class HeadSpider extends HeadInfo<SpiderEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeRotation(SpiderEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -41,6 +42,7 @@ public class HeadSpider extends HeadInfo<SpiderEntity>
         return 0F;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(SpiderEntity living, MatrixStack stack, float partialTick, int eye)
     {

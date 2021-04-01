@@ -9,15 +9,16 @@ import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadLlama extends HeadHorse
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeRotation(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
         return 0F;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -30,6 +31,7 @@ public class HeadLlama extends HeadHorse
         return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, partialTick, eye, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void preChildEntHeadRenderCalls(AbstractHorseEntity living, MatrixStack stack, LivingRenderer render)
     {
@@ -49,6 +51,7 @@ public class HeadLlama extends HeadHorse
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
     protected void setHeadModelFromRenderer(LivingRenderer renderer)

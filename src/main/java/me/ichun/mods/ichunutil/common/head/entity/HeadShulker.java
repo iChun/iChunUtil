@@ -7,9 +7,9 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadShulker extends HeadInfo<ShulkerEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(ShulkerEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -20,6 +20,7 @@ public class HeadShulker extends HeadInfo<ShulkerEntity>
         return eyeScale;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHeadJointOffset(ShulkerEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -56,6 +57,7 @@ public class HeadShulker extends HeadInfo<ShulkerEntity>
         return super.getHeadJointOffset(living, stack, partialTick, eye, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadPitch(ShulkerEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {

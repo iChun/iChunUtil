@@ -7,9 +7,9 @@ import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadRabbit extends HeadInfo<RabbitEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void preChildEntHeadRenderCalls(RabbitEntity living, MatrixStack stack, LivingRenderer<RabbitEntity, ?> render)
     {

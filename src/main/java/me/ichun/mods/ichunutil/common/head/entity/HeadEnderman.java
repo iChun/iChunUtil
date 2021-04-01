@@ -6,9 +6,9 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadEnderman extends HeadInfo<EndermanEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getPupilScale(EndermanEntity living, MatrixStack stack, float partialTick, int eye)
     {

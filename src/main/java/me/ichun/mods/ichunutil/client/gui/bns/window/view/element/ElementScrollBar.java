@@ -102,10 +102,6 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
 
         if(!resizing && (oldSize <= 1F && scrollBarSize > 1F || scrollBarSize <= 1F && oldSize > 1F))
         {
-            //            System.out.println("HMM");
-            //            System.out.println(oldSize <= 1F && scrollBarSize > 1F);
-            //            System.out.println(scrollBarSize <= 1F && oldSize > 1F);
-
             resizing = true;
             constraint.apply();
 
@@ -138,7 +134,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    RenderHelper.draw(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
+                    RenderHelper.draw(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
@@ -157,7 +153,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.draw(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
+                    RenderHelper.draw(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
@@ -173,7 +169,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    draw(stack, x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw top
+                    draw(stack, x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
@@ -191,7 +187,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    draw(stack, x, getTop() + 1, dist, 12, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw top
+                    draw(stack, x, getTop() + 1, dist, 12, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }

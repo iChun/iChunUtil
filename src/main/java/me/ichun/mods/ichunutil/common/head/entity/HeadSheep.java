@@ -7,9 +7,9 @@ import net.minecraft.item.DyeColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadSheep extends HeadInfo<SheepEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getPupilScale(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -20,6 +20,7 @@ public class HeadSheep extends HeadInfo<SheepEntity>
         return super.getPupilScale(living, stack, partialTick, eye);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getIrisColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -43,6 +44,7 @@ public class HeadSheep extends HeadInfo<SheepEntity>
         return irisColour;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getPupilColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {

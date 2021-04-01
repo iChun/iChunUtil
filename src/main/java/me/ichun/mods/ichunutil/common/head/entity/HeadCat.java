@@ -6,11 +6,11 @@ import net.minecraft.entity.passive.CatEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadCat extends HeadInfo<CatEntity>
 {
     public float[][] pupilColourAssortment;
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getPupilColours(CatEntity living, MatrixStack stack, float partialTick, int eye)
     {

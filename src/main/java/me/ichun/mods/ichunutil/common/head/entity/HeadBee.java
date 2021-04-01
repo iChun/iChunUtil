@@ -9,12 +9,12 @@ import net.minecraft.entity.passive.BeeEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadBee extends HeadInfo<BeeEntity>
 {
     public float[] irisColourAngry = new float[] { 228F / 255F , 0F / 255F, 24F / 255F };
     public float[] pupilColourAngry = new float[] { 241F / 255F , 242F / 255F, 224F / 255F };
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void preChildEntHeadRenderCalls(BeeEntity living, MatrixStack stack, LivingRenderer<BeeEntity, ?> render)
     {
@@ -32,6 +32,7 @@ public class HeadBee extends HeadInfo<BeeEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getIrisColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -42,6 +43,7 @@ public class HeadBee extends HeadInfo<BeeEntity>
         return irisColour;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getPupilColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {

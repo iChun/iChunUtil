@@ -6,9 +6,9 @@ import net.minecraft.entity.passive.BatEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadBat extends HeadInfo<BatEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadYaw(BatEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -22,6 +22,7 @@ public class HeadBat extends HeadInfo<BatEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadYaw(BatEntity living, float partialTick, int eye, int head)
     {

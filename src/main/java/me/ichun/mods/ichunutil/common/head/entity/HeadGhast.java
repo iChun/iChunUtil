@@ -6,9 +6,9 @@ import net.minecraft.entity.monster.GhastEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadGhast extends HeadInfo<GhastEntity>
 {
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(GhastEntity living, MatrixStack stack, float partialTick, int eye)
     {

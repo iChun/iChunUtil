@@ -253,12 +253,9 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
 
             MODEL_OFFSET_HELPERS_JSON.put(clz, json);
 
-            if(FMLEnvironment.dist.isClient())
+            if(!loadHeadInfo(clz, json))
             {
-                if(!loadHeadInfo(clz, json))
-                {
-                    MODEL_OFFSET_HELPERS_JSON.remove(clz);
-                }
+                MODEL_OFFSET_HELPERS_JSON.remove(clz);
             }
             return true;
         }
@@ -271,6 +268,7 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
         {
             HeadInfo info = GSON.fromJson(json, HeadInfo.class);
             MODEL_OFFSET_HELPERS.put(clz, info);
+            return true;
         }
         catch(Throwable t)
         {

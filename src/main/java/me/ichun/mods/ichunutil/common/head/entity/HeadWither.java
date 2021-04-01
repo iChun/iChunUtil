@@ -6,7 +6,6 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HeadWither extends HeadInfo<WitherEntity>
 {
     public float[] headJointSideHeadLeft = new float[] { -10F/16F, -4F/16F, 0F };
@@ -17,6 +16,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
     public float headScaleSideHead = 0.75F;
     public float[] headTopCenterSideHead = new float[] { 1F/16F, 4F/16F, 1F/16F };
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(WitherEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -27,6 +27,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         return eyeScale;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHatScale(WitherEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -37,6 +38,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         return super.getHatScale(living, stack, partialTick, head);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadYaw(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -84,6 +86,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadPitch(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -131,6 +134,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadRoll(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
@@ -153,6 +157,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
 
     //We don't override the math based headRoll because there is no roll, so it's 0.
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeSideOffset(WitherEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -166,6 +171,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getEyeOffsetFromJoint(WitherEntity living, MatrixStack stack, float partialTick, int eye)
     {
@@ -179,6 +185,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHatOffsetFromJoint(WitherEntity living, MatrixStack stack, float partialTick, int head)
     {
@@ -192,6 +199,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHeadJointOffset(WitherEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {

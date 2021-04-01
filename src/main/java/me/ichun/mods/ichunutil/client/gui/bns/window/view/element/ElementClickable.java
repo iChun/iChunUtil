@@ -77,6 +77,6 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public int getMinecraftFontColour()
     {
-        return parentFragment.isDragging() && parentFragment.getListener() == this ? 10526880 : hover ? 16777120 : 14737632;
+        return parentFragment.isDragging() && parentFragment.getListener() == this || disabled ? 10526880 : hover ? 16777120 : 14737632;
     }
 }
