@@ -112,20 +112,20 @@ public class Constraint
 
     public boolean hasHeight() { return height != Property.NONE; }
 
-    public static Constraint matchParent(@Nonnull IConstrained c1, @Nonnull IConstrainable c, int i)
+    public static Constraint matchParent(@Nonnull IConstrained c, @Nonnull IConstrainable parent, int i)
     {
-        return new Constraint(c1)
-                .left(c, Property.Type.LEFT, i)
-                .right(c, Property.Type.RIGHT, i)
-                .top(c, Property.Type.TOP, i)
-                .bottom(c, Property.Type.BOTTOM, i);
+        return new Constraint(c)
+                .left(parent, Property.Type.LEFT, i)
+                .right(parent, Property.Type.RIGHT, i)
+                .top(parent, Property.Type.TOP, i)
+                .bottom(parent, Property.Type.BOTTOM, i);
     }
 
-    public static Constraint matchParentRatio(@Nonnull IConstrained c1, @Nonnull IConstrainable c, int i) // specifically for width/height ratio
+    public static Constraint matchParentRatio(@Nonnull IConstrained c, @Nonnull IConstrainable parent, int i) // specifically for width/height ratio
     {
-        return new Constraint(c1)
-                .width(c, Property.Type.WIDTH, i)
-                .height(c, Property.Type.HEIGHT, i);
+        return new Constraint(c)
+                .width(parent, Property.Type.WIDTH, i)
+                .height(parent, Property.Type.HEIGHT, i);
     }
 
     public static Constraint sizeOnly(@Nonnull IConstrained c)
