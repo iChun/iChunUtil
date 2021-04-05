@@ -53,7 +53,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
 
     public void trigger()
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }

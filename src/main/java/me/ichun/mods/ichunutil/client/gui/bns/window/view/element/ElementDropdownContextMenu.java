@@ -37,7 +37,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         super.render(stack, mouseX, mouseY, partialTick);
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             RenderHelper.drawColour(stack, -6250336, 255, getLeft(), getTop(), width - ElementNumberInput.BUTTON_WIDTH, height, 0);
             RenderHelper.drawColour(stack, -16777216, 255, getLeft() + 1, getTop() + 1, width - 2 - ElementNumberInput.BUTTON_WIDTH, height - 2, 0);
@@ -45,9 +45,9 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             RenderSystem.color4f(1F, 1F, 1F, 1F);
             RenderSystem.enableAlphaTest();
 
-            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
 
-            bindTexture(Fragment.VANILLA_STATS_ICON);
+            bindTexture(resourceStatsIcon());
             int size = 4;
             RenderHelper.draw(stack, getRight() - size - 3, getTop() + (height / 2d) - size / 2d, size, size, 0, 22D/128D, 33D/128D, 3D/128D, 14D/128D); //down icon
         }

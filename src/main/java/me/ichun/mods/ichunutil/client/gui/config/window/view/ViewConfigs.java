@@ -73,10 +73,11 @@ public class ViewConfigs extends View<WindowConfigs>
                 {
                     ElementList.Item<?> item = list.addItem(info).setSelectionHandler(parent.parent::selectItem);
                     item.setId(key);
-                    item.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
+                    String tooltip = "(" + info.config.getConfigType() + ") " + WorkspaceConfigs.getLocalizedCategory(info, key, "desc");
+                    item.setTooltip(tooltip);
                     ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(" - " + WorkspaceConfigs.getLocalizedCategory(info, key, "name")).setColor(getColorForType(info.config.getConfigType()));
                     wrapper.setConstraint(Constraint.matchParent(wrapper, item, item.getBorderSize()).top(item, Constraint.Property.Type.TOP, item.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
-                    wrapper.setTooltip(WorkspaceConfigs.getLocalizedCategory(info, key, "desc"));
+                    wrapper.setTooltip(tooltip);
                     item.addElement(wrapper);
                 }
             }

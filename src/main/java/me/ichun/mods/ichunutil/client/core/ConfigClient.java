@@ -26,7 +26,8 @@ import java.util.Collections;
 public class ConfigClient extends ConfigBase
 {
     @CategoryDivider(name = "bns")
-    public boolean guiStyleMinecraft = false;
+    @Prop(min = 0, max = 2)
+    public int guiMinecraftStyle = 2;
 
     @Prop(min = 0, max = 50)
     public int guiDockPadding = 0;

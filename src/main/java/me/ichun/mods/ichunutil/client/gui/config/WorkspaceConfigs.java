@@ -28,7 +28,7 @@ public class WorkspaceConfigs extends Workspace
 
     public WorkspaceConfigs(Screen lastScreen)
     {
-        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), iChunUtil.configClient.guiStyleMinecraft);
+        super(lastScreen, new TranslationTextComponent("gui.ichunutil.configs.title"), iChunUtil.configClient.guiMinecraftStyle);
 
         ConfigBase.CONFIGS.forEach((configBase -> {
             TreeSet<ConfigInfo> confs = configs.computeIfAbsent(configBase.getConfigName(), v -> new TreeSet<>(Ordering.natural()));

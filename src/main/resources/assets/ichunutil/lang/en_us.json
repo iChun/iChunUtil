@@ -17,8 +17,8 @@
 
   "config.ichunutil.prop.easterEgg.name": "Client Easter Eggs",
   "config.ichunutil.prop.easterEgg.desc": "Enables (most) Client-Side Easter Eggs for iChun's Mods",
-  "config.ichunutil.prop.guiStyleMinecraft.name": "Minecraft Style GUIs",
-  "config.ichunutil.prop.guiStyleMinecraft.desc": "Renders iChunUtil's GUIs (Boxes & Stuff) in a Minecraft Style instead",
+  "config.ichunutil.prop.guiMinecraftStyle.name": "Minecraft Style GUIs",
+  "config.ichunutil.prop.guiMinecraftStyle.desc": "Renders iChunUtil's GUIs (Boxes & Stuff) in a Minecraft Style instead. 1 = Vanilla Style, 2 = Texture Pack Style",
   "config.ichunutil.prop.guiDockPadding.name": "Dock Padding",
   "config.ichunutil.prop.guiDockPadding.desc": "How much padding to add to the docked windows",
   "config.ichunutil.prop.guiTooltipCooldown.name": "Tooltip Cooldown",

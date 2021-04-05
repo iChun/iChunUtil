@@ -173,9 +173,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     {
         if(renderBackground)
         {
-            if(renderMinecraftStyle())
+            if(renderMinecraftStyle() > 0)
             {
-                bindTexture(Fragment.VANILLA_HORSE);
+                bindTexture(resourceHorse());
                 cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
             }
             else
@@ -602,9 +602,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                     stack.translate(x, y, 0D);
                 }
 
-                if(renderMinecraftStyle())
+                if(renderMinecraftStyle() > 0)
                 {
-                    bindTexture(Fragment.VANILLA_HORSE);
+                    bindTexture(resourceHorse());
                     boolean canRearrange = false;
 
                     if(draggingUs && list.rearrangeHandler != null)

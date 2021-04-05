@@ -52,7 +52,7 @@ public abstract class Window<M extends IWindows> extends Fragment
         super(null);
         this.parent = parent;
         this.views = new ArrayList<>();
-        borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() ? 4 : 3);
+        borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() > 0 ? 4 : 3);
     }
 
     public <T extends Window<?>> T pos(int x, int y)
@@ -346,7 +346,7 @@ public abstract class Window<M extends IWindows> extends Fragment
             {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                if(renderMinecraftStyle()) //glint render taken from 1.12.2 RenderItem.renderEffect //TODO test that this doesn't uses matrix stack
+                if(renderMinecraftStyle() > 0) //glint render taken from 1.12.2 RenderItem.renderEffect //TODO test that this doesn't uses matrix stack
                 {
                     float scale = 8;
                     float scaleTex = 512F;
@@ -386,11 +386,11 @@ public abstract class Window<M extends IWindows> extends Fragment
 
     public void renderBackground(MatrixStack stack)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             RenderSystem.enableAlphaTest();
             //draw the corners
-            bindTexture(Fragment.VANILLA_TABS);
+            bindTexture(resourceTabs());
 
             //fill space
             RenderHelper.draw(stack, getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 4D/256D, 24D/256D, 36D/256D, 60D/256D); //fill space
@@ -687,7 +687,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public boolean renderMinecraftStyle()
+    public int renderMinecraftStyle()
     {
         return parent.renderMinecraftStyle();
     }

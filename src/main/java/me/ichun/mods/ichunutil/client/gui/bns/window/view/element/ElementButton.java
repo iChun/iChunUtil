@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.resources.I18n;
 
@@ -28,12 +29,15 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
+        RenderSystem.enableAlphaTest();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderBackground)
         {
-            if(renderMinecraftStyle())
+            if(renderMinecraftStyle() > 0)
             {
-                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
+                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
             }
             else
             {

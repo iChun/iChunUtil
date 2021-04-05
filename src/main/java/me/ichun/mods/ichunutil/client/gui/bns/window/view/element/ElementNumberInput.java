@@ -99,18 +99,18 @@ public class ElementNumberInput extends ElementTextField
     @Override
     public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             widget.setEnableBackgroundDrawing(true);
             widget.render(stack, mouseX, mouseY, partialTick);
             RenderSystem.color4f(1F, 1F, 1F, 1F);
             RenderSystem.enableAlphaTest();
 
-            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE); //top half
-            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE); //top half
+            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
+            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
 
             int size = 4;
-            bindTexture(Fragment.VANILLA_STATS_ICON);
+            bindTexture(resourceStatsIcon());
             RenderHelper.draw(stack, getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, 40D/128D, 51D/128D, 3D/128D, 14D/128D); //up icon
             RenderHelper.draw(stack, getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, 22D/128D, 33D/128D, 3D/128D, 14D/128D); //down icon
         }
@@ -175,7 +175,7 @@ public class ElementNumberInput extends ElementTextField
     {
         if(widget != null)
         {
-            if(renderMinecraftStyle()) //5 px to draw the button
+            if(renderMinecraftStyle() > 0) //5 px to draw the button
             {
                 widget.x = getLeft() + 1;
                 widget.y = getTop() + 1;
@@ -231,7 +231,7 @@ public class ElementNumberInput extends ElementTextField
             if(isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D)))
             {
                 changeValue(true, Screen.hasShiftDown(), Screen.hasControlDown());
-                if(renderMinecraftStyle())
+                if(renderMinecraftStyle() > 0)
                 {
                     Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
@@ -243,7 +243,7 @@ public class ElementNumberInput extends ElementTextField
             if(isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom()))
             {
                 changeValue(false, Screen.hasShiftDown(), Screen.hasControlDown());
-                if(renderMinecraftStyle())
+                if(renderMinecraftStyle() > 0)
                 {
                     Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }

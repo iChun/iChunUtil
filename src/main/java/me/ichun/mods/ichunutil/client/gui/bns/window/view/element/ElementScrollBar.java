@@ -122,9 +122,9 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         int space = getDistance() - scrollBar; //how much space we have.
         int preSpace = (int)(space * scrollProg);
 
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
-            bindTexture(Fragment.VANILLA_TAB_ITEMS);
+            bindTexture(resourceTabItems());
 
             if(orientation == Orientation.VERTICAL)
             {
@@ -143,7 +143,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 RenderHelper.draw(stack, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
-                bindTexture(Fragment.VANILLA_TABS);
+                bindTexture(resourceTabs());
 
                 //x, y, width, height
                 //getLeft(), getTop() + preSpace, 14, scrollBar
@@ -178,7 +178,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 draw(stack, getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
-                bindTexture(Fragment.VANILLA_TABS);
+                bindTexture(resourceTabs());
 
                 //x, y, width, height
                 //getLeft() + preSpace, getTop(), scrollBar, 14

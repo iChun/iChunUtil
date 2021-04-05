@@ -46,7 +46,7 @@ public abstract class ElementRightClickable<T extends ElementRightClickable> ext
 
     public void triggerRMB()
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }

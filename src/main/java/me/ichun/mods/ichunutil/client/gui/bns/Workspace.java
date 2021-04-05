@@ -89,7 +89,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     private Theme theme = Theme.getInstance();
     public ArrayList<Window<?>> windows = new ArrayList<>(); //0 = newest
-    private boolean renderMinecraftStyle;
+    private int renderMinecraftStyle;
     private boolean hasInit;
 
     private Screen lastScreen;
@@ -99,7 +99,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public long cursorState;
 
-    public Workspace(Screen lastScreen, ITextComponent title, boolean mcStyle)
+    public Workspace(Screen lastScreen, ITextComponent title, int mcStyle)
     {
         super(title);
         this.lastScreen = lastScreen;
@@ -117,9 +117,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return (T)this;
     }
 
-    public <T extends Workspace> T setMinecraftStyle()
+    public <T extends Workspace> T setMinecraftStyle(int i)
     {
-        this.renderMinecraftStyle = true;
+        this.renderMinecraftStyle = i;
         return (T)this;
     }
 
@@ -388,7 +388,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public void renderTooltip(MatrixStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
     {
         List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
-        if(renderMinecraftStyle)
+        if(renderMinecraftStyle > 0)
         {
             List<ITextComponent> textLines = new ArrayList<>();
             for(String s : textStrings)
@@ -589,7 +589,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void renderBackground(MatrixStack stack)
     {
-        if(renderMinecraftStyle)
+        if(renderMinecraftStyle > 0)
         {
             super.renderBackground(stack);
         }
@@ -612,7 +612,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         RenderSystem.popMatrix();
 
-        if(!renderMinecraftStyle)
+        if(renderMinecraftStyle == 0)
         {
             RenderSystem.matrixMode(GL11.GL_PROJECTION);
             RenderSystem.loadIdentity();
@@ -630,7 +630,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public boolean renderMinecraftStyle()
+    public int renderMinecraftStyle()
     {
         return renderMinecraftStyle;
     }

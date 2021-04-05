@@ -96,9 +96,9 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         CLICK
     }
 
-    public static void renderMinecraftStyleButton(MatrixStack stack, int posX, int posY, int width, int height, ButtonState state) // BUTTONS NEED TO BE LARGER THAN 3x3
+    public static void renderMinecraftStyleButton(MatrixStack stack, int posX, int posY, int width, int height, ButtonState state, int minecraftStyle) // BUTTONS NEED TO BE LARGER THAN 3x3
     {
-        Fragment.bindTexture(Fragment.VANILLA_WIDGETS);
+        Fragment.bindTexture(minecraftStyle == 2 ? VANILLA_WIDGETS : WIDGETS);
 
         int yOffset = state == ButtonState.CLICK ? 0 : state == ButtonState.HOVER ? 2 : 1;
         if(height == 20 && width > 15)

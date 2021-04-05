@@ -30,21 +30,21 @@ public class WindowPopup extends Window<Workspace>
 
     public static class ViewPopup extends View<WindowPopup>
     {
-        public ViewPopup(@Nonnull WindowPopup parent, String title, @Nullable Consumer<Workspace> callback, String...text1)
+        public ViewPopup(@Nonnull WindowPopup parent, String title, @Nullable Consumer<Workspace> callback, String...text)
         {
             super(parent, title);
 
-            ElementTextWrapper text = new ElementTextWrapper(this);
-            if(text1.length == 1)
+            ElementTextWrapper text2 = new ElementTextWrapper(this);
+            if(text.length == 1)
             {
-                text.setText(text1[0]);
+                text2.setText(text[0]);
             }
             else
             {
-                text.setText(Arrays.asList(text1));
+                text2.setText(Arrays.asList(text));
             }
-            text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
-            elements.add(text);
+            text2.setConstraint(new Constraint(text2).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
+            elements.add(text2);
 
             ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.ok"), elementClickable ->
             {

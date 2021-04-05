@@ -13,7 +13,7 @@ public interface IWindows extends INestedGuiEventHandler
     int getWidth();
     int getHeight();
     Theme getTheme();
-    boolean renderMinecraftStyle();
+    int renderMinecraftStyle();
     FontRenderer getFontRenderer();
     Window<?> addWindow(Window<?> window);
     void removeWindow(Window<?> window);

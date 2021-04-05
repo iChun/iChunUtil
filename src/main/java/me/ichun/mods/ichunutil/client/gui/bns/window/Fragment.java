@@ -22,11 +22,23 @@ import java.util.List;
 public abstract class Fragment<P extends Fragment>
         implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
 {
-    public static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
-    public static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
+    private static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+    private static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
-    public static final ResourceLocation VANILLA_STATS_ICON = new ResourceLocation("textures/gui/container/stats_icons.png");
-    public static final ResourceLocation VANILLA_HORSE = new ResourceLocation("textures/gui/container/horse.png");
+    private static final ResourceLocation VANILLA_STATS_ICON = new ResourceLocation("textures/gui/container/stats_icons.png");
+    private static final ResourceLocation VANILLA_HORSE = new ResourceLocation("textures/gui/container/horse.png");
+
+    private static final ResourceLocation TABS = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/tabs.png");
+    private static final ResourceLocation TAB_ITEMS = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/tab_items.png");
+    public static final ResourceLocation WIDGETS = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/widgets.png");
+    private static final ResourceLocation STATS_ICON = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/stats_icons.png");
+    private static final ResourceLocation HORSE = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/horse.png");
+
+    public ResourceLocation resourceTabs() { return renderMinecraftStyle() == 2 ? VANILLA_TABS : TABS; }
+    public ResourceLocation resourceTabItems() { return renderMinecraftStyle() == 2 ? VANILLA_TAB_ITEMS : TAB_ITEMS; }
+    public ResourceLocation resourceWidgets() { return renderMinecraftStyle() == 2 ? VANILLA_WIDGETS : WIDGETS; }
+    public ResourceLocation resourceStatsIcon() { return renderMinecraftStyle() == 2 ? VANILLA_STATS_ICON : STATS_ICON; }
+    public ResourceLocation resourceHorse() { return renderMinecraftStyle() == 2 ? VANILLA_HORSE : HORSE; }
 
     public P parentFragment;
     public @Nonnull Constraint constraint = Constraint.NONE;
@@ -63,7 +75,7 @@ public abstract class Fragment<P extends Fragment>
         return parentFragment.getTheme();
     }
 
-    public boolean renderMinecraftStyle()
+    public int renderMinecraftStyle()
     {
         return parentFragment.renderMinecraftStyle();
     }
@@ -122,12 +134,12 @@ public abstract class Fragment<P extends Fragment>
 
     public void drawString(MatrixStack stack, String s, float posX, float posY)
     {
-        drawString(stack, s, posX, posY, renderMinecraftStyle() ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
+        drawString(stack, s, posX, posY, renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
     }
 
     public void drawString(MatrixStack stack, String s, float posX, float posY, int color)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color);
         }

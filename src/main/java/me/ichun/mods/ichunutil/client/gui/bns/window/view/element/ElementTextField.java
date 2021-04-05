@@ -189,7 +189,7 @@ public class ElementTextField extends Element
 
     public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             widget.setEnableBackgroundDrawing(true);
             widget.render(stack, mouseX, mouseY, partialTick);
@@ -224,7 +224,7 @@ public class ElementTextField extends Element
     {
         if(widget != null)
         {
-            if(renderMinecraftStyle())
+            if(renderMinecraftStyle() > 0)
             {
                 widget.x = getLeft() + 1;
                 widget.y = getTop() + 1;

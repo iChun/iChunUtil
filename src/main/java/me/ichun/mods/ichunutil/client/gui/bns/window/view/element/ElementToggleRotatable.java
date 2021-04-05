@@ -42,7 +42,7 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
             stack.translate(- getFontRenderer().getStringWidth(s) / 2F,  - (getFontRenderer().FONT_HEIGHT) / 2F + 1, 0F);
 
             //draw the text
-            if(renderMinecraftStyle())
+            if(renderMinecraftStyle() > 0)
             {
                 getFontRenderer().drawStringWithShadow(stack, s, 0, 0, getMinecraftFontColour());
             }

@@ -26,9 +26,9 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
         super.render(stack, mouseX, mouseY, partialTick);
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
-            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || (parentFragment.isDragging() && parentFragment.getListener() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || (parentFragment.isDragging() && parentFragment.getListener() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE), renderMinecraftStyle());
         }
         else
         {

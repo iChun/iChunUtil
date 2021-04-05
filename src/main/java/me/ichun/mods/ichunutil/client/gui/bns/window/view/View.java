@@ -75,7 +75,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
 
     public void renderBackground(MatrixStack stack)
     {
-        if(!renderMinecraftStyle())
+        if(renderMinecraftStyle() == 0)
         {
             fill(stack, getTheme().windowBackground, 0);
         }

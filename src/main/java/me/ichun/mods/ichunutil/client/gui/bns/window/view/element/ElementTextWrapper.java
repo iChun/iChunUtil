@@ -157,7 +157,7 @@ ElementTextWrapper extends Element //TODO image element
     @Override
     public void drawString(MatrixStack stack, String s, float posX, float posY)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
             getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color != null ? color : getMinecraftFontColour());
         }

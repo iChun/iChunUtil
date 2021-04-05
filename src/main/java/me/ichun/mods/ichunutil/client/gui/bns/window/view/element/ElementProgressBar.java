@@ -24,9 +24,9 @@ public class ElementProgressBar extends Element
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
     {
-        if(renderMinecraftStyle())
+        if(renderMinecraftStyle() > 0)
         {
-            bindTexture(Fragment.VANILLA_HORSE);
+            bindTexture(resourceHorse());
 
             cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256); //taken from ElementList$Item
             cropAndStitch(stack, getLeft(), getTop(), (int)Math.floor(width * progress), height, 2, 79, 17, 90, 54, 256, 256);
