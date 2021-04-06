@@ -34,7 +34,7 @@ public class WindowConfirmation extends Window<Workspace>
             text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
             elements.add(text);
 
-            ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.cancel"), button3 ->
+            ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.cancel"), btn ->
             {
                 parent.parent.removeWindow(parent);
 
@@ -47,7 +47,7 @@ public class WindowConfirmation extends Window<Workspace>
             button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 10).right(this, Constraint.Property.Type.RIGHT, 10));
             elements.add(button);
 
-            ElementButton<?> button1 = new ElementButton<>(this, I18n.format("gui.ok"), button3 ->
+            ElementButton<?> button1 = new ElementButton<>(this, I18n.format("gui.ok"), btn ->
             {
                 parent.parent.removeWindow(parent);
 

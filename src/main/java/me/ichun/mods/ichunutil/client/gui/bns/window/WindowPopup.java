@@ -34,17 +34,17 @@ public class WindowPopup extends Window<Workspace>
         {
             super(parent, title);
 
-            ElementTextWrapper text2 = new ElementTextWrapper(this);
+            ElementTextWrapper text1 = new ElementTextWrapper(this);
             if(text.length == 1)
             {
-                text2.setText(text[0]);
+                text1.setText(text[0]);
             }
             else
             {
-                text2.setText(Arrays.asList(text));
+                text1.setText(Arrays.asList(text));
             }
-            text2.setConstraint(new Constraint(text2).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
-            elements.add(text2);
+            text1.setConstraint(new Constraint(text1).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
+            elements.add(text1);
 
             ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.ok"), elementClickable ->
             {

@@ -74,6 +74,11 @@ public class EventCalendar
         }
     }
 
+    public static boolean isEventDay()
+    {
+        return isNewYear() || isValentinesDay() || isPgBirthday() || isAFDay() || isHalloween() || isChristmas();
+    }
+
     public static boolean isNewYear()
     {
         return isNewYear;
