@@ -27,7 +27,7 @@ public class ConfigClient extends ConfigBase
 {
     @CategoryDivider(name = "bns")
     @Prop(min = 0, max = 2)
-    public int guiMinecraftStyle = 2;
+    public int guiMinecraftStyle = 0;
 
     @Prop(min = 0, max = 50)
     public int guiDockPadding = 0;

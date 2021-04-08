@@ -44,4 +44,10 @@ public class ElementProgressBar extends Element
             width = oriWidth;
         }
     }
+
+    @Override
+    public int getMinHeight()
+    {
+        return 10;
+    }
 }

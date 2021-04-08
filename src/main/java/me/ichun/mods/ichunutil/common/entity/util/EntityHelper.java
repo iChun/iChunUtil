@@ -9,9 +9,12 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import cpw.mods.modlauncher.api.INameMappingService;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -61,7 +64,10 @@ public class EntityHelper
     @OnlyIn(Dist.CLIENT)
     public static void injectMinecraftPlayerGameProfile()
     {
-        GAME_PROFILE_CACHE.put(Minecraft.getInstance().getSession().getUsername(), Minecraft.getInstance().getSession().getProfile());
+        if(Minecraft.getInstance() != null) // null when generating data.
+        {
+            GAME_PROFILE_CACHE.put(Minecraft.getInstance().getSession().getUsername(), Minecraft.getInstance().getSession().getProfile());
+        }
     }
 
     public static GameProfile getDummyGameProfile()
@@ -399,6 +405,47 @@ public class EntityHelper
     {
         return player instanceof FakePlayer || player.connection == null; // || player.getName().getUnformattedComponentText().toLowerCase().startsWith("fakeplayer") || player.getName().getUnformattedComponentText().toLowerCase().startsWith("[minecraft]");
     }
+
+    public static boolean hasCompletedAdvancement(@Nonnull ResourceLocation rl, @Nonnull PlayerEntity player)
+    {
+        if(!player.world.isRemote)
+        {
+            ServerPlayerEntity serverPlayer = ((ServerPlayerEntity)player);
+            Advancement advancement = serverPlayer.getServer().getAdvancementManager().getAdvancement(rl);
+            if(advancement != null)
+            {
+                return serverPlayer.getAdvancements().getProgress(advancement).isDone();
+            }
+            return false;
+        }
+        else
+        {
+            return hasCompletedAdvancementClient(rl, player);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static boolean hasCompletedAdvancementClient(@Nonnull ResourceLocation rl, @Nonnull PlayerEntity player)
+    {
+        if(player instanceof ClientPlayerEntity)
+        {
+            ClientPlayerEntity clientPlayer = (ClientPlayerEntity)player;
+            if(clientPlayer.connection != null)
+            {
+                Advancement advancement = clientPlayer.connection.getAdvancementManager().getAdvancementList().getAdvancement(rl);
+                if(advancement != null)
+                {
+                    AdvancementProgress progress = clientPlayer.connection.getAdvancementManager().advancementToProgress.get(advancement);
+                    if(progress != null && progress.isDone())
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     //REFLECTIVE methods
     public static <T extends LivingEntity> SoundEvent getHurtSound(T ent, DamageSource source)
