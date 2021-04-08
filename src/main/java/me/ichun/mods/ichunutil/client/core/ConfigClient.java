@@ -49,6 +49,9 @@ public class ConfigClient extends ConfigBase
 
     public boolean buttonOptionsShiftOpensMods = true;
 
+    @Prop(needsRestart = true)
+    public boolean overrideToastGui = true;
+
     @CategoryDivider(name = "headTracking")
     @Prop(min = 0, max = 2)
     public int aggressiveHeadTracking = 1;

@@ -213,6 +213,29 @@ public class RenderHelper
         tessellator.draw();
     }
 
+    public static void startDrawBatch()
+    {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+    }
+
+    public static void drawBatch(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    {
+        Matrix4f matrix = stack.getLast().getMatrix();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.pos(matrix, (float)posX, (float)(posY + height), (float)zLevel).tex((float)u1, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).tex((float)u2, (float)v2).endVertex();
+        bufferbuilder.pos(matrix, (float)(posX + width), (float)posY, (float)zLevel).tex((float)u2, (float)v1).endVertex();
+        bufferbuilder.pos(matrix, (float)posX, (float)posY, (float)zLevel).tex((float)u1, (float)v1).endVertex();
+    }
+
+    public static void endDrawBatch()
+    {
+        Tessellator.getInstance().draw();
+    }
+
     public static void drawColour(MatrixStack stack, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         int r = (colour >> 16 & 0xff);

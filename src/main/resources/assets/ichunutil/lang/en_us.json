@@ -29,8 +29,10 @@
   "config.ichunutil.prop.guiDoubleClickSpeed.desc": "Speed, in ticks, to register a double click",
   "config.ichunutil.prop.guiDefaultTheme.name": "Default Theme",
   "config.ichunutil.prop.guiDefaultTheme.desc": "Default Theme for Boxes & Stuff",
-  "config.ichunutil.prop.buttonOptionsShiftOpensMods.name": "Options Button Override",
+  "config.ichunutil.prop.buttonOptionsShiftOpensMods.name": "Override Options Button",
   "config.ichunutil.prop.buttonOptionsShiftOpensMods.desc": "Override the Options button so pressing Shift when clicking it shows the Mods list.",
+  "config.ichunutil.prop.overrideToastGui.name": "Override Toast Renderer",
+  "config.ichunutil.prop.overrideToastGui.desc": "The Minecraft Toast Renderer has a bug where toasts with different heights might overlap. This override fixes it if the renderer is still the default renderer.",
 
   "config.ichunutil.cat.headTracking.name": "Head Model Tracking",
   "config.ichunutil.cat.headTracking.desc": "Head Model Tracking related configs.\nUsed by Googly Eyes and Hats.",

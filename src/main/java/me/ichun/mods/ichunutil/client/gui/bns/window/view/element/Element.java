@@ -103,27 +103,35 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         int yOffset = state == ButtonState.CLICK ? 0 : state == ButtonState.HOVER ? 2 : 1;
         if(height == 20 && width > 15)
         {
+            RenderHelper.startDrawBatch();
+
             //gg easy life
             int i = width - 28;
             int x = posX + 14;
             while(i > 0)
             {
                 int dist = Math.min(i, 172);
-                RenderHelper.draw(stack, x, posY, dist, 20, 0, 14D / 256D, (14 + dist) / 256D, (46 + yOffset * 20) / 256D, (66 + yOffset * 20) / 256D); //draw body
+                RenderHelper.drawBatch(stack, x, posY, dist, 20, 0, 14D / 256D, (14 + dist) / 256D, (46 + yOffset * 20) / 256D, (66 + yOffset * 20) / 256D); //draw body
                 i -= dist;
                 x += dist;
             }
 
 
-            RenderHelper.draw(stack, posX, posY, 14, 20, 0, 0D/256D, 14D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
-            RenderHelper.draw(stack, posX + width - 14, posY, 14, 20, 0, 186D/256D, 200D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
+            RenderHelper.drawBatch(stack, posX, posY, 14, 20, 0, 0D/256D, 14D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
+            RenderHelper.drawBatch(stack, posX + width - 14, posY, 14, 20, 0, 186D/256D, 200D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
+
+            RenderHelper.endDrawBatch();
         }
         else if(height < 20 && width < 200) //default button length
         {
-            RenderHelper.draw(stack, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, ((66 - (height - 3)) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw bottomLeft
-            RenderHelper.draw(stack, posX, posY, (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topLeft
-            RenderHelper.draw(stack, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/256D, 200D/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topRight
-            RenderHelper.draw(stack, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/256D, 200D/256D, (66 - (height - 3) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+            RenderHelper.startDrawBatch();
+
+            RenderHelper.drawBatch(stack, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, ((66 - (height - 3)) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw bottomLeft
+            RenderHelper.drawBatch(stack, posX, posY, (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topLeft
+            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/256D, 200D/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topRight
+            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/256D, 200D/256D, (66 - (height - 3) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+
+            RenderHelper.endDrawBatch();
         }
         else //big bois
         {
@@ -133,6 +141,8 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
 
     public static void cropAndStitch(MatrixStack stack, int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
     {
+        RenderHelper.startDrawBatch();
+
         int ii = width - (borderSize * 2);
         int xx = posX + borderSize;
         while(ii > 0)
@@ -143,7 +153,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
             while(jj > 0)
             {
                 int disty = Math.min(jj, vLength - (borderSize * 2));
-                RenderHelper.draw(stack, xx, yy, distx, disty, 0, (u + borderSize)/texWidth, ((u + borderSize) + distx)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + disty)/texWidth); //draw body
+                RenderHelper.drawBatch(stack, xx, yy, distx, disty, 0, (u + borderSize)/texWidth, ((u + borderSize) + distx)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + disty)/texWidth); //draw body
                 jj -= disty;
                 yy += disty;
             }
@@ -157,8 +167,8 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         while(i > 0)
         {
             int dist = Math.min(i, uLength - (borderSize * 2));
-            RenderHelper.draw(stack, x, posY, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw top bar
-            RenderHelper.draw(stack, x, posY + height - borderSize, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottom bar
+            RenderHelper.drawBatch(stack, x, posY, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw top bar
+            RenderHelper.drawBatch(stack, x, posY + height - borderSize, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottom bar
             i -= dist;
             x += dist;
         }
@@ -168,16 +178,18 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         while(i > 0)
         {
             int dist = Math.min(i, vLength - (borderSize * 2));
-            RenderHelper.draw(stack, posX, x, borderSize, dist, 0, u/texWidth, (u + borderSize)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
-            RenderHelper.draw(stack, posX + width - borderSize, x, borderSize, dist, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            RenderHelper.drawBatch(stack, posX, x, borderSize, dist, 0, u/texWidth, (u + borderSize)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            RenderHelper.drawBatch(stack, posX + width - borderSize, x, borderSize, dist, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
             i -= dist;
             x += dist;
         }
 
-        RenderHelper.draw(stack, posX, posY + height - borderSize, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomLeft
-        RenderHelper.draw(stack, posX, posY, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topLeft
-        RenderHelper.draw(stack, posX + width - borderSize, posY, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topRight
-        RenderHelper.draw(stack, posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
+        RenderHelper.drawBatch(stack, posX, posY + height - borderSize, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomLeft
+        RenderHelper.drawBatch(stack, posX, posY, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topLeft
+        RenderHelper.drawBatch(stack, posX + width - borderSize, posY, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topRight
+        RenderHelper.drawBatch(stack, posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
+
+        RenderHelper.endDrawBatch();
     }
 
     public static class MousePos

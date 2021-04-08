@@ -118,7 +118,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
             return;
         }
 
-        int scrollBar = (int)(getDistance() * scrollBarSize); // the size of the scroll bar over the entire
+        int scrollBar = Math.max(8, (int)(getDistance() * scrollBarSize)); // the size of the scroll bar over the entire
         int space = getDistance() - scrollBar; //how much space we have.
         int preSpace = (int)(space * scrollProg);
 
@@ -129,18 +129,20 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
             if(orientation == Orientation.VERTICAL)
             {
                 //draw scroll bar slot
+                RenderHelper.startDrawBatch();
                 int i = height - 6;
                 int x = getTop() + 3;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    RenderHelper.draw(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
+                    RenderHelper.drawBatch(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.draw(stack, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                RenderHelper.draw(stack, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                RenderHelper.drawBatch(stack, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                RenderHelper.drawBatch(stack, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                RenderHelper.endDrawBatch();
 
                 //draw scroll bar
                 bindTexture(resourceTabs());
@@ -148,18 +150,20 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 //x, y, width, height
                 //getLeft(), getTop() + preSpace, 14, scrollBar
 
+                RenderHelper.startDrawBatch();
                 i = scrollBar - 7 - 2;
                 x = getTop() + preSpace + 4 + 1;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.draw(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
+                    RenderHelper.drawBatch(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.draw(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
-                RenderHelper.draw(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
+                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                RenderHelper.endDrawBatch();
             }
             else
             {
@@ -330,7 +334,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
-    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
     {
         Matrix4f matrix = stack.getLast().getMatrix();
         Tessellator tessellator = Tessellator.getInstance();

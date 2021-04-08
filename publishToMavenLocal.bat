@@ -1,2 +1,2 @@
 @echo off
-start gradlew clean publishToMavenLocal
+start gradlew clean build publishToMavenLocal

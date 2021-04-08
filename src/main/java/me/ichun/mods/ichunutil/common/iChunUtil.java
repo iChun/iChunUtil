@@ -3,13 +3,16 @@ package me.ichun.mods.ichunutil.common;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
+import me.ichun.mods.ichunutil.client.toast.ToastGui;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.util.EntityHelper;
 import me.ichun.mods.ichunutil.common.head.HeadHandler;
 import me.ichun.mods.ichunutil.common.util.EventCalendar;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -17,6 +20,7 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.ModLoadingStage;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -71,9 +75,16 @@ public class iChunUtil
         //TODO do I wanna check for mod updates
     }
 
+    @OnlyIn(Dist.CLIENT)
     private void setupClient(final FMLClientSetupEvent event)
     {
         MinecraftForge.EVENT_BUS.register(eventHandlerClient = new EventHandlerClient());
+
+        if(configClient.overrideToastGui && Minecraft.getInstance().getToastGui().getClass().getName().equals("net.minecraft.client.gui.toasts.ToastGui"))
+        {
+            //QUICK SWITCHEROO
+            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getInstance(), new ToastGui(Minecraft.getInstance()), ObfHelper.toastGui);
+        }
     }
 
     private void finishLoading(FMLLoadCompleteEvent event)
