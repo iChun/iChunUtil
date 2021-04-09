@@ -116,28 +116,21 @@ ElementTextWrapper extends Element //TODO image element
             needsWrap = true;
         }
 
-        if (needsWrap)
+        List<String> wrappedTextLines = new ArrayList<>();
+        for(String textLine : text)
         {
-            List<String> wrappedTextLines = new ArrayList<>();
-            for(String textLine : text)
+            if(textLine.isEmpty())
             {
-                if(textLine.isEmpty())
-                {
-                    wrappedTextLines.add(textLine);
-                    continue;
-                }
-                List<ITextProperties> texts = getFontRenderer().getCharacterManager().func_238362_b_(new StringTextComponent(textLine), tooltipTextWidth, Style.EMPTY);
-                for(ITextProperties text : texts)
-                {
-                    wrappedTextLines.add(text.getString());
-                }
+                wrappedTextLines.add(textLine);
+                continue;
             }
-            textWrapped = wrappedTextLines;
+            List<ITextProperties> texts = getFontRenderer().getCharacterManager().func_238362_b_(new StringTextComponent(textLine), needsWrap ? tooltipTextWidth : longestLine, Style.EMPTY);
+            for(ITextProperties text : texts)
+            {
+                wrappedTextLines.add(text.getString());
+            }
         }
-        else
-        {
-            textWrapped = new ArrayList<>(text);
-        }
+        textWrapped = wrappedTextLines;
         return lines != textWrapped.size();
     }
 

@@ -54,6 +54,7 @@ public class HeadInfo<E extends LivingEntity>
     public String modelFieldName = "THIS SHOULD BE FILLED UP";
 
     public Boolean isBoss = false;
+    public Boolean affectedByInvisibility = true;
 
     //GooglyEyes Stuff
     public Boolean noFaceInfo = false; //Use this to disable googly eye support
@@ -65,7 +66,6 @@ public class HeadInfo<E extends LivingEntity>
     public Boolean sideEyed = false;
     public Boolean topEyed = false; //thanks hoglins
     public Integer eyeCount = 2;
-    public Boolean affectedByInvisibility = true;
     public Boolean doesEyeGlow = false;
 
     //Hats Stuff

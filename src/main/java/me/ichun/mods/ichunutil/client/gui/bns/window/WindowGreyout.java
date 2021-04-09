@@ -12,7 +12,8 @@ import java.util.function.Consumer;
 public class WindowGreyout<M extends Workspace> extends Window<M>
 {
     public Window<?> attachedWindow;
-    public Consumer<WindowGreyout<M>> closeConsumer;
+    public Consumer<WindowGreyout<M>> closeConsumer; //only triggered when clicked on rather than the parent closing
+    public boolean disableClickOut;
 
     public WindowGreyout(M parent, Window<?> attached)
     {
@@ -39,6 +40,12 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
         return this;
     }
 
+    public WindowGreyout<M> disableClickOut()
+    {
+        this.disableClickOut = true;
+        return this;
+    }
+
     @Override
     public void init()
     {
@@ -61,20 +68,20 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
         if(!parent.getEventListeners().contains(attachedWindow))
         {
             parent.removeWindow(this);
-            if(closeConsumer != null)
-            {
-                closeConsumer.accept(this);
-            }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isMouseOver(mouseX, mouseY))
+        if(!disableClickOut && isMouseOver(mouseX, mouseY))
         {
             parent.removeWindow(attachedWindow);
             parent.removeWindow(this);
+            if(closeConsumer != null)
+            {
+                closeConsumer.accept(this);
+            }
             return true;
         }
         return false;
