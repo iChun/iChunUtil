@@ -751,60 +751,68 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         }
 
         @Override
-        public boolean keyPressed(int keyCode, int p_keyPressed_2_, int p_keyPressed_3_)
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers)
         {
             if(parentFragment.getListener() == this)
             {
-                if(keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT)
+                boolean flag = super.keyPressed(keyCode, scanCode, modifiers);
+                if(!flag)
                 {
-                    for(int i = 0; i < parentFragment.items.size(); i++)
+                    if(keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT)
                     {
-                        Item<?> item = parentFragment.items.get(i);
-                        if(item == this)
+                        for(int i = 0; i < parentFragment.items.size(); i++)
                         {
-                            if(i > 0)
+                            Item<?> item = parentFragment.items.get(i);
+                            if(item == this)
                             {
-                                Item item1 = parentFragment.items.get(i - 1);
-                                parentFragment.setListener(item1);
-                                boolean oldSelected = item1.selected;
-                                item1.selected = true;
-                                if(oldSelected != item1.selected && item1.selectionHandler != null)
+                                if(i > 0)
                                 {
-                                    item1.selectionHandler.accept(item1);
+                                    Item item1 = parentFragment.items.get(i - 1);
+                                    parentFragment.setListener(item1);
+                                    boolean oldSelected = item1.selected;
+                                    item1.selected = true;
+                                    if(oldSelected != item1.selected && item1.selectionHandler != null)
+                                    {
+                                        item1.selectionHandler.accept(item1);
+                                    }
+                                    return true;
                                 }
-                                return true;
+                            }
+                        }
+                    }
+                    else if(keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_RIGHT)
+                    {
+                        for(int i = 0; i < parentFragment.items.size(); i++)
+                        {
+                            Item<?> item = parentFragment.items.get(i);
+                            if(item == this)
+                            {
+                                if(i < parentFragment.items.size() - 1)
+                                {
+                                    Item item1 = parentFragment.items.get(i + 1);
+                                    parentFragment.setListener(item1);
+                                    boolean oldSelected = item1.selected;
+                                    item1.selected = true;
+                                    if(oldSelected != item1.selected && item1.selectionHandler != null)
+                                    {
+                                        item1.selectionHandler.accept(item1);
+                                    }
+                                    return true;
+                                }
                             }
                         }
                     }
                 }
-                else if(keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_RIGHT)
-                {
-                    for(int i = 0; i < parentFragment.items.size(); i++)
-                    {
-                        Item<?> item = parentFragment.items.get(i);
-                        if(item == this)
-                        {
-                            if(i < parentFragment.items.size() - 1)
-                            {
-                                Item item1 = parentFragment.items.get(i + 1);
-                                parentFragment.setListener(item1);
-                                boolean oldSelected = item1.selected;
-                                item1.selected = true;
-                                if(oldSelected != item1.selected && item1.selectionHandler != null)
-                                {
-                                    item1.selectionHandler.accept(item1);
-                                }
-                                return true;
-                            }
-                        }
-                    }
-                }
+                return flag;
             }
-            if((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && enterResponder != null)
+            else
             {
-                return enterResponder.apply(this);
+                if((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) && enterResponder != null)
+                {
+                    return enterResponder.apply(this);
+                }
+                return super.keyPressed(keyCode, scanCode, modifiers);
             }
-            return super.keyPressed(keyCode, p_keyPressed_2_, p_keyPressed_3_);
         }
 
         @Override

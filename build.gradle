@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -13,16 +13,23 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '10.1.0-beta2'
+version = '10.1.0'
 group = 'ichunutil'
 archivesBaseName = 'iChunUtil-1.16.5'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
+    // Channel:   Version:
+    // snapshot   YYYYMMDD   Snapshot are built nightly.
+    // stable     #          Stables are built at the discretion of the MCP team.
+    // official   MCVersion  Official field/method names from Mojang mapping files
+    //
+    // You must be aware of the Mojang license when using the 'official' mappings.
+    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
+    //
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20210309-1.16.5'
@@ -37,10 +44,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
             source sourceSets.main
         }
 
@@ -48,10 +55,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
             source sourceSets.main
         }
     }

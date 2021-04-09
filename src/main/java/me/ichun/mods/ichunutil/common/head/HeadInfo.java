@@ -59,7 +59,7 @@ public class HeadInfo<E extends LivingEntity>
     //GooglyEyes Stuff
     public Boolean noFaceInfo = false; //Use this to disable googly eye support
     public float[] eyeOffset = new float[] { 0F, 4F/16F, 4F/16F }; //I love that I can use Tabula for this. (I still do -iChun 2020)
-    public float[] irisColour = new float[] { 0.9F, 0.9F, 0.9F };
+    public float[] irisColour = new float[] { 0.8980392F, 0.8980392F, 0.8980392F }; //it used to be 0.9F
     public float[] pupilColour = new float[] { 0.0F, 0.0F, 0.0F };
     public Float halfInterpupillaryDistance = 2F/16F;
     public Float eyeScale = 0.75F;
@@ -76,7 +76,7 @@ public class HeadInfo<E extends LivingEntity>
     public Float hatTiltPitch = 0F;
     public Float hatTiltYaw = 0F;
     public float[] headArmorOffset = new float[] { 0F, 1F/16F, 0F };
-    public Float headArmorScale = 10.125F / 8F; //Armor is usually 1.0F expansion, both directions.
+    public Float headArmorScale = 1.27F; //Used to be 10.125F / 8F; //Armor is usually 1.0F expansion, both directions.
 
     public boolean affectedByInvisibility(E living, int eye, int head)
     {
