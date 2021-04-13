@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.common.head.HeadInfo;
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import net.minecraft.entity.LivingEntity;
 
 public class HeadTesting extends HeadInfo<LivingEntity>

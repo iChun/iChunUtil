@@ -17,7 +17,6 @@ out
 build
 .gradle
 libs
-src/api
 logs
 
 # other

@@ -1,10 +1,9 @@
-package me.ichun.mods.ichunutil.common.head;
+package me.ichun.mods.ichunutil.api.common.head;
 
 import com.google.common.base.Splitter;
 import com.google.gson.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.AgeableModel;
@@ -18,7 +17,10 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -26,10 +28,18 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 public class HeadInfo<E extends LivingEntity>
 {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static final Splitter DOT_SPLITTER = Splitter.on(".").trimResults().omitEmptyStrings();
+
+    public static BooleanSupplier horseEasterEgg = () -> false;
+    public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
+    public static IntSupplier aggressiveHeadTracking = () -> 0;
 
     //Used during serialisation
     public transient boolean hasStrippedInfo = false;
@@ -47,6 +57,8 @@ public class HeadInfo<E extends LivingEntity>
     public transient int[] acidTime;
 
     //SERIALISABLE STUFF
+    public String author = null;
+
     public String forClass = null;
     public String customClass = null;
 
@@ -141,7 +153,7 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public float getPupilScale(E living, MatrixStack stack, float partialTick, int eye)
     {
-        if(HeadHandler.acidEyesBooleanSupplier.getAsBoolean() || living.getDataManager().get(LivingEntity.POTION_EFFECTS) > 0)
+        if(acidEyesBooleanSupplier.getAsBoolean() || living.getDataManager().get(LivingEntity.POTION_EFFECTS) > 0)
         {
             rand.setSeed(Math.abs(living.hashCode()) * 1000L);
             int eyeCount = getEyeCount(living);
@@ -298,7 +310,7 @@ public class HeadInfo<E extends LivingEntity>
         {
             this.headModel = new ModelRenderer[1];
         }
-        if(flag || iChunUtil.configClient.aggressiveHeadTracking == 1 || iChunUtil.configClient.aggressiveHeadTracking == 2 && renderer instanceof PlayerRenderer)
+        if(flag || aggressiveHeadTracking.getAsInt() == 1 || aggressiveHeadTracking.getAsInt() == 2 && renderer instanceof PlayerRenderer)
         {
             setHeadModelFromRenderer(renderer);
             for(ModelRenderer head : this.headModel)
@@ -337,7 +349,7 @@ public class HeadInfo<E extends LivingEntity>
                     }
                     catch(NumberFormatException e)
                     {
-                        iChunUtil.LOGGER.error("Error parsing modelFieldName of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                        LOGGER.error("Error parsing modelFieldName of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                         flag = true;
                         index = -3; //we look for -1 and higher to confirm parsing. -2 means we haven't parsed yet.
                     }
@@ -351,7 +363,7 @@ public class HeadInfo<E extends LivingEntity>
                 else
                 {
                     flag = true;
-                    iChunUtil.LOGGER.error("Error finding field of {} from {} for {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                    LOGGER.error("Error finding field of {} from {} for {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                 }
             }
             if(fieldIndex.length > 1 && !flag)
@@ -451,7 +463,7 @@ public class HeadInfo<E extends LivingEntity>
                 }
                 catch(NullPointerException | IllegalAccessException e)
                 {
-                    iChunUtil.LOGGER.error("Error getting head info of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                    LOGGER.error("Error getting head info of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                     e.printStackTrace();
                 }
             }
@@ -516,7 +528,7 @@ public class HeadInfo<E extends LivingEntity>
                 }
                 else if(clone.modelFieldName == null || clone.modelFieldName.equals(defaultInfo.modelFieldName))
                 {
-                    iChunUtil.LOGGER.error("HeadInfo is not using a custom class but hasn't set a head model.");
+                    LOGGER.error("HeadInfo is not using a custom class but hasn't set a head model.");
                 }
                 clone.hasStrippedInfo = true;
                 return context.serialize(clone);
@@ -602,17 +614,31 @@ public class HeadInfo<E extends LivingEntity>
                 }
                 catch(ClassNotFoundException e)
                 {
-                    iChunUtil.LOGGER.error("Cannot find custom head info class: " + customClass);
+                    LOGGER.error("Cannot find custom head info class: " + customClass);
                     e.printStackTrace();
                 }
                 catch(IllegalAccessException | InstantiationException | ClassCastException e)
                 {
-                    iChunUtil.LOGGER.error("Error creating custom class: " + customClass);
+                    LOGGER.error("Error creating custom class: " + customClass);
                     e.printStackTrace();
                 }
             }
 
             return (new Gson()).fromJson(json, HeadInfo.class);
+        }
+    }
+
+    /**
+     * Use this object when sending Head Infos to iChunUtil via IMC.
+     */
+    public static class HeadHolder
+    {
+        public final @Nonnull HeadInfo<?> info;
+        public final @Nonnull Class<? extends LivingEntity> clz;
+
+        public HeadHolder(@Nonnull HeadInfo<?> info, @Nonnull Class<? extends LivingEntity> clz) {
+            this.info = info;
+            this.clz = clz;
         }
     }
 }

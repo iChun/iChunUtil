@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.common;
 
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
@@ -99,14 +100,29 @@ public class iChunUtil
     {
         event.getIMCStream(m -> m.equalsIgnoreCase("headinfo")).forEach(msg -> {
             Object o = msg.getMessageSupplier().get();
-            if(!(o instanceof String))
+            if(o instanceof String)
+            {
+                String s = (String)o;
+                HeadHandler.IMC_HEAD_INFO.add(s);
+                iChunUtil.LOGGER.info("IMC-headinfo: Added HeadInfo json for interpretation later from: {}", msg.getSenderModId());
+            }
+            else if(o instanceof HeadInfo.HeadHolder)
+            {
+                HeadInfo.HeadHolder headInfo = (HeadInfo.HeadHolder)o;
+                if(headInfo.clz == null || headInfo.info == null) //just in case
+                {
+                    iChunUtil.LOGGER.warn("IMC-headinfo: Custom HeadInfo has null object from mod: {}", msg.getSenderModId());
+                }
+                else
+                {
+                    HeadHandler.IMC_HEAD_INFO_OBJ.add(headInfo);
+                    iChunUtil.LOGGER.info("IMC-headinfo: Caching custom HeadInfo {} from: {}", headInfo.info.getClass().getSimpleName(), msg.getSenderModId());
+                }
+            }
+            else
             {
                 iChunUtil.LOGGER.warn("IMC-headinfo: {} passed HeadInfo object is not a string: {}", msg.getSenderModId(), o);
-                return;
             }
-            String s = (String)o;
-            HeadHandler.IMC_HEAD_INFO.add(s);
-            iChunUtil.LOGGER.info("IMC-headinfo: Added HeadInfo json for interpretation later from: {}", msg.getSenderModId());
         });
     }
 

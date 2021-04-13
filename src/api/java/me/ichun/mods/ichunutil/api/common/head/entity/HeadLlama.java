@@ -1,7 +1,7 @@
-package me.ichun.mods.ichunutil.common.head.entity;
+package me.ichun.mods.ichunutil.api.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.LlamaModel;
@@ -22,13 +22,13 @@ public class HeadLlama extends HeadHorse
     @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, stack, partialTick, eye, head);
     }
 
     @Override
     public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 0F : super.getHeadPitch(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, partialTick, eye, head);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -38,7 +38,7 @@ public class HeadLlama extends HeadHorse
         if(living.isChild()) //I don't like this if statement any more than you do.
         {
             float modelScale = 0.0625F;
-            if(iChunUtil.configClient.horseEasterEgg)
+            if(HeadInfo.horseEasterEgg.getAsBoolean())
             {
                 stack.scale(0.625F, 0.45454544F, 0.45454544F);
                 stack.translate(0.0F, 33.0F * modelScale, 0.0F);
@@ -59,7 +59,7 @@ public class HeadLlama extends HeadHorse
         EntityModel model = renderer.getEntityModel();
         if(model instanceof LlamaModel)
         {
-            this.headModel[0] = iChunUtil.configClient.horseEasterEgg ? ((LlamaModel)model).body : ((LlamaModel)model).head;
+            this.headModel[0] = HeadInfo.horseEasterEgg.getAsBoolean() ? ((LlamaModel)model).body : ((LlamaModel)model).head;
         }
     }
 }

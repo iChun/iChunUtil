@@ -1,7 +1,7 @@
-package me.ichun.mods.ichunutil.common.head.entity;
+package me.ichun.mods.ichunutil.api.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.common.head.HeadInfo;
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;

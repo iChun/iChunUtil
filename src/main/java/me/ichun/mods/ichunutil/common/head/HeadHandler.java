@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.head;
 
 import com.google.gson.*;
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +27,7 @@ import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class HeadHandler //TODO remove all teh ATs we don't need anymore
+public class HeadHandler
 {
     public static final HashMap<Class<? extends LivingEntity>, String> MODEL_OFFSET_HELPERS_JSON = new HashMap<>();
     public static final HashMap<Class<? extends LivingEntity>, HeadInfo<?>> MODEL_OFFSET_HELPERS = new HashMap<>();
@@ -34,7 +35,8 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
             .registerTypeAdapter(HeadInfo.class, new HeadInfo.Serializer())
             .create();
     public static final HashSet<String> IMC_HEAD_INFO = new HashSet<>();
-    public static final int HEAD_INFO_VERSION = 1;
+    public static final HashSet<HeadInfo.HeadHolder> IMC_HEAD_INFO_OBJ = new HashSet<>();
+    public static final int HEAD_INFO_VERSION = 2;
 
 
     public static BooleanSupplier acidEyesBooleanSupplier = () -> false;
@@ -87,6 +89,10 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
         {
             init = true;
 
+            HeadInfo.horseEasterEgg = () -> iChunUtil.configClient.horseEasterEgg;
+            HeadInfo.acidEyesBooleanSupplier = acidEyesBooleanSupplier;
+            HeadInfo.aggressiveHeadTracking = () -> iChunUtil.configClient.aggressiveHeadTracking;
+
             try
             {
                 Path workingDir = FMLPaths.CONFIGDIR.get().resolve(iChunUtil.MOD_ID);
@@ -98,43 +104,7 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
                 File extractedMarker = new File(headDir.toFile(), HEAD_INFO_VERSION + ".extracted");
                 if(!extractedMarker.exists()) //presume we haven't extracted anything yet
                 {
-                    InputStream in = iChunUtil.class.getResourceAsStream("/heads.zip");
-                    if(in != null)
-                    {
-                        ZipInputStream zipStream = new ZipInputStream(in);
-                        ZipEntry entry = null;
-
-                        while((entry = zipStream.getNextEntry()) != null)
-                        {
-                            File file = new File(headDir.toFile(), entry.getName());
-                            if(file.exists() && file.length() > 3L)
-                            {
-                                continue;
-                            }
-
-                            if(entry.isDirectory())
-                            {
-                                if(!file.exists())
-                                {
-                                    file.mkdirs();
-                                }
-                            }
-                            else
-                            {
-
-                                FileOutputStream out = new FileOutputStream(file);
-
-                                byte[] buffer = new byte[8192];
-                                int len;
-                                while((len = zipStream.read(buffer)) != -1)
-                                {
-                                    out.write(buffer, 0, len);
-                                }
-                                out.close();
-                            }
-                        }
-                        zipStream.close();
-                    }
+                    iChunUtil.LOGGER.info("Extracted {} Head Info files.", extractFiles());
 
                     FileUtils.writeStringToFile(extractedMarker, "", StandardCharsets.UTF_8);
                 }
@@ -149,6 +119,51 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
                 e.printStackTrace();
             }
         }
+    }
+
+    public static int extractFiles() throws IOException
+    {
+        int i = 0;
+        InputStream in = iChunUtil.class.getResourceAsStream("/heads.zip");
+        if(in != null)
+        {
+            ZipInputStream zipStream = new ZipInputStream(in);
+            ZipEntry entry = null;
+
+            while((entry = zipStream.getNextEntry()) != null)
+            {
+                File file = new File(headDir.toFile(), entry.getName());
+                if(file.exists() && file.length() > 3L)
+                {
+                    continue;
+                }
+
+                if(entry.isDirectory())
+                {
+                    if(!file.exists())
+                    {
+                        file.mkdirs();
+                    }
+                }
+                else
+                {
+
+                    FileOutputStream out = new FileOutputStream(file);
+
+                    byte[] buffer = new byte[8192];
+                    int len;
+                    while((len = zipStream.read(buffer)) != -1)
+                    {
+                        out.write(buffer, 0, len);
+                    }
+                    out.close();
+
+                    i++;
+                }
+            }
+            zipStream.close();
+        }
+        return i;
     }
 
     public static Path getHeadsDir()
@@ -191,6 +206,16 @@ public class HeadHandler //TODO remove all teh ATs we don't need anymore
                 }
             }
             iChunUtil.LOGGER.info("Loaded {} IMC HeadInfo object(s)", modCount);
+        }
+        if(!IMC_HEAD_INFO_OBJ.isEmpty())
+        {
+            for(HeadInfo.HeadHolder headHolder : IMC_HEAD_INFO_OBJ)
+            {
+                if(LivingEntity.class.isAssignableFrom(headHolder.clz))
+                {
+                    MODEL_OFFSET_HELPERS.put(headHolder.clz, headHolder.info);
+                }
+            }
         }
 
         return count + modCount;

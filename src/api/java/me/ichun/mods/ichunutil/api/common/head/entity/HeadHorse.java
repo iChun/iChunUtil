@@ -1,8 +1,7 @@
-package me.ichun.mods.ichunutil.common.head.entity;
+package me.ichun.mods.ichunutil.api.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import me.ichun.mods.ichunutil.common.head.HeadInfo;
-import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.HorseModel;
@@ -23,68 +22,68 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
     @Override
     public float[] getEyeOffsetFromJoint(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        return iChunUtil.configClient.horseEasterEgg ? eyeOffset : eyeOffsetNormal;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? eyeOffset : eyeOffsetNormal;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeSideOffset(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        return iChunUtil.configClient.horseEasterEgg ? (eye == 0 ? halfInterpupillaryDistance : -halfInterpupillaryDistance) : (eye == 0 ? halfInterpupillaryDistanceNormal : -halfInterpupillaryDistanceNormal);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (eye == 0 ? halfInterpupillaryDistance : -halfInterpupillaryDistance) : (eye == 0 ? halfInterpupillaryDistanceNormal : -halfInterpupillaryDistanceNormal);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeScale(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        return iChunUtil.configClient.horseEasterEgg ? eyeScale : eyeScaleNormal;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? eyeScale : eyeScaleNormal;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getEyeRotation(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 0F : eye == 0 ? 90F: -90F;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : eye == 0 ? 90F: -90F;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadYaw(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? 180F : super.getHeadYaw(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 180F : super.getHeadYaw(living, stack, partialTick, eye, head);
     }
 
     @Override
     public float getHeadYaw(AbstractHorseEntity living, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, eye, head);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, stack, partialTick, eye, head);
     }
 
     @Override
     public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, eye, head);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float getHatScale(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? super.getHatScale(living, stack, partialTick, head) : headScaleNormal;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? super.getHatScale(living, stack, partialTick, head) : headScaleNormal;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public float[] getHatOffsetFromJoint(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head)
     {
-        return iChunUtil.configClient.horseEasterEgg ? super.getHatOffsetFromJoint(living, stack, partialTick, head) : headTopCenterNormal;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? super.getHatOffsetFromJoint(living, stack, partialTick, head) : headTopCenterNormal;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -115,7 +114,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
     @Override
     public void preChildEntHeadRenderCalls(AbstractHorseEntity living, MatrixStack stack, LivingRenderer render)
     {
-        if(iChunUtil.configClient.horseEasterEgg)
+        if(HeadInfo.horseEasterEgg.getAsBoolean())
         {
             if(living.isChild()) //I don't like this if statement any more than you do.
             {
@@ -139,7 +138,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         EntityModel model = renderer.getEntityModel();
         if(model instanceof HorseModel)
         {
-            this.headModel[0] = iChunUtil.configClient.horseEasterEgg ? ((HorseModel)model).body : ((HorseModel)model).head;
+            this.headModel[0] = HeadInfo.horseEasterEgg.getAsBoolean() ? ((HorseModel)model).body : ((HorseModel)model).head;
         }
     }
 }
