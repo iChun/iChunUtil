@@ -170,6 +170,32 @@ public class ConfigClient extends ConfigBase
             button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(button);
 
+            ElementButton<?> button1 = new ElementButton<>(item, "config.ichunutil.headTracking.reload.reextract", btn ->
+            {
+                try
+                {
+                    if(HeadHandler.hasInit())
+                    {
+                        int extCount = HeadHandler.extractFiles(true);
+
+                        HeadHandler.loadHeadInfos();
+                        WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.reload.reextract.count", extCount));
+                    }
+                    else
+                    {
+                        WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.notLoaded"));
+                    }
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
+            });
+            button1.setTooltip(I18n.format("config.ichunutil.headTracking.reload.reextract.desc"));
+            button1.setSize(80, 14);
+            button1.setConstraint(new Constraint(button1).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(button, Constraint.Property.Type.LEFT, 4));
+            item.addElement(button1);
+
             return false; //we still want the button to generate, this is a hook in.
         });
         return super.init();
