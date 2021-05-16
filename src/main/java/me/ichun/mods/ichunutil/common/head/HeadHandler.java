@@ -104,7 +104,7 @@ public class HeadHandler
                 File extractedMarker = new File(headDir.toFile(), HEAD_INFO_VERSION + ".extracted");
                 if(!extractedMarker.exists()) //presume we haven't extracted anything yet
                 {
-                    iChunUtil.LOGGER.info("Extracted {} Head Info files.", extractFiles());
+                    iChunUtil.LOGGER.info("Extracted {} Head Info files.", extractFiles(true));
 
                     FileUtils.writeStringToFile(extractedMarker, "", StandardCharsets.UTF_8);
                 }
@@ -121,7 +121,7 @@ public class HeadHandler
         }
     }
 
-    public static int extractFiles() throws IOException
+    public static int extractFiles(boolean overwrite) throws IOException
     {
         int i = 0;
         InputStream in = iChunUtil.class.getResourceAsStream("/heads.zip");
@@ -133,7 +133,7 @@ public class HeadHandler
             while((entry = zipStream.getNextEntry()) != null)
             {
                 File file = new File(headDir.toFile(), entry.getName());
-                if(file.exists() && file.length() > 3L)
+                if(!overwrite && file.exists() && file.length() > 3L)
                 {
                     continue;
                 }
