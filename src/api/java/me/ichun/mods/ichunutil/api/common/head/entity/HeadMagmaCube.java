@@ -25,12 +25,12 @@ public class HeadMagmaCube extends HeadInfo<MagmaCubeEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getHeadJointOffset(MagmaCubeEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float[] getHeadJointOffset(MagmaCubeEntity living, MatrixStack stack, float partialTick, int head)
     {
         float squishFactor = living.prevSquishFactor + (living.squishFactor - living.prevSquishFactor) * partialTick;
         if(squishFactor <= 0F)
         {
-            return super.getHeadJointOffset(living, stack, partialTick, eye, head);
+            return super.getHeadJointOffset(living, stack, partialTick, head);
         }
         else
         {

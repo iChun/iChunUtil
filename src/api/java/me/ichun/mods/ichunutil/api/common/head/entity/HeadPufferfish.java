@@ -121,20 +121,20 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
     @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    protected void setHeadModelFromRenderer(LivingRenderer renderer) //TODO model check
     {
         EntityModel model = renderer.getEntityModel();
         if(model instanceof PufferFishSmallModel)
         {
-            this.headModel[0] = ((PufferFishSmallModel)model).body;
+            this.headModel = ((PufferFishSmallModel)model).body;
         }
         else if(model instanceof PufferFishMediumModel)
         {
-            this.headModel[0] = ((PufferFishMediumModel)model).body;
+            this.headModel = ((PufferFishMediumModel)model).body;
         }
         else if(model instanceof PufferFishBigModel)
         {
-            this.headModel[0] = ((PufferFishBigModel)model).body;
+            this.headModel = ((PufferFishBigModel)model).body;
         }
     }
 }

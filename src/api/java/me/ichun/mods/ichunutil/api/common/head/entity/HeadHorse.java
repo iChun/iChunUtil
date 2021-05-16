@@ -138,7 +138,7 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
         EntityModel model = renderer.getEntityModel();
         if(model instanceof HorseModel)
         {
-            this.headModel[0] = HeadInfo.horseEasterEgg.getAsBoolean() ? ((HorseModel)model).body : ((HorseModel)model).head;
+            this.headModel = HeadInfo.horseEasterEgg.getAsBoolean() ? ((HorseModel)model).body : ((HorseModel)model).head;
         }
     }
 }

@@ -37,11 +37,11 @@ public class HeadTropicalFish extends HeadInfo<TropicalFishEntity>
         EntityModel model = renderer.getEntityModel();
         if(model instanceof TropicalFishAModel)
         {
-            this.headModel[0] = ((TropicalFishAModel)model).body;
+            this.headModel = ((TropicalFishAModel)model).body;
         }
         else if(model instanceof TropicalFishBModel)
         {
-            this.headModel[0] = ((TropicalFishBModel)model).body;
+            this.headModel = ((TropicalFishBModel)model).body;
         }
     }
 }

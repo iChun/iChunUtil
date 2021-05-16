@@ -59,7 +59,7 @@ public class HeadLlama extends HeadHorse
         EntityModel model = renderer.getEntityModel();
         if(model instanceof LlamaModel)
         {
-            this.headModel[0] = HeadInfo.horseEasterEgg.getAsBoolean() ? ((LlamaModel)model).body : ((LlamaModel)model).head;
+            this.headModel = HeadInfo.horseEasterEgg.getAsBoolean() ? ((LlamaModel)model).body : ((LlamaModel)model).head;
         }
     }
 }

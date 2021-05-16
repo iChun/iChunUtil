@@ -46,7 +46,7 @@ public class HeadInfo<E extends LivingEntity>
 
     //Functional fields
     @OnlyIn(Dist.CLIENT)
-    public transient ModelRenderer[] headModel;
+    public transient ModelRenderer headModel;
     @OnlyIn(Dist.CLIENT)
     public transient ModelRenderer[] childTranslates;
     public transient Field[] fields = null;
@@ -84,13 +84,15 @@ public class HeadInfo<E extends LivingEntity>
     public Boolean noTopInfo = false; //Use this to disable Hats support
     public float[] headTopCenter = new float[] { 0F, 8F/16F, 0F };
     public Float headScale = 1F; //Top of the head. Compared to the a player head.
-    public Integer headCount = 1;
     public Float hatTiltPitch = 0F;
     public Float hatTiltYaw = 0F;
     public float[] headArmorOffset = new float[] { 0F, 1F/16F, 0F };
     public Float headArmorScale = 1.27F; //Used to be 10.125F / 8F; //Armor is usually 1.0F expansion, both directions.
 
-    public boolean affectedByInvisibility(E living, int eye, int head)
+    //Oddball Support
+    public HeadInfo[] additionalHeads = null;
+
+    public boolean affectedByInvisibility(E living, int eye)
     {
         return affectedByInvisibility;
     }
@@ -107,16 +109,25 @@ public class HeadInfo<E extends LivingEntity>
 
     public int getHeadCount(E living)
     {
-        return headCount;
+        return additionalHeads != null ? additionalHeads.length + 1 : 1;
+    }
+
+    public HeadInfo getHeadInfo(E living, int head)
+    {
+        if(head > 0)
+        {
+            return additionalHeads[head - 1];
+        }
+        return this;
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int eye, int head) //if head == -1, check eye instead
+    public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int head)
     {
-        headJoint[0] = -(headModel[0].rotationPointX / 16F);
-        headJoint[1] = -(headModel[0].rotationPointY / 16F);
-        headJoint[2] = -(headModel[0].rotationPointZ / 16F);
+        headJoint[0] = -(headModel.rotationPointX / 16F);
+        headJoint[1] = -(headModel.rotationPointY / 16F);
+        headJoint[2] = -(headModel.rotationPointZ / 16F);
         return headJoint;
     }
 
@@ -211,19 +222,19 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public float getHeadYaw(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return (float)Math.toDegrees(headModel[0].rotateAngleY);
+        return (float)Math.toDegrees(headModel.rotateAngleY);
     }
 
     @OnlyIn(Dist.CLIENT)
     public float getHeadPitch(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return (float)Math.toDegrees(headModel[0].rotateAngleX);
+        return (float)Math.toDegrees(headModel.rotateAngleX);
     }
 
     @OnlyIn(Dist.CLIENT)
     public float getHeadRoll(E living, MatrixStack stack, float partialTick, int eye, int head)
     {
-        return (float)Math.toDegrees(headModel[0].rotateAngleZ);
+        return (float)Math.toDegrees(headModel.rotateAngleZ);
     }
 
     //Mathed functions that don't share the model/require matrixstack (during rendering)
@@ -305,22 +316,9 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public void setHeadModel(LivingRenderer renderer) //actually gets the most parent ModelRenderer. we translate to the head in the functions if necessary.
     {
-        boolean flag = this.headModel == null;
-        if(flag)
-        {
-            this.headModel = new ModelRenderer[1];
-        }
-        if(flag || aggressiveHeadTracking.getAsInt() == 1 || aggressiveHeadTracking.getAsInt() == 2 && renderer instanceof PlayerRenderer)
+        if(this.headModel == null || aggressiveHeadTracking.getAsInt() == 1 || aggressiveHeadTracking.getAsInt() == 2 && renderer instanceof PlayerRenderer)
         {
             setHeadModelFromRenderer(renderer);
-            for(ModelRenderer head : this.headModel)
-            {
-                if(head == null)
-                {
-                    this.headModel = null;
-                    break;
-                }
-            }
         }
     }
 
@@ -399,22 +397,22 @@ public class HeadInfo<E extends LivingEntity>
                         {
                             if(index >= 0)
                             {
-                                this.headModel[0] = ((ModelRenderer)o).childModels.get(index);
+                                this.headModel = ((ModelRenderer)o).childModels.get(index);
                             }
                             else
                             {
-                                this.headModel[0] = ((ModelRenderer)o);
+                                this.headModel = ((ModelRenderer)o);
                             }
                         }
                         else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
                         {
                             if(index >= 0)
                             {
-                                this.headModel[0] = ((ModelRenderer[])o)[index];
+                                this.headModel = ((ModelRenderer[])o)[index];
                             }
                             else
                             {
-                                this.headModel = ((ModelRenderer[])o);
+                                this.headModel = ((ModelRenderer[])o)[0];
                             }
                         }
                         else if(o instanceof List)
@@ -422,7 +420,7 @@ public class HeadInfo<E extends LivingEntity>
                             Object o2 = ((List<?>)o).get(index);
                             if(o2 instanceof ModelRenderer)
                             {
-                                this.headModel[0] = ((ModelRenderer)o2);
+                                this.headModel = ((ModelRenderer)o2);
                             }
                         }
                     }
@@ -497,47 +495,62 @@ public class HeadInfo<E extends LivingEntity>
         @Override
         public JsonElement serialize(HeadInfo src, Type typeOfSrc, JsonSerializationContext context)
         {
-            Gson gson = new Gson();
             if(!src.hasStrippedInfo)
             {
-                HeadInfo defaultInfo = new HeadInfo();
-                HeadInfo clone = gson.fromJson(gson.toJson(src), src.getClass());
-
-                for(Field field : HeadInfo.class.getDeclaredFields())
-                {
-                    field.setAccessible(true);
-                    if(!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
-                    {
-                        try
-                        {
-                            if(field.get(clone) != null && isFieldValueEqual(field, clone, defaultInfo))
-                            {
-                                field.set(clone, null);
-                            }
-                        }
-                        catch(IllegalAccessException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                if(clone.getClass() != HeadInfo.class)
-                {
-                    clone.customClass = clone.getClass().getName();
-                }
-                else if(clone.modelFieldName == null || clone.modelFieldName.equals(defaultInfo.modelFieldName))
-                {
-                    LOGGER.error("HeadInfo is not using a custom class but hasn't set a head model.");
-                }
-                clone.hasStrippedInfo = true;
-                return context.serialize(clone);
+                return context.serialize(createStrippedClone(src));
             }
 
-            return gson.toJsonTree(src);
+            return (new Gson()).toJsonTree(src);
         }
 
-        private boolean isFieldValueEqual(Field field, HeadInfo clone, HeadInfo defaultInfo) throws IllegalAccessException //only checks on non-null objects
+        private static HeadInfo createStrippedClone(HeadInfo src)
+        {
+            Gson gson = new Gson();
+
+            HeadInfo defaultInfo = new HeadInfo();
+            HeadInfo clone = gson.fromJson(gson.toJson(src), src.getClass());
+
+            for(Field field : HeadInfo.class.getDeclaredFields())
+            {
+                field.setAccessible(true);
+                if(!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
+                {
+                    try
+                    {
+                        if(field.get(clone) != null && isFieldValueEqual(field, clone, defaultInfo))
+                        {
+                            field.set(clone, null);
+                        }
+                    }
+                    catch(IllegalAccessException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if(clone.additionalHeads != null)
+            {
+                for(int i = 0; i < clone.additionalHeads.length; i++)
+                {
+                    clone.additionalHeads[i] = createStrippedClone(clone.additionalHeads[i]);
+                }
+            }
+
+            if(clone.getClass() != HeadInfo.class)
+            {
+                clone.customClass = clone.getClass().getName();
+            }
+            else if(clone.modelFieldName == null || clone.modelFieldName.equals(defaultInfo.modelFieldName))
+            {
+                LOGGER.error("HeadInfo is not using a custom class but hasn't set a head model.");
+            }
+            clone.hasStrippedInfo = true;
+
+            return clone;
+        }
+
+        private static boolean isFieldValueEqual(Field field, HeadInfo clone, HeadInfo defaultInfo) throws IllegalAccessException //only checks on non-null objects
         {
             Object o1 = field.get(clone);
             Object o2 = field.get(defaultInfo);
