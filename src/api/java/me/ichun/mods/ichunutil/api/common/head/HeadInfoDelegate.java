@@ -9,7 +9,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -94,9 +93,16 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getPupilScale(E living, MatrixStack stack, float partialTick, int eye)
+    public float getIrisScale(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return delegate.getPupilScale(living, stack, partialTick, eye);
+        return delegate.getIrisScale(living, stack, partialTick, eye);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public float[] getCorneaColours(E living, MatrixStack stack, float partialTick, int eye)
+    {
+        return delegate.getCorneaColours(living, stack, partialTick, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -104,13 +110,6 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
     public float[] getIrisColours(E living, MatrixStack stack, float partialTick, int eye)
     {
         return delegate.getIrisColours(living, stack, partialTick, eye);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public float[] getPupilColours(E living, MatrixStack stack, float partialTick, int eye)
-    {
-        return delegate.getPupilColours(living, stack, partialTick, eye);
     }
 
 
@@ -227,9 +226,9 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
         EntityModel model = renderer.getEntityModel();
         for(HeadInfo head : multiModel)
         {
-            if(head.forClass.equals("horseEasterEgg"))
+            if(head.forClass.startsWith("horseEasterEgg"))
             {
-                if(head.customClass.equals("true") && HeadInfo.horseEasterEgg.getAsBoolean() || !head.customClass.equals("true") && !HeadInfo.horseEasterEgg.getAsBoolean())
+                if(head.forClass.endsWith("true") && HeadInfo.horseEasterEgg.getAsBoolean() || !head.forClass.endsWith("true") && !HeadInfo.horseEasterEgg.getAsBoolean())
                 {
                     delegate = head;
                     break;
@@ -265,7 +264,7 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
         while(iterator.hasNext())
         {
             HeadInfo head = iterator.next();
-            if(!head.forClass.equals("horseEasterEgg"))
+            if(!head.forClass.startsWith("horseEasterEgg"))
             {
                 if(head.multiModelClass == null)
                 {
@@ -281,12 +280,6 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
                         e.printStackTrace();
                     }
                 }
-            }
-            else if(head.customClass == null)
-            {
-                iterator.remove();
-
-                HeadInfo.LOGGER.error("MultiModel horseEasterEgg requires \"customClass\" set to true or otherwise. Cannot be null!");
             }
         }
 

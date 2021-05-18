@@ -10,8 +10,8 @@ public class HeadParrot extends HeadInfo<ParrotEntity>
 {
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getPupilScale(ParrotEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getIrisScale(ParrotEntity living, MatrixStack stack, float partialTick, int eye)
     {
-        return super.getPupilScale(living, stack, partialTick, eye) * (living.isPartying() ? 1.6F : 1F);
+        return super.getIrisScale(living, stack, partialTick, eye) * (living.isPartying() ? 1.6F : 1F);
     }
 }

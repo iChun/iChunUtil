@@ -54,24 +54,24 @@ public class HeadWolf extends HeadInfo<WolfEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getIrisColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getCorneaColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.isAngry()) //func_233678_J__
         {
             return irisColourAngry;
         }
-        return irisColour;
+        return corneaColour;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getPupilColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getIrisColours(WolfEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.isAngry()) //func_233678_J__
         {
             return pupilColourAngry;
         }
-        return pupilColour;
+        return irisColour;
     }
 
     @Override

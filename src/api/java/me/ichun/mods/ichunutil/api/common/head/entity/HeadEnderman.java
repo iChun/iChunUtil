@@ -10,12 +10,12 @@ public class HeadEnderman extends HeadInfo<EndermanEntity>
 {
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getPupilScale(EndermanEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getIrisScale(EndermanEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.isScreaming())
         {
             return 0.4F;
         }
-        return super.getPupilScale(living, stack, partialTick, eye);
+        return super.getIrisScale(living, stack, partialTick, eye);
     }
 }

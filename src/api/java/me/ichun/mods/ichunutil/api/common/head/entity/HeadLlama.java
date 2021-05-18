@@ -2,63 +2,35 @@ package me.ichun.mods.ichunutil.api.common.head.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.LlamaModel;
-import net.minecraft.entity.passive.horse.AbstractHorseEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadLlama extends HeadHorse
+public class HeadLlama extends HeadInfo<LlamaEntity>
 {
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getEyeRotation(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getHeadYaw(LlamaEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
-        return 0F;
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 180F : super.getHeadYaw(living, stack, partialTick, head, eye);
+    }
+
+    @Override
+    public float getHeadYaw(LlamaEntity living, float partialTick, int head, int eye)
+    {
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, head, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head, int eye)
+    public float getHeadPitch(LlamaEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
         return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, stack, partialTick, head, eye);
     }
 
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int head, int eye)
+    public float getHeadPitch(LlamaEntity living, float partialTick, int head, int eye)
     {
         return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, partialTick, head, eye);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void preChildEntHeadRenderCalls(AbstractHorseEntity living, MatrixStack stack, LivingRenderer render)
-    {
-        if(living.isChild()) //I don't like this if statement any more than you do.
-        {
-            float modelScale = 0.0625F;
-            if(HeadInfo.horseEasterEgg.getAsBoolean())
-            {
-                stack.scale(0.625F, 0.45454544F, 0.45454544F);
-                stack.translate(0.0F, 33.0F * modelScale, 0.0F);
-            }
-            else
-            {
-                stack.scale(0.71428573F, 0.64935064F, 0.7936508F);
-                stack.translate(0.0F, 21.0F * modelScale, 0.22F);
-            }
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(AbstractHorseEntity living, LivingRenderer renderer, EntityModel model)
-    {
-        if(model instanceof LlamaModel)
-        {
-            this.headModel = HeadInfo.horseEasterEgg.getAsBoolean() ? ((LlamaModel)model).body : ((LlamaModel)model).head;
-        }
     }
 }

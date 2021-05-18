@@ -12,7 +12,7 @@ public class HeadCat extends HeadInfo<CatEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getPupilColours(CatEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getIrisColours(CatEntity living, MatrixStack stack, float partialTick, int eye)
     {
         rand.setSeed(Math.abs(living.hashCode()) * 1231L);
         return pupilColourAssortment[rand.nextInt(pupilColourAssortment.length)];

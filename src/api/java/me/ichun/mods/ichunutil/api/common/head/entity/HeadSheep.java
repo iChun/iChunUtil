@@ -11,18 +11,18 @@ public class HeadSheep extends HeadInfo<SheepEntity>
 {
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getPupilScale(SheepEntity living, MatrixStack stack, float partialTick, int eye)
+    public float getIrisScale(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.getSheared())
         {
             return 0.5F;
         }
-        return super.getPupilScale(living, stack, partialTick, eye);
+        return super.getIrisScale(living, stack, partialTick, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getIrisColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getCorneaColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if (living.hasCustomName() && "jeb_".equals(living.getName().getUnformattedComponentText()))
         {
@@ -41,12 +41,12 @@ public class HeadSheep extends HeadInfo<SheepEntity>
             float[] afloat = SheepEntity.getDyeRgb(living.getFleeceColor());
             return afloat;
         }
-        return irisColour;
+        return corneaColour;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getPupilColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getIrisColours(SheepEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if (living.hasCustomName() && "jeb_".equals(living.getName().getUnformattedComponentText()))
         {
@@ -62,7 +62,7 @@ public class HeadSheep extends HeadInfo<SheepEntity>
         }
         else if(living.getSheared())
         {
-            return irisColour;
+            return corneaColour;
         }
         else
         {
@@ -71,7 +71,7 @@ public class HeadSheep extends HeadInfo<SheepEntity>
             {
                 return SheepEntity.getDyeRgb(clr);
             }
-            return pupilColour;
+            return irisColour;
         }
     }
 }

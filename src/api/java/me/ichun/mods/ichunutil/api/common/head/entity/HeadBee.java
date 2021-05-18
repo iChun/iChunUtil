@@ -34,23 +34,23 @@ public class HeadBee extends HeadInfo<BeeEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getIrisColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getCorneaColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.isAngry()) //func_233678_J__
         {
             return irisColourAngry;
         }
-        return irisColour;
+        return corneaColour;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getPupilColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
+    public float[] getIrisColours(BeeEntity living, MatrixStack stack, float partialTick, int eye)
     {
         if(living.isAngry()) //func_233678_J__
         {
             return pupilColourAngry;
         }
-        return pupilColour;
+        return irisColour;
     }
 }

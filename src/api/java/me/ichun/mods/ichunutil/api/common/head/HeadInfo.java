@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.api.common.head;
 
 import com.google.common.base.Splitter;
 import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -72,15 +73,23 @@ public class HeadInfo<E extends LivingEntity>
     public Boolean isBoss = false;
     public Boolean affectedByInvisibility = true;
 
+    //Child translates
+    public float[] childEntityScale = null;
+    public float[] childEntityOffset = null;
+
     //GooglyEyes Stuff
     public Boolean noFaceInfo = false; //Use this to disable googly eye support
     public float[] eyeOffset = new float[] { 0F, 4F/16F, 4F/16F }; //I love that I can use Tabula for this. (I still do -iChun 2020)
-    public float[] irisColour = new float[] { 0.8980392F, 0.8980392F, 0.8980392F }; //it used to be 0.9F
-    public float[] pupilColour = new float[] { 0.0F, 0.0F, 0.0F };
+    @SerializedName("irisColour") //legacy support due to bad naming, sorry.
+    public float[] corneaColour = new float[] { 0.8980392F, 0.8980392F, 0.8980392F }; //it used to be 0.9F
+    @SerializedName("pupilColour") //legacy support due to bad naming, sorry.
+    public float[] irisColour = new float[] { 0.0F, 0.0F, 0.0F };
     public Float halfInterpupillaryDistance = 2F/16F;
     public Float eyeScale = 0.75F;
     public Boolean sideEyed = false;
     public Boolean topEyed = false; //thanks hoglins
+    public Float eyeYRotation = 0F;
+    public Float eyeXRotation = 0F;
     public Integer eyeCount = 2;
     public Boolean doesEyeGlow = false;
 
@@ -157,17 +166,17 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public float getEyeRotation(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return sideEyed ? (eye % 2 == 0 ? 90F : -90F) : 0F;
+        return sideEyed ? (eye % 2 == 0 ? 90F : -90F) : eyeYRotation;
     }
 
     @OnlyIn(Dist.CLIENT)
     public float getEyeTopRotation(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return topEyed ? -90F : 0F;
+        return topEyed ? -90F : eyeXRotation;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getPupilScale(E living, MatrixStack stack, float partialTick, int eye)
+    public float getIrisScale(E living, MatrixStack stack, float partialTick, int eye)
     {
         if(acidEyesBooleanSupplier.getAsBoolean() || living.getDataManager().get(LivingEntity.POTION_EFFECTS) > 0)
         {
@@ -187,15 +196,15 @@ public class HeadInfo<E extends LivingEntity>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float[] getIrisColours(E living, MatrixStack stack, float partialTick, int eye)
+    public float[] getCorneaColours(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return irisColour;
+        return corneaColour;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float[] getPupilColours(E living, MatrixStack stack, float partialTick, int eye)
+    public float[] getIrisColours(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return pupilColour;
+        return irisColour;
     }
 
 
@@ -287,22 +296,36 @@ public class HeadInfo<E extends LivingEntity>
     {
         if(living.isChild()) //I don't like this if statement any more than you do.
         {
-            float modelScale = 0.0625F;
-            Model model = render.getEntityModel();
-            if(model instanceof BipedModel)
+            if(childEntityScale != null || childEntityOffset != null) //there is a child override
             {
-                stack.scale(0.75F, 0.75F, 0.75F);
-                stack.translate(0.0F, 16.0F * modelScale, 0.0F);
-            }
-            else if(model instanceof AgeableModel)
-            {
-                AgeableModel<?> ageableModel = (AgeableModel<?>)model;
-                if(ageableModel.isChildHeadScaled)
+                if(childEntityScale != null)
                 {
-                    float f = 1.5F / ageableModel.childHeadScale;
-                    stack.scale(f, f, f);
+                    stack.scale(childEntityScale[0], childEntityScale[1], childEntityScale[2]);
                 }
-                stack.translate(0.0F, ageableModel.childHeadOffsetY * modelScale, ageableModel.childHeadOffsetZ * modelScale);
+                if(childEntityOffset != null)
+                {
+                    stack.translate(childEntityOffset[0], childEntityOffset[1], childEntityOffset[2]);
+                }
+            }
+            else //default to MC scaling
+            {
+                float modelScale = 0.0625F;
+                Model model = render.getEntityModel();
+                if(model instanceof BipedModel)
+                {
+                    stack.scale(0.75F, 0.75F, 0.75F);
+                    stack.translate(0.0F, 16.0F * modelScale, 0.0F);
+                }
+                else if(model instanceof AgeableModel)
+                {
+                    AgeableModel<?> ageableModel = (AgeableModel<?>)model;
+                    if(ageableModel.isChildHeadScaled)
+                    {
+                        float f = 1.5F / ageableModel.childHeadScale;
+                        stack.scale(f, f, f);
+                    }
+                    stack.translate(0.0F, ageableModel.childHeadOffsetY * modelScale, ageableModel.childHeadOffsetZ * modelScale);
+                }
             }
         }
     }
