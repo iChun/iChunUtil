@@ -37,8 +37,8 @@ public class HeadTesting extends HeadInfo<LivingEntity>
     }
 
     @Override
-    public float getHeadRoll(LivingEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadRoll(LivingEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
-        return super.getHeadRoll(living, stack, partialTick, eye, head);
+        return super.getHeadRoll(living, stack, partialTick, head, eye);
     }
 }

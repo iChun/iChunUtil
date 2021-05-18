@@ -59,13 +59,13 @@ public class HeadShulker extends HeadInfo<ShulkerEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadPitch(ShulkerEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadPitch(ShulkerEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
         return 0F;
     }
 
     @Override
-    public float getHeadPitch(ShulkerEntity living, float partialTick, int eye, int head)
+    public float getHeadPitch(ShulkerEntity living, float partialTick, int head, int eye)
     {
         return 0F;
     }

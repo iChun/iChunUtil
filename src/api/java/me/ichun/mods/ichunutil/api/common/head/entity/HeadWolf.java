@@ -75,7 +75,7 @@ public class HeadWolf extends HeadInfo<WolfEntity>
     }
 
     @Override
-    public float getHeadRoll(WolfEntity living, float partialTick, int eye, int head)
+    public float getHeadRoll(WolfEntity living, float partialTick, int head, int eye)
     {
         return living.getInterestedAngle(partialTick) + living.getShakeAngle(partialTick, 0.0F);
     }

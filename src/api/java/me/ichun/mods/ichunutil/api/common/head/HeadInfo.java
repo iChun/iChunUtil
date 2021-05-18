@@ -33,7 +33,7 @@ import java.util.function.IntSupplier;
 
 public class HeadInfo<E extends LivingEntity>
 {
-    private static final Logger LOGGER = LogManager.getLogger();
+    protected static final Logger LOGGER = LogManager.getLogger();
 
     public static final Splitter DOT_SPLITTER = Splitter.on(".").trimResults().omitEmptyStrings();
 
@@ -55,6 +55,10 @@ public class HeadInfo<E extends LivingEntity>
     public transient float[] headJoint = new float[3]; //so that GC doesn't hate us
     public transient Random rand = new Random();
     public transient int[] acidTime;
+
+    //MultiModel Class instance;
+    public transient Class<? extends EntityModel> multiModelClass = null;
+
 
     //SERIALISABLE STUFF
     public String author = null;
@@ -91,6 +95,7 @@ public class HeadInfo<E extends LivingEntity>
 
     //Oddball Support
     public HeadInfo[] additionalHeads = null;
+    public HeadInfo[] multiModel = null;
 
     public boolean affectedByInvisibility(E living, int eye)
     {
@@ -220,35 +225,35 @@ public class HeadInfo<E extends LivingEntity>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadYaw(E living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadYaw(E living, MatrixStack stack, float partialTick, int head, int eye)
     {
         return (float)Math.toDegrees(headModel.rotateAngleY);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadPitch(E living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadPitch(E living, MatrixStack stack, float partialTick, int head, int eye)
     {
         return (float)Math.toDegrees(headModel.rotateAngleX);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadRoll(E living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadRoll(E living, MatrixStack stack, float partialTick, int head, int eye)
     {
         return (float)Math.toDegrees(headModel.rotateAngleZ);
     }
 
     //Mathed functions that don't share the model/require matrixstack (during rendering)
-    public float getHeadYaw(E living, float partialTick, int eye, int head)
+    public float getHeadYaw(E living, float partialTick, int head, int eye)
     {
         return living.prevRotationYawHead + (living.rotationYawHead - living.prevRotationYawHead) * partialTick;
     }
 
-    public float getHeadPitch(E living, float partialTick, int eye, int head)
+    public float getHeadPitch(E living, float partialTick, int head, int eye)
     {
         return living.prevRotationPitch + (living.rotationPitch - living.prevRotationPitch) * partialTick;
     }
 
-    public float getHeadRoll(E living, float partialTick, int eye, int head)
+    public float getHeadRoll(E living, float partialTick, int head, int eye)
     {
         return 0F;
     }
@@ -272,7 +277,7 @@ public class HeadInfo<E extends LivingEntity>
         {
             for(ModelRenderer child : childTranslates)
             {
-                translateRotateToChild(stack, child);
+                translateRotateToChild(living, stack, child);
             }
         }
     }
@@ -303,7 +308,7 @@ public class HeadInfo<E extends LivingEntity>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void translateRotateToChild(MatrixStack stack, ModelRenderer renderer)
+    public void translateRotateToChild(E living, MatrixStack stack, ModelRenderer renderer)
     {
         stack.translate(renderer.rotationPointX / 16F, renderer.rotationPointY / 16F, renderer.rotationPointZ / 16F);
 
@@ -314,19 +319,25 @@ public class HeadInfo<E extends LivingEntity>
 
     @SuppressWarnings("rawtypes")
     @OnlyIn(Dist.CLIENT)
-    public void setHeadModel(LivingRenderer renderer) //actually gets the most parent ModelRenderer. we translate to the head in the functions if necessary.
+    public boolean setup(E living, LivingRenderer renderer)
+    {
+        return true;
+    }
+
+    @SuppressWarnings("rawtypes")
+    @OnlyIn(Dist.CLIENT)
+    public void setHeadModel(E living, LivingRenderer renderer) //actually gets the most parent ModelRenderer. we translate to the head in the functions if necessary.
     {
         if(this.headModel == null || aggressiveHeadTracking.getAsInt() == 1 || aggressiveHeadTracking.getAsInt() == 2 && renderer instanceof PlayerRenderer)
         {
-            setHeadModelFromRenderer(renderer);
+            setHeadModelFromRenderer(living, renderer, renderer.getEntityModel());
         }
     }
 
     @SuppressWarnings("rawtypes")
     @OnlyIn(Dist.CLIENT)
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    protected void setHeadModelFromRenderer(E living, LivingRenderer renderer, EntityModel model)
     {
-        EntityModel model = renderer.getEntityModel();
         if(fieldIndex == null) //we haven't looked it up yet?
         {
             List<String> fieldNames = DOT_SPLITTER.splitToList(modelFieldName);
@@ -590,11 +601,18 @@ public class HeadInfo<E extends LivingEntity>
             return o1.equals(o2);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public HeadInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject jsonObject = (JsonObject)json;
-            if(jsonObject.has("customClass"))
+            if(jsonObject.has("multiModel") && jsonObject.getAsJsonArray("multiModel").size() > 0)
+            {
+                HeadInfoDelegate headInfo = context.deserialize(json, HeadInfoDelegate.class);
+                headInfo.checkModels();
+                return headInfo;
+            }
+            else if(jsonObject.has("customClass"))
             {
                 String customClass = jsonObject.get("customClass").getAsString();
                 try

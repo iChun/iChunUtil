@@ -32,9 +32,8 @@ public class HeadTropicalFish extends HeadInfo<TropicalFishEntity>
     @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    protected void setHeadModelFromRenderer(TropicalFishEntity living, LivingRenderer renderer, EntityModel model)
     {
-        EntityModel model = renderer.getEntityModel();
         if(model instanceof TropicalFishAModel)
         {
             this.headModel = ((TropicalFishAModel)model).body;

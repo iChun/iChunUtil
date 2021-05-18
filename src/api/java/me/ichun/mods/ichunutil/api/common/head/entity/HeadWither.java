@@ -8,13 +8,13 @@ public class HeadWither extends HeadInfo<WitherEntity>
     //These are only here cause of Googly Eyes
 
     @Override
-    public float getHeadYaw(WitherEntity living, float partialTick, int eye, int head)
+    public float getHeadYaw(WitherEntity living, float partialTick, int head, int eye)
     {
         if(head >= 0)
         {
             if(head == 0)
             {
-                return super.getHeadYaw(living, partialTick, eye, head);
+                return super.getHeadYaw(living, partialTick, head, eye);
             }
             else
             {
@@ -25,7 +25,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         {
             if(eye <= 1)
             {
-                return super.getHeadYaw(living, partialTick, eye, head);
+                return super.getHeadYaw(living, partialTick, head, eye);
             }
             else
             {
@@ -35,13 +35,13 @@ public class HeadWither extends HeadInfo<WitherEntity>
     }
 
     @Override
-    public float getHeadPitch(WitherEntity living, float partialTick, int eye, int head)
+    public float getHeadPitch(WitherEntity living, float partialTick, int head, int eye)
     {
         if(head >= 0)
         {
             if(head == 0)
             {
-                return super.getHeadPitch(living, partialTick, eye, head);
+                return super.getHeadPitch(living, partialTick, head, eye);
             }
             else
             {
@@ -52,7 +52,7 @@ public class HeadWither extends HeadInfo<WitherEntity>
         {
             if(eye <= 1)
             {
-                return super.getHeadPitch(living, partialTick, eye, head);
+                return super.getHeadPitch(living, partialTick, head, eye);
             }
             else
             {

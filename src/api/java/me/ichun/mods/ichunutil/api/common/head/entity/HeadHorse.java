@@ -48,28 +48,28 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadYaw(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadYaw(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? 180F : super.getHeadYaw(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 180F : super.getHeadYaw(living, stack, partialTick, head, eye);
     }
 
     @Override
-    public float getHeadYaw(AbstractHorseEntity living, float partialTick, int eye, int head)
+    public float getHeadYaw(AbstractHorseEntity living, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (living.prevRenderYawOffset + (living.renderYawOffset - living.prevRenderYawOffset) * partialTick) - 180F : super.getHeadYaw(living, partialTick, head, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, stack, partialTick, head, eye);
     }
 
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye, int head)
+    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? (float)Math.toDegrees(living.getRearingAmount(partialTick) * ((float)Math.PI / 4F)) : super.getHeadPitch(living, partialTick, head, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -133,9 +133,8 @@ public class HeadHorse extends HeadInfo<AbstractHorseEntity>
     @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    protected void setHeadModelFromRenderer(AbstractHorseEntity living, LivingRenderer renderer, EntityModel model)
     {
-        EntityModel model = renderer.getEntityModel();
         if(model instanceof HorseModel)
         {
             this.headModel = HeadInfo.horseEasterEgg.getAsBoolean() ? ((HorseModel)model).body : ((HorseModel)model).head;

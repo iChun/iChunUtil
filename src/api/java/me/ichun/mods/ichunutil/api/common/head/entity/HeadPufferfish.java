@@ -121,9 +121,8 @@ public class HeadPufferfish extends HeadInfo<PufferfishEntity>
     @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer) //TODO model check
+    protected void setHeadModelFromRenderer(PufferfishEntity living, LivingRenderer renderer, EntityModel model) //TODO model check
     {
-        EntityModel model = renderer.getEntityModel();
         if(model instanceof PufferFishSmallModel)
         {
             this.headModel = ((PufferFishSmallModel)model).body;

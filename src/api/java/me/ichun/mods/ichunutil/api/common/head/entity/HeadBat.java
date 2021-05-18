@@ -10,29 +10,29 @@ public class HeadBat extends HeadInfo<BatEntity>
 {
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadYaw(BatEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadYaw(BatEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
         if(living.getIsBatHanging())
         {
-            return -super.getHeadYaw(living, stack, partialTick, eye, head);
+            return -super.getHeadYaw(living, stack, partialTick, head, eye);
         }
         else
         {
-            return super.getHeadYaw(living, stack, partialTick, eye, head);
+            return super.getHeadYaw(living, stack, partialTick, head, eye);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadYaw(BatEntity living, float partialTick, int eye, int head)
+    public float getHeadYaw(BatEntity living, float partialTick, int head, int eye)
     {
         if(living.getIsBatHanging())
         {
-            return -super.getHeadYaw(living, partialTick, eye, head);
+            return -super.getHeadYaw(living, partialTick, head, eye);
         }
         else
         {
-            return super.getHeadYaw(living, partialTick, eye, head);
+            return super.getHeadYaw(living, partialTick, head, eye);
         }
     }
 }

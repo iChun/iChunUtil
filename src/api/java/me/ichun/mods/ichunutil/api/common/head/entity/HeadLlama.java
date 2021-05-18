@@ -20,15 +20,15 @@ public class HeadLlama extends HeadHorse
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int eye, int head)
+    public float getHeadPitch(AbstractHorseEntity living, MatrixStack stack, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, stack, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, stack, partialTick, head, eye);
     }
 
     @Override
-    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int eye, int head)
+    public float getHeadPitch(AbstractHorseEntity living, float partialTick, int head, int eye)
     {
-        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, partialTick, eye, head);
+        return HeadInfo.horseEasterEgg.getAsBoolean() ? 0F : super.getHeadPitch(living, partialTick, head, eye);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -54,9 +54,8 @@ public class HeadLlama extends HeadHorse
     @OnlyIn(Dist.CLIENT)
     @Override
     @SuppressWarnings("rawtypes")
-    protected void setHeadModelFromRenderer(LivingRenderer renderer)
+    protected void setHeadModelFromRenderer(AbstractHorseEntity living, LivingRenderer renderer, EntityModel model)
     {
-        EntityModel model = renderer.getEntityModel();
         if(model instanceof LlamaModel)
         {
             this.headModel = HeadInfo.horseEasterEgg.getAsBoolean() ? ((LlamaModel)model).body : ((LlamaModel)model).head;
