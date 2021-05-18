@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
 {
     public transient HeadInfo delegate;
@@ -217,8 +217,8 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
         delegate.translateRotateToChild(living, stack, renderer);
     }
 
-    @SuppressWarnings("rawtypes")
     @OnlyIn(Dist.CLIENT)
+    @Override
     public boolean setup(E living, LivingRenderer renderer)
     {
         delegate = null;
@@ -241,6 +241,13 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
             }
         }
 
+        return delegate != null;
+    }
+
+    @Override
+    public boolean setup(E living)
+    {
+        delegate = multiModel.length > 0 ? multiModel[0] : null;
         return delegate != null;
     }
 

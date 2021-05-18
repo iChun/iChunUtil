@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
+@SuppressWarnings("rawtypes")
 public class HeadInfo<E extends LivingEntity>
 {
     protected static final Logger LOGGER = LogManager.getLogger();
@@ -166,7 +167,7 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public float getEyeRotation(E living, MatrixStack stack, float partialTick, int eye)
     {
-        return sideEyed ? (eye % 2 == 0 ? 90F : -90F) : eyeYRotation;
+        return sideEyed ? (eye % 2 == 0 ? 90F : -90F) : (eye % 2 == 0 ? eyeYRotation : -eyeYRotation);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -340,14 +341,18 @@ public class HeadInfo<E extends LivingEntity>
         stack.rotate(Vector3f.XP.rotation(renderer.rotateAngleX));
     }
 
-    @SuppressWarnings("rawtypes")
+    //Setup functions are to set up the HeadInfoDelegate
     @OnlyIn(Dist.CLIENT)
     public boolean setup(E living, LivingRenderer renderer)
     {
         return true;
     }
 
-    @SuppressWarnings("rawtypes")
+    public boolean setup(E living)
+    {
+        return true;
+    }
+
     @OnlyIn(Dist.CLIENT)
     public void setHeadModel(E living, LivingRenderer renderer) //actually gets the most parent ModelRenderer. we translate to the head in the functions if necessary.
     {
@@ -357,7 +362,6 @@ public class HeadInfo<E extends LivingEntity>
         }
     }
 
-    @SuppressWarnings("rawtypes")
     @OnlyIn(Dist.CLIENT)
     protected void setHeadModelFromRenderer(E living, LivingRenderer renderer, EntityModel model)
     {
