@@ -27,6 +27,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
@@ -52,7 +53,7 @@ public class HeadInfo<E extends LivingEntity>
     @OnlyIn(Dist.CLIENT)
     public transient ModelRenderer[] childTranslates;
     public transient Field[] fields = null;
-    public transient int[] fieldIndex = null;
+    public transient ArrayList<Integer>[] fieldIndex = null;
 
     public transient float[] headJoint = new float[3]; //so that GC doesn't hate us
     public transient Random rand = new Random();
@@ -396,32 +397,45 @@ public class HeadInfo<E extends LivingEntity>
         {
             List<String> fieldNames = DOT_SPLITTER.splitToList(modelFieldName);
             fields = new Field[fieldNames.size()];
-            fieldIndex = new int[fieldNames.size()];
+            fieldIndex = new ArrayList[fieldNames.size()];
             boolean flag = false; //true if we errored.
             for(int i = 0; i < fieldNames.size(); i++)
             {
                 String fieldNameFull = fieldNames.get(i);
                 String fieldName = fieldNameFull;
-                int index = -1;
-                if(fieldName.contains("[")) //it is an array, list, or get child.
+                ArrayList<Integer> indices = new ArrayList<>();
+                if(fieldName.contains("[")) //it is an array, list, or get child, or worse, multiples.
                 {
                     fieldName = fieldNameFull.substring(0, fieldNameFull.indexOf("["));
-                    try
+
+                    String indicesString = fieldNameFull.substring(fieldNameFull.indexOf("["));
+                    while(indicesString.startsWith("["))
                     {
-                        index = Integer.parseInt(fieldNameFull.substring(fieldNameFull.indexOf("[") + 1, fieldNameFull.length() - 1));
+                        int closeBracketIndex = indicesString.indexOf("]");
+                        //do magic
+                        try
+                        {
+                            indices.add(Integer.parseInt(indicesString.substring(1, closeBracketIndex))); //we look for -1 and higher to confirm parsing.
+                        }
+                        catch(NumberFormatException | StringIndexOutOfBoundsException e)
+                        {
+                            LOGGER.error("Error parsing modelFieldName of {} for {} of model {} in {}", modelFieldName, this.getClass().getSimpleName(), model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                            flag = true;
+                            indices.add(-3); //we look for -1 and higher to confirm parsing.
+                        }
+
+                        indicesString = indicesString.substring(closeBracketIndex + 1);
                     }
-                    catch(NumberFormatException e)
-                    {
-                        LOGGER.error("Error parsing modelFieldName of {} for {} of model {} in {}", modelFieldName, this.getClass().getSimpleName(), model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
-                        flag = true;
-                        index = -3; //we look for -1 and higher to confirm parsing. -2 means we haven't parsed yet.
-                    }
+                }
+                else
+                {
+                    indices.add(-1);
                 }
                 Field field = findField(model.getClass(), ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName));
                 if(field != null)
                 {
                     fields[i] = field;
-                    fieldIndex[i] = index;
+                    fieldIndex[i] = indices;
                 }
                 else
                 {
@@ -429,7 +443,11 @@ public class HeadInfo<E extends LivingEntity>
                     LOGGER.error("Error finding field of {} from {} for {} of model {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                 }
             }
-            if(fieldIndex.length > 1 && !flag)
+            if(flag)
+            {
+                fields = null;
+            }
+            else if(fieldIndex.length > 1)
             {
                 childTranslates = new ModelRenderer[fieldIndex.length - 1];
             }
@@ -452,79 +470,31 @@ public class HeadInfo<E extends LivingEntity>
                     break;
                 }
 
-                int index = fieldIndex[i];
+                ArrayList<Integer> indices = fieldIndex[i];
                 try
                 {
                     Object o = field.get(model);
-                    if(i == 0) //we're still looking for the parent heads.
-                    {
-                        if(o instanceof ModelRenderer)
-                        {
-                            if(index >= 0)
-                            {
-                                this.headModel = ((ModelRenderer)o).childModels.get(index);
-                            }
-                            else
-                            {
-                                this.headModel = ((ModelRenderer)o);
-                            }
-                        }
-                        else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
-                        {
-                            if(index >= 0)
-                            {
-                                this.headModel = ((ModelRenderer[])o)[index];
-                            }
-                            else
-                            {
-                                this.headModel = ((ModelRenderer[])o)[0];
-                            }
-                        }
-                        else if(o instanceof List)
-                        {
-                            Object o2 = ((List<?>)o).get(index);
-                            if(o2 instanceof ModelRenderer)
-                            {
-                                this.headModel = ((ModelRenderer)o2);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(o instanceof ModelRenderer)
-                        {
-                            if(index >= 0)
-                            {
-                                this.childTranslates[i - 1] = ((ModelRenderer)o).childModels.get(index);
-                            }
-                            else
-                            {
-                                this.childTranslates[i - 1] = ((ModelRenderer)o);
-                            }
-                        }
-                        else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
-                        {
-                            if(index >= 0)
-                            {
-                                this.childTranslates[i - 1] = ((ModelRenderer[])o)[index];
-                            }
-                            else
-                            {
-                                this.childTranslates = ((ModelRenderer[])o);
-                            }
-                        }
-                        else if(o instanceof List)
-                        {
-                            Object o2 = ((List<?>)o).get(index);
-                            if(o2 instanceof ModelRenderer)
-                            {
-                                this.childTranslates[i - 1] = ((ModelRenderer)o2);
-                            }
-                        }
 
+                    Object modelAtIndex = o;
+
+                    for(Integer index : indices)
+                    {
+                        modelAtIndex = digForModelRendererWithIndex(modelAtIndex, index);
+                    }
+
+                    if(modelAtIndex instanceof ModelRenderer)
+                    {
+                        if(i == 0) //we're still looking for the parent heads.
+                        {
+                            this.headModel = (ModelRenderer)modelAtIndex;
+                        }
+                        else
+                        {
+                            this.childTranslates[i - 1] = (ModelRenderer)modelAtIndex;
+                        }
                     }
                 }
-                catch(NullPointerException | IllegalAccessException e)
+                catch(NullPointerException | IllegalAccessException | ArrayIndexOutOfBoundsException e)
                 {
                     LOGGER.error("Error getting head info of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                     e.printStackTrace();
@@ -553,6 +523,43 @@ public class HeadInfo<E extends LivingEntity>
             e.printStackTrace();
         }
         return f;
+    }
+
+    @Nullable
+    public static ModelRenderer digForModelRendererWithIndex(Object o, int index)
+    {
+        if(o instanceof ModelRenderer)
+        {
+            if(index >= 0)
+            {
+                return ((ModelRenderer)o).childModels.get(index);
+            }
+            else
+            {
+                return ((ModelRenderer)o);
+            }
+        }
+        else if(o.getClass().isArray() && ModelRenderer.class.isAssignableFrom(o.getClass().getComponentType())) //A ModelRenderer array
+        {
+            if(index >= 0)
+            {
+                return ((ModelRenderer[])o)[index];
+            }
+            else
+            {
+                return ((ModelRenderer[])o)[0];
+            }
+        }
+        else if(o instanceof List)
+        {
+            Object o2 = ((List<?>)o).get(index);
+            if(o2 instanceof ModelRenderer)
+            {
+                return ((ModelRenderer)o2);
+            }
+        }
+
+        return null;
     }
 
     public static class Serializer implements JsonDeserializer<HeadInfo>, JsonSerializer<HeadInfo>
