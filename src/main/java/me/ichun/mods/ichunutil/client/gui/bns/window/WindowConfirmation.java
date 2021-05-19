@@ -13,19 +13,24 @@ import java.util.function.Consumer;
 public class WindowConfirmation extends Window<Workspace>
 {
     //title will be localised, text won't.
-    public WindowConfirmation(Workspace parent, String title, String text, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel)
+    public WindowConfirmation(Workspace parent, String title, String text, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel, boolean isYesNo)
     {
         super(parent);
 
-        setView(new ViewConfirmation(this, title, text, callbackOk, callbackCancel));
+        setView(new ViewConfirmation(this, title, text, callbackOk, callbackCancel, isYesNo));
         disableDockingEntirely();
 
         isNotUnique();
     }
 
+    public WindowConfirmation(Workspace parent, String title, String text, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel)
+    {
+        this(parent, title, text, callbackOk, callbackCancel, false);
+    }
+
     public static class ViewConfirmation extends View<WindowConfirmation>
     {
-        public ViewConfirmation(@Nonnull WindowConfirmation parent, String title, String text1, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel)
+        public ViewConfirmation(@Nonnull WindowConfirmation parent, String title, String text1, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel, boolean isYesNo)
         {
             super(parent, title);
 
@@ -34,7 +39,7 @@ public class WindowConfirmation extends Window<Workspace>
             text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
             elements.add(text);
 
-            ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.cancel"), btn ->
+            ElementButton<?> button = new ElementButton<>(this, I18n.format(isYesNo ? "gui.no" : "gui.cancel"), btn ->
             {
                 parent.parent.removeWindow(parent);
 
@@ -47,7 +52,7 @@ public class WindowConfirmation extends Window<Workspace>
             button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 10).right(this, Constraint.Property.Type.RIGHT, 10));
             elements.add(button);
 
-            ElementButton<?> button1 = new ElementButton<>(this, I18n.format("gui.ok"), btn ->
+            ElementButton<?> button1 = new ElementButton<>(this, I18n.format(isYesNo ? "gui.yes" : "gui.ok"), btn ->
             {
                 parent.parent.removeWindow(parent);
 

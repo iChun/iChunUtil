@@ -39,14 +39,14 @@ public class ModelHelper
         renderers.arrays.forEach((s, modelRenderers) -> {
             for(int i = 0; i < modelRenderers.length; i++)
             {
-                createPartFor(s + "_" + i, modelRenderers[i], done, project);
+                createPartFor(s + "[" + i + "]", modelRenderers[i], done, project);
             }
         });
 
         renderers.lists.forEach((s, modelRenderers) -> {
             for(int i = 0; i < modelRenderers.size(); i++)
             {
-                createPartFor(s + "_" + i, modelRenderers.get(i), done, project);
+                createPartFor(s + "[" + i + "]", modelRenderers.get(i), done, project);
             }
         });
 
@@ -303,7 +303,7 @@ public class ModelHelper
         for(int i = 0; i < childModels.size(); i++)
         {
             ModelRenderer childModel = childModels.get(i);
-            createPartFor(name + "_" + i, childModel, done, part);
+            createPartFor(name + "[" + i + "]", childModel, done, part);
         }
 
         if(parent instanceof Project)

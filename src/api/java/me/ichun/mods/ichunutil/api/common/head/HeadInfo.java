@@ -74,6 +74,11 @@ public class HeadInfo<E extends LivingEntity>
     public Boolean isBoss = false;
     public Boolean affectedByInvisibility = true;
 
+    //Model render fixes
+    @OnlyIn(Dist.CLIENT)
+    public MatrixStack renderCorrectorStack;
+    public PlacementCorrector[] renderCorrectors = null;
+
     //Child translates
     public float[] childEntityScale = null;
     public float[] childEntityOffset = null;
@@ -136,6 +141,28 @@ public class HeadInfo<E extends LivingEntity>
         return this;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void correctPosition(E living, MatrixStack stack, float partialTick)
+    {
+        if(renderCorrectors != null && renderCorrectors.length > 0)
+        {
+            if(renderCorrectorStack == null)
+            {
+                renderCorrectorStack = new MatrixStack();
+
+                for(PlacementCorrector renderCorrector : renderCorrectors)
+                {
+                    renderCorrector.apply(renderCorrectorStack);
+                }
+            }
+
+            MatrixStack.Entry entLast = stack.getLast();
+            MatrixStack.Entry correctorLast = renderCorrectorStack.getLast();
+
+            entLast.getMatrix().mul(correctorLast.getMatrix());
+            entLast.getNormal().mul(correctorLast.getNormal());
+        }
+    }
 
     @OnlyIn(Dist.CLIENT)
     public float[] getHeadJointOffset(E living, MatrixStack stack, float partialTick, int head)
@@ -385,7 +412,7 @@ public class HeadInfo<E extends LivingEntity>
                     }
                     catch(NumberFormatException e)
                     {
-                        LOGGER.error("Error parsing modelFieldName of {} for {} in {}", modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                        LOGGER.error("Error parsing modelFieldName of {} for {} of model {} in {}", modelFieldName, this.getClass().getSimpleName(), model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                         flag = true;
                         index = -3; //we look for -1 and higher to confirm parsing. -2 means we haven't parsed yet.
                     }
@@ -399,7 +426,7 @@ public class HeadInfo<E extends LivingEntity>
                 else
                 {
                     flag = true;
-                    LOGGER.error("Error finding field of {} from {} for {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), renderer.getClass().getSimpleName());
+                    LOGGER.error("Error finding field of {} from {} for {} of model {} in {}", fieldName, modelFieldName, this.getClass().getSimpleName(), model.getClass().getSimpleName(), renderer.getClass().getSimpleName());
                 }
             }
             if(fieldIndex.length > 1 && !flag)
@@ -683,6 +710,87 @@ public class HeadInfo<E extends LivingEntity>
             }
 
             return (new Gson()).fromJson(json, HeadInfo.class);
+        }
+    }
+
+    public static class PlacementCorrector
+    {
+        public @Nonnull String type = "scale/translate/rotate(in degrees)";
+        public @Nonnull String axis = "x/y/z";
+        public @Nonnull Double amount = 0D;
+
+        @OnlyIn(Dist.CLIENT)
+        public void apply(MatrixStack stack)
+        {
+            switch(type)
+            {
+                case "scale":
+                {
+                    switch(axis)
+                    {
+                        case "x":
+                        {
+                            stack.scale(amount.floatValue(), 1F, 1F);
+                            break;
+                        }
+                        case "y":
+                        {
+                            stack.scale(1F, amount.floatValue(), 1F);
+                            break;
+                        }
+                        case "z":
+                        {
+                            stack.scale(1F, 1F, amount.floatValue());
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "translate":
+                {
+                    switch(axis)
+                    {
+                        case "x":
+                        {
+                            stack.translate(amount, 0D, 0D);
+                            break;
+                        }
+                        case "y":
+                        {
+                            stack.translate(0D, amount, 0D);
+                            break;
+                        }
+                        case "z":
+                        {
+                            stack.translate(0D, 0D, amount);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "rotate":
+                {
+                    switch(axis)
+                    {
+                        case "x":
+                        {
+                            stack.rotate(Vector3f.XP.rotationDegrees(amount.floatValue()));
+                            break;
+                        }
+                        case "y":
+                        {
+                            stack.rotate(Vector3f.YP.rotationDegrees(amount.floatValue()));
+                            break;
+                        }
+                        case "z":
+                        {
+                            stack.rotate(Vector3f.ZP.rotationDegrees(amount.floatValue()));
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 
