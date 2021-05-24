@@ -23,9 +23,4 @@ public class ObfHelper
     public static final String getSoundVolume = "func_70599_aP"; //LivingEntity
     public static final String getSoundPitch = "func_70647_i"; //LivingEntity
     public static final String onChangedPotionEffect = "func_70695_b"; //LivingEntity
-
-    public static final String toastGui = "field_193034_aS"; //Minecraft
-    public static final String visible = "field_191791_g"; //ToastGui
-    public static final String toastsQueue = "field_191792_h"; //ToastGui
-
 }

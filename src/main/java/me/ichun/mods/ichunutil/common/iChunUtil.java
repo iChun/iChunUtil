@@ -84,7 +84,7 @@ public class iChunUtil
         if(configClient.overrideToastGui && Minecraft.getInstance().getToastGui().getClass().getName().equals("net.minecraft.client.gui.toasts.ToastGui"))
         {
             //QUICK SWITCHEROO
-            ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getInstance(), new ToastGui(Minecraft.getInstance()), ObfHelper.toastGui);
+            Minecraft.getInstance().toastGui = new ToastGui(Minecraft.getInstance());
         }
     }
 

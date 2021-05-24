@@ -11,17 +11,18 @@ public class ElementToggleTextable<T extends ElementToggleTextable> extends Elem
     public @Nonnull String offString;
     public @Nonnull String onString;
 
-    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String s, Consumer<T> callback)
+    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String tooltip, Consumer<T> callback)
     {
-        this(parent, s, "gui.no", "gui.yes", callback);
+        this(parent, tooltip, "gui.no", "gui.yes", callback);
     }
 
-    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String s, @Nonnull String off, @Nonnull String on, Consumer<T> callback)
+    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String tooltip, @Nonnull String off, @Nonnull String on, Consumer<T> callback)
     {
-        super(parent, s, callback);
-        this.tooltip = s;
+        super(parent, tooltip, callback);
+        this.tooltip = tooltip;
         this.offString = I18n.format(off);
         this.onString = I18n.format(on);
+        this.text = offString;
     }
 
     @Override

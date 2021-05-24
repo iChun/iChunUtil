@@ -14,8 +14,8 @@ public class ToastGui extends net.minecraft.client.gui.toasts.ToastGui
     public ToastGui(Minecraft mc)
     {
         super(mc);
-        ObfuscationReflectionHelper.setPrivateValue(net.minecraft.client.gui.toasts.ToastGui.class, this, mc.getToastGui().visible, ObfHelper.visible);
-        ObfuscationReflectionHelper.setPrivateValue(net.minecraft.client.gui.toasts.ToastGui.class, this, mc.getToastGui().toastsQueue, ObfHelper.toastsQueue);
+        this.visible = mc.getToastGui().visible;
+        this.toastsQueue = mc.getToastGui().toastsQueue;
     }
 
     @Override
