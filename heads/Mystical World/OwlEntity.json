@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.OwlEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    0.25,
+    0.21875
+  ],
+  "irisColour": [
+    0.96862745,
+    0.7411765,
+    0.11372549
+  ],
+  "pupilColour": [
+    0.2,
+    0.18431373,
+    0.11764706
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 0.9
+}

@@ -1,0 +1,10 @@
+{
+  "forClass": "net.minecraft.entity.monster.DrownedEntity",
+  "modelFieldName": "field_78116_c",
+  "headTopCenter": [
+    0.0,
+    0.53125,
+    0.0
+  ],
+  "headScale": 1.0625
+}

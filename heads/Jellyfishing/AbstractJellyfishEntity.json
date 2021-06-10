@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "blueduck.jellyfishing.entities.AbstractJellyfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.05625,
+    0.00625
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.95,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.75
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.summonables.GeomancerBombEntity",
+  "modelFieldName": "pillarModel",
+  "eyeOffset": [
+    0.03125,
+    3.9625,
+    0.4375
+  ],
+  "irisColour": [
+    0.15686275,
+    0.12156863,
+    0.12156863
+  ],
+  "pupilColour": [
+    0.0627451,
+    0.019607844,
+    0.019607844
+  ],
+  "halfInterpupillaryDistance": 0.175,
+  "eyeScale": 1.05,
+  "headTopCenter": [
+    0.0,
+    4.25,
+    0.0
+  ],
+  "headScale": 1.7
+}

@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.jungle.LeapleafEntity",
+  "modelFieldName": "body.body_0",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.03125,
+    0.49375,
+    -0.025
+  ],
+  "headScale": 0.4
+}

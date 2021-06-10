@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "net.yezon.desolation.entity.BlackenedEntity$CustomEntity",
+  "modelFieldName": "body.body_upper.head.upper_head",
+  "eyeOffset": [
+    0.0,
+    0.18125,
+    0.4375
+  ],
+  "irisColour": [
+    0.9019608,
+    0.35686275,
+    0.0
+  ],
+  "pupilColour": [
+    0.5372549,
+    0.16078432,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.4375,
+    0.1875
+  ]
+}

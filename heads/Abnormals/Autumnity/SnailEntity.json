@@ -1,0 +1,18 @@
+{
+  "author": "Cartartnr",
+  "forClass": "com.minecraftabnormals.autumnity.common.entity.passive.SnailEntity",
+  "modelFieldName": "shell",
+  "eyeOffset": [
+    -0.125,
+    -0.28125,
+    0.0
+  ],
+  "eyeScale": 2.0,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    -0.4375
+  ],
+  "headScale": 1.8
+}

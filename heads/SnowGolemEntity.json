@@ -1,0 +1,34 @@
+{
+  "eyeOffsetNoPumpkinLeft": [
+    0.0,
+    0.34375,
+    0.21875
+  ],
+  "eyeOffsetNoPumpkinRight": [
+    0.0,
+    0.375,
+    0.21875
+  ],
+  "headTopCenterNoPumpkin": [
+    0.0,
+    0.46875,
+    0.0
+  ],
+  "headScaleNoPumpkin": 0.875,
+  "forClass": "net.minecraft.entity.passive.SnowGolemEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadSnowman",
+  "modelFieldName": "field_78195_c",
+  "eyeOffset": [
+    0.0,
+    0.46875,
+    0.3125
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 1.0,
+  "headTopCenter": [
+    0.0,
+    0.65625,
+    0.0
+  ],
+  "headScale": 1.25
+}

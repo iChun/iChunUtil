@@ -1,0 +1,16 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.coldspell.piggybankmod.entities.PiggyBankEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.4375
+  ],
+  "halfInterpupillaryDistance": 0.16875,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.20625
+  ]
+}

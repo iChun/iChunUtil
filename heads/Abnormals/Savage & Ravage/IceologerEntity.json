@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.savageandravage.common.entity.IceologerEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.49019608,
+    0.23137255,
+    0.16470589
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

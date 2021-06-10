@@ -1,0 +1,20 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.aquaculture.entity.AquaFishEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.04375,
+    0.07
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "noTopInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.1
+  ],
+  "headScale": 0.3
+}

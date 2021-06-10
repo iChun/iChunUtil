@@ -1,0 +1,62 @@
+{
+  "forClass": "net.minecraft.entity.passive.horse.LlamaEntity",
+  "modelFieldName": "",
+  "multiModel": [
+    {
+      "forClass": "horseEasterEgg_true",
+      "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadLlama",
+      "modelFieldName": "field_228274_b_",
+      "childEntityScale": [
+        0.625,
+        0.45454544,
+        0.45454544
+      ],
+      "childEntityOffset": [
+        0.0,
+        2.0625,
+        0.0
+      ],
+      "eyeOffset": [
+        0.0,
+        0.125,
+        0.5
+      ],
+      "halfInterpupillaryDistance": 0.1875,
+      "eyeScale": 0.9,
+      "headTopCenter": [
+        0.0,
+        0.1875,
+        0.125
+      ],
+      "headScale": 1.5
+    },
+    {
+      "forClass": "horseEasterEgg_false",
+      "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadLlama",
+      "modelFieldName": "field_228273_a_",
+      "childEntityScale": [
+        0.71428573,
+        0.64935064,
+        0.7936508
+      ],
+      "childEntityOffset": [
+        0.0,
+        1.3125,
+        0.22
+      ],
+      "eyeOffset": [
+        0.0,
+        0.8875,
+        0.375
+      ],
+      "halfInterpupillaryDistance": 0.14375,
+      "eyeScale": 0.8,
+      "headTopCenter": [
+        0.0,
+        1.0,
+        0.1875
+      ],
+      "headScale": 1.0
+    }
+  ]
+}

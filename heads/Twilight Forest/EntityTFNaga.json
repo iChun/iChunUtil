@@ -1,0 +1,28 @@
+{
+  "forClass": "twilightforest.entity.boss.EntityTFNaga",
+  "modelFieldName": "head",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    -0.09375,
+    1.0
+  ],
+  "irisColour": [
+    0.65882355,
+    0.9098039,
+    0.68235296
+  ],
+  "pupilColour": [
+    0.9098039,
+    0.19215687,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.5,
+  "eyeScale": 2.25,
+  "headTopCenter": [
+    0.0,
+    1.0,
+    0.0
+  ],
+  "headScale": 4.0
+}

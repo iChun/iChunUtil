@@ -1,0 +1,21 @@
+{
+  "forClass": "twilightforest.entity.EntityTFSlimeBeetle",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.40625
+  ],
+  "irisColour": [
+    0.023529412,
+    0.050980393,
+    0.003921569
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 1.1,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.1875
+  ]
+}

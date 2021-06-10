@@ -1,0 +1,20 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.EmpusaEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.125,
+    0.25
+  ],
+  "irisColour": [
+    0.89411765,
+    0.18039216,
+    0.18039216
+  ],
+  "pupilColour": [
+    0.4509804,
+    0.09019608,
+    0.07058824
+  ]
+}

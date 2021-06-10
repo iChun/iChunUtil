@@ -1,0 +1,15 @@
+{
+  "forClass": "net.minecraft.entity.monster.MagmaCubeEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadMagmaCube",
+  "modelFieldName": "field_78108_b",
+  "eyeOffset": [
+    0.0,
+    -1.1875,
+    0.25
+  ],
+  "headTopCenter": [
+    0.0,
+    -1.0,
+    0.0
+  ]
+}

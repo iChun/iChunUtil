@@ -1,0 +1,23 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.SproutEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.21875,
+    0.15625
+  ],
+  "irisColour": [
+    0.89411765,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.45,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 0.63
+}

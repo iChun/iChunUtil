@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "chumbanotz.mutantbeasts.entity.mutant.MutantSkeletonEntity",
+  "modelFieldName": "skeleBase.pelvis.waist.pelvis[0][0].pelvis[0][0][2].pelvis[0][0][2][2].neck.head.pelvis[0][0][2][2][2][0][0]",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.28125
+  ],
+  "halfInterpupillaryDistance": 0.140625,
+  "headTopCenter": [
+    0.0,
+    0.51875,
+    0.0
+  ],
+  "headScale": 1.1
+}

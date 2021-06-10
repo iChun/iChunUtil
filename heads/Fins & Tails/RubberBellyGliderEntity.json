@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.RubberBellyGliderEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.5875
+  ],
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    0.625
+  ],
+  "headScale": 0.5
+}

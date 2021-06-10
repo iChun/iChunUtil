@@ -1,0 +1,14 @@
+{
+  "forClass": "net.minecraft.entity.passive.IronGolemEntity",
+  "modelFieldName": "field_78178_a",
+  "eyeOffset": [
+    0.0,
+    0.375,
+    0.34375
+  ],
+  "headTopCenter": [
+    0.0,
+    0.75,
+    0.09375
+  ]
+}

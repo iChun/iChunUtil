@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.inventorypets.entities.AnvilPetEntity",
+  "modelFieldName": "Anvil1",
+  "eyeOffset": [
+    0.0625,
+    0.00625,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.14375,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.21875,
+    0.0
+  ],
+  "headScale": 0.9
+}

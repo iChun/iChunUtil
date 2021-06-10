@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.odd_water_mobs.entity.IsopodEntity$CustomEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.125
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.35,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.09375
+  ],
+  "headScale": 0.15
+}

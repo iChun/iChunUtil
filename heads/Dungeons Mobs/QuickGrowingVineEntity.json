@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.jungle.QuickGrowingVineEntity",
+  "modelFieldName": "body.body_0.body_0_0",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    -0.05,
+    0.675,
+    0.2375
+  ],
+  "headScale": 0.6
+}

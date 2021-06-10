@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.RiverPebbleSnailEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.0625
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.35,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.06875
+  ],
+  "headScale": 0.35
+}

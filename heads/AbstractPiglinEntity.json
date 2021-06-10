@@ -1,0 +1,6 @@
+{
+  "forClass": "net.minecraft.entity.monster.piglin.AbstractPiglinEntity",
+  "modelFieldName": "field_78116_c",
+  "halfInterpupillaryDistance": 0.1875,
+  "headScale": 1.25
+}

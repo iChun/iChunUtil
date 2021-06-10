@@ -1,0 +1,36 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.DryadEntity",
+  "modelFieldName": "field_78116_c",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "z",
+      "amount": -0.12
+    }
+  ],
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.21875
+  ],
+  "irisColour": [
+    0.8980392,
+    0.89411765,
+    0.8980392
+  ],
+  "pupilColour": [
+    0.14901961,
+    0.3254902,
+    0.14117648
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.4375,
+    0.0
+  ],
+  "headScale": 0.9,
+  "hatTiltPitch": -0.3
+}

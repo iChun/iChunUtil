@@ -1,0 +1,15 @@
+{
+  "forClass": "twilightforest.entity.boss.EntityTFSnowQueen",
+  "modelFieldName": "field_78116_c",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    0.1875,
+    0.25
+  ],
+  "pupilColour": [
+    0.5294118,
+    0.0,
+    0.43137255
+  ]
+}

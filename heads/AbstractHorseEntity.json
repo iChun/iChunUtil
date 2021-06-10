@@ -1,0 +1,64 @@
+{
+  "forClass": "net.minecraft.entity.passive.horse.AbstractHorseEntity",
+  "modelFieldName": "",
+  "multiModel": [
+    {
+      "forClass": "horseEasterEgg_true",
+      "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadBodyHorse",
+      "modelFieldName": "field_217127_a",
+      "childEntityScale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "childEntityOffset": [
+        0.0,
+        1.25,
+        0.0
+      ],
+      "eyeOffset": [
+        0.0,
+        0.375,
+        0.3125
+      ],
+      "halfInterpupillaryDistance": 0.1875,
+      "eyeScale": 0.9,
+      "headTopCenter": [
+        0.0,
+        0.50625,
+        0.0
+      ],
+      "headScale": 1.265625,
+      "headArmorOffset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "headArmorScale": 1.0
+    },
+    {
+      "forClass": "horseEasterEgg_false",
+      "modelFieldName": "field_217128_b",
+      "eyeOffset": [
+        0.0,
+        0.59375,
+        -0.0625
+      ],
+      "halfInterpupillaryDistance": 0.1875,
+      "sideEyed": true,
+      "eyeScale": 0.6,
+      "headTopCenter": [
+        0.003124997,
+        0.6875,
+        -0.09375
+      ],
+      "headScale": 0.875,
+      "headArmorOffset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "headArmorScale": 1.0
+    }
+  ]
+}

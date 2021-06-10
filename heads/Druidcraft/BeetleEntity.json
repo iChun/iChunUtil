@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.BeetleEntity",
+  "modelFieldName": "body_1.head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.5
+  ],
+  "irisColour": [
+    0.13725491,
+    0.4862745,
+    0.5568628
+  ],
+  "pupilColour": [
+    0.03137255,
+    0.1764706,
+    0.24705882
+  ],
+  "halfInterpupillaryDistance": 0.21875,
+  "eyeScale": 1.25,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.25
+  ],
+  "headScale": 1.1
+}

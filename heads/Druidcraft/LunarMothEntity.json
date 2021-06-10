@@ -1,0 +1,25 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.LunarMothEntity",
+  "modelFieldName": "main.body",
+  "eyeOffset": [
+    0.0,
+    -0.025,
+    0.15625
+  ],
+  "pupilColour": [
+    0.019607844,
+    0.047058824,
+    0.06666667
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.0625,
+    0.125
+  ],
+  "headScale": 0.25
+}

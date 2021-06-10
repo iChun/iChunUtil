@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.BeetleEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    -0.0125,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.35,
+  "headTopCenter": [
+    0.0,
+    0.075,
+    0.09375
+  ],
+  "headScale": 0.4
+}

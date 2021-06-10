@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.beethoven92.betterendforge.common.entity.DragonflyEntity",
+  "modelFieldName": "model.head",
+  "eyeOffset": [
+    0.0,
+    0.0375,
+    0.1125
+  ],
+  "irisColour": [
+    0.24705882,
+    0.7490196,
+    0.93333334
+  ],
+  "pupilColour": [
+    0.14901961,
+    0.4509804,
+    0.41960785
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    0.06875
+  ],
+  "headScale": 0.4
+}

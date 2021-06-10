@@ -1,0 +1,47 @@
+{
+  "forClass": "net.minecraft.entity.boss.WitherEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadWither",
+  "modelFieldName": "field_82904_b[0]",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.25
+  ],
+  "eyeScale": 1.0,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.0
+  ],
+  "additionalHeads": [
+    {
+      "modelFieldName": "field_82904_b[1]",
+      "eyeOffset": [
+        0.0625,
+        0.125,
+        0.25
+      ],
+      "headTopCenter": [
+        0.0625,
+        0.25,
+        0.0625
+      ],
+      "headScale": 0.75
+    },
+    {
+      "modelFieldName": "field_82904_b[2]",
+      "eyeOffset": [
+        0.0625,
+        0.125,
+        0.25
+      ],
+      "headTopCenter": [
+        0.0625,
+        0.25,
+        0.0625
+      ],
+      "headScale": 0.75
+    }
+  ]
+}

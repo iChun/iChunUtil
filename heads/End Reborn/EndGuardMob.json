@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.electron.endreborn.mobs.EndGuardMob",
+  "modelFieldName": "bipedHead",
+  "eyeOffset": [
+    0.0,
+    0.34375,
+    0.3125
+  ],
+  "irisColour": [
+    0.078431375,
+    0.4392157,
+    0.3647059
+  ],
+  "pupilColour": [
+    0.03529412,
+    0.2509804,
+    0.20392157
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeScale": 1.95,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ],
+  "headScale": 1.2
+}

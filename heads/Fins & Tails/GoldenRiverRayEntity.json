@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.GoldenRiverRayEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    -0.025,
+    0.2125
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0625,
+    0.15
+  ],
+  "headScale": 0.4
+}

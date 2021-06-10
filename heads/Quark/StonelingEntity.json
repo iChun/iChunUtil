@@ -1,0 +1,23 @@
+{
+  "forClass": "vazkii.quark.content.mobs.entity.StonelingEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    -0.09375,
+    0.1875
+  ],
+  "irisColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.140625,
+  "eyeScale": 0.5,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.0
+  ],
+  "headScale": 0.75,
+  "headArmorScale": 1.27
+}

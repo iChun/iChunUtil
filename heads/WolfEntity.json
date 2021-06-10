@@ -1,0 +1,32 @@
+{
+  "eyeOffsetTame": [
+    -0.0625,
+    0.0625,
+    0.125
+  ],
+  "irisColourAngry": [
+    0.7137255,
+    0.05882353,
+    0.05882353
+  ],
+  "pupilColourAngry": [
+    0.89411765,
+    0.18039216,
+    0.18039216
+  ],
+  "forClass": "net.minecraft.entity.passive.WolfEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadWolf",
+  "modelFieldName": "field_78185_a",
+  "eyeOffset": [
+    -0.0625,
+    0.03125,
+    0.125
+  ],
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    -0.0625,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.75
+}

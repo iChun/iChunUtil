@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.minibloom.entities.MinibloomEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.15,
+    0.4375
+  ],
+  "irisColour": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.11764706,
+    0.11764706,
+    0.11764706
+  ],
+  "halfInterpupillaryDistance": 0.225,
+  "eyeScale": 0.95,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.15625
+  ],
+  "headScale": 1.5
+}

@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.NaiadEntity",
+  "modelFieldName": "field_78116_c",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "z",
+      "amount": -0.12
+    }
+  ],
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.21875
+  ],
+  "pupilColour": [
+    0.16862746,
+    0.9019608,
+    0.25882354
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.4375,
+    0.0
+  ],
+  "headScale": 0.9
+}

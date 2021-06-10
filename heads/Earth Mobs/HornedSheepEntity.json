@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "baguchan.earthmobsmod.entity.HornedSheepEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadSheep",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.09375,
+    0.375
+  ],
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.125
+  ]
+}

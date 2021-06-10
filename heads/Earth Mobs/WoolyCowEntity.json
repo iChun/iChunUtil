@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "baguchan.earthmobsmod.entity.WoolyCowEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    -0.375,
+    0.0625,
+    0.36875
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.1875
+  ]
+}

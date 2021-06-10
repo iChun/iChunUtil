@@ -1,0 +1,31 @@
+{
+  "author": "manmaed",
+  "forClass": "net.manmaed.cutepuppymod.entitys.EntityBossEnder",
+  "modelFieldName": "head",
+  "affectedByInvisibility": false,
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.1875
+  ],
+  "irisColour": [
+    0.88,
+    0.47,
+    0.98
+  ],
+  "pupilColour": [
+    0.8,
+    0.0,
+    0.98
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.55,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.03125
+  ],
+  "headScale": 0.5
+}

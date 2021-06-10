@@ -1,0 +1,22 @@
+{
+  "forClass": "net.minecraft.entity.passive.OcelotEntity",
+  "modelFieldName": "field_78156_g",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.1875
+  ],
+  "pupilColour": [
+    0.12156863,
+    0.43529412,
+    0.19607843
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.03125
+  ],
+  "headScale": 0.625
+}

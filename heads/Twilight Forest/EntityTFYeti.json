@@ -1,0 +1,17 @@
+{
+  "forClass": "twilightforest.entity.EntityTFYeti",
+  "modelFieldName": "field_78115_e",
+  "eyeOffset": [
+    0.0,
+    -0.28125,
+    0.40625
+  ],
+  "halfInterpupillaryDistance": 0.34375,
+  "eyeScale": 1.25,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 1.5
+}

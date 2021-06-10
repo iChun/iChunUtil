@@ -1,0 +1,18 @@
+{
+  "forClass": "net.minecraft.entity.passive.fish.CodEntity",
+  "modelFieldName": "field_203725_c",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.09375
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.4,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.09375
+  ],
+  "headScale": 0.375
+}

@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forClass": "chumbanotz.mutantbeasts.entity.CreeperMinionEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.3125,
+    0.25
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.redstone.RedstoneGolemEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    1.5625,
+    -1.475
+  ],
+  "irisColour": [
+    0.9098039,
+    0.3647059,
+    0.039215688
+  ],
+  "pupilColour": [
+    0.6039216,
+    0.09803922,
+    0.03137255
+  ],
+  "halfInterpupillaryDistance": 0.40625,
+  "eyeScale": 1.05,
+  "topEyed": true,
+  "headTopCenter": [
+    0.0,
+    1.2,
+    -2.3
+  ],
+  "headScale": 1.6,
+  "hatTiltPitch": -90
+}

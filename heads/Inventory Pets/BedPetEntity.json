@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.inventorypets.entities.BedPetEntity",
+  "modelFieldName": "Block",
+  "eyeOffset": [
+    0.03125,
+    0.09375,
+    0.09375
+  ],
+  "halfInterpupillaryDistance": 0.15,
+  "eyeScale": 0.45,
+  "topEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    -0.1875
+  ],
+  "headScale": 0.5
+}

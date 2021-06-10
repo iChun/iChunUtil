@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "blueduck.morejellyfish.morejellyfishmod.entity.CowJellyfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    -0.25,
+    0.475,
+    0.53125
+  ],
+  "halfInterpupillaryDistance": 0.4375,
+  "sideEyed": true,
+  "headTopCenter": [
+    -0.25,
+    0.6875,
+    0.3125
+  ],
+  "headScale": 1.75
+}

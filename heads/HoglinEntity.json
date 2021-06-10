@@ -1,0 +1,19 @@
+{
+  "forClass": "net.minecraft.entity.monster.HoglinEntity",
+  "modelFieldName": "field_239106_a_",
+  "eyeOffset": [
+    0.0,
+    0.1875,
+    0.53125
+  ],
+  "halfInterpupillaryDistance": 0.36666667,
+  "eyeScale": 0.95,
+  "topEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 1.75,
+  "hatTiltPitch": -90.0
+}

@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.conjurer_illager.entity.ConjurerEntity",
+  "modelFieldName": "field_191217_a",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.9529412,
+    0.68235296,
+    0.3647059
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    1.0625,
+    0.0
+  ]
+}

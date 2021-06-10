@@ -1,0 +1,22 @@
+{
+  "forClass": "net.minecraft.entity.monster.PhantomEntity",
+  "modelFieldName": "field_203070_a.field_203070_a[1]",
+  "eyeOffset": [
+    0.03125,
+    0.03125,
+    0.3125
+  ],
+  "pupilColour": [
+    0.039215688,
+    0.7058824,
+    0.019607844
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.03125,
+    0.125,
+    0.15625
+  ],
+  "headScale": 0.875
+}

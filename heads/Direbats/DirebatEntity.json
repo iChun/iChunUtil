@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "net.teamhollow.direbats.entity.direbat.DirebatEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.3125
+  ],
+  "irisColour": [
+    0.87058824,
+    0.62352943,
+    0.6509804
+  ],
+  "pupilColour": [
+    0.7490196,
+    0.3529412,
+    0.4392157
+  ],
+  "halfInterpupillaryDistance": 0.1625,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.125
+  ],
+  "headScale": 0.9
+}

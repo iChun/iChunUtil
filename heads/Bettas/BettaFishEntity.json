@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.teamdraco.bettas.entity.BettaFishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.13125
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    0.11875
+  ],
+  "headScale": 0.4
+}

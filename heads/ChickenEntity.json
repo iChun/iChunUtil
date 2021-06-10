@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.passive.ChickenEntity",
+  "modelFieldName": "field_78142_a",
+  "eyeOffset": [
+    0.0,
+    0.28125,
+    0.125
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.375,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.03125
+  ],
+  "headScale": 0.5
+}

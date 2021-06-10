@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "dev.itsmeow.whisperwoods.entity.EntityZotzpyre",
+  "modelFieldName": "chest.neck.head",
+  "eyeOffset": [
+    0.0,
+    0.13125,
+    0.28125
+  ],
+  "halfInterpupillaryDistance": 0.14375,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.21875,
+    0.125
+  ],
+  "headScale": 0.8
+}

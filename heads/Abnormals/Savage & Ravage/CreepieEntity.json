@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.savageandravage.common.entity.CreepieEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.34375,
+    0.375
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 1.05,
+  "headTopCenter": [
+    0.0,
+    0.61875,
+    0.0
+  ],
+  "headScale": 1.5
+}

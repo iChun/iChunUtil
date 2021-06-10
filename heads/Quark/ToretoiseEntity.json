@@ -1,0 +1,22 @@
+{
+  "forClass": "vazkii.quark.content.mobs.entity.ToretoiseEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.09375,
+    0.3125
+  ],
+  "irisColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.25
+  ],
+  "headArmorScale": 1.27
+}

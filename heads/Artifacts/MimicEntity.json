@@ -1,0 +1,14 @@
+{
+  "author": "WenXin2",
+  "forClass": "artifacts.common.entity.MimicEntity",
+  "modelFieldName": "lowerMouthOverlay",
+  "eyeOffset": [
+    -0.1375,
+    0.06875,
+    0.425
+  ],
+  "eyeScale": 2.65,
+  "topEyed": true,
+  "eyeCount": 1,
+  "noTopInfo": true
+}

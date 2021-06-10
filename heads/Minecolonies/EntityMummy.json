@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecolonies.coremod.entity.mobs.egyptians.EntityMummy",
+  "modelFieldName": "field_78116_c",
+  "irisColour": [
+    0.29411766,
+    0.74509805,
+    0.05882353
+  ],
+  "pupilColour": [
+    0.0,
+    0.39215687,
+    0.19607843
+  ]
+}

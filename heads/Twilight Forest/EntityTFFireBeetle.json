@@ -1,0 +1,26 @@
+{
+  "forClass": "twilightforest.entity.EntityTFFireBeetle",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.40625
+  ],
+  "irisColour": [
+    0.2,
+    0.08235294,
+    0.003921569
+  ],
+  "pupilColour": [
+    0.25882354,
+    0.2,
+    0.20784314
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 1.1,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.1875
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "author": "manmaed",
+  "forClass": "net.manmaed.petrock.entitys.EntityPetRock",
+  "modelFieldName": "shape1",
+  "eyeOffset": [
+    0.0,
+    0.375,
+    0.28125
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "headTopCenter": [
+    0.0,
+    0.5625,
+    0.0
+  ],
+  "headScale": 1.1
+}

@@ -1,0 +1,17 @@
+{
+  "forClass": "net.minecraft.entity.monster.ShulkerEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadShulker",
+  "modelFieldName": "field_187066_a",
+  "eyeOffset": [
+    0.0,
+    -0.21875,
+    0.1875
+  ],
+  "eyeScale": 0.6,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 0.75
+}

@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.redstone.RedstoneCubeEntity",
+  "modelFieldName": "cubeBody",
+  "eyeOffset": [
+    0.0,
+    -1.35,
+    0.25
+  ],
+  "irisColour": [
+    1.0,
+    0.56078434,
+    0.0
+  ],
+  "pupilColour": [
+    0.9098039,
+    0.3647059,
+    0.039215688
+  ],
+  "halfInterpupillaryDistance": 0.2125,
+  "eyeScale": 0.45,
+  "headTopCenter": [
+    0.0,
+    -1.0,
+    0.0
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.GiganteEntity",
+  "modelFieldName": "field_78116_c",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "z",
+      "amount": -0.25
+    }
+  ],
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.3125
+  ],
+  "pupilColour": [
+    0.32156864,
+    0.23921569,
+    0.5372549
+  ],
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 1.3
+}

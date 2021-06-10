@@ -1,0 +1,25 @@
+{
+  "forClass": "net.minecraft.entity.boss.dragon.EnderDragonEntity",
+  "modelFieldName": "field_78221_a",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    0.25,
+    0.625
+  ],
+  "pupilColour": [
+    0.8,
+    0.0,
+    0.98039216
+  ],
+  "halfInterpupillaryDistance": 0.3125,
+  "eyeScale": 2.0,
+  "affectedByInvisibility": false,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.5,
+    0.125
+  ],
+  "headScale": 2.0
+}

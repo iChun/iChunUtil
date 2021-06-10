@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "blueduck.morejellyfish.morejellyfishmod.entity.CrimsonFungalJellyfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.0125,
+    0.00625
+  ],
+  "irisColour": [
+    0.78431374,
+    0.3529412,
+    0.0
+  ],
+  "pupilColour": [
+    0.78431374,
+    0.23137255,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.95,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.75
+}

@@ -1,0 +1,28 @@
+{
+  "forClass": "net.minecraft.entity.monster.GuardianEntity",
+  "modelFieldName": "field_178710_a",
+  "eyeOffset": [
+    0.0,
+    -1.0,
+    0.5
+  ],
+  "irisColour": [
+    0.8392157,
+    0.827451,
+    0.79607844
+  ],
+  "pupilColour": [
+    0.39607844,
+    0.13725491,
+    0.12156863
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeScale": 2.0,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    -0.5,
+    0.0
+  ],
+  "headScale": 2.0
+}

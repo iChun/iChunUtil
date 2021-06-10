@@ -1,0 +1,26 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.MadCowEntity",
+  "modelFieldName": "field_78150_a",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.375
+  ],
+  "irisColour": [
+    0.89411765,
+    0.18039216,
+    0.18039216
+  ],
+  "pupilColour": [
+    0.3137255,
+    0.0,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.1875
+  ]
+}

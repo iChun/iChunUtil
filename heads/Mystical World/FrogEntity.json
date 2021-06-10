@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.FrogEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    -0.025,
+    0.09375
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.35,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0625,
+    0.09375
+  ],
+  "headScale": 0.4
+}

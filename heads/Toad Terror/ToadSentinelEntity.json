@@ -1,0 +1,61 @@
+{
+  "author": "WenXin2",
+  "forClass": "dev.itsmeow.toadterror.entity.ToadSentinelEntity",
+  "modelFieldName": "Body.HeadJoint.JawUpper",
+  "isBoss": true,
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.6875
+  ],
+  "headScale": 2.8,
+  "additionalHeads": [
+    {
+      "modelFieldName": "Body.HeadJoint.JawUpper.EyeLeft",
+      "eyeOffset": [
+        -0.375,
+        0.1875,
+        0.0
+      ],
+      "irisColour": [
+        0.50980395,
+        0.9647059,
+        0.6784314
+      ],
+      "pupilColour": [
+        0.07058824,
+        0.64705884,
+        0.28235295
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 1.65,
+      "eyeYRotation": -90.0,
+      "eyeCount": 1,
+      "noTopInfo": true
+    },
+    {
+      "modelFieldName": "Body.HeadJoint.JawUpper.EyeRight",
+      "eyeOffset": [
+        0.375,
+        0.1875,
+        0.0
+      ],
+      "irisColour": [
+        0.50980395,
+        0.9647059,
+        0.6784314
+      ],
+      "pupilColour": [
+        0.07058824,
+        0.64705884,
+        0.28235295
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 1.65,
+      "sideEyed": true,
+      "eyeCount": 1,
+      "noTopInfo": true
+    }
+  ]
+}

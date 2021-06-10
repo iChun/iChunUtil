@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.VibraWeeEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.09375
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.35,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0625,
+    0.0625
+  ],
+  "headScale": 0.25
+}

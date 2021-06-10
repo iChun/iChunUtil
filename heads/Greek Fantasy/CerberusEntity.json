@@ -1,0 +1,82 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.CerberusEntity",
+  "modelFieldName": "neck3.head3",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.3125
+  ],
+  "irisColour": [
+    0.64705884,
+    0.18039216,
+    0.18039216
+  ],
+  "pupilColour": [
+    0.23529412,
+    0.05882353,
+    0.05882353
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.6,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.15625
+  ],
+  "headScale": 0.7,
+  "additionalHeads": [
+    {
+      "modelFieldName": "neck1.head1",
+      "eyeOffset": [
+        0.0,
+        -0.03125,
+        0.3125
+      ],
+      "irisColour": [
+		0.64705884,
+		0.18039216,
+		0.18039216
+      ],
+      "pupilColour": [
+		0.23529412,
+		0.05882353,
+		0.05882353
+      ],
+      "halfInterpupillaryDistance": 0.09375,
+      "eyeScale": 0.6,
+      "headTopCenter": [
+        0.0,
+        0.125,
+        0.15625
+      ],
+      "headScale": 0.7
+    },
+    {
+      "modelFieldName": "neck2.head2",
+      "eyeOffset": [
+        0.0,
+        -0.03125,
+        0.3125
+      ],
+      "irisColour": [
+		0.64705884,
+		0.18039216,
+		0.18039216
+      ],
+      "pupilColour": [
+		0.23529412,
+		0.05882353,
+		0.05882353
+      ],
+      "halfInterpupillaryDistance": 0.09375,
+      "eyeScale": 0.6,
+      "headTopCenter": [
+        0.0,
+		0.125,
+		0.15625
+      ],
+      "headScale": 0.7
+    }
+  ]
+}

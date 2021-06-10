@@ -675,6 +675,7 @@ public class HeadInfo<E extends LivingEntity>
             }
             else if(jsonObject.has("customClass"))
             {
+                String forClass = jsonObject.has("forClass") ? jsonObject.get("forClass").getAsString() : "Unknown Class";
                 String customClass = jsonObject.get("customClass").getAsString();
                 try
                 {
@@ -706,12 +707,12 @@ public class HeadInfo<E extends LivingEntity>
                 }
                 catch(ClassNotFoundException e)
                 {
-                    LOGGER.error("Cannot find custom head info class: " + customClass);
+                    LOGGER.error("Cannot find custom head info class: " + customClass + " for class: " + forClass);
                     e.printStackTrace();
                 }
                 catch(IllegalAccessException | InstantiationException | ClassCastException e)
                 {
-                    LOGGER.error("Error creating custom class: " + customClass);
+                    LOGGER.error("Error creating custom class: " + customClass + " for class: " + forClass);
                     e.printStackTrace();
                 }
             }
@@ -735,6 +736,12 @@ public class HeadInfo<E extends LivingEntity>
                 {
                     switch(axis)
                     {
+                        case "all":
+                        {
+                            float scale = amount.floatValue();
+                            stack.scale(scale, scale, scale);
+                            break;
+                        }
                         case "x":
                         {
                             stack.scale(amount.floatValue(), 1F, 1F);

@@ -1,0 +1,32 @@
+{
+  "author": "iChun",
+  "forClass": "chumbanotz.mutantbeasts.entity.mutant.MutantSnowGolemEntity",
+  "modelFieldName": "pelvis.abdomen.chest.head.chest[0][0].headCore",
+  "eyeOffset": [
+    0.0,
+    0.359375,
+    0.21875
+  ],
+  "eyeOffsetNoPumpkinLeft": [
+    0.0,
+    0.34375,
+    0.21875
+  ],
+  "eyeOffsetNoPumpkinRight": [
+    0.0,
+    0.375,
+    0.21875
+  ],
+  "headTopCenterNoPumpkin": [
+    0.0,
+    0.46875,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.109375,
+  "headTopCenter": [
+    0.0,
+    0.46875,
+    0.0
+  ],
+  "headScale": 0.88
+}

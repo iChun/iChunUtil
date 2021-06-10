@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.illagers.ArmoredMountaineerEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.19607843,
+    0.33333334,
+    0.4
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "author": "WenXin2",
+  "forClass": "baguchan.earthmobsmod.entity.BoneSpiderEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadSpider",
+  "modelFieldName": "head",
+  "affectedByInvisibility": false,
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.5
+  ],
+  "eyeOffset2": [
+    0.0,
+    0.1875,
+    0.5
+  ],
+  "eyeOffset3": [
+    0.0,
+    0.0625,
+    0.46875
+  ],
+  "irisColour": [
+    0.38039216,
+    0.1882353,
+    0.7176471
+  ],
+  "pupilColour": [
+    0.08627451,
+    0.039215688,
+    0.17254902
+  ],
+  "halfInterpupillaryDistance2": 0.125,
+  "halfInterpupillaryDistance3": 0.25,
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.8,
+  "eyeCount": 6,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.25
+  ]
+}

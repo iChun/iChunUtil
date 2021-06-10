@@ -1,0 +1,21 @@
+{
+  "forClass": "vazkii.quark.content.experimental.shiba.entity.ShibaEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.40625,
+    0.25
+  ],
+  "irisColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0625
+  ],
+  "headArmorScale": 1.27
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.vemerion.vemerioraptor.entity.VemerioraptorEntity",
+  "modelFieldName": "body.neck1.head1",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.34375
+  ],
+  "irisColour": [
+    0.19215687,
+    0.16470589,
+    0.105882354
+  ],
+  "pupilColour": [
+    0.72156864,
+    0.7490196,
+    0.3764706
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.1,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.25
+  ]
+}

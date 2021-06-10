@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "pokecube.adventures.entity.trainer.LeaderNpc",
+  "modelFieldName": "field_178720_f",
+  "eyeOffset": [
+    0.0,
+    0.18,
+    0.25
+  ],
+  "pupilColour": [
+    0.0,
+    0.3254902,
+    0.5568628
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7
+}

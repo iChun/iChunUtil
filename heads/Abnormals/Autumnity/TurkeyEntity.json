@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.autumnity.common.entity.passive.TurkeyEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.2375,
+    0.13125
+  ],
+  "halfInterpupillaryDistance": 0.08125,
+  "eyeScale": 0.55,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0375
+  ],
+  "headScale": 0.5
+}

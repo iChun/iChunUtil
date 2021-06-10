@@ -1,0 +1,16 @@
+{
+  "forClass": "com.shynieke.statues.entity.StatueBatEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadBat",
+  "modelFieldName": "batHead",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.1875
+  ],
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.75
+}

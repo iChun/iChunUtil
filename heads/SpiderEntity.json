@@ -1,0 +1,37 @@
+{
+  "halfInterpupillaryDistance2": 0.125,
+  "halfInterpupillaryDistance3": 0.25,
+  "eyeOffset2": [
+    0.0,
+    0.1875,
+    0.5
+  ],
+  "eyeOffset3": [
+    0.0,
+    0.0625,
+    0.46875
+  ],
+  "forClass": "net.minecraft.entity.monster.SpiderEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadSpider",
+  "modelFieldName": "field_78209_a",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.5
+  ],
+  "irisColour": [
+    0.8,
+    0.0,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.8,
+  "eyeCount": 6,
+  "affectedByInvisibility": false,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.25
+  ]
+}

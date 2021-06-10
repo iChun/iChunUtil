@@ -1,0 +1,20 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.telepathicgrunt.the_bumblezone.entities.mobs.HoneySlimeEntity",
+  "modelFieldName": "field_78200_a",
+  "eyeOffset": [
+    0.0,
+    -1.1875,
+    0.25
+  ],
+  "pupilColour": [
+    0.9882353,
+    0.73333335,
+    0.18431373
+  ],
+  "headTopCenter": [
+    0.0,
+    -1.0,
+    0.0
+  ]
+}

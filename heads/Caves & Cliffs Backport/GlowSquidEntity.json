@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.blackgear.cavesandcliffs.common.entities.passive.GlowSquidEntity",
+  "modelFieldName": "field_78202_a",
+  "eyeOffset": [
+    0.0,
+    0.0375,
+    0.375
+  ],
+  "irisColour": [
+    0.18039216,
+    0.83137256,
+    0.30588236
+  ],
+  "pupilColour": [
+    0.03529412,
+    0.3372549,
+    0.24705882
+  ],
+  "halfInterpupillaryDistance": 0.24375,
+  "eyeScale": 0.85,
+  "doesEyeGlow": true,
+  "headScale": 1.5
+}

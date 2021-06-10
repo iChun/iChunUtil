@@ -36,7 +36,7 @@ public class HeadHandler
             .create();
     public static final HashSet<String> IMC_HEAD_INFO = new HashSet<>();
     public static final HashSet<HeadInfo.HeadHolder> IMC_HEAD_INFO_OBJ = new HashSet<>();
-    public static final int HEAD_INFO_VERSION = 4;
+    public static final int HEAD_INFO_VERSION = 5;
 
 
     public static BooleanSupplier acidEyesBooleanSupplier = () -> false;

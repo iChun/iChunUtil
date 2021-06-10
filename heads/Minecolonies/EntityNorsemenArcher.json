@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecolonies.coremod.entity.mobs.norsemen.EntityNorsemenArcher",
+  "modelFieldName": "field_78116_c",
+  "pupilColour": [
+    0.30980393,
+    0.38431373,
+    0.39607844
+  ]
+}

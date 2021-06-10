@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.beethoven92.betterendforge.common.entity.CubozoaEntity",
+  "modelFieldName": "model.main_cube_r1",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    -0.25,
+    0.0
+  ],
+  "headScale": 1.2
+}

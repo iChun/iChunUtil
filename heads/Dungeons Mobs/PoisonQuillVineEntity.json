@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.jungle.PoisonQuillVineEntity",
+  "modelFieldName": "head.neck.flowerHead",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    -0.025,
+    0.90625,
+    0.11875
+  ],
+  "headScale": 0.2
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.resourcefulbees.resourcefulbees.entity.passive.ResourcefulBee",
+  "modelFieldName": "body.torso",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.3125
+  ],
+  "irisColour": [
+    0.1882353,
+    0.16862746,
+    0.21568628
+  ],
+  "pupilColour": [
+    0.4862745,
+    0.7882353,
+    0.81960785
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 1.0,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.0
+  ],
+  "headScale": 1.25
+}

@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.BasaltGiantEntity",
+  "modelFieldName": "Body.Torso.Torso2.Head",
+  "eyeOffset": [
+    0.03125,
+    0.1,
+    0.75
+  ],
+  "irisColour": [
+    0.43137255,
+    0.1764706,
+    0.05882353
+  ],
+  "pupilColour": [
+    0.23529412,
+    0.10980392,
+    0.05882353
+  ],
+  "halfInterpupillaryDistance": 0.2125,
+  "eyeScale": 1.05,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.03125,
+    0.5,
+    0.36875
+  ],
+  "headScale": 1.5
+}

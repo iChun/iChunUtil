@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.odd_water_mobs.entity.BabySpiderCrabEntity$CustomEntity",
+  "modelFieldName": "body.bone.cube_r3",
+  "eyeOffset": [
+    0.0,
+    0.0875,
+    0.0375
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.35,
+  "headTopCenter": [
+    0.0,
+    0.11875,
+    -0.03125
+  ],
+  "headScale": 0.3
+}

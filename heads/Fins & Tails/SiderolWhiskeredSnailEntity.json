@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.SiderolWhiskeredSnailEntity",
+  "modelFieldName": "body.neck.stalks",
+  "eyeOffset": [
+    0.0,
+    0.1,
+    -0.025
+  ],
+  "halfInterpupillaryDistance": 0.063125,
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    -0.00625,
+    -0.0625
+  ],
+  "headScale": 0.3
+}

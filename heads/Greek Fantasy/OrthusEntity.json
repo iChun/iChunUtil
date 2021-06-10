@@ -1,0 +1,56 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.OrthusEntity",
+  "modelFieldName": "head.head[0]",
+  "eyeOffset": [
+    0.0625,
+    0.03125,
+    0.25
+  ],
+  "irisColour": [
+    0.64705884,
+    0.18039216,
+    0.18039216
+  ],
+  "pupilColour": [
+    0.23529412,
+    0.05882353,
+    0.05882353
+  ],
+  "eyeScale": 0.65,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0625,
+    0.1875,
+    0.125
+  ],
+  "headScale": 0.75,
+  "additionalHeads": [
+    {
+      "modelFieldName": "head.head[1]",
+      "eyeOffset": [
+        0.0625,
+        0.03125,
+        0.25
+      ],
+      "irisColour": [
+        0.64705884,
+        0.18039216,
+        0.18039216
+      ],
+      "pupilColour": [
+        0.23529412,
+        0.05882353,
+        0.05882353
+      ],
+      "eyeScale": 0.65,
+      "doesEyeGlow": true,
+      "headTopCenter": [
+        0.0625,
+        0.1875,
+        0.125
+      ],
+      "headScale": 0.75
+    }
+  ]
+}

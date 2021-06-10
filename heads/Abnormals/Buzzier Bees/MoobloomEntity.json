@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.buzzier_bees.common.entities.MoobloomEntity",
+  "modelFieldName": "field_78150_a",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.375
+  ],
+  "pupilColour": [
+    1.0,
+    0.74509805,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.1875
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.goodnightsleep.entity.TormenterEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    -0.0375,
+    0.2625,
+    0.25
+  ],
+  "pupilColour": [
+    0.23137255,
+    0.20392157,
+    0.14509805
+  ],
+  "eyeCount": 1
+}

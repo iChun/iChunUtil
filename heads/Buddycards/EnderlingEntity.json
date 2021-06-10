@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.wildcard.buddycards.entities.EnderlingEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.25
+  ],
+  "irisColour": [
+    0.88,
+    0.47,
+    0.98
+  ],
+  "pupilColour": [
+    0.8,
+    0.0,
+    0.98
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.85,
+  "affectedByInvisibility": false,
+  "doesEyeGlow": true
+}

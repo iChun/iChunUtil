@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.SirenEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.125,
+    0.25
+  ],
+  "pupilColour": [
+    0.27450982,
+    0.54901963,
+    0.87058824
+  ]
+}

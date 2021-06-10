@@ -1,0 +1,22 @@
+{
+  "forClass": "cofh.thermal.core.entity.monster.BlizzEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.25
+  ],
+  "irisColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.0625
+  ],
+  "headScale": 1.25,
+  "headArmorScale": 1.266
+}

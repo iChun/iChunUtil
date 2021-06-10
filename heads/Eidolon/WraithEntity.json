@@ -1,0 +1,17 @@
+{
+  "author": "Febilian",
+  "forClass": "elucent.eidolon.entity.WraithEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.775,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.85,
+  "headTopCenter": [
+    0.0,
+    0.99375,
+    0.0
+  ]
+}

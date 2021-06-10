@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "blueduck.morejellyfish.morejellyfishmod.entity.SlimeJellyfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.1875,
+    0.00625
+  ],
+  "irisColour": [
+    0.9019608,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.95,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 0.75
+}

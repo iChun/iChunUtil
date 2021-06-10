@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.beethoven92.betterendforge.common.entity.EndSlimeEntity",
+  "modelFieldName": "innerCube",
+  "eyeOffset": [
+    0.0,
+    -1.1875,
+    0.21875
+  ],
+  "irisColour": [
+    1.0,
+    0.0,
+    0.89411765
+  ],
+  "pupilColour": [
+    0.3882353,
+    0.043137256,
+    0.3529412
+  ],
+  "halfInterpupillaryDistance": 0.14375,
+  "eyeScale": 0.65,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    -1.0,
+    0.0
+  ]
+}

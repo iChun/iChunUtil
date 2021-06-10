@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.CerastesEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.15,
+    0.375
+  ],
+  "pupilColour": [
+    0.6313726,
+    0.4,
+    0.28235295
+  ],
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.25625,
+    0.1875
+  ],
+  "headScale": 0.75
+}

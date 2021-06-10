@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.aquaculture.entity.TurtleLandEntity",
+  "modelFieldName": "field_78150_a",
+  "eyeOffset": [
+    0.0,
+    0.025,
+    -0.05625
+  ],
+  "halfInterpupillaryDistance": 0.05,
+  "eyeScale": 0.25,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.05,
+    -0.03125
+  ],
+  "headScale": 0.2
+}

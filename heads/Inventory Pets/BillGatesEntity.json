@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.inventorypets.entities.BillGatesEntity",
+  "modelFieldName": "villagerHead",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.0,
+    0.5882353,
+    0.06666667
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

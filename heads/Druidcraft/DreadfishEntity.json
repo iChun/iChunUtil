@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.vulp.druidcraft.entities.DreadfishEntity",
+  "modelFieldName": "spine1.head1",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.09375
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.09375
+  ],
+  "headScale": 0.4
+}

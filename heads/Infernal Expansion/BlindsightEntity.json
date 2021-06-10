@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.BlindsightEntity",
+  "modelFieldName": "all.Body.Head",
+  "eyeOffset": [
+    0.3125,
+    0.4,
+    0.75
+  ],
+  "irisColour": [
+    0.9843137,
+    0.85490197,
+    0.45490196
+  ],
+  "pupilColour": [
+    0.43529412,
+    0.27450982,
+    0.13333334
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeScale": 0.85,
+  "eyeCount": 1,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.5,
+    0.375
+  ],
+  "headScale": 1.8
+}

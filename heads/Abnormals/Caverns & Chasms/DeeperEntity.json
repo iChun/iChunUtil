@@ -1,0 +1,16 @@
+{
+  "author": "Cartartnr",
+  "forClass": "com.minecraftabnormals.caverns_and_chasms.common.entity.DeeperEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.2875,
+    0.25
+  ],
+  "halfInterpupillaryDistance": 0.13125,
+  "headTopCenter": [
+    0.0,
+    0.51875,
+    0.0
+  ]
+}

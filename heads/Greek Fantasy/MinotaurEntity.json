@@ -1,0 +1,11 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.MinotaurEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.31875,
+    0.25
+  ],
+  "halfInterpupillaryDistance": 0.175
+}

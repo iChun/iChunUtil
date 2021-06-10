@@ -1,0 +1,16 @@
+{
+  "forClass": "net.minecraft.entity.passive.FoxEntity",
+  "modelFieldName": "field_217115_a",
+  "eyeOffset": [
+    -0.0625,
+    -0.09375,
+    0.3125
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    -0.0625,
+    0.125,
+    0.125
+  ]
+}

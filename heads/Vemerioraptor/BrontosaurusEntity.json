@@ -1,0 +1,26 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.vemerion.vemerioraptor.entity.BrontosaurusEntity",
+  "modelFieldName": "body.neck1.neck2.neck3.head",
+  "eyeOffset": [
+    0.0,
+    -0.15,
+    0.34375
+  ],
+  "irisColour": [
+    0.22745098,
+    0.5882353,
+    0.6784314
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.05,
+  "sideEyed": true,
+  "eyeYRotation": 90.0,
+  "headTopCenter": [
+    0.0,
+    -0.3125,
+    0.5
+  ],
+  "headScale": 1.5,
+  "hatTiltPitch": 90.0
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.ShroomloinEntity",
+  "modelFieldName": "all.body",
+  "eyeOffset": [
+    0.0,
+    0.125,
+    0.3125
+  ],
+  "irisColour": [
+    1.0,
+    0.23529412,
+    0.09019608
+  ],
+  "pupilColour": [
+    0.27450982,
+    0.105882354,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.18125,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.025
+  ],
+  "headScale": 1.85
+}

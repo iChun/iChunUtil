@@ -1,0 +1,20 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.GorgonEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.25
+  ],
+  "irisColour": [
+    0.87058824,
+    0.87058824,
+    0.21960784
+  ],
+  "pupilColour": [
+    0.5294118,
+    0.5294118,
+    0.14117648
+  ]
+}

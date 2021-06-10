@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "pugz.omni.common.entity.paradise.SeahorseEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    0.1375,
+    0.225
+  ],
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.23125,
+    0.125
+  ],
+  "headScale": 0.5
+}

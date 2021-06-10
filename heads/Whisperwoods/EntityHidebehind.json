@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "dev.itsmeow.whisperwoods.entity.EntityHidebehind",
+  "modelFieldName": "chest.neck00.neck01.head",
+  "eyeOffset": [
+    0.0,
+    0.20625,
+    0.44375
+  ],
+  "irisColour": [
+    0.8039216,
+    0.67058825,
+    0.47843137
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.95,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.40625,
+    0.125
+  ],
+  "headScale": 1.35
+}

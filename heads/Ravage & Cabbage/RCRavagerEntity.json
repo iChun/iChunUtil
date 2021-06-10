@@ -1,0 +1,23 @@
+{
+  "author": "WenXin2",
+  "forClass": "superlord.ravagecabbage.entity.RCRavagerEntity",
+  "modelFieldName": "neck.head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.875
+  ],
+  "pupilColour": [
+    0.19607843,
+    0.4,
+    0.23529412
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.1,
+  "headTopCenter": [
+    0.0,
+    0.875,
+    0.375
+  ],
+  "headScale": 2.0
+}

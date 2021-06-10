@@ -1,0 +1,20 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.FlatbackLeafSnailEntity",
+  "modelFieldName": "body.eyes",
+  "eyeOffset": [
+    0.0,
+    0.1,
+    0.025
+  ],
+  "halfInterpupillaryDistance": 0.094375,
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    -0.0125,
+    -0.02375
+  ],
+  "headScale": 0.5,
+  "hatTiltPitch": -45
+}

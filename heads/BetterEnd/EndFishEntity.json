@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.beethoven92.betterendforge.common.entity.EndFishEntity",
+  "modelFieldName": "model",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.11875
+  ],
+  "irisColour": [
+    0.95686275,
+    0.2509804,
+    0.67058825
+  ],
+  "pupilColour": [
+    0.3137255,
+    0.08235294,
+    0.21568628
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.175
+  ],
+  "headScale": 0.3
+}

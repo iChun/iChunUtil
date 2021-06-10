@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.vemerion.vemerioraptor.entity.PlesiosaurusEntity",
+  "modelFieldName": "body1.body4.neck1.neck2.neck3.head1",
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.3125
+  ],
+  "pupilColour": [
+    0.050980393,
+    0.1882353,
+    0.19215687
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.1,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.38125
+  ],
+  "headScale": 1.5
+}

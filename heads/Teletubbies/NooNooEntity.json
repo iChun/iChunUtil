@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "teletubbies.entity.passive.NooNooEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.25,
+    1.00625
+  ],
+  "eyeScale": 0.95,
+  "headTopCenter": [
+    0.0,
+    0.34375,
+    0.66875
+  ],
+  "headScale": 1.4
+}

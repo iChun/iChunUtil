@@ -1,0 +1,16 @@
+{
+  "forClass": "net.minecraft.entity.passive.StriderEntity",
+  "modelFieldName": "field_239120_f_",
+  "eyeOffset": [
+    0.0,
+    -0.21875,
+    0.5
+  ],
+  "halfInterpupillaryDistance": 0.36666667,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 2.0
+}

@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.BandedRedbackShrimpEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.125
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.35,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    0.03125
+  ],
+  "headScale": 0.5
+}

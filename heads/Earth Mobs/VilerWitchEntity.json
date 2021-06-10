@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "baguchan.earthmobsmod.entity.VilerWitchEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.47843137,
+    0.36862746,
+    0.4392157
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

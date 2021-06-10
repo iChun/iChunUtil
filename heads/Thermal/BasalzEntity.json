@@ -1,0 +1,22 @@
+{
+  "forClass": "cofh.thermal.core.entity.monster.BasalzEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.375
+  ],
+  "irisColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 1.5,
+  "headArmorScale": 1.27
+}

@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.goodnightsleep.entity.dream.UnicornEntity",
+  "modelFieldName": "field_217128_b.field_217128_b_0",
+  "eyeOffset": [
+    0.0,
+    0.6,
+    -0.04375
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.7,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.6875,
+    -0.0875
+  ],
+  "headScale": 0.77
+}

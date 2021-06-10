@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.savageandravage.common.entity.SkeletonVillagerEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.20625,
+    0.25
+  ],
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

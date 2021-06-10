@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.WarpbeetleEntity",
+  "modelFieldName": "warpbeetle.body.head",
+  "eyeOffset": [
+    0.0,
+    -0.0375,
+    0.125
+  ],
+  "pupilColour": [
+    0.050980393,
+    0.10980392,
+    0.09019608
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.6,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.125
+  ],
+  "headScale": 0.6
+}

@@ -1,0 +1,23 @@
+{
+  "forClass": "twilightforest.entity.passive.EntityTFRaven",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.09375
+  ],
+  "pupilColour": [
+    0.80784315,
+    0.8117647,
+    0.4745098
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.4,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.0625,
+    0.03125
+  ],
+  "headScale": 0.38
+}

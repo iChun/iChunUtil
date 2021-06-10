@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.CretanMinotaurEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.28125,
+    0.25
+  ],
+  "irisColour": [
+    0.5882353,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.39215687,
+    0.0,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.16875
+}

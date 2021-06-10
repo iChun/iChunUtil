@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.jungle.WhispererEntity",
+  "modelFieldName": "field_78116_c",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    -0.03125,
+    0.875,
+    0.0
+  ],
+  "headScale": 1.3
+}

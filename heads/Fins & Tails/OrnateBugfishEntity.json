@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.OrnateBugfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.09375
+  ],
+  "irisColour": [
+    0.44705883,
+    0.5803922,
+    0.8627451
+  ],
+  "pupilColour": [
+    0.28235295,
+    0.28235295,
+    0.4745098
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 1.05,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.18125,
+    0.0
+  ],
+  "headScale": 0.9
+}

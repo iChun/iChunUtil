@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.inventorypets.entities.SteveBallmerEntity",
+  "modelFieldName": "villagerHead.field_217151_b",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.40392157,
+    0.40784314,
+    0.38431373
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

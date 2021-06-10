@@ -1,0 +1,45 @@
+{
+  "pupilColourAssortment": [
+    [
+      0.050980393,
+      0.49803922,
+      0.78431374
+    ],
+    [
+      0.3019608,
+      0.5372549,
+      0.050980393
+    ],
+    [
+      0.12156863,
+      0.43529412,
+      0.19607843
+    ],
+    [
+      0.73333335,
+      0.5372549,
+      0.0627451
+    ],
+    [
+      0.07058824,
+      0.09803922,
+      0.15686275
+    ]
+  ],
+  "forClass": "net.minecraft.entity.passive.CatEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadCat",
+  "modelFieldName": "field_78156_g",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.03125
+  ],
+  "headScale": 0.625
+}

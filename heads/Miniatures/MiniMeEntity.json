@@ -1,0 +1,17 @@
+{
+  "forClass": "noobanidus.mods.miniatures.entity.MiniMeEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.25,
+    0.28125
+  ],
+  "halfInterpupillaryDistance": 0.140625,
+  "eyeScale": 0.88,
+  "headTopCenter": [
+    0.0,
+    0.53125,
+    0.0
+  ],
+  "headScale": 1.13
+}

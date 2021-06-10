@@ -1,0 +1,9 @@
+{
+  "forClass": "net.minecraft.entity.monster.CreeperEntity",
+  "modelFieldName": "field_78135_a",
+  "eyeOffset": [
+    0.0,
+    0.3125,
+    0.25
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecolonies.coremod.entity.mobs.amazons.EntityAmazonChief",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.225,
+    0.25
+  ]
+}

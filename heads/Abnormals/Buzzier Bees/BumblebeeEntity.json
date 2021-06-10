@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.buzzier_bees.common.entities.BumblebeeEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.21875,
+    0.25
+  ],
+  "irisColour": [
+    0.1882353,
+    0.16862746,
+    0.21568628
+  ],
+  "pupilColour": [
+    0.4862745,
+    0.7882353,
+    0.81960785
+  ],
+  "irisColourAngry": [
+    0.89411765,
+    0.0,
+    0.09411765
+  ],
+  "pupilColourAngry": [
+    0.94509804,
+    0.9490196,
+    0.8784314
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 1.0,
+  "headTopCenter": [
+    0.0,
+    0.09375,
+    0.09375
+  ],
+  "headScale": 0.8
+}

@@ -1,0 +1,17 @@
+{
+  "forClass": "twilightforest.entity.passive.EntityTFSquirrel",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.4,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.0625
+  ],
+  "headScale": 0.5
+}

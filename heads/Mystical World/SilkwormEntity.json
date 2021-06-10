@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.SilkwormEntity",
+  "modelFieldName": "bodyParts_0",
+  "eyeOffset": [
+    0.0,
+    -0.0875,
+    0.15
+  ],
+  "halfInterpupillaryDistance": 0.05625,
+  "eyeScale": 0.35,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 0.3
+}

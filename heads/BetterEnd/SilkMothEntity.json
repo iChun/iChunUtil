@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.beethoven92.betterendforge.common.entity.SilkMothEntity",
+  "modelFieldName": "head_pivot",
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.125
+  ],
+  "irisColour": [
+    0.8980392,
+    0.89411765,
+    0.8980392
+  ],
+  "pupilColour": [
+    0.28627452,
+    0.15686275,
+    0.25882354
+  ],
+  "halfInterpupillaryDistance": 0.08125,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.0875,
+    0.03125
+  ],
+  "headScale": 0.4
+}

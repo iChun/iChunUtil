@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.CharybdisEntity",
+  "modelFieldName": "body.body4",
+  "eyeOffset": [
+    -0.125,
+    1.375,
+    0.0
+  ],
+  "eyeScale": 2.45,
+  "topEyed": true,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "hatTiltPitch": 180
+}

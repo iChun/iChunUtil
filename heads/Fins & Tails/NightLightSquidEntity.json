@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.NightLightSquidEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.00625,
+    0.11875
+  ],
+  "irisColour": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.8392157,
+    0.96862745,
+    0.92156863
+  ],
+  "eyeScale": 0.85,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.11875,
+    0.0
+  ],
+  "headScale": 0.7
+}

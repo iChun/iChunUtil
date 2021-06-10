@@ -1,0 +1,11 @@
+{
+  "forClass": "net.minecraft.entity.passive.SquidEntity",
+  "modelFieldName": "field_78202_a",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.375
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headScale": 1.5
+}

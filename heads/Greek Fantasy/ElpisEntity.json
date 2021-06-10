@@ -1,0 +1,47 @@
+{
+  "author": "WenXin2",
+  "forClass": "greekfantasy.entity.ElpisEntity",
+  "modelFieldName": "field_78116_c",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "x",
+      "amount": 0.4
+    },
+    {
+      "type": "translate",
+      "axis": "y",
+      "amount": 0.42
+    },
+    {
+      "type": "translate",
+      "axis": "z",
+      "amount": -0.18
+    },
+    {
+      "type": "scale",
+      "axis": "x",
+      "amount": 0.4
+    },
+    {
+      "type": "scale",
+      "axis": "y",
+      "amount": 0.4
+    },
+    {
+      "type": "scale",
+      "axis": "z",
+      "amount": 0.4
+    }
+  ],
+  "irisColour": [
+    0.98039216,
+    0.9254902,
+    0.9764706
+  ],
+  "pupilColour": [
+    0.9647059,
+    0.74509805,
+    0.95686275
+  ]
+}

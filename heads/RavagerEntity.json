@@ -1,0 +1,22 @@
+{
+  "forClass": "net.minecraft.entity.monster.RavagerEntity",
+  "modelFieldName": "field_217175_k.field_217168_a",
+  "eyeOffset": [
+    0.0,
+    0.40625,
+    0.875
+  ],
+  "pupilColour": [
+    0.19607843,
+    0.4,
+    0.23529412
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.1,
+  "headTopCenter": [
+    0.0,
+    1.25,
+    0.375
+  ],
+  "headScale": 2.0
+}

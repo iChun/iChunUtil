@@ -1,0 +1,18 @@
+{
+  "author": "Cartartnr",
+  "forClass": "com.commodorethrawn.strawgolem.entity.EntityStrawGolem",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.09375,
+    0.125
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.5,
+  "headTopCenter": [
+    0.0,
+    0.24375,
+    0.0
+  ],
+  "headScale": 0.5
+}

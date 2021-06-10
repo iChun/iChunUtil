@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "azmalent.terraincognita.common.entity.butterfly.ButterflyEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.03125,
+    0.0375,
+    0.125
+  ],
+  "halfInterpupillaryDistance": 0.015625,
+  "eyeScale": 0.1,
+  "headTopCenter": [
+    0.03125,
+    0.0625,
+    0.09375
+  ],
+  "headScale": 0.13
+}

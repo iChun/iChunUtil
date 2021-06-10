@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.infamous.dungeons_mobs.entities.undead.WraithEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.3125,
+    0.24375
+  ],
+  "irisColour": [
+    0.30980393,
+    0.6156863,
+    0.76862746
+  ],
+  "pupilColour": [
+    0.07450981,
+    0.40392157,
+    0.6745098
+  ],
+  "doesEyeGlow": true
+}

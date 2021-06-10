@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.bellybutton.entity.EvilDustBunnyEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.3125
+  ],
+  "pupilColour": [
+    0.31764707,
+    0.29803923,
+    0.53333336
+  ],
+  "halfInterpupillaryDistance": 0.175,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0
+  ],
+  "headScale": 1.3
+}

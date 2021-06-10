@@ -1,0 +1,30 @@
+{
+  "author": "Cartartnr",
+  "forClass": "chumbanotz.mutantbeasts.entity.mutant.MutantEndermanEntity",
+  "modelFieldName": "pelvis.abdomen.chest.neck.head",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.53125
+  ],
+  "irisColour": [
+    0.88,
+    0.47,
+    0.98
+  ],
+  "pupilColour": [
+    0.8,
+    0.0,
+    0.98
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.95,
+  "headTopCenter": [
+    0.0,
+    0.275,
+    0.25
+  ],
+  "headScale": 1.2,
+  "doesEyeGlow": true
+}

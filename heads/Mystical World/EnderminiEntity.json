@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "epicsquid.mysticalworld.entity.EnderminiEntity",
+  "modelFieldName": "field_78116_c",
+  "affectedByInvisibility": false,
+  "eyeOffset": [
+    0.0,
+    0.23125,
+    0.25
+  ],
+  "irisColour": [
+    0.8784314,
+    0.46666667,
+    0.9764706
+  ],
+  "pupilColour": [
+    0.8,
+    0.0,
+    0.9764706
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.85,
+  "doesEyeGlow": true
+}

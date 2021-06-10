@@ -1,0 +1,24 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.odd_water_mobs.entity.PinkGhostSharkEntity$CustomEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    0.1875,
+    0.1875
+  ],
+  "pupilColour": [
+    0.22745098,
+    0.29803923,
+    0.36078432
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.6,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.28125,
+    0.15625
+  ],
+  "headScale": 0.4
+}

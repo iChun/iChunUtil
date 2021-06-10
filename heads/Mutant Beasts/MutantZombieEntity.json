@@ -1,0 +1,6 @@
+{
+  "author": "Cartartnr",
+  "forClass": "chumbanotz.mutantbeasts.entity.mutant.MutantZombieEntity",
+  "modelFieldName": "pelvis.waist.chest.head",
+  "isBoss": true
+}

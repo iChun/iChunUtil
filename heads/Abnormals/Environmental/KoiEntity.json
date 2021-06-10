@@ -1,0 +1,18 @@
+{
+  "author": "Cartartnr",
+  "forClass": "com.minecraftabnormals.environmental.common.entity.KoiEntity",
+  "modelFieldName": "Body1",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.40625
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.39375
+  ],
+  "headScale": 0.5
+}

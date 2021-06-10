@@ -1,0 +1,19 @@
+{
+  "author": "Febilian",
+  "forClass": "elucent.eidolon.entity.ZombieBruteEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.325,
+    0.3125
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.95,
+  "headTopCenter": [
+    0.0,
+    0.05625,
+    0.0
+  ],
+  "headScale": 1.25,
+  "headArmorScale": 1.47
+}

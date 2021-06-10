@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecolonies.coremod.entity.mobs.pirates.EntityCaptainPirate",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    -0.275,
+    0.21875,
+    0.3125
+  ],
+  "pupilColour": [
+    0.19607843,
+    0.0,
+    0.78431374
+  ],
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.5625,
+    0.0
+  ],
+  "headScale": 1.2
+}

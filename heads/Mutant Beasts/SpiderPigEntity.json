@@ -1,0 +1,16 @@
+{
+  "author": "WenXin2",
+  "forClass": "chumbanotz.mutantbeasts.entity.mutant.SpiderPigEntity",
+  "modelFieldName": "base.body2.body1.body2[0][0].head.body2[0][0][0][0]",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.5
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.25
+  ]
+}

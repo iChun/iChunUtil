@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.odd_water_mobs.entity.AnglerfishEntity$CustomEntity",
+  "modelFieldName": "body.head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.1625
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.45,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.13125
+  ],
+  "headScale": 0.5
+}

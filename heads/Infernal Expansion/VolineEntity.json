@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.VolineEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.09375,
+    0.5
+  ],
+  "irisColour": [
+    0.9843137,
+    0.85490197,
+    0.45490196
+  ],
+  "pupilColour": [
+    0.43529412,
+    0.27450982,
+    0.13333334
+  ],
+  "halfInterpupillaryDistance": 0.0875,
+  "eyeScale": 0.45,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.5,
+    0.25
+  ]
+}

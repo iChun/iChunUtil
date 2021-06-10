@@ -1,0 +1,14 @@
+{
+  "forClass": "twilightforest.entity.EntityTFAdherent",
+  "modelFieldName": "field_78116_c",
+  "irisColour": [
+    0.039215688,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.0,
+    0.0,
+    1.0
+  ]
+}

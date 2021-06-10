@@ -1,0 +1,16 @@
+{
+  "forClass": "twilightforest.entity.boss.EntityTFMinoshroom",
+  "modelFieldName": "field_78116_c",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    0.5,
+    0.25
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.6875,
+    0.0
+  ]
+}

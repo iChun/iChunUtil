@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.nekomaster1000.infernalexp.entities.BlackstoneDwarfEntity",
+  "modelFieldName": "Body.Torso.Torso2.Head",
+  "eyeOffset": [
+    0.03125,
+    -0.09375,
+    0.75
+  ],
+  "irisColour": [
+    0.35686275,
+    0.23529412,
+    0.023529412
+  ],
+  "pupilColour": [
+    0.13725491,
+    0.050980393,
+    0.003921569
+  ],
+  "halfInterpupillaryDistance": 0.21875,
+  "eyeScale": 0.95,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.03125,
+    0.3125,
+    0.375
+  ],
+  "headScale": 1.5
+}

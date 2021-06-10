@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.goodnightsleep.entity.dream.BabyCreeperEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.34375,
+    0.25
+  ],
+  "irisColour": [
+    0.0,
+    0.09803922,
+    0.0
+  ],
+  "halfInterpupillaryDistance": 0.14375,
+  "eyeScale": 0.95
+}

@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "baguchan.earthmobsmod.entity.LobberZombieEntity",
+  "modelFieldName": "field_78116_c",
+  "irisColour": [
+    0.5568628,
+    0.6117647,
+    0.49411765
+  ],
+  "pupilColour": [
+    0.09411765,
+    0.09411765,
+    0.09411765
+  ]
+}

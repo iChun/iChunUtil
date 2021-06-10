@@ -1,0 +1,17 @@
+{
+  "forClass": "twilightforest.entity.boss.EntityTFYetiAlpha",
+  "modelFieldName": "field_78115_e",
+  "isBoss": true,
+  "eyeOffset": [
+    0.0,
+    3.0,
+    1.21875
+  ],
+  "halfInterpupillaryDistance": 0.875,
+  "headTopCenter": [
+    0.0,
+    3.75,
+    0.0
+  ],
+  "headScale": 4.5
+}

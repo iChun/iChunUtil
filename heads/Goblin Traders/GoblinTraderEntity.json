@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.mrcrayfish.goblintraders.entity.GoblinTraderEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.15,
+    0.19375
+  ],
+  "pupilColour": [
+    0.12941177,
+    0.2,
+    0.23137255
+  ],
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 0.9
+}

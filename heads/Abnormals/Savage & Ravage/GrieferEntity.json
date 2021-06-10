@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.savageandravage.common.entity.GrieferEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.5686275,
+    0.1764706,
+    0.06666667
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

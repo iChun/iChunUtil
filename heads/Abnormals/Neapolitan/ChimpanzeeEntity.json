@@ -1,0 +1,12 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.minecraftabnormals.neapolitan.common.entity.ChimpanzeeEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.34375,
+    0.1875
+  ],
+  "eyeScale": 0.55,
+  "headScale": 0.9
+}

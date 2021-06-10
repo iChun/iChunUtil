@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "teletubbies.entity.monster.DipsyZombieEntity",
+  "modelFieldName": "field_178720_f",
+  "irisColour": [
+    1.0,
+    0.49803922,
+    0.43137255
+  ],
+  "pupilColour": [
+    0.5568628,
+    0.0,
+    0.0
+  ]
+}
