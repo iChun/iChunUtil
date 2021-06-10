@@ -353,7 +353,11 @@ public class Project extends Identifiable<Project> //Model
     {
         try
         {
-            file.getParentFile().mkdirs();
+            if((!file.getParentFile().exists() || !file.getParentFile().isDirectory()) && !file.getParentFile().mkdirs())
+            {
+                iChunUtil.LOGGER.error("Error creating save folder: {}", project.name + " - " + project.author);
+                return false;
+            }
 
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
             out.setLevel(9);
