@@ -1,6 +1,8 @@
 package me.ichun.mods.ichunutil.client.key;
 
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,7 +40,7 @@ public class KeyBind
 
         ClientRegistry.registerKeyBinding(this.keyBinding);
 
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
     }
 
     public KeyBind setTickConsumer(Consumer<KeyBind> tickConsumer)
@@ -79,6 +81,24 @@ public class KeyBind
                         pressConsumer.accept(this);
                     }
                 }
+            }
+        }
+    }
+
+    public enum ConflictContext implements IKeyConflictContext
+    {
+        //Allows in-game modifiers (or lack thereof) to conflict
+        IN_GAME_MODIFIER_SENSITIVE {
+            @Override
+            public boolean isActive()
+            {
+                return !KeyConflictContext.GUI.isActive();
+            }
+
+            @Override
+            public boolean conflicts(IKeyConflictContext other)
+            {
+                return this == other;
             }
         }
     }

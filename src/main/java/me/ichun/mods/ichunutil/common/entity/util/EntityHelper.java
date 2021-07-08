@@ -56,6 +56,7 @@ public class EntityHelper
 
     //Game Profile lookup service
     public static final Map<String, GameProfile> GAME_PROFILE_CACHE = Collections.synchronizedMap(new HashMap<>());
+    public static final Map<UUID, GameProfile> GAME_PROFILE_CACHE_UUID = Collections.synchronizedMap(new HashMap<>());
     private static PlayerProfileCache profileCache;
     private static MinecraftSessionService sessionService;
 
@@ -67,6 +68,7 @@ public class EntityHelper
         if(Minecraft.getInstance() != null) // null when generating data.
         {
             GAME_PROFILE_CACHE.put(Minecraft.getInstance().getSession().getUsername(), Minecraft.getInstance().getSession().getProfile());
+            GAME_PROFILE_CACHE_UUID.put(Minecraft.getInstance().getSession().getProfile().getId(), Minecraft.getInstance().getSession().getProfile());
         }
     }
 
@@ -80,6 +82,10 @@ public class EntityHelper
         if(playerName != null && GAME_PROFILE_CACHE.containsKey(playerName))
         {
             return GAME_PROFILE_CACHE.get(playerName);
+        }
+        if(uuid != null && GAME_PROFILE_CACHE_UUID.containsKey(uuid))
+        {
+            return GAME_PROFILE_CACHE_UUID.get(uuid);
         }
 
         if(profileCache == null || sessionService == null)
@@ -108,6 +114,7 @@ public class EntityHelper
         }
 
         GAME_PROFILE_CACHE.put(gameprofile.getName(), gameprofile);
+        GAME_PROFILE_CACHE_UUID.put(gameprofile.getId(), gameprofile);
         return gameprofile;
     }
 
@@ -156,6 +163,11 @@ public class EntityHelper
         }
 
         return oriRot + var4;
+    }
+
+    public static float sineifyProgress(float progress) //0F - 1F; Yay math
+    {
+        return ((float)Math.sin(Math.toRadians(-90F + (180F * progress))) / 2F) + 0.5F;
     }
 
     public static int countInInventory(IInventory inv, Item item)

@@ -111,6 +111,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
+    public <T extends Workspace> T setLastScreen(Screen screen)
+    {
+        this.lastScreen = screen;
+        return (T)this;
+    }
+
     public <T extends Workspace> T setTheme(Theme theme)
     {
         this.theme = theme;

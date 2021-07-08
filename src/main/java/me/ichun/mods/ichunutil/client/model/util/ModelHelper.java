@@ -203,7 +203,12 @@ public class ModelHelper
         }
     }
 
-    private static void createPartFor(String name, ModelRenderer renderer, HashMap<ModelRenderer, Identifiable<?>> done, Identifiable<?> parent)
+    public static void createPartFor(String name, ModelRenderer renderer, HashMap<ModelRenderer, Identifiable<?>> done, Identifiable<?> parent)
+    {
+        createPartFor(name, renderer, done, parent, true);
+    }
+
+    public static void createPartFor(String name, ModelRenderer renderer, HashMap<ModelRenderer, Identifiable<?>> done, Identifiable<?> parent, boolean processChildren)
     {
         if(done.containsKey(renderer))
         {
@@ -299,11 +304,14 @@ public class ModelHelper
             }
         }
 
-        ObjectList<ModelRenderer> childModels = renderer.childModels;
-        for(int i = 0; i < childModels.size(); i++)
+        if(processChildren)
         {
-            ModelRenderer childModel = childModels.get(i);
-            createPartFor(name + "[" + i + "]", childModel, done, part);
+            ObjectList<ModelRenderer> childModels = renderer.childModels;
+            for(int i = 0; i < childModels.size(); i++)
+            {
+                ModelRenderer childModel = childModels.get(i);
+                createPartFor(name + "[" + i + "]", childModel, done, part);
+            }
         }
 
         if(parent instanceof Project)

@@ -296,7 +296,7 @@ public class HeadHandler
         }
         catch(Throwable t)
         {
-            iChunUtil.LOGGER.error("Error deserializing HeadInfo for {}", clz.getName());
+            iChunUtil.LOGGER.error("Error deserialising HeadInfo for {}", clz.getName());
             t.printStackTrace();
         }
         return false;
