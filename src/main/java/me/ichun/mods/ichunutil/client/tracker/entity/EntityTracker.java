@@ -40,7 +40,7 @@ public class EntityTracker extends Entity
         setInvulnerable(true);
     }
 
-    public EntityTracker setParent(Entity tracked)
+    public EntityTracker setParent(@Nonnull Entity tracked)
     {
         this.parent = tracked;
         return this;

@@ -5,6 +5,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
+import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.AgeableModel;
@@ -59,6 +60,9 @@ public class HeadInfo<E extends LivingEntity>
     public transient Random rand = new Random();
     public transient int[] acidTime;
 
+    @OnlyIn(Dist.CLIENT)
+    public transient MatrixStack renderCorrectorStack;
+
     //MultiModel Class instance;
     public transient Class<? extends EntityModel> multiModelClass = null;
 
@@ -76,8 +80,6 @@ public class HeadInfo<E extends LivingEntity>
     public Boolean affectedByInvisibility = true;
 
     //Model render fixes
-    @OnlyIn(Dist.CLIENT)
-    public MatrixStack renderCorrectorStack;
     public PlacementCorrector[] renderCorrectors = null;
 
     //Child translates
@@ -157,11 +159,7 @@ public class HeadInfo<E extends LivingEntity>
                 }
             }
 
-            MatrixStack.Entry entLast = stack.getLast();
-            MatrixStack.Entry correctorLast = renderCorrectorStack.getLast();
-
-            entLast.getMatrix().mul(correctorLast.getMatrix());
-            entLast.getNormal().mul(correctorLast.getNormal());
+            RenderHelper.multiplyStackWithStack(stack, renderCorrectorStack);
         }
     }
 

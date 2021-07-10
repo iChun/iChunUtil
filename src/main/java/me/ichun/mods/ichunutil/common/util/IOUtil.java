@@ -3,12 +3,21 @@ package me.ichun.mods.ichunutil.common.util;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.renderer.texture.NativeImage;
 
+import javax.annotation.Nonnull;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class IOUtil
 {
@@ -59,14 +68,79 @@ public class IOUtil
                 File newFile = new File(dir, name);
                 if(file.renameTo(newFile))
                 {
-                    System.out.println("Renaming " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                    iChunUtil.LOGGER.info("Renaming {} to {}", file.getAbsolutePath(), newFile.getAbsolutePath());
                 }
                 else
                 {
-                    System.out.println("Failed to rename " + file.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+                    iChunUtil.LOGGER.error("Failed to rename {} to {}", file.getAbsolutePath(), newFile.getAbsolutePath());
                 }
             }
         }
+    }
+
+    public static int extractFiles(@Nonnull Path dir, @Nonnull InputStream inputStream, boolean overwrite) throws IOException
+    {
+        int i = 0;
+        try(ZipInputStream zipStream = new ZipInputStream(inputStream))
+        {
+            ZipEntry entry;
+
+            while((entry = zipStream.getNextEntry()) != null)
+            {
+                Path path = dir.resolve(entry.getName());
+                if(!overwrite && Files.exists(path) && Files.size(path) > 3L) //check if there are at least some bytes written so we know the file isn't empty
+                {
+                    continue;
+                }
+
+                if(entry.isDirectory())
+                {
+                    if(!Files.exists(path))
+                    {
+                        Files.createDirectories(path);
+                    }
+                }
+                else
+                {
+                    try(OutputStream out = Files.newOutputStream(path))
+                    {
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while((len = zipStream.read(buffer)) != -1)
+                        {
+                            out.write(buffer, 0, len);
+                        }
+
+                        i++;
+                    }
+                }
+            }
+        }
+        return i;
+    }
+
+    public static int scourDirectoryForFiles(Path path, Function<Path, Boolean> fileFunction) throws IOException
+    {
+        if(!Files.exists(path))
+        {
+            Files.createDirectories(path);
+        }
+
+        int count = 0;
+        List<Path> files = Files.list(path).collect(Collectors.toList());
+
+        for(Path p : files)
+        {
+            if(Files.isDirectory(p))
+            {
+                count += scourDirectoryForFiles(p, fileFunction);
+            }
+            else if(fileFunction.apply(p))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     /*

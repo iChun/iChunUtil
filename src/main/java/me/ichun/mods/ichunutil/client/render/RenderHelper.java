@@ -188,6 +188,15 @@ public class RenderHelper
         return new TextureAtlasSprite(Minecraft.getInstance().getModelManager().getAtlasTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE), new TextureAtlasSprite.Info(rl, image.getWidth(), image.getHeight(), AnimationMetadataSection.EMPTY), Minecraft.getInstance().gameSettings.mipmapLevels, image.getWidth(), image.getHeight(), 0, 0, image);
     }
 
+    public static void multiplyStackWithStack(@Nonnull MatrixStack stack, @Nonnull MatrixStack otherStack)
+    {
+        MatrixStack.Entry entLast = stack.getLast();
+        MatrixStack.Entry correctorLast = otherStack.getLast();
+
+        entLast.getMatrix().mul(correctorLast.getMatrix());
+        entLast.getNormal().mul(correctorLast.getNormal());
+    }
+
     public static void drawTexture(MatrixStack stack, ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
     {
         Minecraft.getInstance().getTextureManager().bindTexture(resource);
