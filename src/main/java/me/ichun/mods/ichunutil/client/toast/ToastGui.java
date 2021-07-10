@@ -2,11 +2,9 @@ package me.ichun.mods.ichunutil.client.toast;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.ichun.mods.ichunutil.common.util.ObfHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 @OnlyIn(Dist.CLIENT)
 public class ToastGui extends net.minecraft.client.gui.toasts.ToastGui

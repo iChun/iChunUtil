@@ -15,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class HeadHandler
 {
