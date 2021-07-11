@@ -325,6 +325,126 @@ public class ModelHelper
         done.put(renderer, part);
     }
 
+    public static Project.Part createPartFor(ModelRenderer renderer, boolean processChildren)
+    {
+        if(renderer == null)
+        {
+            Project.Part part = new Project.Part(null, 0);
+            part.boxes.clear();
+            return part;
+        }
+        HashMap<ModelRenderer, Identifiable<?>> store = new HashMap<>();
+        ModelHelper.createPartFor("", renderer, store, null, processChildren);
+        return (Project.Part)store.get(renderer);
+    }
+
+    public static void matchBoxesCount(Project.Part partToChange, Project.Part referencePart)
+    {
+        while(partToChange.boxes.size() < referencePart.boxes.size())
+        {
+            Project.Part.Box box = new Project.Part.Box(partToChange);
+            Project.Part.Box otherBox = referencePart.boxes.get(partToChange.boxes.size());
+            box.dimX = box.dimY = box.dimZ = 0F;
+            box.texOffX = otherBox.texOffX;
+            box.texOffY = otherBox.texOffY;
+            partToChange.boxes.add(box);
+        }
+    }
+
+    public static void matchBoxAndChildrenCount(Project.Part partToChange, Project.Part referencePart)
+    {
+        matchBoxesCount(partToChange, referencePart);
+
+        while(partToChange.children.size() < referencePart.children.size())
+        {
+            partToChange.children.add(createPartFor(null, false));
+        }
+
+        for(int i = 0; i < partToChange.children.size(); i++)
+        {
+            matchBoxAndChildrenCount(partToChange.children.get(i), referencePart.children.get(i));
+        }
+    }
+
+    public static Project.Part createInterimPart(Project.Part prevPart, Project.Part nextPart, float prog)
+    {
+        Project.Part part = new Project.Part(null, 0);
+        part.boxes.clear();
+
+        part.texWidth = Math.round(prevPart.texWidth + (nextPart.texWidth - prevPart.texWidth) * prog);
+        part.texHeight = Math.round(prevPart.texHeight + (nextPart.texHeight - prevPart.texHeight) * prog);
+
+        part.texOffX = Math.round(prevPart.texOffX + (nextPart.texOffX - prevPart.texOffX) * prog);
+        part.texOffY = Math.round(prevPart.texOffY + (nextPart.texOffY - prevPart.texOffY) * prog);
+
+        part.mirror = nextPart.mirror;
+
+        part.rotPX = prevPart.rotPX + (nextPart.rotPX - prevPart.rotPX) * prog;
+        part.rotPY = prevPart.rotPY + (nextPart.rotPY - prevPart.rotPY) * prog;
+        part.rotPZ = prevPart.rotPZ + (nextPart.rotPZ - prevPart.rotPZ) * prog;
+
+        part.rotAX = prevPart.rotAX + (nextPart.rotAX - prevPart.rotAX) * prog;
+        part.rotAY = prevPart.rotAY + (nextPart.rotAY - prevPart.rotAY) * prog;
+        part.rotAZ = prevPart.rotAZ + (nextPart.rotAZ - prevPart.rotAZ) * prog;
+
+        for(int i = 0; i < prevPart.boxes.size(); i++)
+        {
+            Project.Part.Box box = new Project.Part.Box(part);
+
+            Project.Part.Box prevBox = prevPart.boxes.get(i);
+            Project.Part.Box nextBox = nextPart.boxes.get(i);
+
+            box.posX = prevBox.posX + (nextBox.posX - prevBox.posX) * prog;
+            box.posY = prevBox.posY + (nextBox.posY - prevBox.posY) * prog;
+            box.posZ = prevBox.posZ + (nextBox.posZ - prevBox.posZ) * prog;
+
+            box.dimX = prevBox.dimX + (nextBox.dimX - prevBox.dimX) * prog;
+            box.dimY = prevBox.dimY + (nextBox.dimY - prevBox.dimY) * prog;
+            box.dimZ = prevBox.dimZ + (nextBox.dimZ - prevBox.dimZ) * prog;
+
+            box.expandX = prevBox.expandX + (nextBox.expandX - prevBox.expandX) * prog;
+            box.expandY = prevBox.expandY + (nextBox.expandY - prevBox.expandY) * prog;
+            box.expandZ = prevBox.expandZ + (nextBox.expandZ - prevBox.expandZ) * prog;
+
+            box.texOffX = Math.round(prevBox.texOffX + (nextBox.texOffX - prevBox.texOffX) * prog);
+            box.texOffY = Math.round(prevBox.texOffY + (nextBox.texOffY - prevBox.texOffY) * prog);
+
+            part.boxes.add(box);
+        }
+
+        for(int i = 0; i < Math.min(prevPart.children.size(), nextPart.children.size()); i++)
+        {
+            part.children.add(createInterimPart(prevPart.children.get(i), nextPart.children.get(i), prog));
+        }
+
+        return part;
+    }
+
+    public static ModelRenderer createModelRenderer(Project.Part part)
+    {
+        ModelRenderer modelPart = new ModelRenderer(part.texWidth, part.texHeight, part.texOffX, part.texOffY);
+
+        modelPart.rotationPointX = part.rotPX;
+        modelPart.rotationPointY = part.rotPY;
+        modelPart.rotationPointZ = part.rotPZ;
+
+        modelPart.rotateAngleX = (float)Math.toRadians(part.rotAX);
+        modelPart.rotateAngleY = (float)Math.toRadians(part.rotAY);
+        modelPart.rotateAngleZ = (float)Math.toRadians(part.rotAZ);
+
+        modelPart.mirror = part.mirror;
+        modelPart.showModel = part.showModel;
+
+        part.boxes.forEach(box -> {
+            int texOffX = modelPart.textureOffsetX;
+            int texOffY = modelPart.textureOffsetY;
+            modelPart.setTextureOffset(modelPart.textureOffsetX + box.texOffX, modelPart.textureOffsetY + box.texOffY);
+            modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
+            modelPart.setTextureOffset(texOffX, texOffY);
+        });
+        return modelPart;
+    }
+
     private static class ModelRenderers
     {
         private final HashMap<String, ModelRenderer> fields = new HashMap<>();
