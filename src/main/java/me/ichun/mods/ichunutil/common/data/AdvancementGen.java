@@ -46,13 +46,22 @@ public class AdvancementGen implements IDataProvider
             } else {
                 Path path1 = getPath(path, advancement);
 
-                try {
-                    IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
-                    iChunUtil.LOGGER.info("Saved advancement: {}", path1);
-                } catch (IOException ioexception) {
-                    iChunUtil.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
+                if(advancement.getId().getNamespace().equals("minecraft"))
+                {
+                    iChunUtil.LOGGER.info("Ignoring MC advancement: {}", advancement.getId());
                 }
-
+                else
+                {
+                    try
+                    {
+                        IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
+                        iChunUtil.LOGGER.info("Saved advancement: {}", path1);
+                    }
+                    catch(IOException ioexception)
+                    {
+                        iChunUtil.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
+                    }
+                }
             }
         });
     }

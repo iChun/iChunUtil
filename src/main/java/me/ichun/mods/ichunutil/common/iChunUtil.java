@@ -53,8 +53,8 @@ public class iChunUtil
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         bus.addListener(this::setup);
-        bus.addListener(this::finishLoading);
         bus.addListener(this::processIMC);
+        bus.addListener(this::finishLoading);
 
         MinecraftForge.EVENT_BUS.register(eventHandlerServer = new EventHandlerServer());
 

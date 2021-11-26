@@ -194,8 +194,8 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
 
     public static class MousePos
     {
-        int x;
-        int y;
+        public int x;
+        public int y;
 
         public MousePos(int x, int y)
         {

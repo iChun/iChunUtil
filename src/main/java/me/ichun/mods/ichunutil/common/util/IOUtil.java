@@ -118,6 +118,7 @@ public class IOUtil
         return i;
     }
 
+    //function return true if the file is processed.
     public static int scourDirectoryForFiles(Path path, Function<Path, Boolean> fileFunction) throws IOException
     {
         if(!Files.exists(path))

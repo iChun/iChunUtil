@@ -34,7 +34,7 @@ public class ConfigClient extends ConfigBase
     public int guiDockPadding = 0;
 
     @Prop(min = 0)
-    public int guiTooltipCooldown = 20;
+    public int guiTooltipCooldown = 10;
 
     @Prop(min = 1)
     public int guiDockBorder = 8;
