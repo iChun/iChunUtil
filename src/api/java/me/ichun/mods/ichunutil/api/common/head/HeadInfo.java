@@ -5,7 +5,6 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.AgeableModel;
@@ -159,7 +158,7 @@ public class HeadInfo<E extends LivingEntity>
                 }
             }
 
-            RenderHelper.multiplyStackWithStack(stack, renderCorrectorStack);
+            PlacementCorrector.multiplyStackWithStack(stack, renderCorrectorStack);
         }
     }
 
@@ -803,6 +802,16 @@ public class HeadInfo<E extends LivingEntity>
                     break;
                 }
             }
+        }
+
+        //Also used in RenderHelper
+        public static void multiplyStackWithStack(@Nonnull MatrixStack stack, @Nonnull MatrixStack otherStack)
+        {
+            MatrixStack.Entry entLast = stack.getLast();
+            MatrixStack.Entry correctorLast = otherStack.getLast();
+
+            entLast.getMatrix().mul(correctorLast.getMatrix());
+            entLast.getNormal().mul(correctorLast.getNormal());
         }
     }
 

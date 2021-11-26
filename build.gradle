@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '10.4.1'
+version = '10.5.0'
 group = 'ichunutil'
 archivesBaseName = 'iChunUtil-1.16.5'
 
