@@ -83,7 +83,7 @@ public class iChunUtil
         if(configClient.overrideToastGui && Minecraft.getInstance().getToastGui().getClass().getName().equals("net.minecraft.client.gui.toasts.ToastGui"))
         {
             //QUICK SWITCHEROO
-            Minecraft.getInstance().toastGui = new ToastGui(Minecraft.getInstance());
+            Minecraft.getInstance().execute(() -> Minecraft.getInstance().toastGui = new ToastGui(Minecraft.getInstance()));
         }
     }
 

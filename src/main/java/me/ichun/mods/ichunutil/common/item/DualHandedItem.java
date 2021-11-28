@@ -41,7 +41,8 @@ public interface DualHandedItem
 
     static HandSide getHandSide(LivingEntity living, ItemStack is)
     {
-        return living.getHeldItem(Hand.OFF_HAND) == is ? living.getPrimaryHand().opposite() : living.getPrimaryHand();
+        //No HandSide.opposite() on servers.
+        return living.getHeldItem(Hand.OFF_HAND) == is ? (living.getPrimaryHand() == HandSide.RIGHT ? HandSide.LEFT : HandSide.RIGHT) : living.getPrimaryHand();
     }
 
 }

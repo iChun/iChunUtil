@@ -407,7 +407,7 @@ public class Project extends Identifiable<Project> //Model
         public float rotPY;
         public float rotPZ;
 
-        //angles
+        //angles (in degrees)
         public float rotAX;
         public float rotAY;
         public float rotAZ;

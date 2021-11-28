@@ -5,6 +5,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import cpw.mods.modlauncher.api.INameMappingService;
+import me.ichun.mods.ichunutil.api.common.PlacementCorrector;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.AgeableModel;
@@ -715,103 +716,6 @@ public class HeadInfo<E extends LivingEntity>
             }
 
             return (new Gson()).fromJson(json, HeadInfo.class);
-        }
-    }
-
-    public static class PlacementCorrector
-    {
-        public @Nonnull String type = "scale/translate/rotate(in degrees)";
-        public @Nonnull String axis = "x/y/z";
-        public @Nonnull Double amount = 0D;
-
-        @OnlyIn(Dist.CLIENT)
-        public void apply(MatrixStack stack)
-        {
-            switch(type)
-            {
-                case "scale":
-                {
-                    switch(axis)
-                    {
-                        case "all":
-                        {
-                            float scale = amount.floatValue();
-                            stack.scale(scale, scale, scale);
-                            break;
-                        }
-                        case "x":
-                        {
-                            stack.scale(amount.floatValue(), 1F, 1F);
-                            break;
-                        }
-                        case "y":
-                        {
-                            stack.scale(1F, amount.floatValue(), 1F);
-                            break;
-                        }
-                        case "z":
-                        {
-                            stack.scale(1F, 1F, amount.floatValue());
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case "translate":
-                {
-                    switch(axis)
-                    {
-                        case "x":
-                        {
-                            stack.translate(amount, 0D, 0D);
-                            break;
-                        }
-                        case "y":
-                        {
-                            stack.translate(0D, amount, 0D);
-                            break;
-                        }
-                        case "z":
-                        {
-                            stack.translate(0D, 0D, amount);
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case "rotate":
-                {
-                    switch(axis)
-                    {
-                        case "x":
-                        {
-                            stack.rotate(Vector3f.XP.rotationDegrees(amount.floatValue()));
-                            break;
-                        }
-                        case "y":
-                        {
-                            stack.rotate(Vector3f.YP.rotationDegrees(amount.floatValue()));
-                            break;
-                        }
-                        case "z":
-                        {
-                            stack.rotate(Vector3f.ZP.rotationDegrees(amount.floatValue()));
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
-        //Also used in RenderHelper
-        public static void multiplyStackWithStack(@Nonnull MatrixStack stack, @Nonnull MatrixStack otherStack)
-        {
-            MatrixStack.Entry entLast = stack.getLast();
-            MatrixStack.Entry correctorLast = otherStack.getLast();
-
-            entLast.getMatrix().mul(correctorLast.getMatrix());
-            entLast.getNormal().mul(correctorLast.getNormal());
         }
     }
 
