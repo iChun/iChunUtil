@@ -1,0 +1,68 @@
+{
+  "config.ichunutil.cat.general.name": "Allmänna alternativ",
+  "config.ichunutil.cat.gameplay.name": "Spelbeteende",
+  "config.ichunutil.cat.global.name": "Globala alternativ",
+  "config.ichunutil.cat.serverOnly.name": "Serveralternativ",
+  "config.ichunutil.cat.clientOnly.name": "Klientalternativ",
+  "config.ichunutil.cat.block.name": "Block",
+  "config.ichunutil.cat.bns.name": "Boxes & Stuff",
+
+  "config.ichunutil.cat.general.desc": "Dessa alternativ är allmänna alternativ som inte passar in i någon annan kategori.",
+  "config.ichunutil.cat.gameplay.desc": "Dessa alternativ påverkar spelets beteende när modden används.",
+  "config.ichunutil.cat.global.desc": "Dessa alternativ påverkar både servrar och klienter som läser in modden.",
+  "config.ichunutil.cat.serverOnly.desc": "Dessa alternativ påverkar endast servern som läser in modden.",
+  "config.ichunutil.cat.clientOnly.desc": "Dessa alternativ påverkar endast klienten som läser in modden.",
+  "config.ichunutil.cat.block.desc": "Dessa alternativ påverkar blocken i modden.",
+  "config.ichunutil.cat.bns.desc": "Dessa alternativ påverkar gränssnittet i Boxes & Stuff.",
+
+  "config.ichunutil.prop.easterEgg.name": "Påskägg i klienten",
+  "config.ichunutil.prop.easterEgg.desc": "Aktiverar (de flesta) påskägg i klienten för iChuns moddar",
+  "config.ichunutil.prop.guiMinecraftStyle.name": "Minecraft-liknande gränssnitt",
+  "config.ichunutil.prop.guiMinecraftStyle.desc": "Om iChunUtils gränssnitt (Boxes & Stuff) ska ha ett Minecraft-liknande utseende i stället. 1 = Minecraft-liknande utseende, 2 = Utseende från texturpaket",
+  "config.ichunutil.prop.guiDockPadding.name": "Utfyllnad för dockade fönster",
+  "config.ichunutil.prop.guiDockPadding.desc": "Hur mycket utfyllnad som ska läggas till på dockade fönster",
+  "config.ichunutil.prop.guiTooltipCooldown.name": "Väntetid för inforutor",
+  "config.ichunutil.prop.guiTooltipCooldown.desc": "Antal tickningar innan en inforuta visas",
+  "config.ichunutil.prop.guiDockBorder.name": "Kantbredd för dockade fönster",
+  "config.ichunutil.prop.guiDockBorder.desc": "Antalet bildpunkter innan iChunUtil tror att du försöker docka ett fönster",
+  "config.ichunutil.prop.guiDoubleClickSpeed.name": "Hastighet för dubbelklick",
+  "config.ichunutil.prop.guiDoubleClickSpeed.desc": "Hastighet, i tickningar, för att identifiera ett dubbelklick",
+  "config.ichunutil.prop.guiDefaultTheme.name": "Standardtema",
+  "config.ichunutil.prop.guiDefaultTheme.desc": "Standardtema för Boxes & Stuff",
+  "config.ichunutil.prop.buttonOptionsShiftOpensMods.name": "Åsidosätt alternativknappen",
+  "config.ichunutil.prop.buttonOptionsShiftOpensMods.desc": "Åsidosätt alternativknappen så modlistan visas när man håller ned Shift och klickar.",
+  "config.ichunutil.prop.overrideToastGui.name": "Åsidosätt rendering av meddelanden",
+  "config.ichunutil.prop.overrideToastGui.desc": "Minecrafts renderare för meddelanden har en bugg där meddelanden med olika höjder överlappar varandra. Denna åsidosättning åtgärdar detta om renderaren fortfarande används som standard.",
+
+  "config.ichunutil.cat.headTracking.name": "Spårning av huvudmodeller",
+  "config.ichunutil.cat.headTracking.desc": "Konfigurationer för spårning av huvudmodeller.\nAnvänds av Googly Eyes och Hats.",
+  "config.ichunutil.prop.aggressiveHeadTracking.name": "Aggressiv huvudspårning",
+  "config.ichunutil.prop.aggressiveHeadTracking.desc": "Spåra huvudmodellen aggressivt för att försöka åtgärda felaktig huvudspårning som kan orsakas av modkonflikter?\n1 = Alla entiteter\n2 = Endast spelare",
+  "config.ichunutil.prop.horseEasterEgg.name": "Aktivera påskägg för hästar/lamor?",
+  "config.ichunutil.prop.horseEasterEgg.desc": "Aktivera påskägget där Hats sätter hattar på bakdelen för hästar och lamor. Detta är ett påskägg för hur Hats används för att sätta hattar på hästar.",
+
+  "config.ichunutil.headTracking.reload.desc": "Uppdatera alla HeadInfo-spårare?",
+  "config.ichunutil.headTracking.reload.btn": "Uppdatera",
+  "config.ichunutil.headTracking.notLoaded": "Inga moddar använder HeadInfo-spårare. Ingen HeadInfos uppdaterades.",
+  "config.ichunutil.headTracking.reload.count": "Uppdaterade %s HeadInfo-spårare.",
+  "config.ichunutil.headTracking.reload.reextract": "Extrahera",
+  "config.ichunutil.headTracking.reload.reextract.desc": "Återextrahera HeadInfo-spårare från ZIP-fil(er)",
+  "config.ichunutil.headTracking.reload.reextract.count": "Extraherade %s HeadInfo-spårare.",
+
+  "gui.ichunutil.configs.title": "Konfigurationsredigerare",
+  "gui.ichunutil.configs.options": "Alternativ",
+
+  "gui.ichunutil.configs.noEditingServerConfig": "Du kan inte redigera en serverkonfiguration medan du vistas i en flerspelarmiljö!",
+
+  "gui.ichunutil.element.textField": "Textfält",
+
+  "window.popup.title": "Avisering",
+
+  "window.saveAs.title": "Spara som",
+  "window.saveAs.fileName": "Filnamn",
+  "window.saveAs.overwrite": "Vill du skriva över?",
+  "window.saveAs.confirmOverwrite": "Filen finns redan! Vill du skriva över?",
+  "window.saveAs.failed": "Misslyckades att spara filen.",
+
+  "element.button.clear": "Rensa"
+}
