@@ -1,0 +1,26 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.naterbobber.darkerdepths.common.entities.MagmaMinionEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.13125,
+    0.25
+  ],
+  "irisColour": [
+    1.0,
+    0.77254903,
+    0.43137255
+  ],
+  "pupilColour": [
+    0.87058824,
+    0.4392157,
+    0.19215687
+  ],
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0625
+  ]
+}

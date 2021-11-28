@@ -1,38 +1,54 @@
 {
   "author": "WenXin2",
   "forClass": "greekfantasy.entity.ArachneEntity",
-  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadSpider",
   "modelFieldName": "field_78116_c",
   "affectedByInvisibility": false,
   "eyeOffset": [
     0.0,
-    0.28125,
+    0.24,
     0.25
-  ],
-  "eyeOffset2": [
-    0.0,
-    0.46875,
-    0.25
-  ],
-  "eyeOffset3": [
-    0.0,
-    0.34375,
-    0.21875
   ],
   "irisColour": [
     0.8,
     0.0,
     0.0
   ],
-  "halfInterpupillaryDistance": 0.1125,
-  "halfInterpupillaryDistance2": 0.125,
-  "halfInterpupillaryDistance3": 0.25,
+  "halfInterpupillaryDistance": 0.0625,
   "eyeScale": 0.8,
-  "eyeCount": 6,
   "doesEyeGlow": true,
   "headTopCenter": [
     0.0,
     0.5,
     0.00625
+  ],
+  "additionalHeads": [
+    {
+      "modelFieldName": "field_78116_c",
+      "eyeOffset": [
+        0.0,
+        0.4125,
+        0.25
+      ],
+      "irisColour": [
+        0.8,
+        0.0,
+        0.0
+      ],
+      "halfInterpupillaryDistance2": 0.125,
+      "doesEyeGlow": true,
+      "noTopInfo": true
+    },
+    {
+      "modelFieldName": "field_78116_c",
+      "irisColour": [
+        0.8,
+        0.0,
+        0.0
+      ],
+      "halfInterpupillaryDistance": 0.25,
+      "eyeYRotation": 45.0,
+      "doesEyeGlow": true,
+      "noTopInfo": true
+    }
   ]
 }

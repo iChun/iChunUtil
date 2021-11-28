@@ -1,0 +1,12 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntitySwan",
+  "modelFieldName": "LowerNeckPiece.MidNeckPiece.Head",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.19375,
+    -0.075
+  ],
+  "headScale": 0.4
+}

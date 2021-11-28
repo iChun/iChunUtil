@@ -1,0 +1,12 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntityLyrebird",
+  "modelFieldName": "Head",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0125
+  ],
+  "headScale": 0.35
+}

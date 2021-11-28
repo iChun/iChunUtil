@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "teamdraco.fins.common.entities.WherbleEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    -0.0625,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.15,
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.15625,
+    0.1875
+  ],
+  "headScale": 0.65
+}

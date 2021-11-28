@@ -1,0 +1,11 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntityCassowary",
+  "modelFieldName": "NeckLower.Neck.Head",
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.025
+  ],
+  "headScale": 0.5
+}

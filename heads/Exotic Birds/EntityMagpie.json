@@ -1,0 +1,12 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntityMagpie",
+  "modelFieldName": "head",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.175,
+    -0.03125
+  ],
+  "headScale": 0.37
+}

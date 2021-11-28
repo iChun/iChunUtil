@@ -4,21 +4,21 @@
   "modelFieldName": "body.neck.head",
   "eyeOffset": [
     0.0,
-    -0.125,
-    0.15625
+    0.15625,
+    0.0625
   ],
   "irisColour": [
     0.89411765,
     0.8980392,
     0.8980392
   ],
+  "pupilColour": [
+    0.13725491,
+    0.08235294,
+    0.08235294
+  ],
   "halfInterpupillaryDistance": 0.28125,
   "eyeScale": 0.95,
   "sideEyed": true,
-  "headTopCenter": [
-    0.0,
-    0.21875,
-    0.11875
-  ],
-  "headScale": 1.2
+  "headScale": 1.1
 }

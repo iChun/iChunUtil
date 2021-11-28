@@ -1,0 +1,12 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntityOstrich",
+  "modelFieldName": "Shoulders.LowerNeck.UpperNeck.Head",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.00625
+  ],
+  "headScale": 0.5
+}

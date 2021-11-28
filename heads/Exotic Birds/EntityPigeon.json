@@ -1,0 +1,11 @@
+{
+  "author": "fakegamingnerd",
+  "forClass": "net.pavocado.exoticbirds.entity.EntityPigeon",
+  "modelFieldName": "Head",
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0
+  ],
+  "headScale": 0.35
+}
