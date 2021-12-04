@@ -26,6 +26,9 @@ public class KeyBind
     public boolean pressed = false;
     public int pressTime = 0;
 
+    public boolean holdable = false;
+    public int holdTime = 0;
+
     /**
      * Construct during Client Setup Event
      * @param keyBinding key binding!
@@ -49,6 +52,12 @@ public class KeyBind
         return this;
     }
 
+    public KeyBind setHoldable()
+    {
+        this.holdable = true;
+        return this;
+    }
+
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
@@ -60,14 +69,30 @@ public class KeyBind
                 if(!keyBinding.isKeyDown())
                 {
                     pressed = false;
+                    holdTime = 0;
                     if(releaseConsumer != null)
                     {
                         releaseConsumer.accept(this);
                     }
                 }
-                else if(tickConsumer != null)
+                else
                 {
-                    tickConsumer.accept(this);
+                    if(tickConsumer != null)
+                    {
+                        tickConsumer.accept(this);
+                    }
+                    if(holdTime > 0)
+                    {
+                        holdTime--;
+                        if(holdTime == 0)
+                        {
+                            holdTime = 5;
+                            if(pressConsumer != null)
+                            {
+                                pressConsumer.accept(this);
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -79,6 +104,10 @@ public class KeyBind
                     if(pressConsumer != null)
                     {
                         pressConsumer.accept(this);
+                    }
+                    if(holdable)
+                    {
+                        holdTime = 20;
                     }
                 }
             }

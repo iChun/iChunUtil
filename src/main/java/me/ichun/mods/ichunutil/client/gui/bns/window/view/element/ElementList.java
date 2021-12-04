@@ -633,7 +633,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                         }
                     }
 
-                    if(canRearrange)
+                    if(canRearrange || selected)
                     {
                         cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
                     }

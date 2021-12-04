@@ -360,7 +360,7 @@ public class ModelHelper
             partToChange.children.add(createPartFor(null, false));
         }
 
-        for(int i = 0; i < partToChange.children.size(); i++)
+        for(int i = 0; i < referencePart.children.size(); i++) //referencePart children size will always be less than partToChange.
         {
             matchBoxAndChildrenCount(partToChange.children.get(i), referencePart.children.get(i));
         }
@@ -420,7 +420,7 @@ public class ModelHelper
         return part;
     }
 
-    public static ModelRenderer createModelRenderer(Project.Part part)
+    public static ModelRenderer createModelRenderer(Project.Part part, boolean processChildren)
     {
         ModelRenderer modelPart = new ModelRenderer(part.texWidth, part.texHeight, part.texOffX, part.texOffY);
 
@@ -442,7 +442,17 @@ public class ModelHelper
             modelPart.addBox(box.posX, box.posY, box.posZ, box.dimX, box.dimY, box.dimZ, box.expandX, box.expandY, box.expandZ);
             modelPart.setTextureOffset(texOffX, texOffY);
         });
+
+        if(processChildren)
+        {
+            part.children.forEach(child -> modelPart.addChild(createModelRenderer(child, true)));
+        }
         return modelPart;
+    }
+
+    public static ModelRenderer createModelRenderer(Project.Part part)
+    {
+        return createModelRenderer(part, false);
     }
 
     private static class ModelRenderers

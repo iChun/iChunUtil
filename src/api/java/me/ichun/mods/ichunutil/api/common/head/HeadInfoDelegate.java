@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -265,7 +266,7 @@ public class HeadInfoDelegate<E extends LivingEntity> extends HeadInfo<E>
     @SuppressWarnings("rawtypes")
     public void checkModels()
     {
-        List<HeadInfo> multis = Arrays.asList(multiModel);
+        ArrayList<HeadInfo> multis = new ArrayList<>(Arrays.asList(multiModel)); //ArrayList from Arrays.asList is not java.util.ArrayList
 
         Iterator<HeadInfo> iterator = multis.iterator();
         while(iterator.hasNext())

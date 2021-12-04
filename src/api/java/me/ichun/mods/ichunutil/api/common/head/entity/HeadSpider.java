@@ -6,7 +6,7 @@ import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class HeadSpider extends HeadInfo<SpiderEntity>
+public class HeadSpider extends HeadInfo<SpiderEntity> //TODO remove this in 1.17+, use WenXin's workaround with additional heads
 {
     public float halfInterpupillaryDistance2 = 2F / 16F;
     public float halfInterpupillaryDistance3 = 4F / 16F;

@@ -15,8 +15,10 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.*;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -44,9 +46,8 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public static final String ELLIPSIS = "\u2026";//"…";
 
-    private static HashMap<Class<?>, Function<Object, List<String>>> OBJECT_INTERPRETER = new HashMap<>();
-    {
-        OBJECT_INTERPRETER.put(File.class, (o) -> {
+    private static HashMap<Class<?>, Function<Object, List<String>>> OBJECT_INTERPRETER = Util.make(new HashMap<>(), m -> {
+        m.put(File.class, (o) -> {
             File file = (File)o;
             List<String> info = new ArrayList<>();
             info.add(file.getName());
@@ -54,8 +55,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
             info.add(IOUtil.readableFileSize(file.length()));
             return info;
         });
-        OBJECT_INTERPRETER.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
-    }
+        m.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
+        m.put(Entity.class, (o) -> Collections.singletonList(((Entity)o).getDisplayName().getString()));
+        m.put(Class.class, (o) -> Collections.singletonList(((Class)o).getSimpleName()));
+    });
 
     public static @Nonnull List<String> getInterpretedInfo(Object o)
     {
