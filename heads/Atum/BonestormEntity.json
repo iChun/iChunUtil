@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.undead.BonestormEntity",
+  "modelFieldName": "bonestormHead",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.25
+  ],
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.0
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "epicsquid.mysticalworld.entity.DeerEntity",
+  "forClass": "mysticmods.mysticalworld.entity.DeerEntity",
   "modelFieldName": "neck",
   "eyeOffset": [
     0.0,

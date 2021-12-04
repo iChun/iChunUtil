@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.WraithEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.125,
+    0.25
+  ],
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ]
+}

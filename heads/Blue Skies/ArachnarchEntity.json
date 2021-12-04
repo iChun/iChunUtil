@@ -1,0 +1,62 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.ArachnarchEntity",
+  "modelFieldName": "head",
+  "affectedByInvisibility": false,
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.5625
+  ],
+  "pupilColour": [
+    0.10980392,
+    0.2627451,
+    0.11372549
+  ],
+  "halfInterpupillaryDistance": 0.1125,
+  "eyeScale": 0.95,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.4375,
+    0.28125
+  ],
+  "headScale": 1.1,
+  "additionalHeads": [
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        0.0,
+        0.28125,
+        0.5625
+      ],
+      "pupilColour": [
+        0.13725491,
+        0.31764707,
+        0.15686275
+      ],
+      "halfInterpupillaryDistance": 0.21875,
+      "eyeScale": 0.65,
+      "affectedByInvisibility": false,
+      "doesEyeGlow": true,
+      "noTopInfo": true
+    },
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        0.0,
+        0.3625,
+        0.5625
+      ],
+      "pupilColour": [
+        0.17254902,
+        0.40392157,
+        0.2
+      ],
+      "eyeScale": 0.65,
+      "affectedByInvisibility": false,
+      "doesEyeGlow": true,
+      "noTopInfo": true
+    }
+  ]
+}

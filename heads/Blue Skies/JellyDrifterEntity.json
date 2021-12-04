@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.fish.JellyDrifterEntity",
+  "modelFieldName": "cap",
+  "eyeOffset": [
+    0.125,
+    -0.125,
+    0.25
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "additionalHeads": [
+    {
+      "modelFieldName": "cap",
+      "eyeOffset": [
+        -0.125,
+        -0.25,
+        0.25
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeCount": 1,
+      "noTopInfo": true
+    }
+  ]
+}

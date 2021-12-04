@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "epicsquid.mysticalworld.entity.LavaCatEntity",
+  "forClass": "mysticmods.mysticalworld.entity.LavaCatEntity",
   "modelFieldName": "ocelotHead",
   "eyeOffset": [
     0.0,

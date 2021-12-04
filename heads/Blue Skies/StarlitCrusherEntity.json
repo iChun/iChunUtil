@@ -1,0 +1,25 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.StarlitCrusherEntity",
+  "modelFieldName": "dummyPoint.body.head",
+  "eyeOffset": [
+    0.0,
+    0.125,
+    0.4375
+  ],
+  "irisColour": [
+    0.59607846,
+    0.70980394,
+    0.73333335
+  ],
+  "pupilColour": [
+    0.4509804,
+    0.5647059,
+    0.5882353
+  ],
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.1875
+  ]
+}

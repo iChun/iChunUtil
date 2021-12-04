@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.fish.GrittleFlatfishEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.375
+  ],
+  "irisColour": [
+    0.50980395,
+    0.45490196,
+    0.19215687
+  ],
+  "pupilColour": [
+    0.24705882,
+    0.19607843,
+    0.12941177
+  ],
+  "halfInterpupillaryDistance": 0.18125,
+  "eyeScale": 0.8,
+  "topEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.21875,
+    -0.125
+  ],
+  "headScale": 1.25
+}

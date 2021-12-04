@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.EmberbackEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.15625
+  ],
+  "irisColour": [
+    0.91764706,
+    0.7372549,
+    0.14509805
+  ],
+  "pupilColour": [
+    0.6666667,
+    0.34901962,
+    0.003921569
+  ],
+  "halfInterpupillaryDistance": 0.25,
+  "eyeScale": 1.05,
+  "sideEyed": true,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.125
+  ],
+  "headScale": 0.75
+}

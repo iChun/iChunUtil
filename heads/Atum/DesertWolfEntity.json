@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.animal.DesertWolfEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    -0.05625,
+    0.03125,
+    0.125
+  ],
+  "irisColour": [
+    0.8980392,
+    0.89411765,
+    0.8980392
+  ],
+  "pupilColour": [
+    0.5686275,
+    0.12941177,
+    0.12941177
+  ],
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    -0.05,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.8
+}

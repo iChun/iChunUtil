@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.DiophydeProwlerEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.46875
+  ],
+  "irisColour": [
+    0.7882353,
+    1.0,
+    0.7921569
+  ],
+  "halfInterpupillaryDistance": 0.21875,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.21875
+  ],
+  "headScale": 1.35
+}

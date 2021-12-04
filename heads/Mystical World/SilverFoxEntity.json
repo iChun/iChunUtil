@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "epicsquid.mysticalworld.entity.SilverFoxEntity",
+  "forClass": "mysticmods.mysticalworld.entity.SilverFoxEntity",
   "modelFieldName": "body1.neck.head",
   "eyeOffset": [
     0.0,

@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.villager.GatekeeperEntity",
+  "modelFieldName": "newHead",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.7411765,
+    0.8862745,
+    0.3254902
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

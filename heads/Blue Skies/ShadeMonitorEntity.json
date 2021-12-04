@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.ShadeMonitorEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.0625,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.65,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.15625,
+    0.1875
+  ],
+  "headScale": 0.75
+}

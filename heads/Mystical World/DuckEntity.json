@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "mysticmods.mysticalworld.entity.DuckEntity",
+  "modelFieldName": "main.neck.head",
+  "eyeOffset": [
+    0.0,
+    0.15625,
+    0.0625
+  ],
+  "eyeScale": 0.55,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.03125
+  ],
+  "headScale": 0.5
+}

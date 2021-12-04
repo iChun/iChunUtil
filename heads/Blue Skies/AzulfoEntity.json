@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.AzulfoEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.01875,
+    0.5
+  ],
+  "irisColour": [
+    0.8156863,
+    0.8235294,
+    0.7137255
+  ],
+  "pupilColour": [
+    0.2,
+    0.2,
+    0.2
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.21875
+  ],
+  "headScale": 1.15
+}

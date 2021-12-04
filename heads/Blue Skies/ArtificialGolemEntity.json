@@ -1,0 +1,21 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.summons.ArtificialGolemEntity",
+  "modelFieldName": "head",
+  "irisColour": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.34117648,
+    0.5686275,
+    0.5686275
+  ],
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

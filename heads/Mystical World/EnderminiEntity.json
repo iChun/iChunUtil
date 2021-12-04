@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "epicsquid.mysticalworld.entity.EnderminiEntity",
+  "forClass": "mysticmods.mysticalworld.entity.EnderminiEntity",
   "modelFieldName": "field_78116_c",
   "affectedByInvisibility": false,
   "eyeOffset": [

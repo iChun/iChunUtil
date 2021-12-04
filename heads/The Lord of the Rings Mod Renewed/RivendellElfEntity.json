@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "lotr.common.entity.npc.RivendellElfEntity",
+  "modelFieldName": "field_78116_c",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "y",
+      "amount": -0.125
+    }
+  ],
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.105882354,
+    0.47058824,
+    0.11372549
+  ],
+  "headTopCenter": [
+    0.0,
+    0.5,
+    0.03125
+  ]
+}

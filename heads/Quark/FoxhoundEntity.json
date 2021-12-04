@@ -1,0 +1,44 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.FoxhoundEntity",
+  "customClass": "me.ichun.mods.ichunutil.api.common.head.entity.HeadWolf",
+  "modelFieldName": "head",
+  "renderCorrectors": [
+    {
+      "type": "translate",
+      "axis": "z",
+      "amount": -0.35
+    }
+  ],
+  "eyeOffset": [
+    0.0,
+    -0.03125,
+    0.375
+  ],
+  "irisColour": [
+    1.0,
+    0.9607843,
+    0.62352943
+  ],
+  "pupilColour": [
+    0.22352941,
+    0.05882353,
+    0.050980393
+  ],
+  "irisColourAngry": [
+    0.972549,
+    0.59607846,
+    0.36078432
+  ],
+  "pupilColourAngry": [
+    0.9529412,
+    0.32941177,
+    0.16078432
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.1875
+  ]
+}

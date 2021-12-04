@@ -1,0 +1,38 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.WhistleshellCrabEntity",
+  "modelFieldName": "body",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    -0.03125,
+    0.5,
+    -0.0625
+  ],
+  "headScale": 3.15,
+  "additionalHeads": [
+    {
+      "modelFieldName": "body.rightEye",
+      "eyeOffset": [
+        0.0,
+        0.04375,
+        0.01875
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 0.5,
+      "eyeCount": 1,
+      "noTopInfo": true
+    },
+    {
+      "modelFieldName": "body.leftEye",
+      "eyeOffset": [
+        0.0,
+        0.04375,
+        0.01875
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 0.5,
+      "eyeCount": 1,
+      "noTopInfo": true
+    }
+  ]
+}

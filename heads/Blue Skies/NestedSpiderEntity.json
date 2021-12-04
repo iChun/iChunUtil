@@ -1,0 +1,45 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.summons.NestedSpiderEntity",
+  "modelFieldName": "head",
+  "affectedByInvisibility": false,
+  "eyeOffset": [
+    0.0,
+    0.025,
+    0.4375
+  ],
+  "pupilColour": [
+    0.10980392,
+    0.2627451,
+    0.11372549
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.8,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.21875,
+    0.21875
+  ],
+  "headScale": 0.9,
+  "additionalHeads": [
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        0.0,
+        0.125,
+        0.4375
+      ],
+      "pupilColour": [
+        0.13725491,
+        0.31764707,
+        0.15686275
+      ],
+      "halfInterpupillaryDistance": 0.16,
+      "eyeScale": 0.55,
+	  "affectedByInvisibility": false,
+	  "doesEyeGlow": true,
+      "noTopInfo": true
+    }
+  ]
+}

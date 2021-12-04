@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "com.blackgear.cavesandcliffs.common.entities.passive.axolotl.AxolotlEntity",
+  "forClass": "com.blackgear.cavesandcliffs.common.entity.AxolotlEntity",
   "modelFieldName": "body.head",
   "eyeOffset": [
     0.0,
@@ -13,11 +13,10 @@
     0.42352942
   ],
   "halfInterpupillaryDistance": 0.1875,
-  "eyeScale": 0.65,
+  "eyeScale": 0.55,
   "headTopCenter": [
     0.0,
     0.1875,
-    0.1625
-  ],
-  "headScale": 0.9
+    0.15625
+  ]
 }

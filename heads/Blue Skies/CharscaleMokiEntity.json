@@ -1,0 +1,19 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.fish.CharscaleMokiEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.03125
+  ],
+  "halfInterpupillaryDistance": 0.0625,
+  "eyeScale": 0.4,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.0625
+  ],
+  "headScale": 0.25
+}

@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "lotr.common.entity.npc.CoastSouthronEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "headTopCenter": [
+    0.0,
+    0.5,
+    0.03125
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.uraneptus.snowpig.common.entities.SnowPigEntity",
+  "modelFieldName": "field_78150_a",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.5
+  ],
+  "pupilColour": [
+    0.31764707,
+    0.5137255,
+    0.5294118
+  ],
+  "doesEyeGlow": true,
+  "halfInterpupillaryDistance": 0.1875,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.25
+  ]
+}

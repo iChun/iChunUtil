@@ -1,0 +1,53 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.NyctoflyEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.59375
+  ],
+  "irisColour": [
+    0.41568628,
+    0.7921569,
+    0.8392157
+  ],
+  "pupilColour": [
+    0.05490196,
+    0.5254902,
+    0.5686275
+  ],
+  "halfInterpupillaryDistance": 0.20625,
+  "eyeScale": 0.95,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.2375,
+    0.25
+  ],
+  "additionalHeads": [
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        0.0,
+        0.03125,
+        0.5
+      ],
+      "irisColour": [
+        0.41568628,
+        0.7921569,
+        0.8392157
+      ],
+      "pupilColour": [
+        0.05490196,
+        0.5254902,
+        0.5686275
+      ],
+      "halfInterpupillaryDistance": 0.28125,
+      "eyeScale": 0.95,
+      "sideEyed": true,
+      "doesEyeGlow": true,
+      "noTopInfo": true
+    }
+  ]
+}

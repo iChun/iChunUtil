@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "mod.acgaming.batjockeys.entity.LargeBatEntity",
+  "modelFieldName": "batHead",
+  "eyeOffset": [
+    0.0,
+    0.0,
+    0.1875
+  ],
+  "halfInterpupillaryDistance": 0.1125,
+  "headTopCenter": [
+    0.0,
+    0.1875,
+    0.0
+  ],
+  "headScale": 0.75
+}

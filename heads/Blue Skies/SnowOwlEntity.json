@@ -1,0 +1,23 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.SnowOwlEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.1875,
+    0.125
+  ],
+  "pupilColour": [
+    0.3137255,
+    0.6627451,
+    0.76862746
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.6,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.0
+  ],
+  "headScale": 0.5
+}

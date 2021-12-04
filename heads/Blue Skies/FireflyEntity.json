@@ -1,0 +1,27 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.FireflyEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    -0.11875,
+    -0.0625,
+    0.0
+  ],
+  "irisColour": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pupilColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    -0.125,
+    0.0625,
+    -0.1875
+  ],
+  "headScale": 0.75
+}

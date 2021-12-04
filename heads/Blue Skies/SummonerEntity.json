@@ -1,0 +1,23 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.boss.SummonerEntity",
+  "modelFieldName": "field_191217_a",
+  "eyeOffset": [
+    0.0,
+    0.2,
+    0.25
+  ],
+  "pupilColour": [
+    0.2784314,
+    0.5372549,
+    0.3137255
+  ],
+  "halfInterpupillaryDistance": 0.11875,
+  "eyeScale": 0.7,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.625,
+    0.0
+  ]
+}

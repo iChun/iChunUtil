@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.ShrumptyEntity",
+  "modelFieldName": "body",
+  "eyeOffset": [
+    0.0,
+    0.28125,
+    0.375
+  ],
+  "irisColour": [
+    0.85882354,
+    0.7921569,
+    0.19607843
+  ],
+  "halfInterpupillaryDistance": 0.21875,
+  "eyeScale": 0.85,
+  "noTopInfo": true,
+  "additionalHeads": [
+    {
+      "modelFieldName": "body.cap",
+      "noFaceInfo": true,
+      "headTopCenter": [
+        0.0,
+        0.125,
+        0.0
+      ],
+      "headScale": 2.25
+    }
+  ]
+}

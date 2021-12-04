@@ -1,0 +1,30 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.SpewterEntity",
+  "modelFieldName": "body.top",
+  "eyeOffset": [
+    0.0,
+    0.3125,
+    0.0
+  ],
+  "irisColour": [
+    0.9764706,
+    0.42745098,
+    0.74509805
+  ],
+  "pupilColour": [
+    0.32941177,
+    0.06666667,
+    0.29803923
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeScale": 2.25,
+  "topEyed": true,
+  "eyeCount": 1,
+  "headTopCenter": [
+    0.0,
+    0.3125,
+    0.0
+  ],
+  "headScale": 1.5
+}

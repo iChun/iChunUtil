@@ -1,6 +1,6 @@
 {
   "author": "WenXin2",
-  "forClass": "epicsquid.mysticalworld.entity.HellSproutEntity",
+  "forClass": "mysticmods.mysticalworld.entity.HellSproutEntity",
   "modelFieldName": "head",
   "eyeOffset": [
     0.0,

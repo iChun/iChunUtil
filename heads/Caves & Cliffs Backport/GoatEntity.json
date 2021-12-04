@@ -1,19 +1,19 @@
 {
   "author": "WenXin2",
-  "forClass": "com.blackgear.cavesandcliffs.common.entities.passive.goat.GoatEntity",
-  "modelFieldName": "headModel.nose",
+  "forClass": "com.blackgear.cavesandcliffs.common.entity.GoatEntity",
+  "modelFieldName": "head.nose",
   "eyeOffset": [
     0.03125,
-    0.1125,
-    0.1125
+    0.0625,
+    0.09375
   ],
   "halfInterpupillaryDistance": 0.15625,
   "sideEyed": true,
   "headTopCenter": [
     0.03125,
-    0.025,
+    0.03125,
     -0.125
   ],
-  "headScale": 0.9,
+  "headScale": 0.85,
   "hatTiltPitch": -90.0
 }

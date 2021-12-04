@@ -1,0 +1,17 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.CosmicFoxEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    -0.09375,
+    0.375
+  ],
+  "halfInterpupillaryDistance": 0.1875,
+  "eyeScale": 0.65,
+  "headTopCenter": [
+    0.0,
+    0.125,
+    0.1875
+  ]
+}

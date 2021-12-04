@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "vazkii.quark.content.mobs.entity.ForgottenEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.125,
+    0.25,
+    0.25
+  ],
+  "pupilColour": [
+    0.08627451,
+    0.078431375,
+    0.07450981
+  ],
+  "halfInterpupillaryDistance": 0.0,
+  "eyeCount": 1,
+  "doesEyeGlow": true
+}

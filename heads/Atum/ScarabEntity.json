@@ -1,0 +1,18 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.animal.ScarabEntity",
+  "modelFieldName": "field_178713_d[0]",
+  "eyeOffset": [
+    0.0,
+    -0.0625,
+    0.0625
+  ],
+  "halfInterpupillaryDistance": 0.09375,
+  "eyeScale": 0.55,
+  "headTopCenter": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "headScale": 0.35
+}

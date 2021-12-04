@@ -1,0 +1,58 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.passive.CrogreEntity",
+  "modelFieldName": "head",
+  "noFaceInfo": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.21875
+  ],
+  "headScale": 1.5,
+  "additionalHeads": [
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        0.28125,
+        0.28125,
+        0.1875
+      ],
+      "irisColour": [
+        0.89411765,
+        0.95686275,
+        0.7294118
+      ],
+      "pupilColour": [
+        0.15686275,
+        0.15294118,
+        0.11764706
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 0.85,
+      "eyeCount": 1,
+      "noTopInfo": true
+    },
+    {
+      "modelFieldName": "head",
+      "eyeOffset": [
+        -0.28125,
+        0.28125,
+        0.1875
+      ],
+      "irisColour": [
+        0.89411765,
+        0.95686275,
+        0.7294118
+      ],
+      "pupilColour": [
+        0.15686275,
+        0.15294118,
+        0.11764706
+      ],
+      "halfInterpupillaryDistance": 0.0,
+      "eyeScale": 0.85,
+      "eyeCount": 1,
+      "noTopInfo": true
+    }
+  ]
+}

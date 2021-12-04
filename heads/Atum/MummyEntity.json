@@ -1,0 +1,15 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.teammetallurgy.atum.entity.undead.MummyEntity",
+  "modelFieldName": "field_78116_c",
+  "eyeOffset": [
+    0.0,
+    0.21875,
+    0.25
+  ],
+  "pupilColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.FrostSpiritEntity",
+  "modelFieldName": "spirit_brain",
+  "eyeOffset": [
+    0.0,
+    0.28125,
+    0.125
+  ],
+  "irisColour": [
+    0.2784314,
+    0.5019608,
+    0.53333336
+  ],
+  "pupilColour": [
+    0.16470589,
+    0.23137255,
+    0.3254902
+  ],
+  "halfInterpupillaryDistance": 0.075,
+  "eyeScale": 0.45,
+  "headTopCenter": [
+    0.0,
+    0.375,
+    0.0
+  ],
+  "headScale": 0.5
+}

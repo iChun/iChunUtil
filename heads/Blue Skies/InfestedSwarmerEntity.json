@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.InfestedSwarmerEntity",
+  "modelFieldName": "head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.53125
+  ],
+  "irisColour": [
+    0.43529412,
+    0.47058824,
+    0.4862745
+  ],
+  "pupilColour": [
+    0.34901962,
+    0.42352942,
+    0.45882353
+  ],
+  "halfInterpupillaryDistance": 0.15625,
+  "eyeScale": 0.9,
+  "doesEyeGlow": true,
+  "headTopCenter": [
+    0.0,
+    0.21875,
+    0.21875
+  ],
+  "headScale": 1.2
+}

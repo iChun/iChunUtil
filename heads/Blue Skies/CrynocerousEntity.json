@@ -1,0 +1,29 @@
+{
+  "author": "WenXin2",
+  "forClass": "com.legacy.blue_skies.entities.hostile.CrynocerousEntity",
+  "modelFieldName": "neck.head",
+  "eyeOffset": [
+    0.0,
+    0.03125,
+    0.9375
+  ],
+  "irisColour": [
+    0.6862745,
+    0.7882353,
+    0.9647059
+  ],
+  "pupilColour": [
+    0.8980392,
+    0.8980392,
+    0.8980392
+  ],
+  "halfInterpupillaryDistance": 0.344375,
+  "eyeScale": 0.85,
+  "sideEyed": true,
+  "headTopCenter": [
+    0.0,
+    0.25,
+    0.90625
+  ],
+  "headScale": 1.4
+}
