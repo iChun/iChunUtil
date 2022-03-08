@@ -38,6 +38,7 @@ public class EventCalendar
                 {
                     isValentinesDay = true;
                 }
+                break;
             }
             case MARCH:
             {
