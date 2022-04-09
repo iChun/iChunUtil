@@ -52,7 +52,7 @@
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.options": "Options",
 
-  "gui.ichunutil.configs.noEditingServerConfig": "You can't edit a Server config whilst in a Multiplayer environment!",
+  "gui.ichunutil.configs.noEditingServerConfig": "You can only edit a SERVER config in a single player world environment!",
 
   "gui.ichunutil.element.textField": "Text Field",
 

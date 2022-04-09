@@ -54,7 +54,7 @@ public class WorkspaceConfigs extends Workspace
 
             ConfigInfo config = (ConfigInfo)item.getObject();
 
-            if(config.config.getConfigType().equals(ModConfig.Type.SERVER) && Minecraft.getInstance().player != null && (ServerLifecycleHooks.getCurrentServer() == null || ServerLifecycleHooks.getCurrentServer().isSinglePlayer() && ServerLifecycleHooks.getCurrentServer().getPlayerList().getCurrentPlayerCount() > 1)) //is on dedicated server
+            if(config.config.getConfigType().equals(ModConfig.Type.SERVER) && !(Minecraft.getInstance().player != null && ServerLifecycleHooks.getCurrentServer().isSinglePlayer() && ServerLifecycleHooks.getCurrentServer().getPlayerList().getCurrentPlayerCount() <= 1)) //Trying to edit a SERVER config in a non-singerplayer world environment.
             {
                 WindowPopup.popup(this, 0.6D, 140, null, I18n.format("gui.ichunutil.configs.noEditingServerConfig"));
             }
