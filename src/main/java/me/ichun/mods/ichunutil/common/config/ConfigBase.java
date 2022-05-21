@@ -462,4 +462,10 @@ public abstract class ConfigBase
             return false;
         }
     }
+
+    public static enum FilterType
+    {
+        ALLOW,
+        DENY
+    }
 }
