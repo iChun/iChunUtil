@@ -376,18 +376,21 @@ public abstract class ConfigBase
 
     public void save()
     {
-        boolean save = false;
-        for(HashSet<ValueWrapper<?>> vals : values.values())
+        if(config.getSpec().isLoaded()) //the child config is set to null on server type configs.
         {
-            for(ValueWrapper<?> value : vals)
+            boolean save = false;
+            for(HashSet<ValueWrapper<?>> vals : values.values())
             {
-                save = value.save() || save;
+                for(ValueWrapper<?> value : vals)
+                {
+                    save = value.save() || save;
+                }
             }
-        }
-        if(save)
-        {
-            config.getSpec().save();
-            onConfigLoaded();
+            if(save)
+            {
+                config.getSpec().save();
+                onConfigLoaded();
+            }
         }
     }
 
