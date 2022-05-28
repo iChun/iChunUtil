@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
@@ -55,13 +55,13 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     }
 
     @Override
-    public List<? extends Fragment<?>> getEventListeners()
+    public List<? extends Fragment<?>> children()
     {
         return INFERTILE;
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick){}
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick){}
 
     @Override
     public void resize(Minecraft mc, int width, int height)
@@ -86,7 +86,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     @Override
     public boolean changeFocus(boolean direction)
     {
-        return parentFragment.getListener() != this; //focus on us if we're not focused
+        return parentFragment.getFocused() != this; //focus on us if we're not focused
     }
 
     public enum ButtonState
@@ -96,7 +96,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         CLICK
     }
 
-    public static void renderMinecraftStyleButton(MatrixStack stack, int posX, int posY, int width, int height, ButtonState state, int minecraftStyle) // BUTTONS NEED TO BE LARGER THAN 3x3
+    public static void renderMinecraftStyleButton(PoseStack stack, int posX, int posY, int width, int height, ButtonState state, int minecraftStyle) // BUTTONS NEED TO BE LARGER THAN 3x3
     {
         Fragment.bindTexture(minecraftStyle == 2 ? VANILLA_WIDGETS : WIDGETS);
 
@@ -139,7 +139,7 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         }
     }
 
-    public static void cropAndStitch(MatrixStack stack, int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
+    public static void cropAndStitch(PoseStack stack, int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
     {
         RenderHelper.startDrawBatch();
 

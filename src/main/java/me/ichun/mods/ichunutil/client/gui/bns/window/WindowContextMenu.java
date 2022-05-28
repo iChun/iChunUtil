@@ -5,7 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -95,7 +95,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
     }
 
     @Override
-    public void unfocus(@Nullable IGuiEventListener guiReplacing)
+    public void unfocus(@Nullable GuiEventListener guiReplacing)
     {
         super.unfocus(guiReplacing);
         if(!killed)
@@ -145,7 +145,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 
         contextMenuObjects.forEach(o -> {
             list.addItem(o).addTextWrapper(nameProvider.apply(o)).setSelectionHandler(item -> {
-                item.getWorkspace().setListener(null);
+                item.getWorkspace().setFocused(null);
                 contextMenuReceiver.accept(iContextMenu, item);
             });
         });
@@ -155,7 +155,7 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
         }
         windowContextMenu.setupAround(posX, posY, minWidth, yFlipHeight);
         windowContextMenu.getWorkspace().addWindow(windowContextMenu);
-        windowContextMenu.getWorkspace().setListener(windowContextMenu);
+        windowContextMenu.getWorkspace().setFocused(windowContextMenu);
 
         return windowContextMenu;
     }

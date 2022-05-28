@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
-import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 
 import javax.annotation.Nonnull;
@@ -24,10 +23,10 @@ public class ViewValues extends View<WindowValues>
 {
     public final WorkspaceConfigs.ConfigInfo info;
     public final String category;
-    public final TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values;
+    public final TreeSet<WorkspaceConfigs.ConfigInfo.EntryLocalised> values;
     public final ElementList<?> list;
 
-    public ViewValues(@Nonnull WindowValues parent, @Nonnull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised> values)
+    public ViewValues(@Nonnull WindowValues parent, @Nonnull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.EntryLocalised> values)
     {
         super(parent, s);
         this.info = info;
@@ -48,7 +47,7 @@ public class ViewValues extends View<WindowValues>
                 .right(sv, Constraint.Property.Type.LEFT, 0)
         );
 
-        for(WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value : values)
+        for(WorkspaceConfigs.ConfigInfo.EntryLocalised value : values)
         {
             ElementList.Item<?> item = list.addItem(value).setBorderSize(0);
             item.setSelectionHandler(itemObj -> {
@@ -57,7 +56,7 @@ public class ViewValues extends View<WindowValues>
                     Element<?> e = getControlElement(itemObj);
                     if(e != null)
                     {
-                        e.parentFragment.setListener(e);
+                        e.parentFragment.setFocused(e);
                         e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                         e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                     }
@@ -89,26 +88,16 @@ public class ViewValues extends View<WindowValues>
         return null;
     }
 
-    public void addControlFor(final WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised value, ElementList.Item<?> item)
+    public void addControlFor(final WorkspaceConfigs.ConfigInfo.EntryLocalised entry, ElementList.Item<?> item)
     {
-        Field field = value.value.field;
-        field.setAccessible(true);
-        String fieldName = field.getName();
+        Field field = entry.entry.field;
         Class clz = field.getType();
-        Prop props; // should always exist
-        if(field.isAnnotationPresent(Prop.class))
-        {
-            props = field.getAnnotation(Prop.class);
-        }
-        else
-        {
-            props = ConfigBase.class.getDeclaredFields()[0].getAnnotation(Prop.class);
-        }
+        Prop props = entry.entry.prop;
 
         Object o;
         try
         {
-            o = field.get(value.value.parent);
+            o = field.get(entry.config);
         }
         catch(IllegalAccessException e)
         {
@@ -118,8 +107,8 @@ public class ViewValues extends View<WindowValues>
         boolean handled = false;
         if(!props.guiElementOverride().isEmpty())
         {
-            BiFunction<WorkspaceConfigs.ConfigInfo.ValueWrapperLocalised, ElementList.Item<?>, Boolean> valueWrapperLocalisedItemBiFunction = ConfigBase.GUI_ELEMENT_OVERRIDES.get(props.guiElementOverride());
-            if(valueWrapperLocalisedItemBiFunction != null && valueWrapperLocalisedItemBiFunction.apply(value, item))
+            BiFunction<WorkspaceConfigs.ConfigInfo.EntryLocalised, ElementList.Item<?>, Boolean> entryGuiOverride = entry.config.guiElementOverrides.get(props.guiElementOverride());
+            if(entryGuiOverride != null && entryGuiOverride.apply(entry, item))
             {
                 handled = true;
             }
@@ -149,7 +138,7 @@ public class ViewValues extends View<WindowValues>
             }
             else if(clz == boolean.class)
             {
-                ElementToggleTextable<?> toggle = new ElementToggleTextable<>(item, value.name, elementClickable -> {}).setToggled((boolean)o);
+                ElementToggleTextable<?> toggle = new ElementToggleTextable<>(item, entry.name, elementClickable -> {}).setToggled((boolean)o);
                 toggle.setSize(80, 14);
                 toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
                 item.addElement(toggle);
@@ -191,8 +180,8 @@ public class ViewValues extends View<WindowValues>
                 }
                 ElementButton<?> button = new ElementButton<>(item, "selectWorld.edit", btn ->
                 {
-                    value.value.field.setAccessible(true);
-                    Type typefield = value.value.field.getGenericType();
+                    entry.entry.field.setAccessible(true);
+                    Type typefield = entry.entry.field.getGenericType();
                     if(typefield instanceof ParameterizedType)
                     {
                         ParameterizedType type = (ParameterizedType)typefield;
@@ -231,7 +220,7 @@ public class ViewValues extends View<WindowValues>
                                     });
                                 }
 
-                                WindowEditList<?> window = new WindowEditList<>(getWorkspace(), value.name, list, validator, list1 -> {
+                                WindowEditList<?> window = new WindowEditList<>(getWorkspace(), entry.name, list, validator, list1 -> {
                                     try
                                     {
                                         List listToUse = list;
@@ -259,8 +248,8 @@ public class ViewValues extends View<WindowValues>
                                                 }
                                             }
                                         }
-                                        value.value.field.set(value.value.parent, listToUse);
-                                        value.value.parent.save();
+                                        entry.entry.field.set(entry.config, listToUse);
+                                        entry.config.save();
                                     }
                                     catch(IllegalAccessException ignored){}
                                 });

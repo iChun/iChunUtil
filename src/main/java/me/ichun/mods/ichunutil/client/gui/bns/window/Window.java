@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
@@ -11,9 +11,9 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.util.Util;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.Util;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -142,7 +142,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public List<View<?>> getEventListeners()
+    public List<View<?>> children()
     {
         return currentView != null ? ImmutableList.of(currentView) : views;
     }
@@ -192,7 +192,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     public boolean isUnique() { return isUnique; }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(isMouseOver(mouseX, mouseY))
         {
@@ -241,9 +241,9 @@ public abstract class Window<M extends IWindows> extends Fragment
         endScissor();
     }
 
-    public void renderDockHighlight(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderDockHighlight(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
-        if(getWorkspace().canDockWindows() && getWorkspace().getListener() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
+        if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {
             WindowDock<?> dock = getWorkspace().getDock();
 
@@ -348,31 +348,32 @@ public abstract class Window<M extends IWindows> extends Fragment
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 if(renderMinecraftStyle() > 0) //glint render taken from 1.12.2 RenderItem.renderEffect //TODO test that this doesn't uses matrix stack
                 {
-                    float scale = 8;
-                    float scaleTex = 512F;
-                    RenderSystem.depthMask(false);
-                    RenderSystem.depthFunc(514);
-                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE);
-                    Fragment.bindTexture(ItemRenderer.RES_ITEM_GLINT);
-                    RenderSystem.matrixMode(5890);
-                    RenderSystem.pushMatrix();
-                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
-                    float f = (float)(Util.milliTime() % 3000L) / 3000.0F / (float)scale;
-                    RenderSystem.translatef(f, 0.0F, 0.0F);
-                    RenderSystem.rotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
-                    RenderSystem.popMatrix();
-                    RenderSystem.pushMatrix();
-                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
-                    float f1 = (float)(Util.milliTime() % 4873L) / 4873.0F / (float)scale;
-                    RenderSystem.translatef(-f1, 0.0F, 0.0F);
-                    RenderSystem.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
-                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
-                    RenderSystem.popMatrix();
-                    RenderSystem.matrixMode(5888);
-                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                    RenderSystem.depthFunc(515);
-                    RenderSystem.depthMask(true);
+                    //TODO figure this shit out because CCI doesn't use it
+//                    float scale = 8;
+//                    float scaleTex = 512F;
+//                    RenderSystem.depthMask(false);
+//                    RenderSystem.depthFunc(514);
+//                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE);
+//                    Fragment.bindTexture(ItemRenderer.ENCHANT_GLINT_LOCATION);
+//                    RenderSystem.matrixMode(5890);
+//                    RenderSystem.pushMatrix();
+//                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
+//                    float f = (float)(Util.getMillis() % 3000L) / 3000.0F / (float)scale;
+//                    RenderSystem.translatef(f, 0.0F, 0.0F);
+//                    RenderSystem.rotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+//                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+//                    RenderSystem.popMatrix();
+//                    RenderSystem.pushMatrix();
+//                    RenderSystem.scalef((float)scale, (float)scale, (float)scale);
+//                    float f1 = (float)(Util.getMillis() % 4873L) / 4873.0F / (float)scale;
+//                    RenderSystem.translatef(-f1, 0.0F, 0.0F);
+//                    RenderSystem.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
+//                    RenderHelper.draw(stack, left, top, right - left, bottom - top, 0, left / scaleTex, right / scaleTex, top / scaleTex, bottom / scaleTex);
+//                    RenderSystem.popMatrix();
+//                    RenderSystem.matrixMode(5888);
+//                    RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//                    RenderSystem.depthFunc(515);
+//                    RenderSystem.depthMask(true);
                 }
                 else
                 {
@@ -384,11 +385,10 @@ public abstract class Window<M extends IWindows> extends Fragment
         }
     }
 
-    public void renderBackground(MatrixStack stack)
+    public void renderBackground(PoseStack stack)
     {
         if(renderMinecraftStyle() > 0)
         {
-            RenderSystem.enableAlphaTest();
             //draw the corners
             bindTexture(resourceTabs());
 
@@ -604,7 +604,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parent.getListener() == this)
+        if(parent.getFocused() == this)
         {
             return super.changeFocus(direction); //TODO make sure our children is just the current view
         }
@@ -697,7 +697,7 @@ public abstract class Window<M extends IWindows> extends Fragment
     }
 
     @Override
-    public FontRenderer getFontRenderer()
+    public Font getFontRenderer()
     {
         return parent.getFontRenderer();
     }

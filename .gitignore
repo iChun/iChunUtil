@@ -13,11 +13,24 @@ out
 *.iml
 .idea
 
+# vscode
+.settings
+.vscode
+bin
+.classpath
+.project
+
 # gradle
 build
 .gradle
 libs
 logs
+out
+classes
+run
+
+# macos
+*.DS_Store
 
 # other
 eclipse

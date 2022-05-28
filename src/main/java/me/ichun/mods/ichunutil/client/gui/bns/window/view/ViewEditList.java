@@ -7,7 +7,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextField;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +28,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         this(parent, s, objectList, validator, responder, null);
     }
 
-    public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, IReorderingProcessor> textFormatter)
+    public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent, s);
         this.objectList = objectList;
@@ -53,7 +53,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         );
 
         ElementButton<?> btn = new ElementButton<>(this, "gui.cancel", button -> {
-            parent.parent.setListener(null);
+            parent.parent.setFocused(null);
             parent.parent.removeWindow(parent);
         });
         btn.setSize(60, 20);
@@ -64,7 +64,7 @@ public class ViewEditList extends View<WindowEditList<?>>
 
         ElementButton<?> btn1 = new ElementButton<>(this, "gui.done", button -> {
             responder.accept(list);
-            parent.parent.setListener(null);
+            parent.parent.setFocused(null);
             parent.parent.removeWindow(parent);
         });
         btn1.setSize(60, 20);
@@ -95,7 +95,7 @@ public class ViewEditList extends View<WindowEditList<?>>
             {
                 if(str.isEmpty()) //if the text changed is empty, remove all the fields and only add the ones with text. And one empty field
                 {
-                    list.setListener(null);
+                    list.setFocused(null);
                     List<ElementList.Item<?>> oriItems = new ArrayList<>(list.items);
                     list.items.clear();
                     for(ElementList.Item<?> oriItem : oriItems)

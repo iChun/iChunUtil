@@ -1,19 +1,15 @@
 package me.ichun.mods.ichunutil.client.item;
 
 import me.ichun.mods.ichunutil.common.item.DualHandedItem;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class ItemEffectHandler
 {
     private static boolean hasInit = false;
@@ -23,13 +19,14 @@ public class ItemEffectHandler
         if(!hasInit)
         {
             hasInit = true;
-            MinecraftForge.EVENT_BUS.addListener(ItemEffectHandler::onClientTick);
-            MinecraftForge.EVENT_BUS.addListener(ItemEffectHandler::onPlayerTick);
-            MinecraftForge.EVENT_BUS.addListener(ItemEffectHandler::onRenderSpecificHand);
+            LoaderHandler.d().registerClientTickStartListener(ItemEffectHandler::onClientTickStart);
+            LoaderHandler.d().registerPlayerTickEndListener(ItemEffectHandler::onPlayerTickEnd);
+            //TODO this
+            //            MinecraftForge.EVENT_BUS.addListener(ItemEffectHandler::onRenderSpecificHand);
         }
     }
 
-    public static PointOfView lastPoV;
+    public static CameraType lastPoV;
 
     public static int dualHandedAnimationRight;
     public static int dualHandedAnimationLeft;
@@ -38,31 +35,29 @@ public class ItemEffectHandler
 
     public static int dualHandedAnimationTime = 5;
 
-    public static void onClientTick(TickEvent.ClientTickEvent event)
+    public static void onClientTickStart(Minecraft mc)
     {
-        Minecraft mc = Minecraft.getInstance();
-        if(event.phase == TickEvent.Phase.START && mc.player != null)
+        if(mc.player != null)
         {
             //disable using the hand so that we can actually use this in third person
-            ItemStack is = mc.player.getHeldItem(Hand.MAIN_HAND);
-            ItemStack is1 = mc.player.getHeldItem(Hand.OFF_HAND);
-            boolean bowLike = (is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, mc.player) || is1.getItem() instanceof DualHandedItem && ((DualHandedItem)is1.getItem()).isHeldLikeBow(is1, mc.player)) && mc.gameSettings.getPointOfView() != PointOfView.FIRST_PERSON;
+            ItemStack is = mc.player.getItemInHand(InteractionHand.MAIN_HAND);
+            ItemStack is1 = mc.player.getItemInHand(InteractionHand.OFF_HAND);
+            boolean bowLike = (is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, mc.player) || is1.getItem() instanceof DualHandedItem && ((DualHandedItem)is1.getItem()).isHeldLikeBow(is1, mc.player)) && mc.options.getCameraType() != CameraType.FIRST_PERSON;
             if(bowLike)
             {
-                mc.player.resetActiveHand();
+                mc.player.stopUsingItem();
             }
         }
 
     }
 
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event)
+    public static void onPlayerTickEnd(Player player)
     {
-        if(event.side.isClient() && event.phase == TickEvent.Phase.END)
+        if(player.getLevel().isClientSide)
         {
             Minecraft mc = Minecraft.getInstance();
-            PlayerEntity player = event.player;
 
-            boolean isRenderViewEntity = mc.getRenderViewEntity() == player;
+            boolean isRenderViewEntity = mc.getCameraEntity() == player;
 
             if(isRenderViewEntity)
             {
@@ -81,12 +76,12 @@ public class ItemEffectHandler
                     dualHandedAnimationLeft = dualHandedAnimationTime;
                 }
             }
-            ItemStack is = player.getHeldItem(Hand.MAIN_HAND);
+            ItemStack is = player.getItemInHand(InteractionHand.MAIN_HAND);
             if(!is.isEmpty() && DualHandedItem.isItemDualHanded(is) && DualHandedItem.canItemBeUsed(player, is))
             {
                 if(isRenderViewEntity)
                 {
-                    if(player.getPrimaryHand() == HandSide.RIGHT)
+                    if(player.getMainArm() == HumanoidArm.RIGHT)
                     {
                         dualHandedAnimationRight -= 2;
                         if(dualHandedAnimationRight < 0)
@@ -103,25 +98,25 @@ public class ItemEffectHandler
                         }
                     }
                 }
-                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON))
+                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getCameraEntity() && mc.options.getCameraType() == CameraType.FIRST_PERSON))
                 {
-                    if(player.getItemInUseCount() <= 0)
+                    if(player.getUseItemRemainingTicks() <= 0)
                     {
-                        player.resetActiveHand();
-                        player.setActiveHand(Hand.MAIN_HAND);
+                        player.stopUsingItem();
+                        player.startUsingItem(InteractionHand.MAIN_HAND);
                     }
                 }
                 else
                 {
-                    player.resetActiveHand();
+                    player.stopUsingItem();
                 }
             }
-            is = player.getHeldItem(Hand.OFF_HAND);
+            is = player.getItemInHand(InteractionHand.OFF_HAND);
             if(!is.isEmpty() && DualHandedItem.isItemDualHanded(is) && DualHandedItem.canItemBeUsed(player, is))
             {
                 if(isRenderViewEntity)
                 {
-                    if(player.getPrimaryHand() == HandSide.RIGHT)
+                    if(player.getMainArm() == HumanoidArm.RIGHT)
                     {
                         dualHandedAnimationLeft -= 2;
                         if(dualHandedAnimationLeft < 0)
@@ -138,41 +133,42 @@ public class ItemEffectHandler
                         }
                     }
                 }
-                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON))
+                if(is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player) && !(player == mc.getCameraEntity() && mc.options.getCameraType() == CameraType.FIRST_PERSON))
                 {
-                    if(player.getItemInUseCount() <= 0)
+                    if(player.getUseItemRemainingTicks() <= 0)
                     {
-                        player.resetActiveHand();
-                        player.setActiveHand(Hand.OFF_HAND);
+                        player.stopUsingItem();
+                        player.startUsingItem(InteractionHand.OFF_HAND);
                     }
                 }
                 else
                 {
-                    player.resetActiveHand();
+                    player.stopUsingItem();
                 }
             }
 
-            if(player == mc.getRenderViewEntity() && mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON && !(!is.isEmpty() && is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player)) && lastPoV != PointOfView.FIRST_PERSON)
+            if(player == mc.getCameraEntity() && mc.options.getCameraType() == CameraType.FIRST_PERSON && !(!is.isEmpty() && is.getItem() instanceof DualHandedItem && ((DualHandedItem)is.getItem()).isHeldLikeBow(is, player)) && lastPoV != CameraType.FIRST_PERSON)
             {
-                player.resetActiveHand();
+                player.stopUsingItem();
             }
 
-            if(player == mc.getRenderViewEntity())
+            if(player == mc.getCameraEntity())
             {
-                lastPoV = mc.gameSettings.getPointOfView();
+                lastPoV = mc.options.getCameraType();
             }
         }
     }
 
-    public static void onRenderSpecificHand(RenderHandEvent event)
-    {
-        if(event.getHand() == Hand.MAIN_HAND && event.getItemStack().isEmpty())
-        {
-            ItemStack is = Minecraft.getInstance().player.getHeldItem(Hand.OFF_HAND);
-            if(!is.isEmpty() && DualHandedItem.isItemDualHanded(is))
-            {
-                event.setCanceled(true);
-            }
-        }
-    }
+    //TODO this
+    //    public static void onRenderSpecificHand(RenderHandEvent event)
+    //    {
+    //        if(event.getHand() == InteractionHand.MAIN_HAND && event.getItemStack().isEmpty())
+    //        {
+    //            ItemStack is = Minecraft.getInstance().player.getItemInHand(InteractionHand.OFF_HAND);
+    //            if(!is.isEmpty() && DualHandedItem.isItemDualHanded(is))
+    //            {
+    //                event.setCanceled(true);
+    //            }
+    //        }
+    //    }
 }

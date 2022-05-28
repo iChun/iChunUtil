@@ -1,16 +1,16 @@
 package me.ichun.mods.ichunutil.common.advancement.criterion;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 
-public class ValueAtOrAboveTrigger extends AbstractCriterionTrigger<ValueAtOrAboveTrigger.Instance>
+public class ValueAtOrAboveTrigger extends SimpleCriterionTrigger<ValueAtOrAboveTrigger.Instance>
 {
     private final ResourceLocation id;
 
@@ -26,22 +26,22 @@ public class ValueAtOrAboveTrigger extends AbstractCriterionTrigger<ValueAtOrAbo
     }
 
     @Override
-    protected Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser)
+    protected Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser)
     {
-        int count = JSONUtils.getInt(json, "count");
+        int count = GsonHelper.getAsInt(json, "count");
         return new Instance(this.id, entityPredicate, count);
     }
 
-    public void test(ServerPlayerEntity player, int count)
+    public void test(ServerPlayer player, int count)
     {
-        this.triggerListeners(player, (instance -> instance.test(count)));
+        this.trigger(player, (instance -> instance.test(count)));
     }
 
-    public static class Instance extends CriterionInstance
+    public static class Instance extends AbstractCriterionTriggerInstance
     {
         private final int count;
 
-        public Instance(ResourceLocation id, EntityPredicate.AndPredicate playerCondition, int count)
+        public Instance(ResourceLocation id, EntityPredicate.Composite playerCondition, int count)
         {
             super(id, playerCondition);
             this.count = count;
@@ -49,7 +49,7 @@ public class ValueAtOrAboveTrigger extends AbstractCriterionTrigger<ValueAtOrAbo
 
         public static Instance count(ResourceLocation id, int i)
         {
-            return new Instance(id, EntityPredicate.AndPredicate.ANY_AND, i);
+            return new Instance(id, EntityPredicate.Composite.ANY, i);
         }
 
         public boolean test(int count)
@@ -57,8 +57,8 @@ public class ValueAtOrAboveTrigger extends AbstractCriterionTrigger<ValueAtOrAbo
             return count >= this.count;
         }
 
-        public JsonObject serialize(ConditionArraySerializer conditions) {
-            JsonObject jsonobject = super.serialize(conditions);
+        public JsonObject serializeToJson(SerializationContext conditions) {
+            JsonObject jsonobject = super.serializeToJson(conditions);
             jsonobject.addProperty("count", count);
             return jsonobject;
         }

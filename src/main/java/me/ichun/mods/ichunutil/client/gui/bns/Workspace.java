@@ -1,28 +1,30 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Matrix4f;
 import me.ichun.mods.ichunutil.client.gui.bns.window.*;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.*;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -102,7 +104,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public long cursorState;
 
-    public Workspace(Screen lastScreen, ITextComponent title, int mcStyle)
+    public Workspace(Screen lastScreen, Component title, int mcStyle)
     {
         super(title);
         this.lastScreen = lastScreen;
@@ -151,9 +153,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void closeScreen()
+    public void onClose()
     {
-        this.minecraft.displayGuiScreen(lastScreen);
+        this.minecraft.setScreen(lastScreen);
     }
 
     @Override
@@ -162,11 +164,11 @@ public abstract class Workspace extends Screen //boxes and stuff!
         if(!hasInit)
         {
             hasInit = true;
-            ellipsisLength = getFontRenderer().getStringWidth(ELLIPSIS);
+            ellipsisLength = getFontRenderer().width(ELLIPSIS);
 
             windows.forEach(Fragment::init);
         }
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
     }
 
     public boolean hasInit()
@@ -175,15 +177,15 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void onClose()
+    public void removed()
     {
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 
-        GLFW.glfwSetCursor(this.minecraft.getMainWindow().getHandle(), 0);
+        GLFW.glfwSetCursor(this.minecraft.getWindow().getWindow(), 0);
     }
 
     @Override
-    public List<Window<?>> getEventListeners()
+    public List<Window<?>> children()
     {
         if(canDockWindows())
         {
@@ -211,7 +213,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         if(window.isUnique()) // aw how cute
         {
-            List<Window<?>> allWindows = getEventListeners();
+            List<Window<?>> allWindows = children();
             for(int i = allWindows.size() - 1; i >= 0; i--)
             {
                 Window<?> window1 = allWindows.get(i);
@@ -236,9 +238,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void removeWindow(Window<?> window)
     {
-        if(getListener() == window)
+        if(getFocused() == window)
         {
-            setListener(null);
+            setFocused(null);
         }
         window.onClose(); //TODO this might bite me in the ass. how can we tell if the window was removed or destroyed????? dock???
         windows.remove(window);
@@ -288,7 +290,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
             addWindow(window);
         }
         putInCenter(window);
-        setListener(window);
+        setFocused(window);
 
         window.init();
     }
@@ -320,14 +322,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
     @Override
     public void tick()
     {
-        getEventListeners().forEach(Fragment::tick);
+        children().forEach(Fragment::tick);
         tooltipCooldown--;
     }
 
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
     {
         Fragment<?> o = null;
-        for(IGuiEventListener child : getEventListeners())
+        for(GuiEventListener child : children())
         {
             if(o == null && child instanceof Fragment)
             {
@@ -338,12 +340,12 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         cursorState = CURSOR_ARROW;
 
-        stack.push();
-        RenderSystem.enableAlphaTest();
+        stack.pushPose();
+
         renderBackground(stack);
 
         renderWindows(stack, mouseX, mouseY, partialTick);
@@ -351,13 +353,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
         renderTooltip(stack, mouseX, mouseY, partialTick);
 
         resetBackground();
-        RenderSystem.enableAlphaTest();
-        stack.pop();
 
-        GLFW.glfwSetCursor(this.minecraft.getMainWindow().getHandle(), cursorState);
+        stack.popPose();
+
+        GLFW.glfwSetCursor(this.minecraft.getWindow().getWindow(), cursorState);
     }
 
-    public void renderWindows(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderWindows(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
@@ -367,7 +369,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    public void renderTooltip(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderTooltip(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         //render tooltip
         Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
@@ -394,49 +396,49 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    public void renderTooltip(MatrixStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
+    public void renderTooltip(PoseStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
     {
         List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
         if(renderMinecraftStyle > 0)
         {
-            List<ITextComponent> textLines = new ArrayList<>();
+            List<Component> textLines = new ArrayList<>();
             for(String s : textStrings)
             {
-                textLines.add(new StringTextComponent(s));
+                textLines.add(new TextComponent(s));
             }
-            super.func_243308_b(stack, textLines, mouseX, mouseY);
+            super.renderComponentTooltip(stack, textLines, mouseX, mouseY);
         }
         else //Mostly taken from GuiUtils
         {
-            List<ITextProperties> textLines = new ArrayList<>();
+            List<FormattedText> textLines = new ArrayList<>();
             for(String s : textStrings)
             {
-                textLines.add(new StringTextComponent(s));
+                textLines.add(new TextComponent(s));
             }
 
             ItemStack itemstack = ItemStack.EMPTY;
             int screenWidth = width;
             int screenHeight = height;
             int maxTextWidth = -1;
-            FontRenderer font = getFontRenderer();
+            Font font = getFontRenderer();
 
-            RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(itemstack, textLines, stack, mouseX, mouseY, screenWidth, screenHeight, maxTextWidth, font);
-            if (MinecraftForge.EVENT_BUS.post(event)) {
-                return;
-            }
-            mouseX = event.getX();
-            mouseY = event.getY();
-            screenWidth = event.getScreenWidth();
-            screenHeight = event.getScreenHeight();
-            maxTextWidth = event.getMaxWidth();
-            font = event.getFontRenderer();
+            //            RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(itemstack, textLines, stack, mouseX, mouseY, screenWidth, screenHeight, maxTextWidth, font);
+            //            if (MinecraftForge.EVENT_BUS.post(event)) {
+            //                return;
+            //            }
+            //            mouseX = event.getX();
+            //            mouseY = event.getY();
+            //            screenWidth = event.getScreenWidth();
+            //            screenHeight = event.getScreenHeight();
+            //            maxTextWidth = event.getMaxWidth();
+            //            font = event.getFontRenderer();
 
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
-            for (ITextProperties textLine : textLines)
+            for (FormattedText textLine : textLines)
             {
-                int textLineWidth = font.getStringPropertyWidth(textLine);
+                int textLineWidth = font.width(textLine);
 
                 if (textLineWidth > tooltipTextWidth)
                 {
@@ -474,19 +476,19 @@ public abstract class Workspace extends Screen //boxes and stuff!
             if (needsWrap)
             {
                 int wrappedTooltipWidth = 0;
-                List<ITextProperties> wrappedTextLines = new ArrayList<>();
+                List<FormattedText> wrappedTextLines = new ArrayList<>();
                 for (int i = 0; i < textLines.size(); i++)
                 {
-                    ITextProperties textLine = textLines.get(i);
-                    List<ITextProperties> wrappedLine = font.getCharacterManager().func_238362_b_(textLine, tooltipTextWidth, Style.EMPTY);
+                    FormattedText textLine = textLines.get(i);
+                    List<FormattedText> wrappedLine = font.getSplitter().splitLines(textLine, tooltipTextWidth, Style.EMPTY);
                     if (i == 0)
                     {
                         titleLinesCount = wrappedLine.size();
                     }
 
-                    for (ITextProperties line : wrappedLine)
+                    for (FormattedText line : wrappedLine)
                     {
-                        int lineWidth = font.getStringPropertyWidth(line);
+                        int lineWidth = font.width(line);
                         if (lineWidth > wrappedTooltipWidth)
                         {
                             wrappedTooltipWidth = lineWidth;
@@ -528,25 +530,25 @@ public abstract class Workspace extends Screen //boxes and stuff!
             }
 
             final int zLevel = 400;
-            stack.push();
-            Matrix4f mat = stack.getLast().getMatrix();
+            stack.pushPose();
+            Matrix4f mat = stack.last().pose();
 
             RenderHelper.drawColour(stack, getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
             RenderHelper.drawColour(stack, getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
 
-            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(itemstack, textLines, stack, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
+            //            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(itemstack, textLines, stack, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
 
-            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+            MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             stack.translate(0.0D, 0.0D, zLevel);
 
             int tooltipTop = tooltipY;
 
             for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber)
             {
-                ITextProperties line = textLines.get(lineNumber);
+                FormattedText line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.drawEntityText(LanguageMap.getInstance().func_241870_a(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)
@@ -557,10 +559,10 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 tooltipY += 10;
             }
 
-            renderType.finish();
-            stack.pop();
+            renderType.endBatch();
+            stack.popPose();
 
-            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(itemstack, textLines, stack, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
+            //            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(itemstack, textLines, stack, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
 
             RenderSystem.enableDepthTest();
         }
@@ -569,7 +571,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
         Fragment<?> o = null;
-        List<Window<?>> children = getEventListeners();
+        List<Window<?>> children = children();
         for(int i = children.size() - 1; i >= 0; i--) //furthest back to front
         {
             Fragment<?> o1 = children.get(i).getTopMostFragment(mouseX, mouseY);
@@ -586,17 +588,17 @@ public abstract class Workspace extends Screen //boxes and stuff!
     {
         this.minecraft = mc;
         this.itemRenderer = mc.getItemRenderer();
-        this.font = mc.fontRenderer;
+        this.font = mc.font;
         this.width = width;
         this.height = height;
-        this.setListener(null);
+        this.setFocused(null);
 
         //resize windows
         windows.forEach(window -> window.resize(mc, width, height));
     }
 
     @Override
-    public void renderBackground(MatrixStack stack)
+    public void renderBackground(PoseStack stack)
     {
         if(renderMinecraftStyle > 0)
         {
@@ -604,36 +606,30 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
         else
         {
-            RenderSystem.matrixMode(GL11.GL_PROJECTION);
-            RenderSystem.loadIdentity();
-            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth() / minecraft.getMainWindow().getGuiScaleFactor(), minecraft.getMainWindow().getFramebufferHeight() / minecraft.getMainWindow().getGuiScaleFactor(), 0.0D, -5000.0D, 5000.0D);
-            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-            RenderSystem.loadIdentity();
+            Matrix4f matrix4f = Matrix4f.orthographic(0.0F, (float)(minecraft.getWindow().getWidth() / minecraft.getWindow().getGuiScale()), 0.0F, (float)(minecraft.getWindow().getHeight() / minecraft.getWindow().getGuiScale()), -5000.0F, 5000.0F);
+            RenderSystem.setProjectionMatrix(matrix4f);
+            PoseStack posestack = RenderSystem.getModelViewStack();
+            posestack.setIdentity();
 
             RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
-            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         }
-
-        RenderSystem.pushMatrix();
     }
 
     public void resetBackground()
     {
-        RenderSystem.popMatrix();
-
         if(renderMinecraftStyle == 0)
         {
-            RenderSystem.matrixMode(GL11.GL_PROJECTION);
-            RenderSystem.loadIdentity();
-            RenderSystem.ortho(0.0D, minecraft.getMainWindow().getFramebufferWidth() / minecraft.getMainWindow().getGuiScaleFactor(), minecraft.getMainWindow().getFramebufferHeight() / minecraft.getMainWindow().getGuiScaleFactor(), 0.0D, 1000.0D, 3000.0D);
-            RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-            RenderSystem.loadIdentity();
-            RenderSystem.translatef(0.0F, 0.0F, -2000.0F);
+            Matrix4f matrix4f = Matrix4f.orthographic(0.0F, (float)(minecraft.getWindow().getWidth() / minecraft.getWindow().getGuiScale()), 0.0F, (float)(minecraft.getWindow().getHeight() / minecraft.getWindow().getGuiScale()), 1000.0F, 3000.0F);
+            RenderSystem.setProjectionMatrix(matrix4f);
+            PoseStack posestack = RenderSystem.getModelViewStack();
+            posestack.setIdentity();
+            posestack.translate(0.0D, 0.0D, -2000.0D);
         }
     }
 
     @Override
-    public FontRenderer getFontRenderer()
+    public Font getFontRenderer()
     {
         return font;
     }
@@ -657,13 +653,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
         this.setDragging(false);
-        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
+        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean isObstructed(Window<?> window, double mouseX, double mouseY)
     {
-        for(Window<?> window1 : getEventListeners())
+        for(Window<?> window1 : children())
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {
@@ -675,7 +671,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public <T extends Window<?>> T getByWindowType(Class<T> clz)
     {
-        List<Window<?>> windows = getEventListeners();
+        List<Window<?>> windows = children();
         for(Window<?> window : windows)
         {
             if(clz.isAssignableFrom(window.getClass()))
@@ -757,9 +753,9 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public void setListener(@Nullable IGuiEventListener gui)
+    public void setFocused(@Nullable GuiEventListener gui)
     {
-        IGuiEventListener lastFocused = getListener();
+        GuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && gui != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(gui);
@@ -768,7 +764,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         {
             bringToFront((Window<?>)gui);
         }
-        super.setListener(gui);
+        super.setFocused(gui);
     }
 
     //IConstrainable
@@ -796,10 +792,14 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return height;
     }
 
+    //Missing in Fabric env
+    public Minecraft getMinecraft() {
+        return this.minecraft;
+    }
 
     //Convenience method
     public static void bindTexture(ResourceLocation rl)
     {
-        Minecraft.getInstance().getTextureManager().bindTexture(rl);
+        RenderSystem.setShaderTexture(0, rl);
     }
 }

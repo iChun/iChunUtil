@@ -1,14 +1,14 @@
 package me.ichun.mods.ichunutil.common.advancement.criterion;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.resources.ResourceLocation;
 
-public class CodeDefinedTrigger extends AbstractCriterionTrigger<CodeDefinedTrigger.Instance>
+public class CodeDefinedTrigger extends SimpleCriterionTrigger<CodeDefinedTrigger.Instance>
 {
     private final ResourceLocation id;
 
@@ -24,26 +24,26 @@ public class CodeDefinedTrigger extends AbstractCriterionTrigger<CodeDefinedTrig
     }
 
     @Override
-    protected Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser)
+    protected Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser)
     {
         return new Instance(this.id, entityPredicate);
     }
 
-    public void trigger(ServerPlayerEntity player)
+    public void trigger(ServerPlayer player)
     {
-        this.triggerListeners(player, (instance -> true));
+        this.trigger(player, (instance -> true));
     }
 
-    public static class Instance extends CriterionInstance
+    public static class Instance extends AbstractCriterionTriggerInstance
     {
-        public Instance(ResourceLocation id, EntityPredicate.AndPredicate playerCondition)
+        public Instance(ResourceLocation id, EntityPredicate.Composite playerCondition)
         {
             super(id, playerCondition);
         }
 
         public static Instance create(ResourceLocation id)
         {
-            return new Instance(id, EntityPredicate.AndPredicate.ANY_AND);
+            return new Instance(id, EntityPredicate.Composite.ANY);
         }
     }
 }

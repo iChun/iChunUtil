@@ -2,9 +2,9 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -27,9 +27,9 @@ public abstract class ElementRightClickable<T extends ElementRightClickable> ext
 //        boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
         //copied out mouseReleased so we don't call ElementClickable's
         this.setDragging(false);
-        boolean flag = getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
+        boolean flag = getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
 
-        parentFragment.setListener(null); //we're a one time click, stop focusing on us
+        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
         if(!disabled && isMouseOver(mouseX, mouseY))
         {
             if(button == 0)
@@ -48,7 +48,7 @@ public abstract class ElementRightClickable<T extends ElementRightClickable> ext
     {
         if(renderMinecraftStyle() > 0)
         {
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         onRightClickRelease();
         rightClickCallback.accept((T)this);

@@ -1,16 +1,16 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -80,11 +80,11 @@ public class ElementTextField extends Element
     };
 
 //    private List<IGuiEventListener> children = Lists.newArrayList();
-    protected TextFieldWidget widget;
+    protected EditBox widget;
     private String defaultText = "";
     private int maxStringLength = 32767;
     private Predicate<String> validator = s -> true;
-    private BiFunction<String, Integer, IReorderingProcessor> textFormatter = (s, cursorPos) -> IReorderingProcessor.fromString(s, Style.EMPTY);
+    private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (s, cursorPos) -> FormattedCharSequence.forward(s, Style.EMPTY);
     private @Nullable Consumer<String> responder;
     private @Nullable Consumer<String> enterResponder;
 
@@ -136,7 +136,7 @@ public class ElementTextField extends Element
         return (T)this;
     }
 
-    public <T extends ElementTextField> T setTextFormatter(BiFunction<String, Integer, IReorderingProcessor> textFormatter)
+    public <T extends ElementTextField> T setTextFormatter(BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         this.textFormatter = textFormatter;
         return (T)this;
@@ -146,12 +146,12 @@ public class ElementTextField extends Element
     public void init()
     {
         super.init();
-        widget = new TextFieldWidget(getFontRenderer(), getLeft(), getTop(), width, height, new TranslationTextComponent("gui.ichunutil.element.textField")); //TODO update this narration message?
-        widget.setMaxStringLength(maxStringLength);
-        widget.setText(defaultText);
-        widget.setValidator(validator);
+        widget = new EditBox(getFontRenderer(), getLeft(), getTop(), width, height, new TranslatableComponent("gui.ichunutil.element.textField")); //TODO update this narration message?
+        widget.setMaxLength(maxStringLength);
+        widget.setValue(defaultText);
+        widget.setFilter(validator);
         widget.setResponder(responder);
-        widget.setTextFormatter(textFormatter);
+        widget.setFormatter(textFormatter);
 //        children.add(widget);
         adjustWidget();
 
@@ -170,7 +170,7 @@ public class ElementTextField extends Element
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(isMouseOver(mouseX, mouseY))
         {
@@ -187,11 +187,11 @@ public class ElementTextField extends Element
         drawTextBox(stack, mouseX, mouseY, partialTick);
     }
 
-    public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle() > 0)
         {
-            widget.setEnableBackgroundDrawing(true);
+            widget.setBordered(true);
             widget.render(stack, mouseX, mouseY, partialTick);
         }
         else
@@ -207,10 +207,10 @@ public class ElementTextField extends Element
             }
             fill(stack, getTheme().elementInputBorder, 0);
             fill(stack, colour, 1);
-            widget.setEnableBackgroundDrawing(false);
+            widget.setBordered(false);
             widget.render(stack, mouseX, mouseY, partialTick);
         }
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
     @Override
@@ -229,14 +229,14 @@ public class ElementTextField extends Element
                 widget.x = getLeft() + 1;
                 widget.y = getTop() + 1;
                 widget.setWidth(this.width - 2);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2); //no setter in fabric
             }
             else
             {
                 widget.x = getLeft() + 5;
-                widget.y = getTop() + 1 + ((this.height - getFontRenderer().FONT_HEIGHT) / 2);
+                widget.y = getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2);
                 widget.setWidth(this.width - 6);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2); //no setter in fabric
             }
         }
     }
@@ -257,15 +257,15 @@ public class ElementTextField extends Element
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            setListener(widget);
-            widget.setFocused2(true);
+            setFocused(widget);
+            widget.setFocus(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
-                widget.setText("");
+                widget.setValue("");
             }
             else if(button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
             {
-                widget.writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
+                widget.insertText(Minecraft.getInstance().keyboardHandler.getClipboard());
             }
             widget.mouseClicked(mouseX, mouseY, button);
             return true;
@@ -274,20 +274,20 @@ public class ElementTextField extends Element
     }
 
     @Override
-    public void unfocus(@Nullable IGuiEventListener guiReplacing)
+    public void unfocus(@Nullable GuiEventListener guiReplacing)
     {
         super.unfocus(guiReplacing);
-        widget.setFocused2(false);
-        setListener(null);
+        widget.setFocus(false);
+        setFocused(null);
     }
 
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parentFragment.getListener() != this)
+        if(parentFragment.getFocused() != this)
         {
-            setListener(widget);
-            widget.setFocused2(true);
+            setFocused(widget);
+            widget.setFocus(true);
             return true;
         }
         return false;
@@ -300,15 +300,15 @@ public class ElementTextField extends Element
             iChunUtil.LOGGER.error("You're trying to set a text field widget whilst it is still null. Use setDefaultText instead");
             return;
         }
-        widget.setText(s);
+        widget.setValue(s);
     }
 
     public String getText()
     {
-        return widget.getText();
+        return widget.getValue();
     }
 
-    public TextFieldWidget getTextField()
+    public EditBox getTextField()
     {
         return widget;
     }

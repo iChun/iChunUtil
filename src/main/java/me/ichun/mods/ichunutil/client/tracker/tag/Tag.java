@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.client.tracker.tag;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.tracker.entity.EntityTracker;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public interface Tag
 {
@@ -15,5 +15,5 @@ public interface Tag
     default void addInfo(EntityTracker tracker, EntityTracker.EntityInfo info){}
     default void removeInfo(EntityTracker tracker, EntityTracker.EntityInfo info){}
     default boolean ignoreFrustumCheck() { return false; }
-    default void render(EntityTracker entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {};
+    default void render(EntityTracker entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {};
 }

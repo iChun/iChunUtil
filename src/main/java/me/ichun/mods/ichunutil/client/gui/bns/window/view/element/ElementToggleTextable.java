@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -20,8 +20,8 @@ public class ElementToggleTextable<T extends ElementToggleTextable> extends Elem
     {
         super(parent, tooltip, callback);
         this.tooltip = tooltip;
-        this.offString = I18n.format(off);
-        this.onString = I18n.format(on);
+        this.offString = I18n.get(off);
+        this.onString = I18n.get(on);
         this.text = offString;
     }
 

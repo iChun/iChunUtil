@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.loading.FMLPaths;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class ResourceHelper
 
             try
             {
-                workingDir = FMLPaths.CONFIGDIR.get().resolve(iChunUtil.MOD_ID);
+                workingDir = LoaderHandler.d().getConfigDir().resolve(iChunUtil.MOD_ID);
                 if(!Files.exists(workingDir)) Files.createDirectory(workingDir);
 
                 themesDir = workingDir.resolve("themes");
@@ -91,7 +91,7 @@ public class ResourceHelper
             }
             catch(IOException e)
             {
-                iChunUtil.LOGGER.fatal("Error initialising resources!");
+                iChunUtil.LOGGER.error("Error initialising resources!");
                 e.printStackTrace();
             }
         }

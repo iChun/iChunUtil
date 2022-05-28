@@ -1,13 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     public View(@Nonnull P parent, @Nonnull String s)
     {
         super(parent);
-        title = I18n.format(s);
+        title = I18n.get(s);
         constraint = Constraint.matchParent(this, parent, parent.borderSize.get());
         if(parent.canShowTitle() && !s.isEmpty())
         {
@@ -52,13 +52,13 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     }
 
     @Override
-    public List<Element<?>> getEventListeners()
+    public List<Element<?>> children()
     {
         return elements;
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
         //render our background
@@ -73,7 +73,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
         resetScissorToParent();
     }
 
-    public void renderBackground(MatrixStack stack)
+    public void renderBackground(PoseStack stack)
     {
         if(renderMinecraftStyle() == 0)
         {
@@ -91,7 +91,7 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     @Override
     public boolean changeFocus(boolean direction)
     {
-        if(parentFragment.getListener() == this)
+        if(parentFragment.getFocused() == this)
         {
             boolean flag = super.changeFocus(direction);
             if(!flag)

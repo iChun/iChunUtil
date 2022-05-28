@@ -1,12 +1,9 @@
 package me.ichun.mods.ichunutil.client.key;
 
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +12,7 @@ import java.util.function.Consumer;
 public class KeyBind
 {
     @Nonnull
-    public final KeyBinding keyBinding;
+    public final KeyMapping keyBinding;
     @Nullable
     public final Consumer<KeyBind> pressConsumer;
     @Nullable
@@ -35,15 +32,15 @@ public class KeyBind
      * @param pressConsumer press consumer
      * @param releaseConsumer release consumer
      */
-    public KeyBind(KeyBinding keyBinding, @Nullable Consumer<KeyBind> pressConsumer, @Nullable Consumer<KeyBind> releaseConsumer)
+    public KeyBind(KeyMapping keyBinding, @Nullable Consumer<KeyBind> pressConsumer, @Nullable Consumer<KeyBind> releaseConsumer)
     {
         this.keyBinding = keyBinding;
         this.pressConsumer = pressConsumer;
         this.releaseConsumer = releaseConsumer;
 
-        ClientRegistry.registerKeyBinding(this.keyBinding);
+        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, this.keyBinding); //Originally from Forge: ClientRegistry.registerKeyBinding(this.keyBinding);
 
-        MinecraftForge.EVENT_BUS.addListener(this::onClientTick);
+        LoaderHandler.d().registerClientTickEndListener(this::onClientTick);
     }
 
     public KeyBind setTickConsumer(Consumer<KeyBind> tickConsumer)
@@ -58,77 +55,74 @@ public class KeyBind
         return this;
     }
 
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
+    public void onClientTick(Minecraft mc)
     {
-        if(event.phase == TickEvent.Phase.END)
+        if(pressed)
         {
-            if(pressed)
+            pressTime++;
+            if(!keyBinding.isDown())
             {
-                pressTime++;
-                if(!keyBinding.isKeyDown())
+                pressed = false;
+                holdTime = 0;
+                if(releaseConsumer != null)
                 {
-                    pressed = false;
-                    holdTime = 0;
-                    if(releaseConsumer != null)
-                    {
-                        releaseConsumer.accept(this);
-                    }
-                }
-                else
-                {
-                    if(tickConsumer != null)
-                    {
-                        tickConsumer.accept(this);
-                    }
-                    if(holdTime > 0)
-                    {
-                        holdTime--;
-                        if(holdTime == 0)
-                        {
-                            holdTime = 5;
-                            if(pressConsumer != null)
-                            {
-                                pressConsumer.accept(this);
-                            }
-                        }
-                    }
+                    releaseConsumer.accept(this);
                 }
             }
             else
             {
-                pressTime = 0;
-                if(keyBinding.isKeyDown())
+                if(tickConsumer != null)
                 {
-                    pressed = true;
-                    if(pressConsumer != null)
+                    tickConsumer.accept(this);
+                }
+                if(holdTime > 0)
+                {
+                    holdTime--;
+                    if(holdTime == 0)
                     {
-                        pressConsumer.accept(this);
+                        holdTime = 5;
+                        if(pressConsumer != null)
+                        {
+                            pressConsumer.accept(this);
+                        }
                     }
-                    if(holdable)
-                    {
-                        holdTime = 20;
-                    }
+                }
+            }
+        }
+        else
+        {
+            pressTime = 0;
+            if(keyBinding.isDown())
+            {
+                pressed = true;
+                if(pressConsumer != null)
+                {
+                    pressConsumer.accept(this);
+                }
+                if(holdable)
+                {
+                    holdTime = 20;
                 }
             }
         }
     }
 
-    public enum ConflictContext implements IKeyConflictContext
-    {
-        //Allows in-game modifiers (or lack thereof) to conflict
-        IN_GAME_MODIFIER_SENSITIVE {
-            @Override
-            public boolean isActive()
-            {
-                return !KeyConflictContext.GUI.isActive();
-            }
-
-            @Override
-            public boolean conflicts(IKeyConflictContext other)
-            {
-                return this == other;
-            }
-        }
-    }
+    //TODO Forge conflict context
+//    public enum ConflictContext implements IKeyConflictContext
+//    {
+//        //Allows in-game modifiers (or lack thereof) to conflict
+//        IN_GAME_MODIFIER_SENSITIVE {
+//            @Override
+//            public boolean isActive()
+//            {
+//                return !KeyConflictContext.GUI.isActive();
+//            }
+//
+//            @Override
+//            public boolean conflicts(IKeyConflictContext other)
+//            {
+//                return this == other;
+//            }
+//        }
+//    }
 }

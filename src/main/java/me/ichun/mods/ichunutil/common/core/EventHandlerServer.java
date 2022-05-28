@@ -1,18 +1,11 @@
 package me.ichun.mods.ichunutil.common.core;
 
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-public class EventHandlerServer
+public abstract class EventHandlerServer
 {
     public int ticks;
 
-    @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event)
+    public void onServerTickEnd()
     {
-        if(event.phase == TickEvent.Phase.END)
-        {
-            ticks++;
-        }
+        ticks++;
     }
 }

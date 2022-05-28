@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.constraint;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import javax.annotation.Nonnull;
 

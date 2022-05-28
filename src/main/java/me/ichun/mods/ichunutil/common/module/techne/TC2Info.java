@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.client.renderer.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -594,7 +594,7 @@ public class TC2Info
                     entry = new ZipEntry(model.Model.texture);
                     out.putNextEntry(entry);
 
-                    out.write(model.Model.image.getBytes());
+                    out.write(model.Model.image.asByteArray());
 
                     out.closeEntry();
                 }

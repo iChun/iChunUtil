@@ -3,18 +3,18 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.INestedGuiEventHandler;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 
 import javax.annotation.Nullable;
 
-public interface IWindows extends INestedGuiEventHandler
+public interface IWindows extends ContainerEventHandler
 {
     int getWidth();
     int getHeight();
     Theme getTheme();
     int renderMinecraftStyle();
-    FontRenderer getFontRenderer();
+    Font getFontRenderer();
     Window<?> addWindow(Window<?> window);
     void removeWindow(Window<?> window);
     boolean isObstructed(Window<?> mWindow, double mouseX, double mouseY);

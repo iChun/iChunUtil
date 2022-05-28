@@ -1,13 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -93,18 +93,17 @@ public class ElementNumberInput extends ElementTextField
         super.init();
 
         finalValidator = (isDouble ? NUMBERS : INTEGERS).and(min).and(max).and(maxDec);
-        widget.setValidator(finalValidator);
+        widget.setFilter(finalValidator);
     }
 
     @Override
-    public void drawTextBox(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle() > 0)
         {
-            widget.setEnableBackgroundDrawing(true);
+            widget.setBordered(true);
             widget.render(stack, mouseX, mouseY, partialTick);
-            RenderSystem.color4f(1F, 1F, 1F, 1F);
-            RenderSystem.enableAlphaTest();
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
             renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
             renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
@@ -127,9 +126,9 @@ public class ElementNumberInput extends ElementTextField
             }
             fill(stack, getTheme().elementInputBorder, 0);
             fill(stack, colour, 1);
-            widget.setEnableBackgroundDrawing(false);
+            widget.setBordered(false);
             widget.render(stack, mouseX, mouseY, partialTick);
-            RenderSystem.color4f(1F, 1F, 1F, 1F);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
             //handle top half
             if(clickUp)
@@ -161,12 +160,12 @@ public class ElementNumberInput extends ElementTextField
                 colour = getTheme().elementInputBorder;
             }
             RenderHelper.drawColour(stack, colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop() + (height / 2d), BUTTON_WIDTH, (height / 2d), 0); //bottom half
-            stack.push();
+            stack.pushPose();
             float scale = 0.5F;
             stack.scale(scale, scale, scale);
-            drawString(stack, "\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
-            drawString(stack, "\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
-            stack.pop();
+            drawString(stack, "\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().lineHeight / 2d)) / scale);
+            drawString(stack, "\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().lineHeight / 2d)) / scale);
+            stack.popPose();
         }
     }
 
@@ -180,14 +179,14 @@ public class ElementNumberInput extends ElementTextField
                 widget.x = getLeft() + 1;
                 widget.y = getTop() + 1;
                 widget.setWidth(this.width - 2 - BUTTON_WIDTH);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2); //no setter in fabric
             }
             else
             {
                 widget.x = getLeft() + 5;
-                widget.y = getTop() + 1 + ((this.height - getFontRenderer().FONT_HEIGHT) / 2);
+                widget.y = getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2);
                 widget.setWidth(this.width - 6 - BUTTON_WIDTH);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2); //no setter in fabric
             }
         }
     }
@@ -197,15 +196,15 @@ public class ElementNumberInput extends ElementTextField
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            setListener(widget);
-            widget.setFocused2(true);
+            setFocused(widget);
+            widget.setFocus(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
-                widget.setText("");
+                widget.setValue("");
             }
             else if(button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE)
             {
-                widget.writeText(Minecraft.getInstance().keyboardListener.getClipboardString());
+                widget.insertText(Minecraft.getInstance().keyboardHandler.getClipboard());
             }
             widget.mouseClicked(mouseX, mouseY, button);
 
@@ -233,7 +232,7 @@ public class ElementNumberInput extends ElementTextField
                 changeValue(true, Screen.hasShiftDown(), Screen.hasControlDown());
                 if(renderMinecraftStyle() > 0)
                 {
-                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
             }
         }
@@ -245,7 +244,7 @@ public class ElementNumberInput extends ElementTextField
                 changeValue(false, Screen.hasShiftDown(), Screen.hasControlDown());
                 if(renderMinecraftStyle() > 0)
                 {
-                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 }
             }
         }
@@ -265,7 +264,7 @@ public class ElementNumberInput extends ElementTextField
 
     public void changeValue(boolean up, boolean hasShiftDown, boolean hasControlDown)
     {
-        String s = widget.getText();
+        String s = widget.getValue();
         if(s.isEmpty())
         {
             s = "0";
@@ -293,7 +292,7 @@ public class ElementNumberInput extends ElementTextField
                 String newVal = String.format(Locale.ENGLISH, "%." + Integer.toString(decimals) +"f", d);
                 if(finalValidator.test(newVal))
                 {
-                    widget.setText(newVal);
+                    widget.setValue(newVal);
                 }
             }
             catch(NumberFormatException ignored){}
@@ -306,14 +305,14 @@ public class ElementNumberInput extends ElementTextField
             String newVal = Integer.toString(i);
             if(finalValidator.test(newVal))
             {
-                widget.setText(newVal);
+                widget.setValue(newVal);
             }
         }
     }
 
     public int getInt()
     {
-        String s = widget.getText();
+        String s = widget.getValue();
 
         if(s.contains("."))
         {
@@ -336,7 +335,7 @@ public class ElementNumberInput extends ElementTextField
 
     public double getDouble()
     {
-        String s = widget.getText();
+        String s = widget.getValue();
         if(!(s.isEmpty() || s.equals("-")))
         {
             try

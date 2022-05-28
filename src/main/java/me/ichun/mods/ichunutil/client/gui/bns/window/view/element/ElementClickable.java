@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -30,12 +30,12 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         hover = false;
         if(!disabled)
         {
-            hover = isMouseOver(mouseX, mouseY) || parentFragment.getListener() == this;
+            hover = isMouseOver(mouseX, mouseY) || parentFragment.getFocused() == this;
         }
     }
 
@@ -43,7 +43,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
         boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setListener(null); //we're a one time click, stop focusing on us
+        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
         if(!disabled && isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
             trigger();
@@ -55,7 +55,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     {
         if(renderMinecraftStyle() > 0)
         {
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         onClickRelease();
         callback.accept((T)this);
@@ -77,6 +77,6 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public int getMinecraftFontColour()
     {
-        return parentFragment.isDragging() && parentFragment.getListener() == this || disabled ? 10526880 : hover ? 16777120 : 14737632;
+        return parentFragment.isDragging() && parentFragment.getFocused() == this || disabled ? 10526880 : hover ? 16777120 : 14737632;
     }
 }

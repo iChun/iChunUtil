@@ -2,15 +2,13 @@ package me.ichun.mods.ichunutil.common.module.tabula.project;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.blaze3d.platform.NativeImage;
 import me.ichun.mods.ichunutil.client.model.tabula.ModelTabula;
 import me.ichun.mods.ichunutil.client.render.NativeImageTexture;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.Nonnull;
@@ -39,11 +37,11 @@ public class Project extends Identifiable<Project> //Model
 
     //Project texture Stuffs
     private transient byte[] textureBytes;
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public transient NativeImageTexture nativeImageTexture;
 
     //Client Model
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     private transient ModelTabula model;
 
     //defaults
@@ -215,7 +213,7 @@ public class Project extends Identifiable<Project> //Model
     {
         isDirty = true;
 
-        if(FMLEnvironment.dist.isClient())
+        if(LoaderHandler.d().isOnClient())
         {
             updateModel();
         }
@@ -223,14 +221,14 @@ public class Project extends Identifiable<Project> //Model
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void destroy()
     {
         //destroy the texture
         setImageBytes(null);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void updateModel()
     {
         if(model != null)
@@ -239,7 +237,7 @@ public class Project extends Identifiable<Project> //Model
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public ModelTabula getModel()
     {
         if(model == null)
@@ -262,25 +260,25 @@ public class Project extends Identifiable<Project> //Model
 
     public void setImageBytes(byte[] bytes)
     {
-        if(FMLEnvironment.dist.isClient())
+        if(LoaderHandler.d().isOnClient())
         {
             deleteClientTexture();
         }
         this.textureBytes = bytes;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void deleteClientTexture()
     {
         if(nativeImageTexture != null)
         {
-            Minecraft.getInstance().getTextureManager().deleteTexture(nativeImageTexture.getResourceLocation());
+            Minecraft.getInstance().getTextureManager().release(nativeImageTexture.getResourceLocation());
 
             nativeImageTexture = null;
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public ResourceLocation getNativeImageResourceLocation()
     {
         if(textureBytes != null)
@@ -290,7 +288,7 @@ public class Project extends Identifiable<Project> //Model
                 try (NativeImage image = NativeImage.read(new ByteArrayInputStream(textureBytes)))
                 {
                     nativeImageTexture = new NativeImageTexture(image);
-                    Minecraft.getInstance().getTextureManager().loadTexture(nativeImageTexture.getResourceLocation(), nativeImageTexture);
+                    Minecraft.getInstance().getTextureManager().register(nativeImageTexture.getResourceLocation(), nativeImageTexture);
                 }
                 catch(IOException e)
                 {

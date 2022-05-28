@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 //Large parts from AdvancementProvider
-public class AdvancementGen implements IDataProvider
+public class AdvancementGen implements DataProvider
 {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -36,7 +36,7 @@ public class AdvancementGen implements IDataProvider
     }
 
     @Override
-    public void act(DirectoryCache cache) {
+    public void run(HashCache cache) {
         Path path = this.gen.getOutputFolder();
         Set<ResourceLocation> set = Sets.newHashSet();
 
@@ -54,7 +54,7 @@ public class AdvancementGen implements IDataProvider
                 {
                     try
                     {
-                        IDataProvider.save(GSON, cache, advancement.copy().serialize(), path1);
+                        DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
                         iChunUtil.LOGGER.info("Saved advancement: {}", path1);
                     }
                     catch(IOException ioexception)

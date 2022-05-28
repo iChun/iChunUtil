@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.common.util;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.client.renderer.texture.NativeImage;
 
 import javax.annotation.Nonnull;
 import java.io.*;

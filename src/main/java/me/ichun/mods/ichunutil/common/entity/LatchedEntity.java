@@ -1,24 +1,22 @@
 package me.ichun.mods.ichunutil.common.entity;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public abstract class LatchedEntity<M extends Entity> extends Entity
 {
-    private static final DataParameter<Integer> PARENT_ID = EntityDataManager.createKey(LatchedEntity.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> PARENT_ID = SynchedEntityData.defineId(LatchedEntity.class, EntityDataSerializers.INT);
 
     public M parent;
 
@@ -27,7 +25,8 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     public int maxPersistAfterDeath = 0; //parent death, not this entity
     public int timeAfterDeath = 0; //parent death, not this entity
 
-    public LatchedEntity(EntityType<?> type, World world)
+    //If you don't want to render anything, register a NoopRenderer for your entity.
+    public LatchedEntity(EntityType<?> type, Level world)
     {
         super(type, world);
 
@@ -37,9 +36,9 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     public <T extends LatchedEntity> T setParent(@Nonnull M parent)
     {
         this.parent = parent;
-        setParentId(parent.getEntityId());
-        setPositionAndRotation(parent.getPosX(), parent.getPosY(), parent.getPosZ(), parent.rotationYaw, parent.rotationPitch);
-        size = parent.size;
+        setParentId(parent.getId());
+        absMoveTo(parent.getX(), parent.getY(), parent.getZ(), parent.getYRot(), parent.getXRot());
+        dimensions = parent.dimensions;
         setBoundingBox(parent.getBoundingBox()); // match the parent's size for rendering
         return (T)this;
     }
@@ -51,19 +50,19 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        getDataManager().register(PARENT_ID, -1);
+        getEntityData().define(PARENT_ID, -1);
     }
 
     public void setParentId(int i)
     {
-        getDataManager().set(PARENT_ID, i);
+        getEntityData().set(PARENT_ID, i);
     }
 
     public int getParentId()
     {
-        return getDataManager().get(PARENT_ID);
+        return getEntityData().get(PARENT_ID);
     }
 
     @Override
@@ -75,14 +74,14 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
         {
             if(parentUUID != null || getParentId() != -1)
             {
-                if(ticksExisted % 5 == 1)
+                if(tickCount % 5 == 1)
                 {
                     Entity ent;
-                    if(world.isRemote)
+                    if(level.isClientSide)
                     {
                         if(getParentId() != -1)
                         {
-                            ent = world.getEntityByID(getParentId());
+                            ent = level.getEntity(getParentId());
                         }
                         else
                         {
@@ -91,14 +90,14 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
                     }
                     else
                     {
-                        ent = ((ServerWorld)world).getEntityByUuid(parentUUID);
+                        ent = ((ServerLevel)level).getEntity(parentUUID);
                     }
 
                     if(ent != null)
                     {
                         setParent((M)ent);
                     }
-                    else if(ticksExisted > 201) //10 seconds
+                    else if(tickCount > 201) //10 seconds
                     {
                         unableToFindParent(true);
                         return;
@@ -122,27 +121,27 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
                 }
                 timeAfterDeath++;
             }
-            else if(parent.removed)
+            else if(parent.isRemoved())
             {
                 unableToFindParent(true);
                 return;
             }
         }
-        else if(!parent.world.getDimensionKey().equals(world.getDimensionKey()))
+        else if(!parent.level.dimension().equals(level.dimension()))
         {
             parentDifferentDimension();
             return;
         }
         else //parent is "alive" and safe
         {
-            this.setPosition(parent.getPosX(), parent.getPosY(), parent.getPosZ());
-            this.setRotation(parent.rotationYaw, parent.rotationPitch);
+            this.setPos(parent.getX(), parent.getY(), parent.getZ());
+            this.setRot(parent.getYRot(), parent.getXRot());
         }
     }
 
     public void unableToFindParent(boolean hasId)
     {
-        remove();
+        discard();
     }
 
     public void parentDifferentDimension()
@@ -150,11 +149,11 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
         unableToFindParent(true);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     @Override
-    public boolean isInRangeToRenderDist(double distance)
+    public boolean shouldRenderAtSqrDistance(double distance)
     {
-        return parent != null ? parent.isInRangeToRenderDist(distance) : super.isInRangeToRenderDist(distance);
+        return parent != null ? parent.shouldRenderAtSqrDistance(distance) : super.shouldRenderAtSqrDistance(distance);
     }
 
     @Override
@@ -164,23 +163,23 @@ public abstract class LatchedEntity<M extends Entity> extends Entity
     }
 
     @Override
-    protected void readAdditional(CompoundNBT tag)
+    protected void readAdditionalSaveData(CompoundTag tag)
     {
-        parentUUID = tag.getUniqueId("parentUUID");
+        parentUUID = tag.getUUID("parentUUID");
         setParentId(tag.getInt("parentID"));
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT tag)
+    protected void addAdditionalSaveData(CompoundTag tag)
     {
-        tag.putUniqueId("parentUUID", parent.getUniqueID());
+        tag.putUUID("parentUUID", parent.getUUID());
         tag.putInt("parentID", getParentId());
     }
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket()
+    public Packet<?> getAddEntityPacket()
     {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return LoaderHandler.d().getEntitySpawnPacket(this);
     }
 }

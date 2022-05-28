@@ -4,18 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourceReloadListener<T> extends JsonReloadListener
+public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener
 {
     private static final Gson DEFAULT_GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -37,7 +36,7 @@ public class ResourceReloadListener<T> extends JsonReloadListener
         this.classType = classType;
         this.parser = gsonParser;
 
-        MinecraftForge.EVENT_BUS.addListener(this::onAddReloadListener);
+        LoaderHandler.d().registerAddReloadListener(this);
     }
 
     public <K extends ResourceReloadListener<T>> K setDefault(T defaultObj)
@@ -47,7 +46,7 @@ public class ResourceReloadListener<T> extends JsonReloadListener
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> json, IResourceManager iResourceManager, IProfiler iProfiler)
+    protected void apply(Map<ResourceLocation, JsonElement> json, ResourceManager iResourceManager, ProfilerFiller iProfiler)
     {
         json.forEach((k, v) -> {
             try
@@ -64,10 +63,5 @@ public class ResourceReloadListener<T> extends JsonReloadListener
     public @Nullable T get(ResourceLocation key)
     {
         return objects.containsKey(key) ? objects.get(key) : defaultObj;
-    }
-
-    private void onAddReloadListener(AddReloadListenerEvent event)
-    {
-        event.addListener(this);
     }
 }

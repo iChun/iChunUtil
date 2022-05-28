@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import javax.annotation.Nonnull;
 
@@ -17,12 +17,12 @@ public class ElementProgressBar extends Element
 
     public ElementProgressBar setProgress(float prog)
     {
-        progress = MathHelper.clamp(prog, 0F, 1F);
+        progress = Mth.clamp(prog, 0F, 1F);
         return this;
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle() > 0)
         {

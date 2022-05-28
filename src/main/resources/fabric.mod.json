@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "ichunutil",
+  "version": "${version}",
+
+  "name": "iChunUtil",
+  "description": "Shared library mod required by most of iChun's Mods.\nIf the first version number of the mod is higher than 1, (eg: 2.X.X, 5.Y.Y), and it's an iChun mod, it needs this.",
+  "authors": [
+    "iChun"
+  ],
+  "contact": {
+    "homepage": "https://github.com/iChun/iChunUtil",
+    "issues": "https://github.com/iChun/iChunUtil/issues"
+  },
+
+  "license": "GNU Lesser General Public License v3.0",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.ichun.mods.ichunutil.loader.fabric.LoaderFabric"
+    ],
+    "client": [
+      "me.ichun.mods.ichunutil.loader.fabric.client.LoaderFabricClient"
+    ],
+    "modmenu": [
+      "me.ichun.mods.ichunutil.loader.fabric.client.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.6",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
+  }
+}

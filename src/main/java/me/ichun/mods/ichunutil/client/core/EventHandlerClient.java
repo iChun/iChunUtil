@@ -1,19 +1,17 @@
 package me.ichun.mods.ichunutil.client.core;
 
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
-import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.ObfHelper;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.IngameMenuScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.shader.Framebuffer;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class EventHandlerClient
 {
@@ -23,50 +21,25 @@ public class EventHandlerClient
 
     public float partialTick;
 
-    public int screenWidth;
-    public int screenHeight;
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event)
+    public void onClientTickEnd(Minecraft mc)
     {
-        if(event.phase == TickEvent.Phase.END)
-        {
-            ticks++;
-        }
+        ticks++;
     }
 
-    @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event)
+    public void onRenderTickStart(float partialTick)
     {
-        if(event.phase == TickEvent.Phase.START)
-        {
-            Minecraft mc = Minecraft.getInstance();
-
-            partialTick = event.renderTickTime;
-
-            if(screenWidth != mc.getMainWindow().getFramebufferWidth() || screenHeight != mc.getMainWindow().getFramebufferHeight())
-            {
-                screenWidth = mc.getMainWindow().getFramebufferWidth();
-                screenHeight = mc.getMainWindow().getFramebufferHeight();
-
-                for(Framebuffer buffer : RenderHelper.frameBuffers)
-                {
-                    buffer.resize(screenWidth, screenHeight, Minecraft.IS_RUNNING_ON_MAC);
-                }
-            }
-        }
+        this.partialTick = partialTick;
     }
 
-    @SubscribeEvent
-    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event)
+    public void onPostInitScreen(Minecraft mc, Screen screen)
     {
-        if((iChunUtil.configClient.buttonOptionsShiftOpensMods || ObfHelper.isDevEnvironment()) && event.getGui() instanceof IngameMenuScreen)
+        if((LoaderHandler.getEnv().equals(LoaderHandler.Env.FORGE) && iChunUtil.configClient.buttonOptionsShiftOpensMods || ObfHelper.isDevEnvironment()) && screen instanceof PauseScreen)
         {
-            for(Widget widget : event.getWidgetList())
+            for(GuiEventListener widget : screen.children())
             {
-                if(widget instanceof Button && widget.getMessage() instanceof TranslationTextComponent && ((TranslationTextComponent)widget.getMessage()).getKey().equals("menu.options"))
+                if(widget instanceof Button && ((Button)widget).getMessage() instanceof TranslatableComponent && ((TranslatableComponent)((Button)widget).getMessage()).getKey().equals("menu.options"))
                 {
-                    Button.IPressable oriPress = ((Button)widget).onPress;
+                    Button.OnPress oriPress = ((Button)widget).onPress;
                     ((Button)widget).onPress = button -> {
                         if(ObfHelper.isDevEnvironment() && !Screen.hasControlDown())
                         {
@@ -76,14 +49,23 @@ public class EventHandlerClient
                             }
                             else
                             {
-                                Minecraft.getInstance().displayGuiScreen(getConfigGui(Minecraft.getInstance(), Minecraft.getInstance().currentScreen));
+                                mc.setScreen(getConfigGui(mc, mc.screen));
                             }
                         }
                         else if(iChunUtil.configClient.buttonOptionsShiftOpensMods)
                         {
                             if(Screen.hasShiftDown())
                             {
-                                Minecraft.getInstance().displayGuiScreen(new net.minecraftforge.fml.client.gui.screen.ModListScreen(Minecraft.getInstance().currentScreen));
+                                try
+                                {
+                                    Class clz = Class.forName("net.minecraftforge.client.gui.ModListScreen");
+                                    Screen modsScreen = (Screen)clz.getDeclaredConstructor(Screen.class).newInstance(mc.screen);
+                                    mc.setScreen(modsScreen);
+                                }
+                                catch(ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e)
+                                {
+                                    iChunUtil.LOGGER.error("Error creating FML Mods screen, please report this to iChun!", e);
+                                }
                             }
                             else
                             {
@@ -95,5 +77,6 @@ public class EventHandlerClient
                 }
             }
         }
+
     }
 }

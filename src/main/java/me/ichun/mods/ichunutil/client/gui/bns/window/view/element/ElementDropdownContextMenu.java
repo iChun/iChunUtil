@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
@@ -34,7 +34,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle() > 0)
@@ -42,10 +42,9 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             RenderHelper.drawColour(stack, -6250336, 255, getLeft(), getTop(), width - ElementNumberInput.BUTTON_WIDTH, height, 0);
             RenderHelper.drawColour(stack, -16777216, 255, getLeft() + 1, getTop() + 1, width - 2 - ElementNumberInput.BUTTON_WIDTH, height - 2, 0);
 
-            RenderSystem.color4f(1F, 1F, 1F, 1F);
-            RenderSystem.enableAlphaTest();
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parentFragment.isDragging() && parentFragment.getListener() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
+            renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
 
             bindTexture(resourceStatsIcon());
             int size = 4;
@@ -54,10 +53,10 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
         else
         {
             fill(stack, getTheme().elementButtonBorder, 0);
-            int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parentFragment.isDragging() && parentFragment.getListener() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
+            int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
             fill(stack, colour, 1);
 
-            if(parentFragment.isDragging() && parentFragment.getListener() == this)
+            if(parentFragment.isDragging() && parentFragment.getFocused() == this)
             {
                 colour = getTheme().elementInputUpDownClick;
             }
@@ -70,11 +69,11 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
                 colour = getTheme().elementInputBorder;
             }
             RenderHelper.drawColour(stack, colour[0], colour[1], colour[2], 255, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, height, 0);
-            stack.push();
+            stack.pushPose();
             float scale = 0.5F;
             stack.scale(scale, scale, scale);
-            drawString(stack, "\u25BC", (getRight() - ElementNumberInput.BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((height / 2d) - getFontRenderer().FONT_HEIGHT / 2d)) / scale);
-            stack.pop();
+            drawString(stack, "\u25BC", (getRight() - ElementNumberInput.BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((height / 2d) - getFontRenderer().lineHeight / 2d)) / scale);
+            stack.popPose();
         }
         if(!text.isEmpty())
         {
@@ -87,7 +86,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
             {
                 setTooltip(text);
             }
-            drawString(stack, s, getLeft() + 5, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1);
+            drawString(stack, s, getLeft() + 5, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1);
         }
     }
 

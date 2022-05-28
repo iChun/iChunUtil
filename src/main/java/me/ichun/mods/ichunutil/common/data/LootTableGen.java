@@ -5,16 +5,17 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.block.Block;
+import me.ichun.mods.ichunutil.loader.LoaderDelegate;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.data.loot.EntityLootTables;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.*;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.EntityLoot;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import javax.annotation.Nonnull;
@@ -24,7 +25,13 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class LootTableGen implements IDataProvider
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+
+public class LootTableGen implements DataProvider
 {
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -48,10 +55,10 @@ public class LootTableGen implements IDataProvider
     }
 
     @Override
-    public void act(DirectoryCache cache) {
+    public void run(HashCache cache) {
         Map<ResourceLocation, LootTable> map = Maps.newHashMap();
-        TriConsumer<LootParameterSet, ResourceLocation, LootTable.Builder> consumer = (set, key, builder) -> {
-            if (map.put(key, builder.setParameterSet(set).build()) != null)
+        TriConsumer<LootContextParamSet, ResourceLocation, LootTable.Builder> consumer = (set, key, builder) -> {
+            if (map.put(key, builder.setParamSet(set).build()) != null)
                 throw new IllegalStateException("Duplicate loot table " + key);
         };
 
@@ -64,7 +71,7 @@ public class LootTableGen implements IDataProvider
             Path target = this.gen.getOutputFolder().resolve("data/" + key.getNamespace() + "/loot_tables/" + key.getPath() + ".json");
 
             try {
-                IDataProvider.save(GSON, cache, LootTableManager.toJson(table), target);
+                DataProvider.save(GSON, cache, LootTables.serialize(table), target);
                 iChunUtil.LOGGER.info("Saved loot table {}", target);
             } catch (IOException ioexception) {
                 iChunUtil.LOGGER.error("Couldn't save loot table {}", target, ioexception);
@@ -72,23 +79,23 @@ public class LootTableGen implements IDataProvider
         });
     }
 
-    public static class Blocks extends BlockLootTables
+    public static class Blocks extends BlockLoot
             implements Data
     {
-        private HashMap<Block, BiConsumer<BlockLootTables, Block>> blocksToGen = new HashMap<>();
+        private HashMap<Block, BiConsumer<BlockLoot, Block>> blocksToGen = new HashMap<>();
 
         public Blocks(){}
 
-        public Blocks add(Block block, BiConsumer<BlockLootTables, Block> consumer)
+        public Blocks add(Block block, BiConsumer<BlockLoot, Block> consumer)
         {
             blocksToGen.put(block, consumer);
             return this;
         }
 
         @Override
-        public LootParameterSet lootSet()
+        public LootContextParamSet lootSet()
         {
-            return LootParameterSets.BLOCK;
+            return LootContextParamSets.BLOCK;
         }
 
         @Override
@@ -99,38 +106,38 @@ public class LootTableGen implements IDataProvider
             Set<ResourceLocation> set = Sets.newHashSet(); //added but never used?
             blocksToGen.keySet().forEach((block) -> {
                 ResourceLocation table = block.getLootTable();
-                if(!LootTables.EMPTY.equals(table) && set.add(table))
+                if(!BuiltInLootTables.EMPTY.equals(table) && set.add(table))
                 {
-                    LootTable.Builder builder = this.lootTables.remove(table);
+                    LootTable.Builder builder = this.map.remove(table);
                     if (builder == null)
-                        throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, block.getRegistryName()));
+                        throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, LoaderHandler.d().getRegistryName(block)));
 
                     consumer.accept(table, builder);
                 }
             });
 
-            if (!this.lootTables.isEmpty())
-                throw new IllegalStateException("Created block loot tables for non-blocks: " + this.lootTables.keySet());
+            if (!this.map.isEmpty())
+                throw new IllegalStateException("Created block loot tables for non-blocks: " + this.map.keySet());
         }
     }
 
-    public static class Entities extends EntityLootTables
+    public static class Entities extends EntityLoot
             implements Data
     {
-        private HashMap<EntityType<?>, BiConsumer<EntityLootTables, EntityType<?>>> entitiesToGen = new HashMap<>();
+        private HashMap<EntityType<?>, BiConsumer<EntityLoot, EntityType<?>>> entitiesToGen = new HashMap<>();
 
         public Entities(){}
 
-        public Entities add(EntityType<?> type, BiConsumer<EntityLootTables, EntityType<?>> consumer)
+        public Entities add(EntityType<?> type, BiConsumer<EntityLoot, EntityType<?>> consumer)
         {
             entitiesToGen.put(type, consumer);
             return this;
         }
 
         @Override
-        public LootParameterSet lootSet()
+        public LootContextParamSet lootSet()
         {
-            return LootParameterSets.ENTITY;
+            return LootContextParamSets.ENTITY;
         }
 
         @Override
@@ -140,27 +147,27 @@ public class LootTableGen implements IDataProvider
 
             Set<ResourceLocation> set = Sets.newHashSet();
             entitiesToGen.keySet().forEach((type) -> {
-                if(type.getClassification() != EntityClassification.MISC)
+                if(type.getCategory() != MobCategory.MISC)
                 {
-                    ResourceLocation table = type.getLootTable();
-                    if(table != LootTables.EMPTY && set.add(table))
+                    ResourceLocation table = type.getDefaultLootTable();
+                    if(table != BuiltInLootTables.EMPTY && set.add(table))
                     {
-                        LootTable.Builder builder = this.lootTables.remove(table);
+                        LootTable.Builder builder = this.map.remove(table);
                         if (builder == null)
-                            throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, type.getRegistryName()));
+                            throw new IllegalStateException(String.format("Missing loot table '%s' for '%s'", table, LoaderHandler.d().getRegistryName(type)));
 
                         consumer.accept(table, builder);
                     }
                 }
             });
 
-            if (!this.lootTables.isEmpty())
-                throw new IllegalStateException("Created entity loot tables for non-living entities: " + this.lootTables.keySet());
+            if (!this.map.isEmpty())
+                throw new IllegalStateException("Created entity loot tables for non-living entities: " + this.map.keySet());
         }
     }
 
     public interface Data extends Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>
     {
-        LootParameterSet lootSet();
+        LootContextParamSet lootSet();
     }
 }

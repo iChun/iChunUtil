@@ -1,39 +1,39 @@
 package me.ichun.mods.ichunutil.client.gui.mouse;
 
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 
 public class MouseHelper
 {
-    public static double getMouseDistanceFromCenter(MainWindow window)
+    public static double getMouseDistanceFromCenter(Window window)
     {
-        double centerX = window.getScaledWidth() / 2D;
-        double centerY = window.getScaledHeight() / 2D;
+        double centerX = window.getGuiScaledWidth() / 2D;
+        double centerY = window.getGuiScaledHeight() / 2D;
 
         Minecraft mc = Minecraft.getInstance();
 
-        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
-        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
+        double posX = mc.mouseHandler.xpos * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
+        double posY = mc.mouseHandler.ypos * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
 
         return Math.sqrt(posX * posX + posY * posY);
     }
 
-    public static float getMouseAngleFromCenter(MainWindow window)
+    public static float getMouseAngleFromCenter(Window window)
     {
-        double centerX = window.getScaledWidth() / 2D;
-        double centerY = window.getScaledHeight() / 2D;
+        double centerX = window.getGuiScaledWidth() / 2D;
+        double centerY = window.getGuiScaledHeight() / 2D;
 
         Minecraft mc = Minecraft.getInstance();
 
-        double posX = mc.mouseHelper.mouseX * window.getScaledWidth() / window.getWidth() - centerX;
-        double posY = mc.mouseHelper.mouseY * window.getScaledHeight() / window.getHeight() - centerY;
+        double posX = mc.mouseHandler.xpos * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
+        double posY = mc.mouseHandler.ypos * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
 
         return (float)(Math.toDegrees(Math.atan2(posY, posX)) + 90F + 360F) % 360F;
     }
 
     public static int getSelectedIndex(int count)
     {
-        float angle = getMouseAngleFromCenter(Minecraft.getInstance().getMainWindow());
+        float angle = getMouseAngleFromCenter(Minecraft.getInstance().getWindow());
 
         float segment = 360F / count;
 

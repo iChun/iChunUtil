@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 
 import javax.annotation.Nonnull;
@@ -23,12 +23,12 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle() > 0)
         {
-            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || (parentFragment.isDragging() && parentFragment.getListener() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE), renderMinecraftStyle());
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || (parentFragment.isDragging() && parentFragment.getFocused() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE), renderMinecraftStyle());
         }
         else
         {
@@ -38,7 +38,7 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
             {
                 colour = getTheme().elementButtonBackgroundInactive;
             }
-            else if(parentFragment.isDragging() && parentFragment.getListener() == this)
+            else if(parentFragment.isDragging() && parentFragment.getFocused() == this)
             {
                 colour = getTheme().elementButtonClick;
             }

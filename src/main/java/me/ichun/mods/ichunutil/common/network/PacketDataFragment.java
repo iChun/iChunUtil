@@ -1,7 +1,6 @@
 package me.ichun.mods.ichunutil.common.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.LogicalSide;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -28,9 +27,9 @@ public abstract class PacketDataFragment extends AbstractPacket
     }
 
     @Override
-    public void writeTo(PacketBuffer buffer)
+    public void writeTo(FriendlyByteBuf buffer)
     {
-        buffer.writeString(fileName);
+        buffer.writeUtf(fileName);
         buffer.writeShort(packetTotal);
         buffer.writeShort(packetNumber);
         buffer.writeInt(data.length);
@@ -38,9 +37,9 @@ public abstract class PacketDataFragment extends AbstractPacket
     }
 
     @Override
-    public void readFrom(PacketBuffer buffer)
+    public void readFrom(FriendlyByteBuf buffer)
     {
-        fileName = buffer.readString(32767);
+        fileName = buffer.readUtf(32767);
         packetTotal = buffer.readShort();
         packetNumber = buffer.readShort();
 
@@ -49,9 +48,9 @@ public abstract class PacketDataFragment extends AbstractPacket
         buffer.readBytes(data);
     }
 
-    public byte[] process(LogicalSide side) //returns null if not complete, data if complete.
+    public byte[] process(boolean client) //returns null if not complete, data if complete.
     {
-        HashMap<String, byte[][]> sidedFiles = SIDED_PARTIAL_DATA.computeIfAbsent(side, v -> new HashMap<>());
+        HashMap<String, byte[][]> sidedFiles = SIDED_PARTIAL_DATA.computeIfAbsent(client ? LogicalSide.CLIENT : LogicalSide.SERVER, v -> new HashMap<>());
         byte[][] packets = sidedFiles.computeIfAbsent(fileName, v -> new byte[packetTotal][]);
         packets[packetNumber] = data;
 
@@ -88,4 +87,10 @@ public abstract class PacketDataFragment extends AbstractPacket
     }
 
     public static final EnumMap<LogicalSide, HashMap<String, byte[][]>> SIDED_PARTIAL_DATA = new EnumMap<>(LogicalSide.class);
+
+    private enum LogicalSide
+    {
+        CLIENT,
+        SERVER
+    }
 }

@@ -4,13 +4,10 @@ import com.google.gson.*;
 import me.ichun.mods.ichunutil.api.common.head.HeadInfo;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.loading.FMLPaths;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.player.Player;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nullable;
@@ -93,7 +90,7 @@ public class HeadHandler
 
             try
             {
-                Path workingDir = FMLPaths.CONFIGDIR.get().resolve(iChunUtil.MOD_ID);
+                Path workingDir = LoaderHandler.d().getConfigDir().resolve(iChunUtil.MOD_ID);
                 if(!Files.exists(workingDir)) Files.createDirectory(workingDir);
 
                 headDir = workingDir.resolve("head");
@@ -121,7 +118,7 @@ public class HeadHandler
             }
             catch(IOException e)
             {
-                iChunUtil.LOGGER.fatal("Error initialising HeadInfo resources!");
+                iChunUtil.LOGGER.error("Error initialising HeadInfo resources!");
                 e.printStackTrace();
             }
         }
@@ -223,8 +220,7 @@ public class HeadHandler
 
     public static boolean readHeadInfoJson(String json) throws ClassNotFoundException, JsonSyntaxException
     {
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(json).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         if(jsonObject.has("forClass"))
         {
             String className = jsonObject.get("forClass").getAsString();
@@ -270,14 +266,14 @@ public class HeadHandler
     {
         for(Map.Entry<Class<? extends LivingEntity>, HeadInfo<?>> e : HeadHandler.MODEL_OFFSET_HELPERS.entrySet())
         {
-            if(e.getKey() == PlayerEntity.class)
+            if(e.getKey() == Player.class)
             {
                 e.getValue().hasStrippedInfo = true;
             }
 
             e.getValue().forClass = e.getKey().getName();
 
-            if(!(e.getKey() == EnderDragonEntity.class))
+            if(!(e.getKey() == EnderDragon.class))
             {
                 continue;
             }
@@ -299,20 +295,20 @@ public class HeadHandler
 
     public static class SerialiserHelper
     {
-        public boolean shiftKeyDown;
-
-        @SubscribeEvent
-        public void onClientTick(TickEvent.ClientTickEvent event)
-        {
-            if(event.phase == TickEvent.Phase.END)
-            {
-                if(shiftKeyDown && !Screen.hasShiftDown() && Screen.hasControlDown())
-                {
-                    System.out.println("dump");
-                    HeadHandler.serializeHeadInfos();
-                }
-                shiftKeyDown = Screen.hasShiftDown();
-            }
-        }
+        //        public boolean shiftKeyDown;
+        //
+        //        @SubscribeEvent
+        //        public void onClientTick(TickEvent.ClientTickEvent event)
+        //        {
+        //            if(event.phase == TickEvent.Phase.END)
+        //            {
+        //                if(shiftKeyDown && !Screen.hasShiftDown() && Screen.hasControlDown())
+        //                {
+        //                    System.out.println("dump");
+        //                    HeadHandler.serializeHeadInfos();
+        //                }
+        //                shiftKeyDown = Screen.hasShiftDown();
+        //            }
+        //        }
     }
 }

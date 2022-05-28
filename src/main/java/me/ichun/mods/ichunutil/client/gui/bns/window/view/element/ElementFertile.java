@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -18,20 +18,20 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
         super(parent);
     }
 
-    public abstract List<? extends Fragment<?>> getEventListeners();
+    public abstract List<? extends Fragment<?>> children();
 
     @Override
     public void init()
     {
         super.init();
-        getEventListeners().forEach(Fragment::init);
+        children().forEach(Fragment::init);
     }
 
     @Override
     public void resize(Minecraft mc, int width, int height)
     {
         super.resize(mc, width, height);
-        getEventListeners().forEach(child -> child.resize(mc, this.width, this.height));
+        children().forEach(child -> child.resize(mc, this.width, this.height));
     }
 
     @Override
@@ -40,9 +40,9 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
         if(isMouseOver(mouseX, mouseY))
         {
             boolean hasElement = defaultMouseClicked(mouseX, mouseY, button); //this calls setDragging();
-            if(!hasElement && getListener() instanceof Fragment)
+            if(!hasElement && getFocused() instanceof Fragment)
             {
-                setListener(null);
+                setFocused(null);
             }
             return true;
         }
@@ -52,12 +52,12 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
     @Override
     public boolean changeFocus(boolean direction) // do the default from INestedGuiEventHandler
     {
-        IGuiEventListener iguieventlistener = this.getListener();
+        GuiEventListener iguieventlistener = this.getFocused();
         boolean flag = iguieventlistener != null;
         if (flag && iguieventlistener.changeFocus(direction)) {
             return true;
         } else {
-            List<? extends IGuiEventListener> list = this.getEventListeners();
+            List<? extends GuiEventListener> list = this.children();
             int j = list.indexOf(iguieventlistener);
             int i;
             if (flag && j >= 0) {
@@ -68,19 +68,19 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
                 i = list.size();
             }
 
-            ListIterator<? extends IGuiEventListener> listiterator = list.listIterator(i);
+            ListIterator<? extends GuiEventListener> listiterator = list.listIterator(i);
             BooleanSupplier booleansupplier = direction ? listiterator::hasNext : listiterator::hasPrevious;
-            Supplier<? extends IGuiEventListener> supplier = direction ? listiterator::next : listiterator::previous;
+            Supplier<? extends GuiEventListener> supplier = direction ? listiterator::next : listiterator::previous;
 
             while(booleansupplier.getAsBoolean()) {
-                IGuiEventListener iguieventlistener1 = supplier.get();
+                GuiEventListener iguieventlistener1 = supplier.get();
                 if (iguieventlistener1.changeFocus(direction)) {
-                    this.setListener(iguieventlistener1);
+                    this.setFocused(iguieventlistener1);
                     return true;
                 }
             }
 
-            this.setListener(null);
+            this.setFocused(null);
             return false;
         }
     }
@@ -91,7 +91,7 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
     public int getMinWidth()
     {
         int min = 0;
-        for(IGuiEventListener child : getEventListeners())
+        for(GuiEventListener child : children())
         {
             if(child instanceof Fragment<?>)
             {
@@ -110,7 +110,7 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
     public int getMinHeight()
     {
         int min = 0;
-        for(IGuiEventListener child : getEventListeners())
+        for(GuiEventListener child : children())
         {
             if(child instanceof Fragment<?>)
             {

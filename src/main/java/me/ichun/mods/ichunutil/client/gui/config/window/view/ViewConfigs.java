@@ -9,7 +9,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollB
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
-import net.minecraftforge.fml.config.ModConfig;
+import me.ichun.mods.ichunutil.common.config.ConfigBase;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class ViewConfigs extends View<WindowConfigs>
         super(parent, s);
 
         ElementButton<?> btn = new ElementButton<>(this, "gui.done", button -> {
-            parent.parent.closeScreen();
+            parent.parent.onClose();
         });
         btn.setWidth(60);
         btn.setHeight(20);
@@ -59,7 +59,7 @@ public class ViewConfigs extends View<WindowConfigs>
                     {
                         if(item1.getObject() == e.getValue().first())
                         {
-                            item.parentFragment.setListener(item);
+                            item.parentFragment.setFocused(item);
                             item1.selected = true;
                             parent.parent.selectItem(item1);
                             break;
@@ -85,14 +85,13 @@ public class ViewConfigs extends View<WindowConfigs>
         elements.add(list);
     }
 
-    public int getColorForType(ModConfig.Type type)
+    public int getColorForType(ConfigBase.Type type)
     {
-        switch(type)
-        {
-            case CLIENT: return Theme.getAsHex(getTheme().font);
-            case COMMON: return Theme.getAsHex(getTheme().fontChat);
-            case SERVER: return Theme.getAsHex(getTheme().fontDim);
-            default: return 0xff0000;
-        }
+        return switch(type)
+                {
+                    case CLIENT -> Theme.getAsHex(getTheme().font);
+                    case COMMON -> Theme.getAsHex(getTheme().fontChat);
+                    case SERVER -> Theme.getAsHex(getTheme().fontDim);
+                };
     }
 }

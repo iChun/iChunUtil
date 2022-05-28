@@ -1,0 +1,14 @@
+accessWidener	v1	named
+
+################## DOOOO NOOTTT EDIT THIS FILEEEEE USE THE FABRIC ONE
+
+# Not accessible in Fabric environments
+accessible    field    net/minecraft/data/loot/EntityLoot    map    Ljava/util/Map;
+accessible    field    net/minecraft/data/loot/BlockLoot    map    Ljava/util/Map;
+
+
+# Mouse helper
+accessible    field    net/minecraft/client/MouseHandler    xpos    D
+accessible    field    net/minecraft/client/MouseHandler    ypos    D
+
+

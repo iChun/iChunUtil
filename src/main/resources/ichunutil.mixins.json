@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.ichun.mods.ichunutil.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "LivingEntityInvokerMixin",
+    "ReloadableServerResourcesMixin"
+  ],
+  "client": [
+    "EntityRendererInvokerMixin",
+    "LivingEntityRendererInvokerMixin",
+    "MinecraftMixin",
+    "ToastComponentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

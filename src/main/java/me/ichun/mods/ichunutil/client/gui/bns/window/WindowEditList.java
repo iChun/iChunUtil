@@ -2,7 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.ViewEditList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class WindowEditList<M extends IWindows> extends Window<M>
         this(parent, s, objectList, validator, responder, null);
     }
 
-    public WindowEditList(@Nonnull M parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, IReorderingProcessor> textFormatter)
+    public WindowEditList(@Nonnull M parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent);
 

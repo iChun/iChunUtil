@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
@@ -8,11 +9,11 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
 import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrained;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.INestedGuiEventHandler;
-import net.minecraft.client.gui.IRenderable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 public abstract class Fragment<P extends Fragment>
-        implements IConstrainable, IConstrained, INestedGuiEventHandler, IRenderable
+        implements IConstrainable, IConstrained, ContainerEventHandler, Widget
 {
     private static final ResourceLocation VANILLA_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     private static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
@@ -82,7 +83,7 @@ public abstract class Fragment<P extends Fragment>
 
     public abstract void init();
     @Override
-    public abstract List<? extends Fragment<?>> getEventListeners();
+    public abstract List<? extends Fragment<?>> children();
 
     public <T extends Workspace> T getWorkspace()
     {
@@ -91,12 +92,12 @@ public abstract class Fragment<P extends Fragment>
 
     public void tick()
     {
-        getEventListeners().forEach(Fragment::tick);
+        children().forEach(Fragment::tick);
     }
 
     public void onClose()
     {
-        getEventListeners().forEach(Fragment::onClose);
+        children().forEach(Fragment::onClose);
     }
 
     public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
@@ -106,7 +107,7 @@ public abstract class Fragment<P extends Fragment>
             return (T)this;
         }
         Fragment<?> o = null;
-        for(IGuiEventListener child : getEventListeners())
+        for(GuiEventListener child : children())
         {
             if(o == null && child instanceof Fragment)
             {
@@ -127,25 +128,25 @@ public abstract class Fragment<P extends Fragment>
         return mousePos >= p1 && mousePos < p2;
     }
 
-    public FontRenderer getFontRenderer()
+    public Font getFontRenderer()
     {
         return parentFragment.getFontRenderer();
     }
 
-    public void drawString(MatrixStack stack, String s, float posX, float posY)
+    public void drawString(PoseStack stack, String s, float posX, float posY)
     {
         drawString(stack, s, posX, posY, renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
     }
 
-    public void drawString(MatrixStack stack, String s, float posX, float posY, int color)
+    public void drawString(PoseStack stack, String s, float posX, float posY, int color)
     {
         if(renderMinecraftStyle() > 0)
         {
-            getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color);
+            getFontRenderer().drawShadow(stack, s, posX, posY, color);
         }
         else
         {
-            getFontRenderer().drawString(stack, s, posX, posY, color);
+            getFontRenderer().draw(stack, s, posX, posY, color);
         }
     }
 
@@ -159,7 +160,7 @@ public abstract class Fragment<P extends Fragment>
         if(isMouseOver(mouseX, mouseY))
         {
             Fragment<?> fragment = this;
-            for(IGuiEventListener child : this.getEventListeners())
+            for(GuiEventListener child : this.children())
             {
                 if(child instanceof Fragment)
                 {
@@ -202,12 +203,12 @@ public abstract class Fragment<P extends Fragment>
         RenderHelper.endGlScissor();
     }
 
-    public void fill(MatrixStack stack, int[] colours, int border)
+    public void fill(PoseStack stack, int[] colours, int border)
     {
         fill(stack, colours, 255, border);
     }
 
-    public void fill(MatrixStack stack, int[] colours, int alpha, int border)
+    public void fill(PoseStack stack, int[] colours, int alpha, int border)
     {
         RenderHelper.drawColour(stack, colours[0], colours[1], colours[2], alpha, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
     }
@@ -219,10 +220,10 @@ public abstract class Fragment<P extends Fragment>
 
     public String reString(String s, int length) //shortens the string and slaps and ellipsis at the end
     {
-        if(getFontRenderer().getStringWidth(s) > length)
+        if(getFontRenderer().width(s) > length)
         {
             String s1 = s;
-            while(getFontRenderer().getStringWidth(s1 + Workspace.ELLIPSIS) > length)
+            while(getFontRenderer().width(s1 + Workspace.ELLIPSIS) > length)
             {
                 s1 = s1.substring(0, s1.length() - 1);
             }
@@ -233,7 +234,7 @@ public abstract class Fragment<P extends Fragment>
 
     //INestedGuiEventHandler
     @Nullable
-    private IGuiEventListener focused;
+    private GuiEventListener focused;
     private boolean isDragging;
 
     @Override
@@ -250,15 +251,15 @@ public abstract class Fragment<P extends Fragment>
 
     @Nullable
     @Override
-    public IGuiEventListener getListener()
+    public GuiEventListener getFocused()
     {
         return focused;
     }
 
     @Override
-    public void setListener(@Nullable IGuiEventListener iGuiEventListener)
+    public void setFocused(@Nullable GuiEventListener iGuiEventListener)
     {
-        IGuiEventListener lastFocused = getListener();
+        GuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && iGuiEventListener != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(iGuiEventListener);
@@ -266,13 +267,13 @@ public abstract class Fragment<P extends Fragment>
         focused = iGuiEventListener;
     }
 
-    public void unfocus(@Nullable IGuiEventListener guiReplacing) // pass the unfocused event down. Unfocus triggers before focus is set
+    public void unfocus(@Nullable GuiEventListener guiReplacing) // pass the unfocused event down. Unfocus triggers before focus is set
     {
-        IGuiEventListener lastFocused = getListener();
+        GuiEventListener lastFocused = getFocused();
         if(lastFocused instanceof Fragment && guiReplacing != lastFocused)
         {
             ((Fragment<?>)lastFocused).unfocus(guiReplacing);
-            setListener(null); //set focus to nothing. MouseClicked will handle the focus of the new object.
+            setFocused(null); //set focus to nothing. MouseClicked will handle the focus of the new object.
         }
     }
 
@@ -280,7 +281,7 @@ public abstract class Fragment<P extends Fragment>
     public boolean mouseReleased(double mouseX, double mouseY, int button) //pass down the mouse released to the focused event
     {
         this.setDragging(false);
-        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
+        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -288,10 +289,10 @@ public abstract class Fragment<P extends Fragment>
     {
         if(isMouseOver(mouseX, mouseY)) //only return true if we're clicking on us
         {
-            boolean hasElement = INestedGuiEventHandler.super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
-            if(!hasElement && getListener() instanceof Fragment)
+            boolean hasElement = ContainerEventHandler.super.mouseClicked(mouseX, mouseY, button); //this calls setDragging();
+            if(!hasElement && getFocused() instanceof Fragment)
             {
-                setListener(null);
+                setFocused(null);
             }
             return true;
         }
@@ -472,9 +473,9 @@ public abstract class Fragment<P extends Fragment>
     }
 
 
-
+    //Convenience method
     public static void bindTexture(ResourceLocation rl)
     {
-        Minecraft.getInstance().getTextureManager().bindTexture(rl);
+        RenderSystem.setShaderTexture(0, rl);
     }
 }

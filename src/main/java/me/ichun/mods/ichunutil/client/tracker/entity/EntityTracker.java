@@ -1,23 +1,21 @@
 package me.ichun.mods.ichunutil.client.tracker.entity;
 
 import me.ichun.mods.ichunutil.client.tracker.tag.Tag;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class EntityTracker extends Entity
 {
     public HashSet<Tag> tags = new HashSet<>();
@@ -33,7 +31,7 @@ public class EntityTracker extends Entity
 
     public int lastUpdate = -1;
 
-    public EntityTracker(EntityType<?> entityTypeIn, World worldIn)
+    public EntityTracker(EntityType<?> entityTypeIn, Level worldIn)
     {
         super(entityTypeIn, worldIn);
         setInvisible(true);
@@ -107,10 +105,10 @@ public class EntityTracker extends Entity
 
         maxTrack = tracks;
         maxPersistAfterDeath = deathTicks;
-        size = EntitySize.flexible(w, h);
-        ignoreFrustumCheck = ignoreFrustum;
+        dimensions = EntityDimensions.scalable(w, h);
+        noCulling = ignoreFrustum;
 
-        setPosition(getPosX(), getPosY(), getPosZ());
+        setPos(getX(), getY(), getZ());
     }
 
     @Override
@@ -120,37 +118,37 @@ public class EntityTracker extends Entity
 
         if(Minecraft.getInstance().player != null)
         {
-            lastUpdate = Minecraft.getInstance().player.ticksExisted;
+            lastUpdate = Minecraft.getInstance().player.tickCount;
         }
         else
         {
-            remove(); // player's null. IMPOSSIBRU. Kill.
+            discard(); // player's null. IMPOSSIBRU. Kill.
             return;
         }
 
-        if(!parent.isAlive() || !parent.world.getDimensionKey().equals(world.getDimensionKey())) //parent is "dead"
+        if(!parent.isAlive() || !parent.level.dimension().equals(level.dimension())) //parent is "dead"
         {
             if(maxPersistAfterDeath > 0)
             {
                 if(timeAfterDeath >= maxPersistAfterDeath)
                 {
-                    remove();
+                    discard();
                 }
                 timeAfterDeath++;
             }
-            else if(parent.removed)
+            else if(parent.isRemoved())
             {
-                remove();
+                discard();
             }
         }
         else //parent is "alive" and safe
         {
-            this.setPosition(parent.getPosX(), parent.getPosY(), parent.getPosZ());
-            this.setRotation(parent.rotationYaw, parent.rotationPitch);
+            this.setPos(parent.getX(), parent.getY(), parent.getZ());
+            this.setRot(parent.getYRot(), parent.getXRot());
 
             if(maxTrack > 0)
             {
-                EntityInfo info = new EntityInfo(parent.getPosX(), parent.getPosY(), parent.getPosZ(), parent.size.width, parent.size.height, parent.rotationYaw, parent.rotationPitch, parent.isInvisible());
+                EntityInfo info = new EntityInfo(parent.getX(), parent.getY(), parent.getZ(), parent.dimensions.width, parent.dimensions.height, parent.getYRot(), parent.getXRot(), parent.isInvisible());
                 trackedInfo.add(0, info);
                 tags.forEach(tag -> tag.addInfo(this, info));
 
@@ -167,8 +165,8 @@ public class EntityTracker extends Entity
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance) {
-        return parent.isInRangeToRenderDist(distance);
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        return parent.shouldRenderAtSqrDistance(distance);
     }
 
     @Override
@@ -178,21 +176,21 @@ public class EntityTracker extends Entity
     }
 
     @Override
-    protected void registerData(){}
+    protected void defineSynchedData(){}
 
     @Override
-    public boolean writeUnlessRemoved(CompoundNBT compound) { return false; } //disable saving of entity
+    public boolean saveAsPassenger(CompoundTag compound) { return false; } //disable saving of entity
 
     @Override
-    protected void readAdditional(CompoundNBT compound){}
+    protected void readAdditionalSaveData(CompoundTag compound){}
 
     @Override
-    protected void writeAdditional(CompoundNBT compound){}
+    protected void addAdditionalSaveData(CompoundTag compound){}
 
     @Override
-    public IPacket<?> createSpawnPacket()
+    public Packet<?> getAddEntityPacket()
     {
-        return NetworkHooks.getEntitySpawningPacket(this);
+        return LoaderHandler.d().getEntitySpawnPacket(this);
     }
 
     public static class EntityInfo

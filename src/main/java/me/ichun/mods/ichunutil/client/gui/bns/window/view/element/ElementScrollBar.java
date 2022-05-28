@@ -1,14 +1,11 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.*;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix4f;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -65,7 +62,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
 
     public void setScrollProg(float f)
     {
-        float scroll = MathHelper.clamp(f, 0F, 1F);
+        float scroll = Mth.clamp(f, 0F, 1F);
         if(scroll != scrollProg)
         {
             scrollProg = scroll;
@@ -111,7 +108,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         if(width <= 0 || height <= 0)
         {
@@ -300,8 +297,8 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     {
         pos = null;
         super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setListener(null); //we're a one time click, stop focusing on us
-        return getListener() != null && getListener().mouseReleased(mouseX, mouseY, button);
+        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
+        return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -334,16 +331,16 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
-    public static void draw(MatrixStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
+    public static void draw(PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
     {
-        Matrix4f matrix = stack.getLast().getMatrix();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .tex((float)u2, (float)v1).endVertex();
-        bufferbuilder.pos(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).tex((float)u2, (float)v2).endVertex();
-        bufferbuilder.pos(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .tex((float)u1, (float)v2).endVertex();
-        bufferbuilder.pos(matrix, (float)posX, (float)posY, (float)zLevel)                     .tex((float)u1, (float)v1).endVertex();
-        tessellator.draw();
+        Matrix4f matrix = stack.last().pose();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.vertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .uv((float)u2, (float)v1).endVertex();
+        bufferbuilder.vertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).uv((float)u2, (float)v2).endVertex();
+        bufferbuilder.vertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .uv((float)u1, (float)v2).endVertex();
+        bufferbuilder.vertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .uv((float)u1, (float)v1).endVertex();
+        tessellator.end();
     }
 }

@@ -1,9 +1,9 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,28 +30,28 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
     }
 
     @Override
-    public void renderText(MatrixStack stack)
+    public void renderText(PoseStack stack)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
 
-            stack.push();
+            stack.pushPose();
             stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
-            stack.rotate(Vector3f.ZP.rotationDegrees(90F * rotationCount));
-            stack.translate(- getFontRenderer().getStringWidth(s) / 2F,  - (getFontRenderer().FONT_HEIGHT) / 2F + 1, 0F);
+            stack.mulPose(Vector3f.ZP.rotationDegrees(90F * rotationCount));
+            stack.translate(- getFontRenderer().width(s) / 2F,  - (getFontRenderer().lineHeight) / 2F + 1, 0F);
 
             //draw the text
             if(renderMinecraftStyle() > 0)
             {
-                getFontRenderer().drawStringWithShadow(stack, s, 0, 0, getMinecraftFontColour());
+                getFontRenderer().drawShadow(stack, s, 0, 0, getMinecraftFontColour());
             }
             else
             {
-                getFontRenderer().drawString(stack, s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                getFontRenderer().draw(stack, s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
 
-            stack.pop();
+            stack.popPose();
         }
     }
 

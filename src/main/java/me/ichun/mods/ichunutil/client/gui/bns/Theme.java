@@ -1,9 +1,9 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -66,7 +66,7 @@ public class Theme
     public static void loadTheme(Theme themeToLoad)
     {
         loadTheme(INSTANCE, themeToLoad);
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(INSTANCE.workspaceBlock));
+        Block block = LoaderHandler.d().getBlockFromRegistry(new ResourceLocation(INSTANCE.workspaceBlock));
         if(block != null)
         {
             INSTANCE.block = block;
@@ -113,7 +113,7 @@ public class Theme
     {
         try
         {
-            Theme theme = newTheme.getClass().newInstance();
+            Theme theme = newTheme.getClass().getDeclaredConstructor().newInstance();
             loadTheme(theme, newTheme);
             return theme;
         }

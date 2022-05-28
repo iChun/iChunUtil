@@ -6,7 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +46,7 @@ public class WindowPopup extends Window<Workspace>
             text1.setConstraint(new Constraint(text1).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
             elements.add(text1);
 
-            ElementButton<?> button = new ElementButton<>(this, I18n.format("gui.ok"), elementClickable ->
+            ElementButton<?> button = new ElementButton<>(this, I18n.get("gui.ok"), elementClickable ->
             {
                 parent.parent.removeWindow(parent);
 

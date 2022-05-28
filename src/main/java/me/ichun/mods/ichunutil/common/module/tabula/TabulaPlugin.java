@@ -3,8 +3,7 @@ package me.ichun.mods.ichunutil.common.module.tabula;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButtonTextured;
 import me.ichun.mods.ichunutil.common.module.tabula.project.Project;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * Written for Hats to add in buttons for Tabula. Kept in iChunUtil because I didn't want to add dependency on Tabula
  */
-@OnlyIn(Dist.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public abstract class TabulaPlugin
 {
     /**

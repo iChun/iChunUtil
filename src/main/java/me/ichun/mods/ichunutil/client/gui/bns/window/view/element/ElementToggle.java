@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<T> callback)
     {
         super(parent, callback);
-        text = !s.isEmpty() ? I18n.format(s) : "";
+        text = !s.isEmpty() ? I18n.get(s) : "";
     }
 
     public <T extends ElementToggle<?>> T setToggled(boolean flag)
@@ -28,15 +28,14 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
-        RenderSystem.enableAlphaTest();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(stack, mouseX, mouseY, partialTick);
         if(renderMinecraftStyle() > 0)
         {
-            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getListener() == this || toggleState ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getFocused() == this || toggleState ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
         }
         else
         {
@@ -46,7 +45,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             {
                 colour = getTheme().elementButtonBackgroundInactive;
             }
-            else if(parentFragment.isDragging() && parentFragment.getListener() == this)
+            else if(parentFragment.isDragging() && parentFragment.getFocused() == this)
             {
                 colour = getTheme().elementButtonClick;
             }
@@ -71,7 +70,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
         renderText(stack);
     }
 
-    public void renderText(MatrixStack stack)
+    public void renderText(PoseStack stack)
     {
         if(!text.isEmpty())
         {
@@ -80,11 +79,11 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             //draw the text
             if(renderMinecraftStyle() > 0)
             {
-                getFontRenderer().drawStringWithShadow(stack, s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, getMinecraftFontColour());
+                getFontRenderer().drawShadow(stack, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, getMinecraftFontColour());
             }
             else
             {
-                getFontRenderer().drawString(stack, s, getLeft() + (this.width - getFontRenderer().getStringWidth(s)) / 2F, getTop() + (height - getFontRenderer().FONT_HEIGHT) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                getFontRenderer().draw(stack, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
         }
     }

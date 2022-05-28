@@ -1,6 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
 
@@ -26,7 +26,7 @@ public class ElementSharedSpace extends ElementFertile
     }
 
     @Override
-    public List<? extends Fragment<?>> getEventListeners()
+    public List<? extends Fragment<?>> children()
     {
         return elements;
     }
@@ -54,7 +54,7 @@ public class ElementSharedSpace extends ElementFertile
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
         elements.forEach(e -> e.render(stack, mouseX, mouseY, partialTick));

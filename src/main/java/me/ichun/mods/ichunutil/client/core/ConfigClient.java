@@ -12,15 +12,17 @@ import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.head.HeadHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.IOUtil;
-import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.config.ModConfig;
+import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -48,9 +50,10 @@ public class ConfigClient extends ConfigBase
     @CategoryDivider(name = "clientOnly")
     public boolean easterEgg = true;
 
+    @Prop(env = LoaderHandler.Env.FORGE) //TODO do this method in Forge!
     public boolean buttonOptionsShiftOpensMods = true;
 
-    @Prop(needsRestart = true)
+    @Prop
     public boolean overrideToastGui = true;
 
     @CategoryDivider(name = "headTracking")
@@ -61,16 +64,16 @@ public class ConfigClient extends ConfigBase
     public boolean horseEasterEgg = true;
 
     @Override
-    public <T extends ConfigBase> T init()
+    public void registerGuiElementOverrides()
     {
-        GUI_ELEMENT_OVERRIDES.put("iChunUtil:guiDefaultTheme", (value, item) -> {
+        guiElementOverrides.put("iChunUtil:guiDefaultTheme", (entry, item) -> {
 
-            Field field = value.value.field;
+            Field field = entry.entry.field;
             field.setAccessible(true);
             Object o;
             try
             {
-                o = field.get(value.value.parent);
+                o = field.get(entry.config);
             }
             catch(IllegalAccessException e)
             {
@@ -113,7 +116,7 @@ public class ConfigClient extends ConfigBase
 
                         if(theme != null)
                         {
-                            field.set(value.value.parent, contextMenu.text);
+                            field.set(entry.config, contextMenu.text);
 
                             Theme.loadTheme(theme);
                         }
@@ -127,9 +130,9 @@ public class ConfigClient extends ConfigBase
 
             return true;
         });
-        GUI_ELEMENT_OVERRIDES.put("iChunUtil:reloadHeadsButton", (value, itemOri) -> {
+        guiElementOverrides.put("iChunUtil:reloadHeadsButton", (entry, itemOri) -> {
 
-            ElementList.Item<?> item = itemOri.parentFragment.addItem(value).setBorderSize(0);
+            ElementList.Item<?> item = itemOri.parentFragment.addItem(entry).setBorderSize(0);
             item.setSelectionHandler(itemObj -> {
                 if(itemObj.selected)
                 {
@@ -139,16 +142,16 @@ public class ConfigClient extends ConfigBase
                         {
                             continue;
                         }
-                        element.parentFragment.setListener(element);
+                        element.parentFragment.setFocused(element);
                         element.mouseClicked(element.getLeft() + element.getWidth() / 2D, element.getTop() + element.getHeight() / 2D, 0);
                         element.mouseReleased(element.getLeft() + element.getWidth() / 2D, element.getTop() + element.getHeight() / 2D, 0);
                         break;
                     }
                 }
             });
-            ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(I18n.format("config.ichunutil.headTracking.reload.desc"));
+            ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(I18n.get("config.ichunutil.headTracking.reload.desc"));
             wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 90));
-            wrapper.setTooltip(value.desc);
+            wrapper.setTooltip(entry.desc);
             item.addElement(wrapper);
             ElementPadding padding = new ElementPadding(item, 0, 20);
             padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
@@ -159,14 +162,14 @@ public class ConfigClient extends ConfigBase
                 if(HeadHandler.hasInit())
                 {
                     int count = HeadHandler.loadHeadInfos();
-                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.reload.count", count));
+                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.get("config.ichunutil.headTracking.reload.count", count));
                 }
                 else
                 {
-                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.notLoaded"));
+                    WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.get("config.ichunutil.headTracking.notLoaded"));
                 }
             });
-            button.setTooltip(I18n.format("config.ichunutil.headTracking.reload.desc"));
+            button.setTooltip(I18n.get("config.ichunutil.headTracking.reload.desc"));
             button.setSize(80, 14);
             button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(button);
@@ -183,7 +186,7 @@ public class ConfigClient extends ConfigBase
                             int extCount = IOUtil.extractFiles(HeadHandler.getHeadsDir(), in, true);
 
                             HeadHandler.loadHeadInfos();
-                            WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.reload.reextract.count", extCount));
+                            WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.get("config.ichunutil.headTracking.reload.reextract.count", extCount));
                         }
                         else
                         {
@@ -193,7 +196,7 @@ public class ConfigClient extends ConfigBase
                     }
                     else
                     {
-                        WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.format("config.ichunutil.headTracking.notLoaded"));
+                        WindowPopup.popup(item.getWorkspace(), 0.6D, 0.6D, null, I18n.get("config.ichunutil.headTracking.notLoaded"));
                     }
                 }
                 catch(IOException e)
@@ -201,25 +204,24 @@ public class ConfigClient extends ConfigBase
                     e.printStackTrace();
                 }
             });
-            button1.setTooltip(I18n.format("config.ichunutil.headTracking.reload.reextract.desc"));
+            button1.setTooltip(I18n.get("config.ichunutil.headTracking.reload.reextract.desc"));
             button1.setSize(80, 14);
             button1.setConstraint(new Constraint(button1).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(button, Constraint.Property.Type.LEFT, 4));
             item.addElement(button1);
 
             return false; //we still want the button to generate, this is a hook in.
         });
-        return super.init();
     }
 
     @Override
     public void onConfigLoaded()
     {
-        File file = new File(ResourceHelper.getThemesDir().toFile(), guiDefaultTheme + ".json");
-        if(file.exists())
+        Path path = ResourceHelper.getThemesDir().resolve(guiDefaultTheme + ".json");
+        if(Files.exists(path) && Files.isRegularFile(path))
         {
             try
             {
-                InputStream con = new FileInputStream(file);
+                InputStream con = new FileInputStream(path.toFile());
                 String data = new String(ByteStreams.toByteArray(con));
                 con.close();
 
@@ -236,24 +238,23 @@ public class ConfigClient extends ConfigBase
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getModId()
     {
         return iChunUtil.MOD_ID;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getConfigName()
     {
         return iChunUtil.MOD_NAME;
     }
 
-    @Nonnull
     @Override
-    public ModConfig.Type getConfigType()
+    public Type getConfigType()
     {
-        return ModConfig.Type.CLIENT;
+        return Type.CLIENT;
     }
 }

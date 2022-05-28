@@ -1,13 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -93,7 +93,7 @@ ElementTextWrapper extends Element //TODO image element
         int tooltipTextWidth = 0;
         for (String textLine : text)
         {
-            int textLineWidth = getFontRenderer().getStringWidth(textLine);
+            int textLineWidth = getFontRenderer().width(textLine);
 
             if (textLineWidth > tooltipTextWidth)
             {
@@ -124,8 +124,8 @@ ElementTextWrapper extends Element //TODO image element
                 wrappedTextLines.add(textLine);
                 continue;
             }
-            List<ITextProperties> texts = getFontRenderer().getCharacterManager().func_238362_b_(new StringTextComponent(textLine), needsWrap ? tooltipTextWidth : longestLine, Style.EMPTY);
-            for(ITextProperties text : texts)
+            List<FormattedText> texts = getFontRenderer().getSplitter().splitLines(new TextComponent(textLine), needsWrap ? tooltipTextWidth : longestLine, Style.EMPTY);
+            for(FormattedText text : texts)
             {
                 wrappedTextLines.add(text.getString());
             }
@@ -135,7 +135,7 @@ ElementTextWrapper extends Element //TODO image element
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         int textX = getLeft() + 2;
         int textY = getTop() + 4;
@@ -148,15 +148,15 @@ ElementTextWrapper extends Element //TODO image element
     }
 
     @Override
-    public void drawString(MatrixStack stack, String s, float posX, float posY)
+    public void drawString(PoseStack stack, String s, float posX, float posY)
     {
         if(renderMinecraftStyle() > 0)
         {
-            getFontRenderer().drawStringWithShadow(stack, s, posX, posY, color != null ? color : getMinecraftFontColour());
+            getFontRenderer().drawShadow(stack, s, posX, posY, color != null ? color : getMinecraftFontColour());
         }
         else
         {
-            getFontRenderer().drawString(stack, s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
+            getFontRenderer().draw(stack, s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
         }
     }
 
@@ -210,19 +210,19 @@ ElementTextWrapper extends Element //TODO image element
     }
 
     public static final Random RANDOM = new Random();
-    public static TextFormatting getRandomTextFormattingColorForName(String s) //I know this can be cached but meh
+    public static ChatFormatting getRandomTextFormattingColorForName(String s) //I know this can be cached but meh
     {
         if(s.equalsIgnoreCase("System"))
         {
-            return TextFormatting.RED;
+            return ChatFormatting.RED;
         }
 
-        ArrayList<TextFormatting> formats = new ArrayList<>();
+        ArrayList<ChatFormatting> formats = new ArrayList<>();
         for(int i = 1; i < 15; i++) // no black no red no white
         {
             if(i != 12) //no red
             {
-                formats.add(TextFormatting.values()[i]);
+                formats.add(ChatFormatting.values()[i]);
             }
         }
         RANDOM.setSeed(Math.abs(s.hashCode()));

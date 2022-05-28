@@ -1,15 +1,15 @@
 package me.ichun.mods.ichunutil.client.render;
 
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.TextureUtil;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class NativeImageTexture extends Texture
+public class NativeImageTexture extends AbstractTexture
 {
     @Nonnull
     public final NativeImage image;
@@ -22,12 +22,12 @@ public class NativeImageTexture extends Texture
     }
 
     @Override
-    public void loadTexture(IResourceManager manager) throws IOException
+    public void load(ResourceManager manager) throws IOException
     {
-        if(this.glTextureId == -1)
+        if(this.id == -1)
         {
-            TextureUtil.prepareImage(getGlTextureId(), image.getWidth(), image.getHeight());
-            image.uploadTextureSub(0, 0, 0, true);
+            TextureUtil.prepareImage(getId(), image.getWidth(), image.getHeight());
+            image.upload(0, 0, 0, true);
         }
     }
 

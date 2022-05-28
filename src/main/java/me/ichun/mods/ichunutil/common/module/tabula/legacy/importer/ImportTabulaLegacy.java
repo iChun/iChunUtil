@@ -7,7 +7,7 @@ import me.ichun.mods.ichunutil.common.module.tabula.legacy.project.ProjectInfo;
 import me.ichun.mods.ichunutil.common.module.tabula.legacy.project.TechneConverter;
 import me.ichun.mods.ichunutil.common.module.techne.TC1Json;
 import me.ichun.mods.ichunutil.common.module.techne.TC2Info;
-import net.minecraft.client.renderer.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
