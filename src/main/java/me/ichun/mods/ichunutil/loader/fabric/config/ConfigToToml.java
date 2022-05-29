@@ -14,29 +14,23 @@ public class ConfigToToml
     private static final Gson GSON = new Gson();
 
     //The TomlWriter sucks
-    public static String convertToToml(ConfigBase config)
+    public static String convertToToml(ConfigBase config, boolean minify)
     {
         StringWriter writer = new StringWriter();
 
         for(ConfigBase.Category category : config.categories)
         {
             //Write the category's comment
-            if(category.comment != null)
-            {
-                writeComment(writer, category.comment, false);
-            }
+            if(category.comment != null && !minify) writeComment(writer, category.comment, false);
             writeKey(writer, category.name);
-            writer.write("\n");
+            if(!minify) writer.write("\n");
 
             for(ConfigBase.Category.Entry entry : category.getEntries())
             {
-                if(entry.comment != null)
-                {
-                    writeComment(writer, entry.comment, true);
-                }
-                writeOptions(writer, entry);
+                if(entry.comment != null && !minify) writeComment(writer, entry.comment, true);
+                if(!minify) writeOptions(writer, entry);
                 writeField(writer, entry, config);
-                writer.write("\n");
+                if(!minify) writer.write("\n");
             }
         }
 

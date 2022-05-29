@@ -89,7 +89,7 @@ public class FabricConfigLoader
                     Files.createDirectories(configPath.getParent());
                 }
                 //File does not exist, we're creating a new config
-                String tomlString = ConfigToToml.convertToToml(config);
+                String tomlString = ConfigToToml.convertToToml(config, false);
                 FileUtils.writeStringToFile(configPath.toFile(), tomlString, Charsets.UTF_8);
             }
 
@@ -106,7 +106,7 @@ public class FabricConfigLoader
             config.setSaveMethod(() -> {
                 try
                 {
-                    String tomlString = ConfigToToml.convertToToml(config);
+                    String tomlString = ConfigToToml.convertToToml(config, false);
                     FileUtils.writeStringToFile(configPath.toFile(), tomlString, Charsets.UTF_8);
                 }
                 catch(IOException e)
@@ -284,7 +284,31 @@ public class FabricConfigLoader
                         if(tomlValue instanceof List)
                         {
                             Gson gson = new Gson();
-                            Object newList = new ArrayList<>((List<?>)gson.fromJson(gson.toJson(tomlValue), entry.field.getType()));
+                            ArrayList<?> newList = new ArrayList<>((List<?>)gson.fromJson(gson.toJson(tomlValue), entry.field.getType()));
+
+                            if(!(entry.prop.validator().equals("undefined") || entry.prop.validator().isEmpty()))
+                            {
+                                Method method = config.getClass().getDeclaredMethod(entry.prop.validator(), Object.class);
+                                method.setAccessible(true);
+
+                                newList.removeIf(o -> {
+                                    try
+                                    {
+                                        if(!(boolean)method.invoke(config, o))
+                                        {
+                                            iChunUtil.LOGGER.warn("Object {} from config {} failed validation, removing from list.", o, config.getFileName());
+                                            return true;
+                                        }
+                                    }
+                                    catch(IllegalAccessException | InvocationTargetException ex)
+                                    {
+                                        iChunUtil.LOGGER.error("Error validating object " + o + " from config " + config.getFileName(), ex);
+                                        return true;
+                                    }
+                                    return false;
+                                });
+                            }
+
                             entry.field.set(config, newList);
 
                             if(isReload && oriValue.equals(newList))
@@ -391,7 +415,7 @@ public class FabricConfigLoader
         {
             for(ConfigBase configBase : configBases)
             {
-                CHANNEL.sendTo(new PacketConfig(configBase.getFileName(), ConfigToToml.convertToToml(configBase)), handler.getPlayer());
+                CHANNEL.sendTo(new PacketConfig(configBase.getFileName(), ConfigToToml.convertToToml(configBase, true)), handler.getPlayer());
             }
         }
     }
