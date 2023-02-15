@@ -148,6 +148,7 @@ public final class ClientEntityTracker
                     .disableSummoning()
                     .immuneToFire()
                     .build("an entity from " + iChunUtil.MOD_NAME + ". Ignore this.");
+            TRACKER.setRegistryName(iChunUtil.MOD_ID, "client_entity_tracker");
         }
     }
 }

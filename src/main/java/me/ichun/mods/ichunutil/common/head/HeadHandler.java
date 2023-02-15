@@ -156,7 +156,7 @@ public class HeadHandler
                         iChunUtil.LOGGER.error("Error reading IMC HeadInfo file: {}", s);
                     }
                 }
-                catch(JsonSyntaxException e)
+                catch(JsonSyntaxException | IllegalStateException e)
                 {
                     iChunUtil.LOGGER.error("Error reading IMC HeadInfo file: {}", s);
                     e.printStackTrace();
@@ -206,7 +206,7 @@ public class HeadHandler
                         iChunUtil.LOGGER.error("Error reading HeadInfo file, no forClass: {}", file);
                     }
                 }
-                catch(IOException | JsonSyntaxException e)
+                catch(IOException | JsonSyntaxException | IllegalStateException e)
                 {
                     iChunUtil.LOGGER.error("Error reading HeadInfo file: {}", file);
                     e.printStackTrace();
@@ -221,7 +221,7 @@ public class HeadHandler
     }
 
 
-    public static boolean readHeadInfoJson(String json) throws ClassNotFoundException, JsonSyntaxException
+    public static boolean readHeadInfoJson(String json) throws ClassNotFoundException, JsonSyntaxException, IllegalStateException
     {
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = parser.parse(json).getAsJsonObject();
