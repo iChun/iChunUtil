@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.loader;
 import me.ichun.mods.ichunutil.loader.fabric.LoaderDelegateFabric;
 import org.jetbrains.annotations.NotNull;
 
+// This class is here in case other mods try to access iChunUtil's util stuff before iChunUtil initialises.
 public class LoaderHandler
 {
     @NotNull private static final Env ENV; //Not sure if defaulting to false is a good idea

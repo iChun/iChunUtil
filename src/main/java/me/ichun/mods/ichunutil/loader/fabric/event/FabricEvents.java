@@ -17,10 +17,22 @@ public class FabricEvents
         }
     });
 
+    public static final Event<LoadComplete> LOAD_COMPLETE = EventFactory.createArrayBacked(LoadComplete.class, callbacks -> () -> {
+        for(LoadComplete callback : callbacks)
+        {
+            callback.onLoadComplete();
+        }
+    });
 
     @FunctionalInterface
     public interface AddReloadListener
     {
         void onAddReloadListener(ArrayList<PreparableReloadListener> list);
+    }
+
+    @FunctionalInterface
+    public interface LoadComplete
+    {
+        void onLoadComplete();
     }
 }

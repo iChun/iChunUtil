@@ -54,6 +54,8 @@ public interface LoaderDelegate
 
     String remapField(String fieldName); //TODO ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName)
 
+    void registerPlayerTickStartListener(Consumer<Player> consumer);
+
     void registerPlayerTickEndListener(Consumer<Player> consumer);
 
     boolean isPlayerFakePlayer(ServerPlayer player); //TODO player instanceof FakePlayer
@@ -63,6 +65,8 @@ public interface LoaderDelegate
     Packet<?> getEntitySpawnPacket(Entity e); //TODO NetworkHooks.getEntitySpawningPacket(this);
 
     boolean isEntityAddedToWorld(Entity entity); //TODO entity.isAddedToWorld()
+
+    void registerLoadCompleteListener(Runnable runnable); //TODO IModEventBus::loadComplete?
 
     void registerAddReloadListener(PreparableReloadListener reloadListener); //TODO AddReloadListenerEvent, event.addListener(this);
 

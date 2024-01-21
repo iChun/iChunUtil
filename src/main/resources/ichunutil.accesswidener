@@ -1,14 +1,78 @@
 accessWidener	v1	named
 
-################## DOOOO NOOTTT EDIT THIS FILEEEEE USE THE FABRIC ONE
-
-# Not accessible in Fabric environments
+# Not accessible in Fabric environment
 accessible    field    net/minecraft/data/loot/EntityLoot    map    Ljava/util/Map;
 accessible    field    net/minecraft/data/loot/BlockLoot    map    Ljava/util/Map;
 
+# No setter/getter in Fabric environment
+accessible    field    net/minecraft/client/gui/components/AbstractWidget    height    I
+mutable    field    net/minecraft/client/Options    keyMappings    [Lnet/minecraft/client/KeyMapping;
 
-# Mouse helper
+
+### Client Only ###
+# Button
+accessible    field    net/minecraft/client/gui/components/Button    onPress    Lnet/minecraft/client/gui/components/Button$OnPress;
+mutable    field    net/minecraft/client/gui/components/Button    onPress    Lnet/minecraft/client/gui/components/Button$OnPress;
+
+# ClientAdvancements
+accessible    field    net/minecraft/client/multiplayer/ClientAdvancements    progress    Ljava/util/Map;
+
+# EntityRenderDispatcher
+accessible    field    net/minecraft/client/renderer/entity/EntityRenderDispatcher    playerRenderers    Ljava/util/Map;
+
+# ItemOverrides
+accessible    method    net/minecraft/client/renderer/block/model/ItemOverrides    <init>    ()V
+
+# ItemRenderer
+accessible    field    net/minecraft/client/renderer/entity/ItemRenderer    itemColors    Lnet/minecraft/client/color/item/ItemColors;
+
+# LivingEntityRenderer
+accessible    method    net/minecraft/client/renderer/entity/LivingEntityRenderer    addLayer    (Lnet/minecraft/client/renderer/entity/layers/RenderLayer;)Z
+
+# ModelPart
+accessible    field    net/minecraft/client/model/geom/ModelPart    children    Ljava/util/Map;
+
+# MouseHandler
 accessible    field    net/minecraft/client/MouseHandler    xpos    D
 accessible    field    net/minecraft/client/MouseHandler    ypos    D
 
+# TextureAtlasSprite
+accessible    method    net/minecraft/client/renderer/texture/TextureAtlasSprite    <init>    (Lnet/minecraft/client/renderer/texture/TextureAtlas;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite$Info;IIIIILcom/mojang/blaze3d/platform/NativeImage;)V
 
+# ToastComponent
+accessible    class    net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance
+accessible    method    net/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance    <init>    (Lnet/minecraft/client/gui/components/toasts/ToastComponent;Lnet/minecraft/client/gui/components/toasts/Toast;)V
+accessible    field    net/minecraft/client/gui/components/toasts/ToastComponent    visible    [Lnet/minecraft/client/gui/components/toasts/ToastComponent$ToastInstance;
+accessible    field    net/minecraft/client/gui/components/toasts/ToastComponent    queued    Ljava/util/Deque;
+
+# WolfModel
+accessible    field    net/minecraft/client/model/WolfModel    realHead    Lnet/minecraft/client/model/geom/ModelPart;
+
+
+### Mixed ###
+# Entity
+accessible    field    net/minecraft/world/entity/Entity    dimensions    Lnet/minecraft/world/entity/EntityDimensions;
+
+# LivingEntity
+accessible    field    net/minecraft/world/entity/LivingEntity    DATA_EFFECT_COLOR_ID    Lnet/minecraft/network/syncher/EntityDataAccessor;
+
+# Matrix3f
+accessible    field    com/mojang/math/Matrix3f    m00    F
+accessible    field    com/mojang/math/Matrix3f    m01    F
+accessible    field    com/mojang/math/Matrix3f    m02    F
+accessible    field    com/mojang/math/Matrix3f    m10    F
+accessible    field    com/mojang/math/Matrix3f    m11    F
+accessible    field    com/mojang/math/Matrix3f    m12    F
+accessible    field    com/mojang/math/Matrix3f    m20    F
+accessible    field    com/mojang/math/Matrix3f    m21    F
+accessible    field    com/mojang/math/Matrix3f    m22    F
+
+
+
+### HeadTracker Specific ###
+accessible    field    net/minecraft/client/model/AgeableListModel    scaleHead    Z
+accessible    field    net/minecraft/client/model/AgeableListModel    babyYHeadOffset    F
+accessible    field    net/minecraft/client/model/AgeableListModel    babyZHeadOffset    F
+accessible    field    net/minecraft/client/model/AgeableListModel    babyHeadScale    F
+accessible    field    net/minecraft/client/model/AgeableListModel    babyBodyScale    F
+accessible    field    net/minecraft/client/model/AgeableListModel    bodyYOffset    F

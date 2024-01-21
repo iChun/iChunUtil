@@ -27,6 +27,10 @@
       "me.ichun.mods.ichunutil.loader.fabric.client.ModMenuIntegration"
     ]
   },
+  "accessWidener" : "ichunutil.accesswidener",
+  "mixins": [
+    "ichunutil.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.14.6",
     "fabric": "*",

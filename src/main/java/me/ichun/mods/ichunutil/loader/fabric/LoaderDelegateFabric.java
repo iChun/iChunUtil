@@ -153,7 +153,13 @@ public class LoaderDelegateFabric
     @Override
     public String remapField(String fieldName)
     {
-        return fieldName; //TODO update this??
+        return fieldName; //TODO update this?? Use MappingResolver
+    }
+
+    @Override
+    public void registerPlayerTickStartListener(Consumer<Player> consumer)
+    {
+        //TODO this
     }
 
     @Override
@@ -187,18 +193,28 @@ public class LoaderDelegateFabric
     }
 
     @Override
+    public void registerLoadCompleteListener(Runnable runnable)
+    {
+        FabricEvents.LOAD_COMPLETE.register(runnable::run);
+    }
+
+    @Override
     public void registerAddReloadListener(PreparableReloadListener reloadListener)
     {
         FabricEvents.ADD_RELOAD_LISTENER.register(list -> list.add(reloadListener));
     }
 
+    //Client Stuff
+
     @Override
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void registerClientSetupListener(Consumer<Object> consumer)
     {
         FabricClientEvents.CLIENT_MOD_INIT.register(consumer::accept);
     }
 
     @Override
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void registerClientLevelUnloadListener(Consumer<Level> consumer)
     {
         FabricClientEvents.CLIENT_LEVEL_UNLOAD.register(consumer::accept);
@@ -212,6 +228,7 @@ public class LoaderDelegateFabric
     }
 
     @Override
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void registerClientTickStartListener(Consumer<Minecraft> consumer)
     {
         ClientTickEvents.START_CLIENT_TICK.register(consumer::accept);
@@ -225,12 +242,14 @@ public class LoaderDelegateFabric
     }
 
     @Override
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public void registerPostInitScreenListener(BiConsumer<Minecraft, Screen> consumer)
     {
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> consumer.accept(client, screen));
     }
 
     @Override
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public <E extends Entity> void registerEntityRenderer(EntityType<? extends E> type, EntityRendererProvider<E> renderer)
     {
         EntityRendererRegistry.register(type, renderer);
