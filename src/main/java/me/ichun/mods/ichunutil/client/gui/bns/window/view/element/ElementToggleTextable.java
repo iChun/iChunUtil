@@ -1,22 +1,22 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class ElementToggleTextable<T extends ElementToggleTextable> extends ElementToggle<T>
 {
-    public @Nonnull String offString;
-    public @Nonnull String onString;
+    public @NotNull String offString;
+    public @NotNull String onString;
 
-    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String tooltip, Consumer<T> callback)
+    public ElementToggleTextable(@NotNull Fragment parent, @NotNull String tooltip, Consumer<T> callback)
     {
         this(parent, tooltip, "gui.no", "gui.yes", callback);
     }
 
-    public ElementToggleTextable(@Nonnull Fragment parent, @Nonnull String tooltip, @Nonnull String off, @Nonnull String on, Consumer<T> callback)
+    public ElementToggleTextable(@NotNull Fragment parent, @NotNull String tooltip, @NotNull String off, @NotNull String on, Consumer<T> callback)
     {
         super(parent, tooltip, callback);
         this.tooltip = tooltip;

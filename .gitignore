@@ -1,5 +1,6 @@
 # eclipse
 bin
+eclipse
 *.launch
 .settings
 .metadata
@@ -13,27 +14,16 @@ out
 *.iml
 .idea
 
-# vscode
-.settings
-.vscode
-bin
-.classpath
-.project
-
 # gradle
 build
 .gradle
 libs
 logs
-out
-classes
-run
 
-# macos
-*.DS_Store
+# ignore build.gradle since we have 3 different versions
+build.gradle
 
 # other
-eclipse
 run
 
 # java

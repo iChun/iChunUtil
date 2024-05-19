@@ -12,8 +12,8 @@ public class MouseHelper
 
         Minecraft mc = Minecraft.getInstance();
 
-        double posX = mc.mouseHandler.xpos * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
-        double posY = mc.mouseHandler.ypos * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
+        double posX = mc.mouseHandler.xpos() * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
+        double posY = mc.mouseHandler.ypos() * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
 
         return Math.sqrt(posX * posX + posY * posY);
     }
@@ -25,8 +25,8 @@ public class MouseHelper
 
         Minecraft mc = Minecraft.getInstance();
 
-        double posX = mc.mouseHandler.xpos * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
-        double posY = mc.mouseHandler.ypos * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
+        double posX = mc.mouseHandler.xpos() * window.getGuiScaledWidth() / window.getScreenWidth() - centerX;
+        double posY = mc.mouseHandler.ypos() * window.getGuiScaledHeight() / window.getScreenHeight() - centerY;
 
         return (float)(Math.toDegrees(Math.atan2(posY, posX)) + 90F + 360F) % 360F;
     }

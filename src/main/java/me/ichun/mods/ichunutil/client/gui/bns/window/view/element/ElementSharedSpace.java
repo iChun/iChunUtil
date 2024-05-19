@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class ElementSharedSpace extends ElementFertile
     public final ElementScrollBar.Orientation orientation;
     public List<Element<?>> elements = new ArrayList<>();
 
-    public ElementSharedSpace(@Nonnull Fragment parent, ElementScrollBar.Orientation orientation)
+    public ElementSharedSpace(@NotNull Fragment parent, ElementScrollBar.Orientation orientation)
     {
         super(parent);
         this.orientation = orientation;
@@ -54,10 +54,10 @@ public class ElementSharedSpace extends ElementFertile
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
-        elements.forEach(e -> e.render(stack, mouseX, mouseY, partialTick));
+        elements.forEach(e -> e.render(graphics, mouseX, mouseY, partialTick));
         resetScissorToParent();
     }
 

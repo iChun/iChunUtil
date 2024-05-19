@@ -1,20 +1,21 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementButton<T extends ElementButton> extends ElementClickable<T>
 {
-    public @Nonnull String text;
+    public @NotNull String text;
     public boolean renderBackground = true;
 
-    public ElementButton(@Nonnull Fragment parent, String s, Consumer<T> callback)
+    public ElementButton(@NotNull Fragment parent, String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = I18n.get(s);
@@ -27,33 +28,35 @@ public class ElementButton<T extends ElementButton> extends ElementClickable<T>
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        super.render(stack, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
         if(renderBackground)
         {
+            PoseStack stack = graphics.pose();
             if(renderMinecraftStyle() > 0)
             {
-                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
+                renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parent.isDragging() && parent.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
             }
             else
             {
-                fill(stack, getTheme().elementButtonBorder, 0);
-                int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundInactive;
-                fill(stack, colour, 1);
+                fill(graphics, getTheme().elementButtonBorder, 0);
+                int[] colour = disabled ? getTheme().elementButtonBackgroundInactive : parent.isDragging() && parent.getFocused() == this ? getTheme().elementButtonClick : hover ? getTheme().elementButtonBackgroundHover : getTheme().elementButtonBackgroundActive;
+                fill(graphics, colour, 1);
             }
         }
-        renderText(stack);
+        renderText(graphics);
     }
 
-    public void renderText(PoseStack stack)
+    public void renderText(GuiGraphics graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
-            drawString(stack, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1);
+            drawString(graphics, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1);
         }
     }
 

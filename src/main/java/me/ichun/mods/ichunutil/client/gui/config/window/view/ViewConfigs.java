@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.config.window.view;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
@@ -51,15 +51,15 @@ public class ViewConfigs extends View<WindowConfigs>
                 if(item.selected)
                 {
                     item.selected = false;
-                    for(ElementList.Item<?> item1 : item.parentFragment.items)
+                    for(ElementList.Item<?> item1 : item.parent.items)
                     {
                         item1.selected = false; //workaround. Just make sure we don't got configs with no category
                     }
-                    for(ElementList.Item<?> item1 : item.parentFragment.items)
+                    for(ElementList.Item<?> item1 : item.parent.items)
                     {
                         if(item1.getObject() == e.getValue().first())
                         {
-                            item.parentFragment.setFocused(item);
+                            item.parent.setFocused(item);
                             item1.selected = true;
                             parent.parent.selectItem(item1);
                             break;
@@ -90,7 +90,7 @@ public class ViewConfigs extends View<WindowConfigs>
         return switch(type)
                 {
                     case CLIENT -> Theme.getAsHex(getTheme().font);
-                    case COMMON -> Theme.getAsHex(getTheme().fontChat);
+                    case COMMON -> Theme.getAsHex(getTheme().fontLight);
                     case SERVER -> Theme.getAsHex(getTheme().fontDim);
                 };
     }

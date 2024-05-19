@@ -1,26 +1,27 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import com.mojang.math.Vector3f;
+import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementToggleRotatable<T extends ElementToggleRotatable> extends ElementToggle<T>
 {
     public int rotationCount;
 
-    public ElementToggleRotatable(@Nonnull Fragment parent, @Nonnull String s, int rotCount, Consumer<T> callback)
+    public ElementToggleRotatable(@NotNull Fragment parent, @NotNull String s, int rotCount, Consumer<T> callback)
     {
         super(parent, s, callback);
         this.rotationCount = rotCount;
     }
 
     @Override
-    public Element<?> setSize(int width, int height)
+    public ElementToggleRotatable<?> setSize(int width, int height)
     {
         if(rotationCount % 2 != 0)
         {
@@ -30,25 +31,26 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
     }
 
     @Override
-    public void renderText(PoseStack stack)
+    public void renderText(GuiGraphics graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
 
+            PoseStack stack = graphics.pose();
             stack.pushPose();
             stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
-            stack.mulPose(Vector3f.ZP.rotationDegrees(90F * rotationCount));
+            stack.mulPose(Axis.ZP.rotationDegrees(90F * rotationCount));
             stack.translate(- getFontRenderer().width(s) / 2F,  - (getFontRenderer().lineHeight) / 2F + 1, 0F);
 
             //draw the text
             if(renderMinecraftStyle() > 0)
             {
-                getFontRenderer().drawShadow(stack, s, 0, 0, getMinecraftFontColour());
+                graphics.drawString(getFontRenderer(), s, 0, 0, getMinecraftFontColour(), true);
             }
             else
             {
-                getFontRenderer().draw(stack, s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+                graphics.drawString(getFontRenderer(), s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim), false);
             }
 
             stack.popPose();

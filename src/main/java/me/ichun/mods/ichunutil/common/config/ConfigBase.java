@@ -2,12 +2,13 @@ package me.ichun.mods.ichunutil.common.config;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.moandjiezana.toml.Toml;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import me.ichun.mods.ichunutil.loader.Env;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,53 +18,66 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.BiFunction;
 
-public abstract class ConfigBase
+public abstract class ConfigBase //Configs should be created in the constructor of the mod class
         implements Comparable<ConfigBase>
 {
     @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER. This provides the default Prop settings.
     public static final HashMap<String, String> DEFAULT_CATEGORY_COMMENTS = Util.make(new HashMap<>(), map -> {
-        map.put("general", "These options are general options that don't fit any other category.");
-        map.put("gameplay", "These options affect the gameplay while using the mod.");
-        map.put("global", "These options affect both servers and clients that load the mod.");
-        map.put("serverOnly", "These options affect only the server that loads the mod.");
-        map.put("clientOnly", "These options affect only the client that loads the mod.");
-        map.put("block", "These options affect the blocks in the mod.");
+        map.put("general", "These configs are general configs that don't fit any other category.");
+        map.put("gameplay", "These configs affect the gameplay while using the mod.");
+        map.put("global", "These configs affect both servers and clients that load the mod.");
+        map.put("serverOnly", "These configs affect only the server that loads the mod.");
+        map.put("clientOnly", "These configs affect only the client that loads the mod.");
+        map.put("block", "These configs affect the blocks in the mod.");
     });
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile. Synchronised set because concurrency when registering configs with mods
 
-    public final ArrayList<Category> categories = new ArrayList<>();
+    public final TreeSet<Category> categories = new TreeSet<>(Comparator.naturalOrder());
+
     public final HashMap<String, BiFunction<WorkspaceConfigs.ConfigInfo.EntryLocalised, ElementList.Item<?>, Boolean>> guiElementOverrides = new HashMap<>();
 
     @NotNull
-    private String fileName;
+    private transient String fileName;
 
-    private Runnable saveMethod = null; //TODO make sure this isn't null depending on loader
+    private transient Runnable saveMethod = null;
 
-    public ConfigBase()
+    private transient String fieldCache = null; //a toml minified version of the file, to reset to when players disconnect from servers for server configs.
+
+    //TODO how do KeyBinds handle in the  config?
+
+    public ConfigBase(String...name)
     {
-        compile();
-
         CONFIGS.add(this);
 
-        fileName = getModId() + "-" + getConfigType().toString().toLowerCase(Locale.ROOT) + ".toml";
+        if(name.length > 0 && !name[0].isEmpty())
+        {
+            fileName = name[0];
+        }
+        else
+        {
+            fileName = getModId() + "-" + getConfigType().toString().toLowerCase(Locale.ROOT) + ".toml";
+        }
 
-        registerGuiElementOverrides();
-    }
+        if(addToSubfolder())
+        {
+            fileName = getModId() + "/" + fileName;
+        }
 
-    public ConfigBase(@NotNull String name)
-    {
-        compile();
-
-        CONFIGS.add(this);
-
-        fileName = name;
-
-        registerGuiElementOverrides();
+        if(iChunUtil.d().isOnClient())
+        {
+            registerGuiElementOverrides();
+        }
+        else if(getConfigType() == Type.CLIENT)
+        {
+            throw new RuntimeException("You're creating a CLIENT config on a SERVER! Bad! Mod: " + getConfigName());
+        }
     }
 
     public void setSaveMethod(Runnable saveMethod)
@@ -74,6 +88,11 @@ public abstract class ConfigBase
     public String getFileName()
     {
         return fileName;
+    }
+
+    public boolean addToSubfolder()
+    {
+        return false;
     }
 
     @Nonnull public abstract String getModId();
@@ -90,7 +109,7 @@ public abstract class ConfigBase
         SERVER
     }
 
-    private void compile()
+    public void compile()
     {
         Map<String, String> localization;
         try(InputStream in = this.getClass().getResourceAsStream("/assets/" + getModId() + "/lang/en_us.json"))
@@ -101,8 +120,7 @@ public abstract class ConfigBase
         {
             localization = new HashMap<>();
 
-            iChunUtil.LOGGER.warn("Error getting localization file for config {}:{}", getModId(), getConfigName());
-            e.printStackTrace();
+            iChunUtil.LOGGER.warn("Error getting localization file for config {}:{}", getModId(), getConfigName(), e);
         }
 
         Field[] fields = this.getClass().getDeclaredFields();
@@ -114,18 +132,29 @@ public abstract class ConfigBase
             if(!Modifier.isTransient(field.getModifiers()) && isValidField(field))
             {
                 //Get the field's props first.
-                Prop props; // should always exist
+                @NotNull Prop props;
                 if(field.isAnnotationPresent(Prop.class))
                 {
                     props = field.getAnnotation(Prop.class);
                 }
                 else
                 {
-                    props = ConfigBase.class.getDeclaredFields()[0].getAnnotation(Prop.class);
+                    props = ConfigBase.class.getDeclaredFields()[0].getAnnotation(Prop.class); //default
                 }
 
                 //if this prop doesn't have the current env, don't add an entry
-                if(!hasOurEnv(props.env()))
+                @NotNull Env[] envs = props.env();
+                boolean pass = false;
+                for(Env env : envs)
+                {
+                    if(env == Env.ALL || env.equals(iChunUtil.d().env()))
+                    {
+                        pass = true;
+                        break;
+                    }
+                }
+
+                if(!pass)
                 {
                     continue;
                 }
@@ -154,26 +183,27 @@ public abstract class ConfigBase
                         }
                         else if(DEFAULT_CATEGORY_COMMENTS.containsKey(divider.name()))
                         {
+                            commentKey = "config.ichunutil.cat." + divider.name() + ".desc";
                             comment = DEFAULT_CATEGORY_COMMENTS.get(divider.name());
                         }
                         else
                         {
                             comment = null;
 
-                            if(LoaderHandler.d().isDevEnvironment())
+                            if(iChunUtil.d().isDevEnvironment())
                             {
                                 iChunUtil.LOGGER.warn("Config category {} from mod {} for config {} has no localisation.", divider.name(), getModId(), getConfigName());
                             }
                         }
 
-                        Category newCat = new Category(divider.name(), comment, commentKey);
+                        Category newCat = new Category(divider.name(), comment, commentKey, divider.showInGui());
                         categories.add(newCat);
                         return newCat;
                     });
                 }
                 else if(lastCat == null)
                 {
-                    lastCat = new Category("general", DEFAULT_CATEGORY_COMMENTS.get("general"), "config.ichunutil.cat.general.desc");
+                    lastCat = new Category("general", DEFAULT_CATEGORY_COMMENTS.get("general"), "config.ichunutil.cat.general.desc", true);
 
                     categories.add(lastCat);
                 }
@@ -193,19 +223,55 @@ public abstract class ConfigBase
                 {
                     comment = null;
 
-                    if(LoaderHandler.d().isDevEnvironment())
+                    if(iChunUtil.d().isDevEnvironment())
                     {
                         iChunUtil.LOGGER.warn("Config property {} from mod {} for config {} has no localisation.", field.getName(), getModId(), getConfigName());
                     }
                 }
 
-                lastCat.addField(field, props, comment, commentKey);
+                Object o = null;
+                try
+                {
+                    field.setAccessible(true);
+                    o = field.get(this);
+                }
+                catch(IllegalAccessException | IllegalStateException e)
+                {
+                    iChunUtil.LOGGER.error("Error reading config {} for field {}", getConfigName(), field.getName());
+                }
+
+                if(o == null)
+                {
+                    throw new IllegalStateException("Field " + field.getName() + " from config " + this.getClass().getName() + " has no value!");
+                }
+
+                lastCat.addField(field, props, comment, commentKey, o);
             }
         }
+    }
 
-        //Sort the categories and properties
-        Collections.sort(categories);
-        categories.forEach(cat -> Collections.sort(cat.getEntries()));
+    public void cache()
+    {
+        fieldCache = ConfigToToml.convertToToml(this, true);
+    }
+
+    public void restoreFromCache()
+    {
+        if(fieldCache != null)
+        {
+            try
+            {
+                ConfigToToml.assignValuesFromToml(this, new Toml().read(fieldCache), true);
+            }
+            catch(IllegalAccessException | IllegalStateException e)
+            {
+                iChunUtil.LOGGER.error("Error restoring config {} after disconnecting from server.", fileName, e);
+            }
+        }
+        else
+        {
+            iChunUtil.LOGGER.error("Trying to restore from cache for config {} with no cache!", fileName);
+        }
     }
 
     /**
@@ -218,6 +284,10 @@ public abstract class ConfigBase
     //NOT THREAD SAFE
     public void onPropertyChanged(boolean file, String name, Field field, Object oldObj, Object newObj){}
 
+    /**
+     * Only called when the config is loaded for the first time.
+     * This is not called when the entire config is switched eg in server-type configs
+     */
     //NOT THREAD SAFE
     public void onConfigLoaded(){}
 
@@ -228,16 +298,30 @@ public abstract class ConfigBase
         saveMethod.run();
     }
 
-    private boolean hasOurEnv(LoaderHandler.Env[] propEnvs)
+    public Method getValidatorMethod(String s)
     {
-        for(LoaderHandler.Env propEnv : propEnvs)
+        try
         {
-            if(propEnv == LoaderHandler.Env.ALL || propEnv == LoaderHandler.getEnv())
-            {
-                return true;
-            }
+            Method method = this.getClass().getDeclaredMethod(s, Object.class);
+            method.setAccessible(true);
+            return method;
         }
-        return false;
+        catch(NoSuchMethodException e)
+        {
+            throw new RuntimeException("Can't find proper validator \"" + s + "\"", e);
+        }
+    }
+
+    public boolean validate(Method m, Object o)
+    {
+        try
+        {
+            return (boolean)m.invoke(this, o);
+        }
+        catch(IllegalAccessException | InvocationTargetException ex)
+        {
+            throw new RuntimeException("Error validating using method\"" + m.getName() + "\" for object " + o, ex);
+        }
     }
 
     @Override
@@ -265,21 +349,24 @@ public abstract class ConfigBase
         @Nullable
         public final String commentKey;
 
-        private final ArrayList<Entry> entries = new ArrayList<>();
+        public final boolean showInGui;
 
-        public Category(@NotNull String name, @Nullable String comment, @Nullable String commentKey)
+        private final TreeSet<Entry> entries = new TreeSet<>(Comparator.naturalOrder());
+
+        public Category(@NotNull String name, @Nullable String comment, @Nullable String commentKey, boolean showInGui)
         {
             this.name = name;
             this.comment = comment;
             this.commentKey = commentKey;
+            this.showInGui = showInGui;
         }
 
-        public void addField(Field f, Prop props, String comment, String commentKey)
+        public void addField(Field f, Prop props, String comment, String commentKey, Object defaultValue)
         {
-            entries.add(new Entry(f, props, comment, commentKey));
+            entries.add(new Entry(f, props, comment, commentKey, defaultValue));
         }
 
-        public ArrayList<Entry> getEntries()
+        public TreeSet<Entry> getEntries()
         {
             return entries;
         }
@@ -301,12 +388,15 @@ public abstract class ConfigBase
             public final String comment;
             @Nullable
             public final String commentKey;
+            @NotNull
+            public final Object defaultValue;
 
-            public Entry(@NotNull Field field, @NotNull Prop prop, @Nullable String comment, @Nullable String commentKey) {
+            public Entry(@NotNull Field field, @NotNull Prop prop, @Nullable String comment, @Nullable String commentKey, @NotNull Object defaultValue) {
                 this.field = field;
                 this.prop = prop;
                 this.comment = comment;
                 this.commentKey = commentKey;
+                this.defaultValue = defaultValue;
             }
 
             @Override
@@ -317,7 +407,7 @@ public abstract class ConfigBase
         }
     }
 
-    public static enum FilterType
+    public enum FilterType
     {
         ALLOW,
         DENY

@@ -6,16 +6,16 @@ import static java.util.Calendar.*;
 
 public class EventCalendar
 {
-    private static boolean isNewYear; //1/1
-    private static boolean isValentinesDay; //14/2
-    private static boolean isPgBirthday; //9/3
-    private static boolean isAFDay; //1/4
-    private static boolean isHalloween; //31/10
-    private static boolean isChristmas; //25/12
+    private static boolean isNewYear; // 1/1
+    private static boolean isValentinesDay; // 14/2
+    private static boolean isPgBirthday; // 9/3
+    private static boolean isAFDay; // 1/4
+    private static boolean isHalloween; // 31/10
+    private static boolean isChristmas; // 25/12
 
     public static int day;
 
-    public static void checkDate()
+    static
     {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

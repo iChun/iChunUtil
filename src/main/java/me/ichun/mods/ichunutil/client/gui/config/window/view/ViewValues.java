@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.config.window.view;
 
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
@@ -56,7 +56,7 @@ public class ViewValues extends View<WindowValues>
                     Element<?> e = getControlElement(itemObj);
                     if(e != null)
                     {
-                        e.parentFragment.setFocused(e);
+                        e.parent.setFocused(e);
                         e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                         e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
                     }

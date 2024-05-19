@@ -1,13 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class WindowYesNoCancel extends Window<Workspace>
@@ -25,7 +25,7 @@ public class WindowYesNoCancel extends Window<Workspace>
 
     public static class ViewConfirmation extends View<WindowYesNoCancel>
     {
-        public ViewConfirmation(@Nonnull WindowYesNoCancel parent, String title, String text1, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)
+        public ViewConfirmation(@NotNull WindowYesNoCancel parent, String title, String text1, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)
         {
             super(parent, title);
 

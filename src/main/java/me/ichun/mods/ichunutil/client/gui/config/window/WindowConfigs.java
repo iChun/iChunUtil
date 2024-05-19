@@ -9,7 +9,7 @@ public class WindowConfigs extends Window<WorkspaceConfigs>
     public WindowConfigs(WorkspaceConfigs parent)
     {
         super(parent);
-        setView(new ViewConfigs(this, "gui.ichunutil.configs.options"));
+        setView(new ViewConfigs(this, "gui.ichunutil.configs.configs"));
         pos(20, 20);
         size(120, 300);
         disableUndocking();

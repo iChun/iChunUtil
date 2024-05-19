@@ -1,15 +1,16 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-
-import javax.annotation.Nonnull;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ElementPadding extends Element
 {
     public int minWidth;
     public int minHeight;
 
-    public ElementPadding(@Nonnull Fragment parent, int minWidth, int minHeight)
+    public ElementPadding(@NotNull Fragment parent, int minWidth, int minHeight)
     {
         super(parent);
         this.minWidth = minWidth;
@@ -29,9 +30,9 @@ public class ElementPadding extends Element
     }
 
     @Override
-    public boolean changeFocus(boolean direction)
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        return false;
+        return null;
     }
 
     @Override

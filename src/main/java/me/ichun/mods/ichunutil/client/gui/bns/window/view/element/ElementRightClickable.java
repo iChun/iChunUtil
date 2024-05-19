@@ -1,21 +1,21 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
 public abstract class ElementRightClickable<T extends ElementRightClickable> extends ElementClickable<T> //we reset our focus when we're clicked.
 {
-    public @Nonnull Consumer<T> rightClickCallback;
+    public @NotNull Consumer<T> rightClickCallback;
 
-    public ElementRightClickable(@Nonnull Fragment parent, Consumer<T> callback, Consumer<T> rightClickCallback)
+    public ElementRightClickable(@NotNull Fragment parent, Consumer<T> callback, Consumer<T> rightClickCallback)
     {
         super(parent, callback);
         this.rightClickCallback = rightClickCallback;
@@ -29,7 +29,7 @@ public abstract class ElementRightClickable<T extends ElementRightClickable> ext
         this.setDragging(false);
         boolean flag = getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
 
-        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
+        parent.setFocused(null); //we're a one time click, stop focusing on us
         if(!disabled && isMouseOver(mouseX, mouseY))
         {
             if(button == 0)

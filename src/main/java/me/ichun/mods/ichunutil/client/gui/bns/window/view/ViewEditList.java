@@ -1,16 +1,16 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.FormattedCharSequence;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -23,12 +23,12 @@ public class ViewEditList extends View<WindowEditList<?>>
     public final Predicate<String> validatorFinal;
     public final Consumer<ElementList<?>> responder;
 
-    public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder)
+    public ViewEditList(@NotNull WindowEditList<?> parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder)
     {
         this(parent, s, objectList, validator, responder, null);
     }
 
-    public ViewEditList(@Nonnull WindowEditList<?> parent, @Nonnull String s, @Nonnull List<?> objectList, @Nonnull Predicate<String> validator, @Nonnull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
+    public ViewEditList(@NotNull WindowEditList<?> parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent, s);
         this.objectList = objectList;

@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,10 +22,6 @@ public class ResourceHelper
     public static final ResourceLocation TEX_WOLF_COLLAR = new ResourceLocation("textures/entity/wolf/wolf_collar.png");
     public static final ResourceLocation TEX_PIG = new ResourceLocation("textures/entity/pig/pig.png");
 
-    public static final ResourceLocation TEX_RESOURCE_PACKS = new ResourceLocation("textures/gui/resource_packs.png");
-    public static final ResourceLocation TEX_SPECTATOR_WIDGETS = new ResourceLocation("textures/gui/spectator_widgets.png");
-
-
     private static Path workingDir;
     private static Path themesDir;
 
@@ -41,25 +35,25 @@ public class ResourceHelper
 
             try
             {
-                workingDir = LoaderHandler.d().getConfigDir().resolve(iChunUtil.MOD_ID);
+                workingDir = iChunUtil.d().getConfigDir().resolve(iChunUtil.MOD_ID);
                 if(!Files.exists(workingDir)) Files.createDirectory(workingDir);
 
                 themesDir = workingDir.resolve("themes");
                 if(!Files.exists(themesDir)) Files.createDirectory(themesDir);
 
-                File defaultTheme = new File(themesDir.toFile(), "default.json");
-                if(!defaultTheme.exists()) //presume we haven't extracted anything yet
+                Path defaultTheme = themesDir.resolve("default.json");
+                if(!Files.exists(defaultTheme)) //presume we haven't extracted anything yet
                 {
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     String jsonOutput = gson.toJson(new Theme());
 
                     try
                     {
-                        FileUtils.writeStringToFile(defaultTheme, jsonOutput, StandardCharsets.UTF_8);
+                        Files.writeString(defaultTheme, jsonOutput, StandardCharsets.UTF_8);
                     }
                     catch(IOException e)
                     {
-                        e.printStackTrace();
+                        iChunUtil.LOGGER.error("Error writing default theme to themes folder!", e);
                     }
 
                     InputStream in = iChunUtil.class.getResourceAsStream("/themes.zip");
@@ -91,8 +85,7 @@ public class ResourceHelper
             }
             catch(IOException e)
             {
-                iChunUtil.LOGGER.error("Error initialising resources!");
-                e.printStackTrace();
+                throw new RuntimeException("Error initialising resources!", e);
             }
         }
     }

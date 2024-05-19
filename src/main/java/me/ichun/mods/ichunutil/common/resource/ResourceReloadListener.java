@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -36,7 +35,7 @@ public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener
         this.classType = classType;
         this.parser = gsonParser;
 
-        LoaderHandler.d().registerAddReloadListener(this);
+        iChunUtil.d().registerAddReloadListener(this);
     }
 
     public <K extends ResourceReloadListener<T>> K setDefault(T defaultObj)

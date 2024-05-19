@@ -1,13 +1,14 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
@@ -15,7 +16,7 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     public String text;
     public boolean toggleState;
 
-    public ElementToggle(@Nonnull Fragment parent, @Nonnull String s, Consumer<T> callback)
+    public ElementToggle(@NotNull Fragment parent, @NotNull String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = !s.isEmpty() ? I18n.get(s) : "";
@@ -28,24 +29,25 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        super.render(stack, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
+        PoseStack stack = graphics.pose();
         if(renderMinecraftStyle() > 0)
         {
-            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parentFragment.isDragging() && parentFragment.getFocused() == this || toggleState ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle());
+            renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parent.isDragging() && parent.getFocused() == this || toggleState ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
         }
         else
         {
-            fill(stack, getTheme().elementButtonBorder, 0);
+            fill(graphics, getTheme().elementButtonBorder, 0);
             int[] colour;
             if(disabled)
             {
                 colour = getTheme().elementButtonBackgroundInactive;
             }
-            else if(parentFragment.isDragging() && parentFragment.getFocused() == this)
+            else if(parent.isDragging() && parent.getFocused() == this)
             {
                 colour = getTheme().elementButtonClick;
             }
@@ -63,28 +65,21 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
             }
             else
             {
-                colour = getTheme().elementButtonBackgroundInactive;
+                colour = getTheme().elementButtonBackgroundActive;
             }
-            fill(stack, colour, 1);
+            fill(graphics, colour, 1);
         }
-        renderText(stack);
+        renderText(graphics);
     }
 
-    public void renderText(PoseStack stack)
+    public void renderText(GuiGraphics graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
 
             //draw the text
-            if(renderMinecraftStyle() > 0)
-            {
-                getFontRenderer().drawShadow(stack, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, getMinecraftFontColour());
-            }
-            else
-            {
-                getFontRenderer().draw(stack, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
-            }
+            graphics.drawString(getFontRenderer(), s, (int)(getLeft() + (this.width - getFontRenderer().width(s)) / 2F), (int)(getTop() + (height - getFontRenderer().lineHeight) / 2F + 1), (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font)), renderMinecraftStyle() > 0);
         }
     }
 

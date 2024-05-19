@@ -1,12 +1,13 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class ElementButtonTextured<T extends ElementButtonTextured> extends ElementButton<T>
@@ -14,7 +15,7 @@ public class ElementButtonTextured<T extends ElementButtonTextured> extends Elem
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementButtonTextured(@Nonnull Fragment parent, ResourceLocation rl, Consumer<T> callback)
+    public ElementButtonTextured(@NotNull Fragment parent, ResourceLocation rl, Consumer<T> callback)
     {
         super(parent, "", callback);
         this.textureLocation = rl;
@@ -27,13 +28,15 @@ public class ElementButtonTextured<T extends ElementButtonTextured> extends Elem
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        super.render(stack, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
+
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         bindTexture(textureLocation);
 
+        PoseStack stack = graphics.pose();
         if(warping)
         {
             RenderHelper.draw(stack, getLeft() + 2, getTop() + 2, width - 4, height - 4, 0);

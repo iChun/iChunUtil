@@ -1,16 +1,18 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Predicate;
 
@@ -28,7 +30,7 @@ public class ElementNumberInput extends ElementTextField
     public boolean clickUp;
     public boolean clickDown;
 
-    public ElementNumberInput(@Nonnull Fragment parent, boolean isDouble)
+    public ElementNumberInput(@NotNull Fragment parent, boolean isDouble)
     {
         super(parent);
         this.isDouble = isDouble;
@@ -97,21 +99,26 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public void drawTextBox(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        PoseStack stack = graphics.pose();
         if(renderMinecraftStyle() > 0)
         {
             widget.setBordered(true);
-            widget.render(stack, mouseX, mouseY, partialTick);
+            widget.render(graphics, mouseX, mouseY, partialTick);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
-            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
-            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE, renderMinecraftStyle()); //top half
+            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (int)(height / 2d), clickUp ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop(), getTop() + (height / 2D))) ? ButtonState.HOVER : ButtonState.IDLE); //top half
+            renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE); //top half
 
             int size = 4;
-            bindTexture(resourceStatsIcon());
-            RenderHelper.draw(stack, getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, 40D/128D, 51D/128D, 3D/128D, 14D/128D); //up icon
-            RenderHelper.draw(stack, getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, 22D/128D, 33D/128D, 3D/128D, 14D/128D); //down icon
+            bindTexture(resourceUp());
+            double[] coords = TEXDEF_UP.getCoords(TextureDefinition.DrawType.FILL);
+            RenderHelper.draw(stack, getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //up icon
+
+            bindTexture(resourceDown());
+            coords = TEXDEF_DOWN.getCoords(TextureDefinition.DrawType.FILL);
+            RenderHelper.draw(stack, getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //down icon
         }
         else
         {
@@ -124,10 +131,10 @@ public class ElementNumberInput extends ElementTextField
             {
                 colour = getTheme().elementInputBackgroundInactive;
             }
-            fill(stack, getTheme().elementInputBorder, 0);
-            fill(stack, colour, 1);
+            fill(graphics, getTheme().elementInputBorder, 0);
+            fill(graphics, colour, 1);
             widget.setBordered(false);
-            widget.render(stack, mouseX, mouseY, partialTick);
+            widget.render(graphics, mouseX, mouseY, partialTick);
             RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
             //handle top half
@@ -143,7 +150,7 @@ public class ElementNumberInput extends ElementTextField
             {
                 colour = getTheme().elementInputBorder;
             }
-            RenderHelper.drawColour(stack, colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (height / 2d), 0); //top half
+            RenderHelper.drawColour(graphics, colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop(), BUTTON_WIDTH, (height / 2d), 0); //top half
 
 
             //handle top half
@@ -159,12 +166,12 @@ public class ElementNumberInput extends ElementTextField
             {
                 colour = getTheme().elementInputBorder;
             }
-            RenderHelper.drawColour(stack, colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop() + (height / 2d), BUTTON_WIDTH, (height / 2d), 0); //bottom half
+            RenderHelper.drawColour(graphics, colour[0], colour[1], colour[2], 255, getRight() - BUTTON_WIDTH, getTop() + (height / 2d), BUTTON_WIDTH, (height / 2d), 0); //bottom half
             stack.pushPose();
             float scale = 0.5F;
             stack.scale(scale, scale, scale);
-            drawString(stack, "\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().lineHeight / 2d)) / scale);
-            drawString(stack, "\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().lineHeight / 2d)) / scale);
+            drawString(graphics, "\u25B2", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)(((height / 2d) / 2) - getFontRenderer().lineHeight / 2d)) / scale);
+            drawString(graphics, "\u25BC", (getRight() - BUTTON_WIDTH + 4) / scale, (getTop() + 2.5F + (float)((((height - 0.5D) / 2d) / 2 * 3) - getFontRenderer().lineHeight / 2d)) / scale);
             stack.popPose();
         }
     }
@@ -176,17 +183,17 @@ public class ElementNumberInput extends ElementTextField
         {
             if(renderMinecraftStyle() > 0) //5 px to draw the button
             {
-                widget.x = getLeft() + 1;
-                widget.y = getTop() + 1;
+                widget.setX(getLeft() + 1);
+                widget.setY(getTop() + 1);
                 widget.setWidth(this.width - 2 - BUTTON_WIDTH);
-                widget.height = (this.height - 2); //no setter in fabric
+                widget.setHeight(this.height - 2);
             }
             else
             {
-                widget.x = getLeft() + 5;
-                widget.y = getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2);
+                widget.setX(getLeft() + 5);
+                widget.setY(getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2));
                 widget.setWidth(this.width - 6 - BUTTON_WIDTH);
-                widget.height = (this.height - 2); //no setter in fabric
+                widget.setHeight(this.height - 2);
             }
         }
     }
@@ -197,7 +204,7 @@ public class ElementNumberInput extends ElementTextField
         if(isMouseOver(mouseX, mouseY))
         {
             setFocused(widget);
-            widget.setFocus(true);
+            widget.setFocused(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
                 widget.setValue("");
@@ -252,11 +259,11 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double dist)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
         if(isMouseBetween(mouseX, getLeft(), getLeft() + width - BUTTON_WIDTH) && isMouseBetween(mouseY, getTop(), getTop() + height))
         {
-            changeValue(dist > 0, Screen.hasShiftDown(), Screen.hasControlDown());
+            changeValue(scrollY > 0, Screen.hasShiftDown(), Screen.hasControlDown());
             return true;
         }
         return false;

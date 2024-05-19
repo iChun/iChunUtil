@@ -2,21 +2,20 @@ package me.ichun.mods.ichunutil.client.gui.config;
 
 import com.google.common.collect.Ordering;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowPopup;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.client.gui.config.window.view.ViewValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -27,7 +26,7 @@ public class WorkspaceConfigs extends Workspace
 
     public WorkspaceConfigs(Screen lastScreen)
     {
-        super(lastScreen, new TranslatableComponent("gui.ichunutil.configs.title"), iChunUtil.configClient.guiMinecraftStyle);
+        super(lastScreen, Component.translatable("gui.ichunutil.configs.title"));
 
         ConfigBase.CONFIGS.forEach((configBase -> {
             TreeSet<ConfigInfo> confs = configs.computeIfAbsent(configBase.getConfigName(), v -> new TreeSet<>(Ordering.natural()));
@@ -41,7 +40,7 @@ public class WorkspaceConfigs extends Workspace
     {
         if(item.selected)
         {
-            for(ElementList.Item<?> item1 : item.parentFragment.items)
+            for(ElementList.Item<?> item1 : item.parent.items)
             {
                 if(item1 != item)
                 {
@@ -53,7 +52,7 @@ public class WorkspaceConfigs extends Workspace
 
             ConfigInfo config = (ConfigInfo)item.getObject();
 
-            if(config.config.getConfigType().equals(ConfigBase.Type.SERVER) && !(Minecraft.getInstance().player != null && LoaderHandler.d().getMinecraftServer().isSingleplayer() && LoaderHandler.d().getMinecraftServer().getPlayerList().getPlayerCount() <= 1)) //Trying to edit a SERVER config in a non-singerplayer world environment.
+            if(config.config.getConfigType().equals(ConfigBase.Type.SERVER) && !(Minecraft.getInstance().player != null && iChunUtil.d().getServer().isSingleplayer() && iChunUtil.d().getServer().getPlayerList().getPlayerCount() <= 1)) //Trying to edit a SERVER config in a non-singerplayer world environment.
             {
                 WindowPopup.popup(this, 0.6D, 140, null, I18n.get("gui.ichunutil.configs.noEditingServerConfig"));
             }
@@ -79,13 +78,13 @@ public class WorkspaceConfigs extends Workspace
         while(ite.hasNext())
         {
             Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type> e = ite.next();
-            ArrayList<Window<?>> windows = e.getKey().windows;
+            ArrayList<Window<?>> windows = e.getKey().windows();
             for(int i = windows.size() - 1; i >= 0; i--)
             {
                 Window<?> window = windows.get(i);
                 if(window instanceof WindowValues)
                 {
-                    saveConfig((ViewValues)((WindowValues)window).currentView);
+                    saveConfig((ViewValues)window.currentView);
 
                     dock.dockedOriSize.remove(window);
                     if(windows.size() == 1)
@@ -167,7 +166,7 @@ public class WorkspaceConfigs extends Workspace
         super.onClose();
     }
 
-    public static String getLocalizedCategory(WorkspaceConfigs.ConfigInfo info, String cat, String suffix)
+    public static String getLocalizedCategory(ConfigInfo info, String cat, String suffix)
     {
         if(cat.isEmpty())
         {

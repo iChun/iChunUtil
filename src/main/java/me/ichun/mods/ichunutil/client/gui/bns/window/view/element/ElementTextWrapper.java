@@ -1,22 +1,21 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.ChatFormatting;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class
-ElementTextWrapper extends Element //TODO image element
+public class ElementTextWrapper extends Element<Fragment<?>>
 {
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
@@ -24,9 +23,7 @@ ElementTextWrapper extends Element //TODO image element
     public int longestLine;
     public @Nullable Integer color;
 
-    //TODO text formatter?
-
-    public ElementTextWrapper(@Nonnull Fragment parent)
+    public ElementTextWrapper(@NotNull Fragment<?> parent)
     {
         super(parent);
     }
@@ -71,7 +68,7 @@ ElementTextWrapper extends Element //TODO image element
         {
             constraint.apply();
 
-            parentFragment.resize(getWorkspace().getMinecraft(), parentFragment.getParentWidth(), parentFragment.getParentHeight());
+            parent.resize(getWorkspace().getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
         }
     }
 
@@ -83,7 +80,7 @@ ElementTextWrapper extends Element //TODO image element
         {
             constraint.apply();
 
-            parentFragment.resize(getWorkspace().getMinecraft(), parentFragment.getParentWidth(), parentFragment.getParentHeight());
+            parent.resize(getWorkspace().getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
         }
     }
 
@@ -124,7 +121,7 @@ ElementTextWrapper extends Element //TODO image element
                 wrappedTextLines.add(textLine);
                 continue;
             }
-            List<FormattedText> texts = getFontRenderer().getSplitter().splitLines(new TextComponent(textLine), needsWrap ? tooltipTextWidth : longestLine, Style.EMPTY);
+            List<FormattedText> texts = getFontRenderer().getSplitter().splitLines(Component.literal(textLine), needsWrap ? tooltipTextWidth : longestLine, Style.EMPTY);
             for(FormattedText text : texts)
             {
                 wrappedTextLines.add(text.getString());
@@ -135,29 +132,22 @@ ElementTextWrapper extends Element //TODO image element
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         int textX = getLeft() + 2;
         int textY = getTop() + 4;
         for (int lineNumber = 0; lineNumber < textWrapped.size(); ++lineNumber)
         {
             String line = textWrapped.get(lineNumber);
-            drawString(stack, line, (float)textX, (float)textY);
+            drawString(graphics, line, (float)textX, (float)textY);
             textY += 12;
         }
     }
 
     @Override
-    public void drawString(PoseStack stack, String s, float posX, float posY)
+    public void drawString(GuiGraphics graphics, String s, float posX, float posY)
     {
-        if(renderMinecraftStyle() > 0)
-        {
-            getFontRenderer().drawShadow(stack, s, posX, posY, color != null ? color : getMinecraftFontColour());
-        }
-        else
-        {
-            getFontRenderer().draw(stack, s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
-        }
+        graphics.drawString(getFontRenderer(), s, (int)posX, (int)posY, color != null ? color : (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font)), renderMinecraftStyle() > 0);
     }
 
     @Override
@@ -167,9 +157,9 @@ ElementTextWrapper extends Element //TODO image element
     }
 
     @Override
-    public boolean changeFocus(boolean direction)
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        return false;
+        return null;
     }
 
     @Override
@@ -195,38 +185,4 @@ ElementTextWrapper extends Element //TODO image element
     {
         return getMinHeight();
     }
-
-
-    public static int getRandomColourForName(String s)
-    {
-        if(s.equalsIgnoreCase("System"))
-        {
-            return 0xffcc00;
-        }
-        else
-        {
-            return Math.abs(s.hashCode()) & 0xffffff;
-        }
-    }
-
-    public static final Random RANDOM = new Random();
-    public static ChatFormatting getRandomTextFormattingColorForName(String s) //I know this can be cached but meh
-    {
-        if(s.equalsIgnoreCase("System"))
-        {
-            return ChatFormatting.RED;
-        }
-
-        ArrayList<ChatFormatting> formats = new ArrayList<>();
-        for(int i = 1; i < 15; i++) // no black no red no white
-        {
-            if(i != 12) //no red
-            {
-                formats.add(ChatFormatting.values()[i]);
-            }
-        }
-        RANDOM.setSeed(Math.abs(s.hashCode()));
-        return formats.get(RANDOM.nextInt(formats.size()));
-    }
-
 }

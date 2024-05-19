@@ -1,23 +1,25 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class ElementContextMenu extends Element
+public class ElementContextMenu extends Element<Fragment<?>>
         implements WindowContextMenu.IContextMenu
 {
-    public final @Nonnull List<?> contextMenuObjects;
-    public final @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
-    public @Nonnull Function<Object, String> nameProvider = Object::toString;
+    public final @NotNull List<?> contextMenuObjects;
+    public final @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
+    public @NotNull Function<Object, String> nameProvider = Object::toString;
     public boolean lmbTriggers = false;
 
-    public ElementContextMenu(@Nonnull Fragment parent, @Nonnull List<?> contextMenuObjects, @Nonnull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementContextMenu(@NotNull Fragment<?> parent, @NotNull List<?> contextMenuObjects, @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
     {
         super(parent);
         this.contextMenuObjects = contextMenuObjects;
@@ -57,32 +59,32 @@ public class ElementContextMenu extends Element
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            WindowContextMenu.create(getWorkspace(), this, mouseX + 10, mouseY + 10, (int)(parentFragment.width * 0.8F), -20);
+            WindowContextMenu.create(getWorkspace(), this, mouseX + 10, mouseY + 10, (int)(parent.width * 0.8F), -20);
         }
         return false; // don't capture the click, let it pass
     }
 
     @Override
-    public boolean changeFocus(boolean direction)
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        return false;
+        return null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<?> getObjects()
     {
         return contextMenuObjects;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> getReceiver()
     {
         return contextMenuReceiver;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Function<Object, String> getNameProvider()
     {

@@ -1,14 +1,15 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version "${fabric_loom_version}"
 	id 'maven-publish'
+	id "com.hypherionmc.modutils.modpublisher" version "${modpublisher_version}"
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+base {
+	archivesName = "${project.archives_base_name}-${project.minecraft_version}-Fabric"
+}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -17,30 +18,10 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-	// Parchment
+	// ModMenu
 	maven {
-		name = 'Parchment'
-		url = 'https://maven.parchmentmc.org'
+		url "https://maven.terraformersmc.com/"
 	}
-
-	// CurseMaven
-	maven {
-		url "https://www.cursemaven.com"
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-
-	// Complete Config repos
-	maven {
-        url 'https://jitpack.io'
-    }
-    maven {
-        url "https://maven.terraformersmc.com/"
-    }
-    maven {
-        url "https://maven.shedaniel.me/"
-    }
 }
 
 dependencies {
@@ -54,16 +35,29 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
-	// Complete Config dep
-	modImplementation "com.gitlab.Lortseam:completeconfig:${project.completeconfig_version}"
 
-	// LazyDFU
-	modImplementation "curse.maven:lazydfu-433518:3209972"
+	// Mod Menu for Fabric
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	// TOML implementation for Fabric
+	implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT - Fabric only
 }
 
-loom {
-	accessWidenerPath = file("src/main/resources/combined.accesswidener")
+//loom {
+//	mixin {
+//		defaultRefmapName = "${project.mod_id}.refmap.json"
+//	}
+//}
+
+sourceSets {
+	main {
+		java {
+			exclude "me/ichun/mods/${project.mod_id}/api/forge/**"
+			exclude "me/ichun/mods/${project.mod_id}/loader/forge/**"
+			exclude "me/ichun/mods/${project.mod_id}/api/neoforge/**"
+			exclude "me/ichun/mods/${project.mod_id}/loader/neoforge/**"
+		}
+	}
 }
 
 processResources {
@@ -72,18 +66,25 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+	
+	exclude("META-INF/mods-forge.toml")
+	exclude("META-INF/accesstransformer-forge.cfg")
+	exclude("META-INF/mods-neoforge.toml")
+	exclude("META-INF/accesstransformer-neoforge.cfg")
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+	//withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
@@ -107,4 +108,40 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+apply from: 'gradle/modpublisher.gradle'
+
+publisher {
+    // Curseforge Project ID
+    setCurseID("${curseforge_project_id_fabric}")
+
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    setArtifact(remapJar)
+
+    // Fancy display name for the upload.
+    // Will default to the project version if not set
+    setDisplayName("[${minecraft_version} Fabric] v ${mod_version}")    
+    
+    // The modloaders your upload supports.
+    // This can also be an Enum from ModLoader,
+    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
+    setLoaders("fabric")
+    
+    // Additional files to upload. Same as artifact, this can be a task, file or string
+    //addAdditionalFile(apiJar)
+
+    // Modrinth Dependencies.
+    // Accepts a slug or id
+    modrinthDepends {
+        required "P7dR8mSH" //Fabric API
+    }
+
+    // Curse Dependencies
+    curseDepends {
+        required "fabric-api" //Fabric API
+    }
 }

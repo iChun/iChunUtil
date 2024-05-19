@@ -1,16 +1,16 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class ElementProgressBar extends Element
 {
     public float progress;
 
-    public ElementProgressBar(@Nonnull Fragment parent)
+    public ElementProgressBar(@NotNull Fragment parent)
     {
         super(parent);
     }
@@ -22,8 +22,9 @@ public class ElementProgressBar extends Element
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        PoseStack stack = graphics.pose();
         if(renderMinecraftStyle() > 0)
         {
             bindTexture(resourceHorse());
@@ -33,14 +34,14 @@ public class ElementProgressBar extends Element
         }
         else
         {
-            int[] borderColour = getTheme().elementTreeItemBorder;
+            int[] borderColour = getTheme().elementListItemBorder;
 
-            fill(stack, borderColour, 0);
-            fill(stack, getTheme().elementTreeItemBg, 1);
+            fill(graphics, borderColour, 0);
+            fill(graphics, getTheme().elementListItemBackground, 1);
 
             int oriWidth = width;
             width = (int)Math.floor(width * progress);
-            fill(stack, getTheme().elementTreeItemBgSelect, 1);
+            fill(graphics, getTheme().elementListItemBackgroundSelect, 1);
             width = oriWidth;
         }
     }

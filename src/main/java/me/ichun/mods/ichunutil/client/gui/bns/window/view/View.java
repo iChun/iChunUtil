@@ -1,54 +1,37 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.IWindows;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
-public abstract class View<P extends Window<? extends IWindows>> extends Fragment<P>
+public abstract class View<P extends Window<?>> extends Fragment<P>
 {
     public ArrayList<Element<?>> elements = new ArrayList<>();
-    public @Nonnull String title; // we localise when this is set
 
-    public View(@Nonnull P parent, @Nonnull String s)
+    @NotNull
+    public String title; // we localise when this is set
+
+    public View(@NotNull P parent, @NotNull String s)
     {
         super(parent);
         title = I18n.get(s);
+
+        //TODO This Constraint needs to be adjusted
         constraint = Constraint.matchParent(this, parent, parent.borderSize.get());
         if(parent.canShowTitle() && !s.isEmpty())
         {
             constraint.top(parent, Constraint.Property.Type.TOP, parent.titleSize.get());
         }
-    }
-
-    public <T extends View<?>> T setPos(int x, int y)
-    {
-        posX = x;
-        posY = y;
-        return (T)this;
-    }
-
-    public <T extends View<?>> T setSize(int width, int height)
-    {
-        this.width = width;
-        this.height = height;
-        return (T)this;
-    }
-
-    @Override
-    public void init()
-    {
-        constraint.apply();
-        elements.forEach(Fragment::init);
     }
 
     @Override
@@ -58,26 +41,26 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
         //render our background
-        renderBackground(stack);
+        renderBackground(graphics);
 
         //render attached elements
         for(Element<?> element : elements)
         {
-            element.render(stack, mouseX, mouseY, partialTick);
+            element.render(graphics, mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();
     }
 
-    public void renderBackground(PoseStack stack)
+    public void renderBackground(GuiGraphics graphics)
     {
         if(renderMinecraftStyle() == 0)
         {
-            fill(stack, getTheme().windowBackground, 0);
+            fill(graphics, getTheme().windowBackground, 0);
         }
     }
 
@@ -89,18 +72,13 @@ public abstract class View<P extends Window<? extends IWindows>> extends Fragmen
     }
 
     @Override
-    public boolean changeFocus(boolean direction)
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        if(parentFragment.getFocused() == this)
+        if(parent.getFocused() == this)
         {
-            boolean flag = super.changeFocus(direction);
-            if(!flag)
-            {
-                flag = super.changeFocus(direction);
-            }
-            return flag;
+            return super.nextFocusPath(event);
         }
-        return false; //we're not focused anyway, so, nah
+        return null; //we're not focused anyway, so, nah
     }
 
     @Override

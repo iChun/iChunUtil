@@ -1,39 +1,30 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Element<P extends Fragment> extends Fragment<P> //TODO handle narration?
+public abstract class Element<P extends Fragment<?>> extends Fragment<P>
 {
     public final static List<Element<?>> INFERTILE = Collections.emptyList();
 
     public String tooltip;
 
-    public Element(@Nonnull P parent)
+    public Element(@NotNull P parent)
     {
         super(parent);
-    }
-
-    public <T extends Element<?>> T setPos(int x, int y)
-    {
-        posX = x;
-        posY = y;
-        return (T)this;
-    }
-
-    public <T extends Element<?>> T setSize(int width, int height)
-    {
-        this.width = width;
-        this.height = height;
-        return (T)this;
     }
 
     public <T extends Element<?>> T setTooltip(String s)
@@ -43,7 +34,8 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     }
 
     @Override
-    public @Nullable String tooltip(double mouseX, double mouseY)
+    @Nullable
+    public String tooltip(double mouseX, double mouseY)
     {
         return tooltip;
     }
@@ -61,15 +53,6 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick){}
-
-    @Override
-    public void resize(Minecraft mc, int width, int height)
-    {
-        constraint.apply();
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
         return isMouseOver(mouseX, mouseY);
@@ -84,23 +67,26 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
     }
 
     @Override
-    public boolean changeFocus(boolean direction)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick){}
+
+    @Override
+    public void resize(Minecraft mc, int width, int height)
     {
-        return parentFragment.getFocused() != this; //focus on us if we're not focused
+        constraint.apply();
     }
 
-    public enum ButtonState
+    @Override
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        IDLE,
-        HOVER,
-        CLICK
+        return parent.nextFocusPath(event);
     }
 
-    public static void renderMinecraftStyleButton(PoseStack stack, int posX, int posY, int width, int height, ButtonState state, int minecraftStyle) // BUTTONS NEED TO BE LARGER THAN 3x3
+    public void renderMinecraftStyleButton(PoseStack stack, int posX, int posY, int width, int height, ButtonState state) // BUTTONS NEED TO BE LARGER THAN 3x3
     {
-        Fragment.bindTexture(minecraftStyle == 2 ? VANILLA_WIDGETS : WIDGETS);
+        ResourceLocation rl = resourceButton(state);
+        Fragment.bindTexture(rl);
 
-        int yOffset = state == ButtonState.CLICK ? 0 : state == ButtonState.HOVER ? 2 : 1;
+        TextureDefinition texButton = TEXDEF_BUTTON;
         if(height == 20 && width > 15)
         {
             RenderHelper.startDrawBatch();
@@ -111,14 +97,14 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
             while(i > 0)
             {
                 int dist = Math.min(i, 172);
-                RenderHelper.drawBatch(stack, x, posY, dist, 20, 0, 14D / 256D, (14 + dist) / 256D, (46 + yOffset * 20) / 256D, (66 + yOffset * 20) / 256D); //draw body
+                RenderHelper.drawBatch(stack, x, posY, dist, 20, 0, 14D / texButton.width(), (14 + dist) / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw body
                 i -= dist;
                 x += dist;
             }
 
 
-            RenderHelper.drawBatch(stack, posX, posY, 14, 20, 0, 0D/256D, 14D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
-            RenderHelper.drawBatch(stack, posX + width - 14, posY, 14, 20, 0, 186D/256D, 200D/256D, (46 + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw leftblock
+            RenderHelper.drawBatch(stack, posX, posY, 14, 20, 0, 0D / texButton.width(), 14D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
+            RenderHelper.drawBatch(stack, posX + width - 14, posY, 14, 20, 0, 186D / texButton.width(), 200D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
 
             RenderHelper.endDrawBatch();
         }
@@ -126,17 +112,22 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         {
             RenderHelper.startDrawBatch();
 
-            RenderHelper.drawBatch(stack, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, ((66 - (height - 3)) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw bottomLeft
-            RenderHelper.drawBatch(stack, posX, posY, (width - 3), (height - 3), 0, 0D/256D, (width - 3)/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topLeft
-            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/256D, 200D/256D, (46 + yOffset * 20)/256D, (46 + (height - 3) + yOffset * 20)/256D); //draw topRight
-            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/256D, 200D/256D, (66 - (height - 3) + yOffset * 20)/256D, (66 + yOffset * 20)/256D); //draw topRight
+            RenderHelper.drawBatch(stack, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomLeft
+            RenderHelper.drawBatch(stack, posX, posY, (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topLeft
+            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/texButton.width(), 200D/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topRight
+            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/texButton.width(), 200D/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomRight
 
             RenderHelper.endDrawBatch();
         }
         else //big bois
         {
-            cropAndStitch(stack, posX, posY, width, height, 4, 0D, 46 + (yOffset * 20), 200, 20, 256, 256);
+            cropAndStitch(stack, posX, posY, width, height, texButton);
         }
+    }
+
+    public static void cropAndStitch(PoseStack stack, int posX, int posY, int width, int height, TextureDefinition def)
+    {
+        cropAndStitch(stack, posX, posY, width, height, def.cornerSize(), def.x1(), def.y1(), def.x2() - def.x1(), def.y2() - def.y1(), def.width(), def.height());
     }
 
     public static void cropAndStitch(PoseStack stack, int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
@@ -192,10 +183,17 @@ public abstract class Element<P extends Fragment> extends Fragment<P> //TODO han
         RenderHelper.endDrawBatch();
     }
 
+    public enum ButtonState
+    {
+        IDLE,
+        HOVER,
+        CLICK
+    }
+
     public static class MousePos
     {
-        public int x;
-        public int y;
+        int x;
+        int y;
 
         public MousePos(int x, int y)
         {

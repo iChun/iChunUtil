@@ -1,16 +1,33 @@
 package me.ichun.mods.ichunutil.client.key;
 
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class KeyBind
 {
+    private static final HashMap<String, Object> KEY_CONFLICT_CONTEXT = new HashMap<>();
+
+    public static void registerKeyConflictContext(String key, Object o)
+    {
+        KEY_CONFLICT_CONTEXT.put(key, o);
+    }
+
+    public static Object getKeyConflictContext(String key)
+    {
+        return KEY_CONFLICT_CONTEXT.get(key);
+    }
+
+    public static boolean areKeyConflictContextsRegistered()
+    {
+        return !KEY_CONFLICT_CONTEXT.isEmpty();
+    }
+
     @Nonnull
     public final KeyMapping keyBinding;
     @Nullable
@@ -32,15 +49,15 @@ public class KeyBind
      * @param pressConsumer press consumer
      * @param releaseConsumer release consumer
      */
-    public KeyBind(KeyMapping keyBinding, @Nullable Consumer<KeyBind> pressConsumer, @Nullable Consumer<KeyBind> releaseConsumer)
+    public KeyBind(KeyMapping keyBinding, @Nullable Consumer<KeyBind> pressConsumer, @Nullable Consumer<KeyBind> releaseConsumer, String...conflictContext)
     {
         this.keyBinding = keyBinding;
         this.pressConsumer = pressConsumer;
         this.releaseConsumer = releaseConsumer;
 
-        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, this.keyBinding); //Originally from Forge: ClientRegistry.registerKeyBinding(this.keyBinding);
+        iChunUtil.dC().registerKeyMapping(this.keyBinding, conflictContext);
 
-        LoaderHandler.d().registerClientTickEndListener(this::onClientTick);
+        iChunUtil.dC().registerClientTickEndListener(this::onClientTick);
     }
 
     public KeyBind setTickConsumer(Consumer<KeyBind> tickConsumer)
@@ -106,23 +123,4 @@ public class KeyBind
             }
         }
     }
-
-    //TODO Forge conflict context
-//    public enum ConflictContext implements IKeyConflictContext
-//    {
-//        //Allows in-game modifiers (or lack thereof) to conflict
-//        IN_GAME_MODIFIER_SENSITIVE {
-//            @Override
-//            public boolean isActive()
-//            {
-//                return !KeyConflictContext.GUI.isActive();
-//            }
-//
-//            @Override
-//            public boolean conflicts(IKeyConflictContext other)
-//            {
-//                return this == other;
-//            }
-//        }
-//    }
 }

@@ -1,10 +1,17 @@
 package me.ichun.mods.ichunutil.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public abstract class PacketChannel
 {
@@ -35,4 +42,71 @@ public abstract class PacketChannel
 
     public abstract void sendToAround(AbstractPacket packet, ServerLevel world, double x, double y, double z, double radius);
 
+    protected PacketPayload payload(AbstractPacket packet)
+    {
+        //        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer()); // Taken from Fabric's PacketByteBufs.create();
+        return new PacketPayload(packet);
+    }
+
+    protected PacketPayload readPacket(FriendlyByteBuf buffer)
+    {
+        byte id = buffer.readByte();
+        Class<? extends AbstractPacket> clz = idToClz[id];
+        AbstractPacket packet;
+        try
+        {
+            packet = clz.getDeclaredConstructor().newInstance();
+            packet.readFrom(buffer);
+        }
+        catch(NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e)
+        {
+            throw new RuntimeException("Unable to create packet for " + channelId.toString() + " with id " + id, e);
+        }
+        return new PacketPayload(packet);
+    }
+
+    protected StreamCodec<FriendlyByteBuf, PacketPayload> createCodec()
+    {
+        return new StreamCodec<>()
+        {
+            @Override
+            public PacketPayload decode(FriendlyByteBuf buffer)
+            {
+                return readPacket(buffer);
+            }
+
+            @Override
+            public void encode(FriendlyByteBuf buffer, PacketPayload payload)
+            {
+                payload.write(buffer);
+            }
+        };
+    }
+
+    protected class PacketPayload implements CustomPacketPayload
+    {
+        private final AbstractPacket packet;
+
+        private PacketPayload(AbstractPacket packet)
+        {
+            this.packet = packet;
+        }
+
+        public void write(FriendlyByteBuf buffer)
+        {
+            buffer.writeByte(clzToId.getByte(packet.getClass()));
+            packet.writeTo(buffer);
+        }
+
+        public Optional<Runnable> process(Player player)
+        {
+            return packet.process(player);
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type()
+        {
+            return new Type<>(channelId);
+        }
+    }
 }

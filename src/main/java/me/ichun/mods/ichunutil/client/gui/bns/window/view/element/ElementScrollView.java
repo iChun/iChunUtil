@@ -1,13 +1,15 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ElementScrollView extends ElementFertile
 
     public boolean hasInit;
 
-    public ElementScrollView(@Nonnull Fragment parent)
+    public ElementScrollView(@NotNull Fragment parent)
     {
         super(parent);
     }
@@ -82,19 +84,19 @@ public class ElementScrollView extends ElementFertile
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
-        elements.forEach(item -> item.render(stack, mouseX, mouseY, partialTick));
+        elements.forEach(item -> item.render(graphics, mouseX, mouseY, partialTick));
         resetScissorToParent();
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double dist)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, dist);
+            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
             if(defaultScroll)
             {
                 return true;
@@ -105,7 +107,7 @@ public class ElementScrollView extends ElementFertile
                 {
                     if(scrollHori != null)
                     {
-                        scrollHori.secondHandScroll(dist);
+                        scrollHori.secondHandScroll(scrollY);
                         return true;
                     }
                 }
@@ -113,7 +115,7 @@ public class ElementScrollView extends ElementFertile
                 {
                     if(scrollVert != null)
                     {
-                        scrollVert.secondHandScroll(dist);
+                        scrollVert.secondHandScroll(scrollY);
                         return true;
                     }
                 }
@@ -217,9 +219,9 @@ public class ElementScrollView extends ElementFertile
     }
 
     @Override
-    public boolean changeFocus(boolean direction) //we can't change focus on this
+    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
     {
-        return false;
+        return null;
     }
 
     @Override

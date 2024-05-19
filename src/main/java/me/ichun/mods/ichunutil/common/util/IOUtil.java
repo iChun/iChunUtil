@@ -2,13 +2,12 @@ package me.ichun.mods.ichunutil.common.util;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
@@ -18,10 +17,8 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class IOUtil
+public final class IOUtil
 {
-    public static final int IDENTIFIER_LENGTH = 20; //Typical string length for an identifier.
-
     public static boolean areNativeImagesEqual(NativeImage img1, NativeImage img2)
     {
         if(img1 == null && img2 == null)
@@ -54,6 +51,7 @@ public class IOUtil
 
     public static void renameFilesToLowerCaseInDir(File dir)
     {
+        //TODO convert this to use NIO
         File[] files = dir.listFiles();
         for(File file : files)
         {
@@ -77,7 +75,7 @@ public class IOUtil
         }
     }
 
-    public static int extractFiles(@Nonnull Path dir, @Nonnull InputStream inputStream, boolean overwrite) throws IOException
+    public static int extractFiles(@NotNull Path dir, @NotNull InputStream inputStream, boolean overwrite) throws IOException
     {
         int i = 0;
         try(ZipInputStream zipStream = new ZipInputStream(inputStream))
@@ -197,17 +195,6 @@ public class IOUtil
             hex[index++] = HEX_CHAR_TABLE[v & 0xF];
         }
         return new String(hex, "ASCII");
-    }
-
-    public static String readableFileSize(long size)
-    {
-        if(size <= 0)
-        {
-            return "0";
-        }
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
-        int digitGroups = (int)(Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     //compresses a string using gzip

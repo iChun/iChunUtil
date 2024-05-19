@@ -1,20 +1,23 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.util.IOUtil;
+import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class ElementList<P extends Fragment> extends ElementFertile<P>
+public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
 {
     public List<Item<?>> items = new ArrayList<>();
     private @Nullable ElementScrollBar<?> scrollVert;
@@ -39,7 +42,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     public boolean hasInit;
     private MousePosItem pos;
 
-    public ElementList(@Nonnull P parent)
+    public ElementList(@NotNull P parent)
     {
         super(parent);
     }
@@ -169,8 +172,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
+        PoseStack stack = graphics.pose();
         if(renderBackground)
         {
             if(renderMinecraftStyle() > 0)
@@ -180,19 +184,19 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
             }
             else
             {
-                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), width, 1, 0); //top
-                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getTop(), 1, height, 0); //left
-                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
-                RenderHelper.drawColour(stack, getTheme().elementTreeBorder[0], getTheme().elementTreeBorder[1], getTheme().elementTreeBorder[2], 255, getRight() - 1, getTop(), 1, height, 0); //right
+                RenderHelper.drawColour(graphics, getTheme().elementListBorder, 255, getLeft(), getTop(), width, 1, 0); //top
+                RenderHelper.drawColour(graphics, getTheme().elementListBorder, 255, getLeft(), getTop(), 1, height, 0); //left
+                RenderHelper.drawColour(graphics, getTheme().elementListBorder, 255, getLeft(), getBottom() - 1, width, 1, 0); //bottom
+                RenderHelper.drawColour(graphics, getTheme().elementListBorder, 255, getRight() - 1, getTop(), 1, height, 0); //right
             }
         }
 
         setScissor();
-        items.forEach(item -> item.render(stack, mouseX, mouseY, partialTick));
+        items.forEach(item -> item.render(graphics, mouseX, mouseY, partialTick));
 
         if(getFocused() instanceof Item)
         {
-            ((Item<?>)getFocused()).render(stack, mouseX, mouseY, partialTick);
+            ((Item<?>)getFocused()).render(graphics, mouseX, mouseY, partialTick);
         }
 
         resetScissorToParent();
@@ -312,11 +316,11 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double dist)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, dist);
+            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
             if(defaultScroll)
             {
                 return true;
@@ -327,7 +331,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     if(scrollHori != null)
                     {
-                        scrollHori.secondHandScroll((dist * 70 / getTotalItemHeight()) * 2D);
+                        scrollHori.secondHandScroll((scrollY * 70 / getTotalItemHeight()) * 2D);
                         return true;
                     }
                 }
@@ -335,7 +339,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 {
                     if(scrollVert != null)
                     {
-                        scrollVert.secondHandScroll((dist * 70 / getTotalItemHeight()) * 2D);
+                        scrollVert.secondHandScroll((scrollY * 70 / getTotalItemHeight()) * 2D);
                         return true;
                     }
                 }
@@ -445,9 +449,9 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
     }
 
     @Override
-    public boolean changeFocus(boolean direction) //we can't change focus on this
+    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
     {
-        return false;
+        return null;
     }
 
     @Override
@@ -478,7 +482,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
     public static class Item<M> extends ElementFertile<ElementList<?>>
     {
-        protected final @Nonnull M heldObject; //height 13?
+        protected final @NotNull M heldObject; //height 13?
         public List<Element<?>> elements = new ArrayList<>();
         private boolean deselectOnUnfocus = true;
         private TriConsumer<Double, Double, Item<M>> rightClickConsumer;
@@ -489,7 +493,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         private int borderSize = 1;
         private int clickTimeout;
 
-        public Item(@Nonnull ElementList<?> parent, @Nonnull M heldObject)
+        public Item(@NotNull ElementList<?> parent, @NotNull M heldObject)
         {
             super(parent);
             this.heldObject = heldObject;
@@ -529,13 +533,13 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 this.addElement(wrapper1);
 
                 //size
-                wrapper = new ElementTextWrapper(this).setText(IOUtil.readableFileSize(file.length()));
+                wrapper = new ElementTextWrapper(this).setText(StringUtil.readableFileSize(file.length()));
                 wrapper.setNoWrap().setConstraint(new Constraint(wrapper).right(this, Constraint.Property.Type.RIGHT, this.getBorderSize() + 4).top(this, Constraint.Property.Type.TOP, this.getBorderSize()));
                 this.addElement(wrapper);
             }
             else
             {
-                ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(Workspace.getInterpretedInfo(heldObject));
+                ElementTextWrapper wrapper = new ElementTextWrapper(this).setText(StringUtil.getInterpretedInfo(heldObject));
                 wrapper.setConstraint(Constraint.matchParent(wrapper, this, this.getBorderSize()).bottom(null, Constraint.Property.Type.BOTTOM, 0));
                 elements.add(wrapper);
             }
@@ -581,15 +585,16 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         }
 
         @Override
-        public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
         {
+            PoseStack stack = graphics.pose();
             if(shouldRender())
             {
-                boolean draggingUs = parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
-                ElementList<?> list = parentFragment;
+                boolean draggingUs = parent.isDragging() && parent.getFocused() == this && parent.pos != null;
+                ElementList<?> list = parent;
                 MousePosItem pos = list.pos;
 
-                if(isMouseOver(mouseX, mouseY) && parentFragment.dragHandler != null || draggingUs)
+                if(isMouseOver(mouseX, mouseY) && parent.dragHandler != null || draggingUs)
                 {
                     getWorkspace().cursorState = Workspace.CURSOR_CROSSHAIR;
                 }
@@ -633,7 +638,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                         }
                     }
 
-                    if(canRearrange || selected)
+                    if(canRearrange)
                     {
                         cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
                     }
@@ -644,7 +649,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                 }
                 else
                 {
-                    int[] borderColour = getTheme().elementTreeItemBorder;
+                    int[] borderColour = getTheme().elementListItemBorder;
 
                     if(draggingUs && list.rearrangeHandler != null)
                     {
@@ -661,23 +666,23 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                                     int draggedIndex = list.items.indexOf(pos.item);
                                     if(!(itemIndex == draggedIndex - 1 && relation == 1 || itemIndex == draggedIndex + 1 && relation == -1))
                                     {
-                                        borderColour = getTheme().elementTreeItemBgHover;
+                                        borderColour = getTheme().elementListItemBackgroundHover;
                                     }
                                 }
                             }
                             else
                             {
-                                borderColour = getTheme().elementTreeItemBgHover;
+                                borderColour = getTheme().elementListItemBackgroundHover;
                             }
                         }
                     }
 
                     //RENDER
-                    fill(stack, borderColour, 0);
-                    fill(stack, parentFragment.isDragging() && parentFragment.getFocused() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parentFragment.isDragging() && parentFragment.getFocused() != this)) ? getTheme().elementTreeItemBgHover : selected ? getTheme().elementTreeItemBgSelect : getTheme().elementTreeItemBg, getBorderSize());
+                    fill(graphics, borderColour, 0);
+                    fill(graphics, parent.isDragging() && parent.getFocused() == this ? getTheme().elementButtonClick : (isMouseOver(mouseX, mouseY) && !(parent.isDragging() && parent.getFocused() != this)) ? getTheme().elementListItemBackgroundHover : selected ? getTheme().elementListItemBackgroundSelect : getTheme().elementListItemBackground, getBorderSize());
                 }
 
-                elements.forEach(element -> element.render(stack, mouseX, mouseY, partialTick));
+                elements.forEach(element -> element.render(graphics, mouseX, mouseY, partialTick));
 
                 if(draggingUs)
                 {
@@ -689,7 +694,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         @Override
         public boolean mouseReleased(double mouseX, double mouseY, int button)
         {
-            if(parentFragment.getFocused() == this && isMouseOver(mouseX, mouseY))
+            if(parent.getFocused() == this && isMouseOver(mouseX, mouseY))
             {
                 boolean oldSelected = selected;
                 if(button == 0)
@@ -705,7 +710,7 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                         }
                         else
                         {
-                            clickTimeout = iChunUtil.configClient.guiDoubleClickSpeed;
+                            clickTimeout = iChunUtil.configClient.bnsDoubleClickSpeed;
                         }
                     }
                 }
@@ -740,8 +745,8 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
 
         public boolean shouldRender()
         {
-            return getRight() > parentFragment.getLeft() && getLeft() < parentFragment.getRight() && getBottom() > parentFragment.getTop() && getTop() < parentFragment.getBottom() ||
-                    parentFragment.isDragging() && parentFragment.getFocused() == this && parentFragment.pos != null;
+            return getRight() > parent.getLeft() && getLeft() < parent.getRight() && getBottom() > parent.getTop() && getTop() < parent.getBottom() ||
+                parent.isDragging() && parent.getFocused() == this && parent.pos != null;
         }
 
         @Override
@@ -753,22 +758,22 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
         @Override
         public boolean keyPressed(int keyCode, int scanCode, int modifiers)
         {
-            if(parentFragment.getFocused() == this)
+            if(parent.getFocused() == this)
             {
                 boolean flag = super.keyPressed(keyCode, scanCode, modifiers);
                 if(!flag)
                 {
                     if(keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_LEFT)
                     {
-                        for(int i = 0; i < parentFragment.items.size(); i++)
+                        for(int i = 0; i < parent.items.size(); i++)
                         {
-                            Item<?> item = parentFragment.items.get(i);
+                            Item<?> item = parent.items.get(i);
                             if(item == this)
                             {
                                 if(i > 0)
                                 {
-                                    Item item1 = parentFragment.items.get(i - 1);
-                                    parentFragment.setFocused(item1);
+                                    Item item1 = parent.items.get(i - 1);
+                                    parent.setFocused(item1);
                                     boolean oldSelected = item1.selected;
                                     item1.selected = true;
                                     if(oldSelected != item1.selected && item1.selectionHandler != null)
@@ -782,15 +787,15 @@ public class ElementList<P extends Fragment> extends ElementFertile<P>
                     }
                     else if(keyCode == GLFW.GLFW_KEY_DOWN || keyCode == GLFW.GLFW_KEY_RIGHT)
                     {
-                        for(int i = 0; i < parentFragment.items.size(); i++)
+                        for(int i = 0; i < parent.items.size(); i++)
                         {
-                            Item<?> item = parentFragment.items.get(i);
+                            Item<?> item = parent.items.get(i);
                             if(item == this)
                             {
-                                if(i < parentFragment.items.size() - 1)
+                                if(i < parent.items.size() - 1)
                                 {
-                                    Item item1 = parentFragment.items.get(i + 1);
-                                    parentFragment.setFocused(item1);
+                                    Item item1 = parent.items.get(i + 1);
+                                    parent.setFocused(item1);
                                     boolean oldSelected = item1.selected;
                                     item1.selected = true;
                                     if(oldSelected != item1.selected && item1.selectionHandler != null)

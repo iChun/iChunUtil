@@ -4,7 +4,31 @@ pluginManagement {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+		maven { 
+            name = 'Forge'
+			url = 'https://maven.minecraftforge.net/' 
+		}
+		maven {
+			name = 'Neoforge'
+			url = 'https://maven.neoforged.net/releases'
+		}
+		maven {
+			name = 'Parchment'
+			url = 'https://maven.parchmentmc.org/'
+		}
+		maven {
+			name = 'Spongepowered (Mixin)'
+			url = 'https://repo.spongepowered.org/repository/maven-public/'
+		}
+        maven {
+			name = 'Modpublisher https://github.com/firstdarkdev/modpublisher'
+            url "https://maven.firstdark.dev/releases"
+        }
         mavenCentral()
         gradlePluginPortal()
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }

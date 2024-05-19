@@ -4,16 +4,15 @@ import com.google.common.base.Splitter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Matrix4f;
-import me.ichun.mods.ichunutil.client.gui.bns.window.*;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGreyout;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.common.util.IOUtil;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,23 +20,20 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
-public abstract class Workspace extends Screen //boxes and stuff!
-        implements IConstrainable, IWindows
+public abstract class Workspace extends Screen
+    implements Rectangle
 {
     public static final long CURSOR_ARROW = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
     public static final long CURSOR_IBEAM = GLFW.glfwCreateStandardCursor(GLFW.GLFW_IBEAM_CURSOR);
@@ -48,67 +44,27 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
     public static final String ELLIPSIS = "\u2026";//"…";
 
-    private static HashMap<Class<?>, Function<Object, List<String>>> OBJECT_INTERPRETER = Util.make(new HashMap<>(), m -> {
-        m.put(File.class, (o) -> {
-            File file = (File)o;
-            List<String> info = new ArrayList<>();
-            info.add(file.getName());
-            info.add((new SimpleDateFormat()).format(new Date(file.lastModified())));
-            info.add(IOUtil.readableFileSize(file.length()));
-            return info;
-        });
-        m.put(Theme.class, (o) -> Collections.singletonList(((Theme)o).name + " - " + ((Theme)o).author));
-        m.put(Entity.class, (o) -> Collections.singletonList(((Entity)o).getDisplayName().getString()));
-        m.put(Class.class, (o) -> Collections.singletonList(((Class)o).getSimpleName()));
-    });
-
-    public static @Nonnull List<String> getInterpretedInfo(Object o)
-    {
-        Map.Entry<Class<?>, Function<Object, List<String>>> lastEntryUsed = null;
-        List<String> infos = null;
-        for(Map.Entry<Class<?>, Function<Object, List<String>>> e : OBJECT_INTERPRETER.entrySet())
-        {
-            if(e.getKey().isInstance(o))
-            {
-                if(!(lastEntryUsed != null && e.getKey().isAssignableFrom(lastEntryUsed.getKey()))) // !(the last entry extends our current class)
-                {
-                    lastEntryUsed = e;
-                    infos = e.getValue().apply(o);
-                }
-            }
-        }
-        if(infos == null)
-        {
-            infos = new ArrayList<>();
-            infos.add(o.toString());
-        }
-        return infos;
-    }
-
-    public static void registerObjectInterpreter(Class<?> clz, Function<Object, List<String>> function) //TODO register Entities for .getName()
-    {
-        OBJECT_INTERPRETER.put(clz, function);
-    }
-
     public int ellipsisLength = 0;
 
-    private Theme theme = Theme.getInstance();
-    public ArrayList<Window<?>> windows = new ArrayList<>(); //0 = newest
-    private int renderMinecraftStyle;
+    public Screen lastScreen;
     private boolean hasInit;
-
-    private Screen lastScreen;
 
     public String lastTooltip;
     public int tooltipCooldown;
 
+    public Theme theme;
+    public int renderMinecraftStyle;
+
     public long cursorState;
 
-    public Workspace(Screen lastScreen, Component title, int mcStyle)
+    public ArrayList<Window<?>> windows = new ArrayList<>(); //0 = newest
+
+    protected Workspace(Screen lastScreen, Component title)
     {
         super(title);
         this.lastScreen = lastScreen;
-        renderMinecraftStyle = mcStyle;
+        this.theme = Theme.getInstance();
+        this.renderMinecraftStyle = iChunUtil.configClient.bnsMinecraftStyle;
 
         if(canDockWindows())
         {
@@ -116,46 +72,16 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    public <T extends Workspace> T setLastScreen(Screen screen)
-    {
-        this.lastScreen = screen;
-        return (T)this;
-    }
-
-    public <T extends Workspace> T setTheme(Theme theme)
+    public <W extends Workspace> W setTheme(Theme theme)
     {
         this.theme = theme;
-        return (T)this;
+        return (W)this;
     }
 
-    public <T extends Workspace> T setMinecraftStyle(int i)
+    public <W extends Workspace> W setMinecraftStyle(int i)
     {
         this.renderMinecraftStyle = i;
-        return (T)this;
-    }
-
-    @Override
-    public int getWidth()
-    {
-        return width;
-    }
-
-    @Override
-    public int getHeight()
-    {
-        return height;
-    }
-
-    @Override
-    public Theme getTheme()
-    {
-        return theme;
-    }
-
-    @Override
-    public void onClose()
-    {
-        this.minecraft.setScreen(lastScreen);
+        return (W)this;
     }
 
     @Override
@@ -168,7 +94,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
             windows.forEach(Fragment::init);
         }
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
     }
 
     public boolean hasInit()
@@ -177,10 +102,30 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
+    public void resize(Minecraft mc, int width, int height)
+    {
+        this.minecraft = mc;
+        this.font = mc.font;
+        this.width = width;
+        this.height = height;
+        this.setFocused(null);
+
+        //resize windows
+        windows.forEach(window -> window.resize(mc, width, height));
+    }
+
+    @Override
+    public void onClose()
+    {
+        //This is closed when the UI is asked to close itself.
+        //We do not trigger our children's onClose, that method is for when they themselves get closed. Overriding classes may override that function
+        this.minecraft.setScreen(lastScreen);
+    }
+
+    @Override
     public void removed()
     {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-
+        //This is called when the screen is removed/unset from MC's main screen
         GLFW.glfwSetCursor(this.minecraft.getWindow().getWindow(), 0);
     }
 
@@ -195,7 +140,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 Window<?> window = windows.get(i);
                 if(window instanceof WindowDock)
                 {
-                    ((WindowDock<?>)window).docked.keySet().forEach(h -> winds.addAll(h.windows));
+                    ((WindowDock<?>)window).docked.keySet().forEach(h -> winds.addAll(h.windows()));
                 }
                 else
                 {
@@ -209,167 +154,61 @@ public abstract class Workspace extends Screen //boxes and stuff!
     }
 
     @Override
-    public Window<?> addWindow(Window<?> window)
-    {
-        if(window.isUnique()) // aw how cute
-        {
-            List<Window<?>> allWindows = children();
-            for(int i = allWindows.size() - 1; i >= 0; i--)
-            {
-                Window<?> window1 = allWindows.get(i);
-                if(window1.getClass() == window.getClass()) //we're unique. Kill the old one
-                {
-                    if(isDocked(window1))
-                    {
-                        window1.onClose();
-                        getDock().removeFromDock(window1); //Don't call our own removeFromDock, that readds it back into our list.
-                    }
-                    else
-                    {
-                        removeWindow(window1);
-                    }
-                }
-            }
-        }
-        windows.add(0, window); //MC's iterator starts from first element of list
-        return window;
-    }
-
-    @Override
-    public void removeWindow(Window<?> window)
-    {
-        if(getFocused() == window)
-        {
-            setFocused(null);
-        }
-        window.onClose(); //TODO this might bite me in the ass. how can we tell if the window was removed or destroyed????? dock???
-        windows.remove(window);
-    }
-
-    public void bringToFront(Window<?> window)
-    {
-        if(window.canBringToFront() && windows.remove(window))
-        {
-            addWindow(window);
-        }
-    }
-
-    public void putInCenter(Window<?> window)
-    {
-        if(!isDocked(window))
-        {
-            window.pos((int)((getWidth() - window.getWidth()) / 2D), (int)((getHeight() - window.getHeight()) / 2D));
-        }
-    }
-
-    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio, boolean greyout)
-    {
-        if(widthRatio <= 1D)
-        {
-            window.setWidth((int)(window.getParentWidth() * widthRatio));
-        }
-        else
-        {
-            window.setWidth((int)widthRatio);
-        }
-        if(heightRatio <= 1D)
-        {
-            window.setHeight((int)(window.getParentHeight() * heightRatio));
-        }
-        else
-        {
-            window.setHeight((int)heightRatio);
-        }
-
-        if(greyout)
-        {
-            addWindowWithGreyout(window);
-        }
-        else
-        {
-            addWindow(window);
-        }
-        putInCenter(window);
-        setFocused(window);
-
-        window.init();
-    }
-
-    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio)
-    {
-        openWindowInCenter(window, widthRatio, heightRatio, false);
-    }
-
-    public void openWindowInCenter(Window<?> window, boolean greyout)
-    {
-        openWindowInCenter(window, 0.5D, 0.5D, greyout);
-    }
-
-    public void openWindowInCenter(Window<?> window)
-    {
-        openWindowInCenter(window, false);
-    }
-
-    public void addWindowWithGreyout(Window<?> window)
-    {
-        WindowGreyout<?> greyout = new WindowGreyout<>(this, window);
-        addWindow(greyout);
-        greyout.init();
-
-        addWindow(window);
-    }
-
-    @Override
     public void tick()
     {
         children().forEach(Fragment::tick);
         tooltipCooldown--;
     }
 
-    public @Nullable <T extends Fragment<?>> T getById(@Nonnull String id)
-    {
-        Fragment<?> o = null;
-        for(GuiEventListener child : children())
-        {
-            if(o == null && child instanceof Fragment)
-            {
-                o = ((Fragment<?>)child).getById(id);
-            }
-        }
-        return (T)o;
-    }
-
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         cursorState = CURSOR_ARROW;
 
-        stack.pushPose();
+        graphics.pose().pushPose();
 
-        renderBackground(stack);
+        renderBackground(graphics, mouseX, mouseY, partialTick);
 
-        renderWindows(stack, mouseX, mouseY, partialTick);
+        renderWindows(graphics, mouseX, mouseY, partialTick);
 
-        renderTooltip(stack, mouseX, mouseY, partialTick);
+        renderTooltip(graphics, mouseX, mouseY, partialTick);
 
         resetBackground();
 
-        stack.popPose();
+        graphics.pose().popPose();
 
         GLFW.glfwSetCursor(this.minecraft.getWindow().getWindow(), cursorState);
     }
 
-    public void renderWindows(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    @Override
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    {
+        if(renderMinecraftStyle > 0)
+        {
+            super.renderBackground(graphics, mouseX, mouseY, partialTick);
+        }
+        else
+        {
+            RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
+            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        }
+    }
+
+    public void resetBackground()
+    {
+    }
+
+    public void renderWindows(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
             Window<?> window = windows.get(i);
-            stack.translate(0D, 0D, 10D);
-            window.render(stack, mouseX, mouseY, partialTick);
+            graphics.pose().translate(0D, 0D, 10D);
+            window.render(graphics, mouseX, mouseY, partialTick);
         }
     }
 
-    public void renderTooltip(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         //render tooltip
         Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
@@ -381,7 +220,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 if(!tooltip.equals(lastTooltip))
                 {
                     lastTooltip = tooltip;
-                    tooltipCooldown = iChunUtil.configClient.guiTooltipCooldown;
+                    tooltipCooldown = iChunUtil.configClient.bnsTooltipCooldown;
                 }
             }
             else
@@ -392,11 +231,11 @@ public abstract class Workspace extends Screen //boxes and stuff!
 
         if(lastTooltip != null && tooltipCooldown < 0)
         {
-            renderTooltip(stack, lastTooltip, mouseX, mouseY);
+            renderTooltip(graphics, lastTooltip, mouseX, mouseY);
         }
     }
 
-    public void renderTooltip(PoseStack stack, @Nonnull String tooltip, int mouseX, int mouseY)
+    public void renderTooltip(GuiGraphics graphics, @NotNull String tooltip, int mouseX, int mouseY)
     {
         List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
         if(renderMinecraftStyle > 0)
@@ -404,34 +243,22 @@ public abstract class Workspace extends Screen //boxes and stuff!
             List<Component> textLines = new ArrayList<>();
             for(String s : textStrings)
             {
-                textLines.add(new TextComponent(s));
+                textLines.add(Component.literal(s));
             }
-            super.renderComponentTooltip(stack, textLines, mouseX, mouseY);
+            graphics.renderTooltip(font, textLines, Optional.empty(), mouseX, mouseY);
         }
         else //Mostly taken from GuiUtils
         {
             List<FormattedText> textLines = new ArrayList<>();
             for(String s : textStrings)
             {
-                textLines.add(new TextComponent(s));
+                textLines.add(Component.literal(s));
             }
 
-            ItemStack itemstack = ItemStack.EMPTY;
             int screenWidth = width;
             int screenHeight = height;
             int maxTextWidth = -1;
             Font font = getFontRenderer();
-
-            //            RenderTooltipEvent.Pre event = new RenderTooltipEvent.Pre(itemstack, textLines, stack, mouseX, mouseY, screenWidth, screenHeight, maxTextWidth, font);
-            //            if (MinecraftForge.EVENT_BUS.post(event)) {
-            //                return;
-            //            }
-            //            mouseX = event.getX();
-            //            mouseY = event.getY();
-            //            screenWidth = event.getScreenWidth();
-            //            screenHeight = event.getScreenHeight();
-            //            maxTextWidth = event.getMaxWidth();
-            //            font = event.getFontRenderer();
 
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
@@ -529,14 +356,13 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 tooltipY = screenHeight - tooltipHeight - 4;
             }
 
+            PoseStack stack = graphics.pose();
             final int zLevel = 400;
             stack.pushPose();
             Matrix4f mat = stack.last().pose();
 
-            RenderHelper.drawColour(stack, getTheme().windowBorder[0], getTheme().windowBorder[1], getTheme().windowBorder[2], 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
-            RenderHelper.drawColour(stack, getTheme().windowBackground[0], getTheme().windowBackground[1], getTheme().windowBackground[2], 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
-
-            //            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(itemstack, textLines, stack, tooltipX, tooltipY, font, tooltipTextWidth, tooltipHeight));
+            RenderHelper.drawColour(graphics, getTheme().windowBorderActive, 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
+            RenderHelper.drawColour(graphics, getTheme().windowBackground, 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
 
             MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             stack.translate(0.0D, 0.0D, zLevel);
@@ -548,7 +374,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
                 FormattedText line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, Font.DisplayMode.NORMAL, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)
@@ -562,86 +388,52 @@ public abstract class Workspace extends Screen //boxes and stuff!
             renderType.endBatch();
             stack.popPose();
 
-            //            MinecraftForge.EVENT_BUS.post(new RenderTooltipEvent.PostText(itemstack, textLines, stack, tooltipX, tooltipTop, font, tooltipTextWidth, tooltipHeight));
-
             RenderSystem.enableDepthTest();
         }
     }
 
-    public @Nullable Fragment<?> getTopMostFragment(double mouseX, double mouseY)
+    @Nullable
+    public <T extends Fragment<?>> T getById(@NotNull String id)
     {
         Fragment<?> o = null;
-        List<Window<?>> children = children();
-        for(int i = children.size() - 1; i >= 0; i--) //furthest back to front
+        for(GuiEventListener child : children())
         {
-            Fragment<?> o1 = children.get(i).getTopMostFragment(mouseX, mouseY);
-            if(o1 != null)
+            if(o == null && child instanceof Fragment<?> fragment)
             {
-                o = o1;
+                o = fragment.getById(id);
             }
         }
-        return o;
+        return (T)o;
     }
 
-    @Override
-    public void resize(Minecraft mc, int width, int height)
+    @Nullable
+    public <T extends Window<?>> T getByWindowType(Class<T> clz)
     {
-        this.minecraft = mc;
-        this.itemRenderer = mc.getItemRenderer();
-        this.font = mc.font;
-        this.width = width;
-        this.height = height;
-        this.setFocused(null);
-
-        //resize windows
-        windows.forEach(window -> window.resize(mc, width, height));
-    }
-
-    @Override
-    public void renderBackground(PoseStack stack)
-    {
-        if(renderMinecraftStyle > 0)
+        List<Window<?>> windows = children();
+        for(Window<?> window : windows)
         {
-            super.renderBackground(stack);
+            if(clz.isAssignableFrom(window.getClass()))
+            {
+                return (T)window;
+            }
         }
-        else
+        return null;
+    }
+
+    @Nullable
+    public Fragment<?> getTopMostFragment(double mouseX, double mouseY)
+    {
+        List<Window<?>> children = children();
+        for(Window<?> child : children)
         {
-            Matrix4f matrix4f = Matrix4f.orthographic(0.0F, (float)(minecraft.getWindow().getWidth() / minecraft.getWindow().getGuiScale()), 0.0F, (float)(minecraft.getWindow().getHeight() / minecraft.getWindow().getGuiScale()), -5000.0F, 5000.0F);
-            RenderSystem.setProjectionMatrix(matrix4f);
-            PoseStack posestack = RenderSystem.getModelViewStack();
-            posestack.setIdentity();
-
-            RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
-            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+            Fragment<?> frag = child.getTopMostFragment(mouseX, mouseY);
+            if(frag != null)
+            {
+                return frag;
+            }
         }
+        return null;
     }
-
-    public void resetBackground()
-    {
-        if(renderMinecraftStyle == 0)
-        {
-            Matrix4f matrix4f = Matrix4f.orthographic(0.0F, (float)(minecraft.getWindow().getWidth() / minecraft.getWindow().getGuiScale()), 0.0F, (float)(minecraft.getWindow().getHeight() / minecraft.getWindow().getGuiScale()), 1000.0F, 3000.0F);
-            RenderSystem.setProjectionMatrix(matrix4f);
-            PoseStack posestack = RenderSystem.getModelViewStack();
-            posestack.setIdentity();
-            posestack.translate(0.0D, 0.0D, -2000.0D);
-        }
-    }
-
-    @Override
-    public Font getFontRenderer()
-    {
-        return font;
-    }
-
-    @Override
-    public int renderMinecraftStyle()
-    {
-        return renderMinecraftStyle;
-    }
-
-    //TODO do we want to pass in escape??
-
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double distX, double distY)
@@ -656,7 +448,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
-    @Override
     public boolean isObstructed(Window<?> window, double mouseX, double mouseY)
     {
         for(Window<?> window1 : children())
@@ -669,20 +460,117 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return true; //our window isn't even here! pretend we're obstructed
     }
 
-    public <T extends Window<?>> T getByWindowType(Class<T> clz)
+    //Window management
+    public Window<?> addWindow(Window<?> window)
     {
-        List<Window<?>> windows = children();
-        for(Window<?> window : windows)
+        if(window.isUnique()) // aw how cute
         {
-            if(clz.isAssignableFrom(window.getClass()))
+            List<Window<?>> allWindows = children();
+            for(int i = allWindows.size() - 1; i >= 0; i--)
             {
-                return (T)window;
+                Window<?> window1 = allWindows.get(i);
+                if(window1.getClass() == window.getClass()) //we're unique. Kill the old one
+                {
+                    if(isDocked(window1))
+                    {
+                        window1.onClose();
+                        getDock().removeFromDock(window1); //Don't call our own removeFromDock, that readds it back into our list.
+                    }
+                    else
+                    {
+                        removeWindow(window1);
+                    }
+                }
             }
         }
-        return null;
+        windows.add(0, window); //MC's iterator starts from first element of list
+        return window;
     }
 
-    @Override
+    public void removeWindow(Window<?> window)
+    {
+        if(getFocused() == window)
+        {
+            setFocused(null);
+        }
+        window.onClose();
+        windows.remove(window);
+    }
+
+    public void bringToFront(Window<?> window)
+    {
+        if(window.canBringToFront() && windows.remove(window))
+        {
+            addWindow(window);
+        }
+    }
+
+    public void putInCenter(Window<?> window)
+    {
+        if(!isDocked(window))
+        {
+            window.pos((int)((getWidth() - window.getWidth()) / 2D), (int)((getHeight() - window.getHeight()) / 2D));
+        }
+    }
+
+    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio, boolean greyout)
+    {
+        if(widthRatio <= 1D)
+        {
+            window.setWidth((int)(window.getParentWidth() * widthRatio));
+        }
+        else
+        {
+            window.setWidth((int)widthRatio);
+        }
+        if(heightRatio <= 1D)
+        {
+            window.setHeight((int)(window.getParentHeight() * heightRatio));
+        }
+        else
+        {
+            window.setHeight((int)heightRatio);
+        }
+
+        if(greyout)
+        {
+            addWindowWithGreyout(window);
+        }
+        else
+        {
+            addWindow(window);
+        }
+        putInCenter(window);
+        setFocused(window);
+
+        window.init();
+    }
+
+    public void openWindowInCenter(Window<?> window, double widthRatio, double heightRatio)
+    {
+        openWindowInCenter(window, widthRatio, heightRatio, false);
+    }
+
+    public void openWindowInCenter(Window<?> window, boolean greyout)
+    {
+        openWindowInCenter(window, 0.5D, 0.5D, greyout);
+    }
+
+    public void openWindowInCenter(Window<?> window)
+    {
+        openWindowInCenter(window, false);
+    }
+
+    public void addWindowWithGreyout(Window<?> window)
+    {
+        WindowGreyout<?> greyout = new WindowGreyout<>(this, window);
+        addWindow(greyout);
+        greyout.init();
+
+        addWindow(window);
+    }
+
+    //Dock management
     public boolean canDockWindows()
     {
         return true;
@@ -693,8 +581,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return (WindowDock<? extends Workspace>)windows.get(windows.size() - 1);
     }
 
-    @Override
-    public DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
+    public WindowDock.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(canDockWindows())
         {
@@ -703,7 +590,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return null;
     }
 
-    @Override
     public void addToDocked(Window<?> docked, Window<?> window)
     {
         if(canDockWindows() && getDock().addToDocked(docked, window))
@@ -712,7 +598,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    @Override
     public void addToDock(Window<?> window, Constraint.Property.Type type)
     {
         if(canDockWindows())
@@ -722,7 +607,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    @Override
     public void removeFromDock(Window<?> window)
     {
         if(canDockWindows())
@@ -732,7 +616,6 @@ public abstract class Workspace extends Screen //boxes and stuff!
         }
     }
 
-    @Override
     public boolean isDocked(Window<?> window)
     {
         if(canDockWindows())
@@ -742,8 +625,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return false;
     }
 
-    @Override
-    public boolean sameDockStack(IConstrainable window, IConstrainable window1)
+    public boolean sameDockStack(Rectangle window, Rectangle window1)
     {
         if(canDockWindows())
         {
@@ -752,22 +634,7 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return false;
     }
 
-    @Override
-    public void setFocused(@Nullable GuiEventListener gui)
-    {
-        GuiEventListener lastFocused = getFocused();
-        if(lastFocused instanceof Fragment && gui != lastFocused)
-        {
-            ((Fragment<?>)lastFocused).unfocus(gui);
-        }
-        if(gui instanceof Window)
-        {
-            bringToFront((Window<?>)gui);
-        }
-        super.setFocused(gui);
-    }
-
-    //IConstrainable
+    //Rectangle
     @Override
     public int getLeft()
     {
@@ -792,12 +659,65 @@ public abstract class Workspace extends Screen //boxes and stuff!
         return height;
     }
 
-    //Missing in Fabric env
-    public Minecraft getMinecraft() {
+    @Override
+    public int getWidth()
+    {
+        return width;
+    }
+
+    @Override
+    public int getHeight()
+    {
+        return height;
+    }
+
+    @Override
+    public <W extends Workspace> W getWorkspace()
+    {
+        return (W)this;
+    }
+
+    @Override
+    public Minecraft getMinecraft()
+    {
         return this.minecraft;
     }
 
-    //Convenience method
+    @Override
+    public Theme getTheme()
+    {
+        return theme;
+    }
+
+    @Override
+    public Font getFontRenderer()
+    {
+        return font;
+    }
+
+    @Override
+    public int renderMinecraftStyle()
+    {
+        return renderMinecraftStyle;
+    }
+
+    //ContainerEventHandler
+    @Override
+    public void setFocused(@Nullable GuiEventListener gui)
+    {
+        GuiEventListener lastFocused = getFocused();
+        if(lastFocused instanceof Fragment && gui != lastFocused)
+        {
+            ((Fragment<?>)lastFocused).unfocus(gui);
+        }
+        if(gui instanceof Window)
+        {
+            bringToFront((Window<?>)gui);
+        }
+        super.setFocused(gui);
+    }
+
+    //Convenience methods
     public static void bindTexture(ResourceLocation rl)
     {
         RenderSystem.setShaderTexture(0, rl);

@@ -1,11 +1,11 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.function.Consumer;
 
@@ -21,6 +21,7 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
         this.attachedWindow = attached;
         size(parent.getWidth(), parent.getHeight());
         setConstraint(Constraint.matchParent(this, parent, 0));
+
         borderSize = () -> 0;
         titleSize = () -> 0;
 
@@ -59,11 +60,11 @@ public class WindowGreyout<M extends Workspace> extends Window<M>
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderHelper.drawColour(stack, 0, 0, 0, 150, getLeft(), getTop(), width, height, 0);
+        RenderHelper.drawColour(graphics, 0, 0, 0, 150, getLeft(), getTop(), width, height, 0);
         RenderSystem.disableBlend();
         if(!parent.children().contains(attachedWindow))
         {

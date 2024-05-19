@@ -1,0 +1,61 @@
+apply plugin: "com.hypherionmc.modutils.modpublisher"
+
+publisher {
+    // Setup the required API keys. You only need to define the keys for 
+    // the platforms you plan on uploading to
+    apiKeys {
+        // Modrinth Token
+        if(project.hasProperty('modrinth_token'))
+        {
+            modrinth modrinth_token
+        }
+        // Curseforge Token
+        if(project.hasProperty('curseforge_token'))
+        {
+            curseforge curseforge_token
+        }      
+        // GitHub Token
+        //github System.getenv("GITHUB_TOKEN")
+    }
+
+    // Enable Debug mode. When enabled, no files will actually be uploaded
+    //setDebug(true)
+    
+    // Modrinth Project ID
+    setModrinthID("${modrinth_project_id}")
+    
+    // Type of release. beta, alpha or release
+    // You can also use VersionType.BETA, VersionType.ALPHA or VersionType.RELEASE
+    setVersionType("release")
+    
+    // Changelog. This can be a file, string, OR, gist/github url
+    // For example: markdown.md, or "This is my changelog"
+    // Or: https://raw.githubusercontent.com/hypherionmc/changelogs/changelog.md
+    // Or https://gist.githubusercontent.com/hypherionmc/92f825d3c9337964cc77c9c8c9bf65e6/raw/ceeaaee5b98c688a23398864fe480b84796a1651/test_gist.md
+    setChangelog(file("$project.rootDir/changelog.md"))
+    
+    // Required for Modrinth/GitHub
+    setVersion("${mod_version}")
+    
+    // The supported game versions
+    setGameVersions("${minecraft_version}")
+    
+    // The new Curseforge Environment tag. Optional
+    // Valid values are "server", "client" or "both"
+    // You can also use CurseEnvironment.BOTH, or CurseEnvironment.SERVER or CurseEnvironment.CLIENT
+    setCurseEnvironment("${curseforge_environment}")
+        
+    // Override the artifact uploaded to modrinth
+    // setPlatformArtifact(Platform.Modrinth, "build/libs/mymod.jar")
+    // setPlatformArtifact(Platform.Modrinth, jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    // Valid platforms are modrinth, curseforge and github
+    //setPlatformArtifact("modrinth", modrinthJar)
+
+    // Disable the built in Fractureizer scanner
+    //setDisableMalwareScanner(true)
+    
+    // Safety check to check if the artifact contains a valid mod metadata entry,
+    // which could possibly mean that the jar is empty
+    //setDisableEmptyJarCheck(true)
+}

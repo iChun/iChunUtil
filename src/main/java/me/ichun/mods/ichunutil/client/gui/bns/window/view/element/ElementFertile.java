@@ -1,19 +1,18 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
-public abstract class ElementFertile<P extends Fragment> extends Element<P>
+public abstract class ElementFertile<P extends Fragment<?>> extends Element<P>
 {
-    public ElementFertile(@Nonnull P parent)
+    public ElementFertile(@NotNull P parent)
     {
         super(parent);
     }
@@ -50,39 +49,9 @@ public abstract class ElementFertile<P extends Fragment> extends Element<P>
     }
 
     @Override
-    public boolean changeFocus(boolean direction) // do the default from INestedGuiEventHandler
+    public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        GuiEventListener iguieventlistener = this.getFocused();
-        boolean flag = iguieventlistener != null;
-        if (flag && iguieventlistener.changeFocus(direction)) {
-            return true;
-        } else {
-            List<? extends GuiEventListener> list = this.children();
-            int j = list.indexOf(iguieventlistener);
-            int i;
-            if (flag && j >= 0) {
-                i = j + (direction ? 1 : 0);
-            } else if (direction) {
-                i = 0;
-            } else {
-                i = list.size();
-            }
-
-            ListIterator<? extends GuiEventListener> listiterator = list.listIterator(i);
-            BooleanSupplier booleansupplier = direction ? listiterator::hasNext : listiterator::hasPrevious;
-            Supplier<? extends GuiEventListener> supplier = direction ? listiterator::next : listiterator::previous;
-
-            while(booleansupplier.getAsBoolean()) {
-                GuiEventListener iguieventlistener1 = supplier.get();
-                if (iguieventlistener1.changeFocus(direction)) {
-                    this.setFocused(iguieventlistener1);
-                    return true;
-                }
-            }
-
-            this.setFocused(null);
-            return false;
-        }
+        return null;
     }
 
     public abstract int getBorderSize();

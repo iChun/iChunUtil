@@ -1,6 +1,8 @@
 {
-   "pack":{
-      "description":"iChunUtil",
-      "pack_format":9
+   "pack": {
+      "description": {
+         "text": "${mod_name}"
+      },
+      "pack_format": 32
    }
 }

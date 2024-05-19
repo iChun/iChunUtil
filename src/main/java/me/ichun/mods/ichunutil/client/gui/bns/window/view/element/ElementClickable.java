@@ -1,23 +1,23 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 @SuppressWarnings("unchecked")
-public abstract class ElementClickable<T extends ElementClickable> extends Element //we reset our focus when we're clicked.
+public abstract class ElementClickable<T extends ElementClickable> extends Element<Fragment<?>> //we reset our focus when we're clicked.
 {
-    public @Nonnull Consumer<T> callback;
+    public @NotNull Consumer<T> callback;
     public boolean hover; //for rendering
     public boolean disabled;
 
-    public ElementClickable(@Nonnull Fragment parent, Consumer<T> callback)
+    public ElementClickable(@NotNull Fragment parent, Consumer<T> callback)
     {
         super(parent);
         this.callback = callback;
@@ -30,12 +30,12 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         hover = false;
         if(!disabled)
         {
-            hover = isMouseOver(mouseX, mouseY) || parentFragment.getFocused() == this;
+            hover = isMouseOver(mouseX, mouseY) || parent.getFocused() == this;
         }
     }
 
@@ -43,7 +43,7 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     public boolean mouseReleased(double mouseX, double mouseY, int button)
     {
         boolean flag = super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
+        parent.setFocused(null); //we're a one time click, stop focusing on us
         if(!disabled && isMouseOver(mouseX, mouseY) && button == 0) //lmb
         {
             trigger();
@@ -77,6 +77,6 @@ public abstract class ElementClickable<T extends ElementClickable> extends Eleme
     @Override
     public int getMinecraftFontColour()
     {
-        return parentFragment.isDragging() && parentFragment.getFocused() == this || disabled ? 10526880 : hover ? 16777120 : 14737632;
+        return parent.isDragging() && parent.getFocused() == this || disabled ? 10526880 : hover ? 16777120 : 14737632;
     }
 }

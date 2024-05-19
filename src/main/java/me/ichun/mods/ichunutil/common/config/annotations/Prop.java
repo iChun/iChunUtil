@@ -1,17 +1,18 @@
 package me.ichun.mods.ichunutil.common.config.annotations;
 
-import me.ichun.mods.ichunutil.loader.LoaderHandler;
+import me.ichun.mods.ichunutil.loader.Env;
+import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Prop
 {
     boolean needsRestart() default false;
+
+    boolean intBool() default false;
 
     double min() default Double.MIN_VALUE;
 
@@ -25,5 +26,6 @@ public @interface Prop
 
     String guiElementOverride() default "";
 
-    LoaderHandler.Env[] env() default LoaderHandler.Env.ALL; //if not ALL, only loader specific
+    @NotNull
+    Env[] env() default Env.ALL; //if not ALL, only loader specific
 }

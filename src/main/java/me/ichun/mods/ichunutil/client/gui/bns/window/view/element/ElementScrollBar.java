@@ -1,16 +1,22 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import me.ichun.mods.ichunutil.client.gui.bns.window.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
-import com.mojang.math.Matrix4f;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class ElementScrollBar<T extends ElementScrollBar> extends Element
+public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragment<?>>
 {
     public enum Orientation
     {
@@ -26,7 +32,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
 
     public MousePos pos;
 
-    public ElementScrollBar(@Nonnull Fragment parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@NotNull Fragment parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;
@@ -102,18 +108,19 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
             resizing = true;
             constraint.apply();
 
-            parentFragment.resize(getWorkspace().getMinecraft(), parentFragment.getParentWidth(), parentFragment.getParentHeight());
+            parent.resize(getWorkspace().getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
             resizing = false;
         }
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         if(width <= 0 || height <= 0)
         {
             return;
         }
+        PoseStack stack = graphics.pose();
 
         int scrollBar = Math.max(8, (int)(getDistance() * scrollBarSize)); // the size of the scroll bar over the entire
         int space = getDistance() - scrollBar; //how much space we have.
@@ -122,6 +129,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
         if(renderMinecraftStyle() > 0)
         {
             bindTexture(resourceTabItems());
+            TextureDefinition texdefScroller = TEXDEF_SCROLLER;
 
             if(orientation == Orientation.VERTICAL)
             {
@@ -142,7 +150,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 RenderHelper.endDrawBatch();
 
                 //draw scroll bar
-                bindTexture(resourceTabs());
+                bindTexture(resourceScroller());
 
                 //x, y, width, height
                 //getLeft(), getTop() + preSpace, 14, scrollBar
@@ -153,13 +161,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.drawBatch(stack, getLeft() + 1, x, 12, dist, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
+                    RenderHelper.drawBatch(stack, getLeft() + 1, x, 12, dist, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
-                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
+                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
                 RenderHelper.endDrawBatch();
             }
             else
@@ -179,7 +187,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 draw(stack, getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
-                bindTexture(resourceTabs());
+                bindTexture(resourceScroller());
 
                 //x, y, width, height
                 //getLeft() + preSpace, getTop(), scrollBar, 14
@@ -188,36 +196,36 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    draw(stack, x, getTop() + 1, dist, 12, 0, 232D / 256D, 244D / 256D, 4D / 256D, (4 + dist) / 256D); //draw body
+                    draw(stack, x, getTop() + 1, dist, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                draw(stack, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, 232D / 256D, 244D / 256D, 0D / 256D, 4D / 256D); //draw top of scroll
-                draw(stack, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, 232D / 256D, 244D / 256D, 12D / 256D, 15D / 256D); //draw bottom of scroll
+                draw(stack, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
+                draw(stack, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
             }
         }
         else
         {
             //draw bg
-            fill(stack, getTheme().elementTreeScrollBar, 0);
+            fill(graphics, getTheme().elementScrollBarBackground, 0);
             if(orientation == Orientation.VERTICAL)
             {
                 //draw track
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 6, getTop() + 4, 2, height - 8, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBarBorder, 255, getLeft() + 6, getTop() + 4, 2, height - 8, 0);
 
                 //draw bar
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft(), getTop() + preSpace, 14, scrollBar, 0);
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + 1, getTop() + preSpace + 1, 12, scrollBar - 2, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBarBorder, 255, getLeft(), getTop() + preSpace, 14, scrollBar, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBar, 255, getLeft() + 1, getTop() + preSpace + 1, 12, scrollBar - 2, 0);
             }
             else
             {
                 //draw track
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + 4, getTop() + 6, width - 8, 2, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBarBorder, 255, getLeft() + 4, getTop() + 6, width - 8, 2, 0);
 
                 //draw bar
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBarBorder[0], getTheme().elementTreeScrollBarBorder[1], getTheme().elementTreeScrollBarBorder[2], 255, getLeft() + preSpace, getTop(), scrollBar, 14, 0);
-                RenderHelper.drawColour(stack, getTheme().elementTreeScrollBar[0], getTheme().elementTreeScrollBar[1], getTheme().elementTreeScrollBar[2], 255, getLeft() + preSpace + 1, getTop() + 1, scrollBar - 2, 12, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBarBorder, 255, getLeft() + preSpace, getTop(), scrollBar, 14, 0);
+                RenderHelper.drawColour(graphics, getTheme().elementScrollBar, 255, getLeft() + preSpace + 1, getTop() + 1, scrollBar - 2, 12, 0);
             }
         }
     }
@@ -266,21 +274,21 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double dist)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
         if(isMouseOver(mouseX, mouseY) && scrollBarSize < 1F)
         {
             if(Screen.hasShiftDown())
             {
-                setScrollProg((float)dist * -100F);
+                setScrollProg((float)scrollY * -100F);
             }
             else if(Screen.hasControlDown())
             {
-                setScrollProg(scrollProg + (float)(dist * -(1 / 100D)));
+                setScrollProg(scrollProg + (float)(scrollY * -(1 / 100D)));
             }
             else
             {
-                secondHandScroll(dist);
+                secondHandScroll(scrollY);
             }
             return true;
         }
@@ -297,14 +305,14 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
     {
         pos = null;
         super.mouseReleased(mouseX, mouseY, button); // unsets dragging;
-        parentFragment.setFocused(null); //we're a one time click, stop focusing on us
+        parent.setFocused(null); //we're a one time click, stop focusing on us
         return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean changeFocus(boolean direction) //we can't change focus on this
+    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
     {
-        return false;
+        return null;
     }
 
     @Override
@@ -333,6 +341,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element
 
     public static void draw(PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
     {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix = stack.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();

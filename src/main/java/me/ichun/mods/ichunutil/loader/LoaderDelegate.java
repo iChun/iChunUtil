@@ -1,117 +1,56 @@
 package me.ichun.mods.ichunutil.loader;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
-import me.ichun.mods.ichunutil.common.network.AbstractPacket;
-import me.ichun.mods.ichunutil.common.network.PacketChannel;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.network.protocol.Packet;
+import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.Locale;
 
 public interface LoaderDelegate
 {
-    <T extends ConfigBase> T registerConfig(T config);
+    Env env();
 
-    @Nullable
-    ResourceLocation getRegistryName(Object o);
+    default boolean isDevEnvironment() //Fabric has a flag that defines dev env
+    {
+        return SharedConstants.IS_RUNNING_IN_IDE;
+    }
 
-    boolean isDevEnvironment(); //TODO FMLLoader.getNaming().equals("mcp") ???? Does this still work
+    Path getModsDir();
 
-    boolean isOnClient(); //TODO FMLEnvironment.dist.isClient()
+    Path getConfigDir();
+
+    <T extends ConfigBase> T registerConfig(T config, Object...params);
+
+    boolean isOnClient();
 
     default boolean isOnDedicatedServer()
     {
         return !isOnClient();
     }
 
-    boolean isLogicalSideClient();
+    MinecraftServer getServer();
 
-    MinecraftServer getMinecraftServer();
+    void registerAddReloadListener(PreparableReloadListener reloadListener);
 
-    PacketChannel createPacketChannel(ResourceLocation name, Class<? extends AbstractPacket>[] packetTypes);
+    default Block getBlockFromRegistry(ResourceLocation rl) //Forge uses its own registries, else uses the built in ones
+    {
+        return BuiltInRegistries.BLOCK.get(rl);
+    }
 
-    @Nullable
-    Block getBlockFromRegistry(ResourceLocation rl);
+    EntityPersistentDataHandler getEntityPersistedDataHandler();
 
-    Path getGameDir();
+    default void firePlayerTickEndEvent(Player player){}
 
-    Path getConfigDir(); //TODO FMLPaths.CONFIGDIR.get()
-
-    String remapField(String fieldName); //TODO ObfuscationReflectionHelper.remapName(INameMappingService.Domain.FIELD, fieldName)
-
-    void registerPlayerTickStartListener(Consumer<Player> consumer);
-
-    void registerPlayerTickEndListener(Consumer<Player> consumer);
-
-    boolean isPlayerFakePlayer(ServerPlayer player); //TODO player instanceof FakePlayer
-
-    void registerEntityTypeRegistryListener(Consumer<Object> consumer); //TODO             bus.addGenericListener(EntityType.class, ClientEntityTracker.EntityTypes::onEntityTypeRegistry);
-
-    Packet<?> getEntitySpawnPacket(Entity e); //TODO NetworkHooks.getEntitySpawningPacket(this);
-
-    boolean isEntityAddedToWorld(Entity entity); //TODO entity.isAddedToWorld()
-
-    void registerLoadCompleteListener(Runnable runnable); //TODO IModEventBus::loadComplete?
-
-    void registerAddReloadListener(PreparableReloadListener reloadListener); //TODO AddReloadListenerEvent, event.addListener(this);
-
-    //Client stuff
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    void registerClientSetupListener(Consumer<Object> consumer); //TODO bus.addListener(ClientEntityTracker::onClientSetup); //cast to the event object?
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    void registerClientLevelUnloadListener(Consumer<Level> consumer);
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-        //TODO
-    /*
-            if(mc.getMainRenderTarget().isStencilEnabled()) //if the main framebuffer is using a stencil, we might as well, too.
-        {
-            render.enableStencil();
-        }
-     */
-    void checkEnableStencil(RenderTarget render);
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    void registerClientTickStartListener(Consumer<Minecraft> consumer);
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    void registerClientTickEndListener(Consumer<Minecraft> consumer);
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    void registerPostInitScreenListener(BiConsumer<Minecraft, Screen> consumer); //TODO     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event)
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    <E extends Entity> void registerEntityRenderer(EntityType<? extends E> type, EntityRendererProvider<E> renderer); //TODO forge is in EntityRenderersEvent now. Needs to be listened to.
-
-    //    //TODO reevaluate these
-    //
-    //    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    //        //TODO net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStackIn, pModel, ItemTransforms.TransformType.NONE, false);
-    //    BakedModel getCameraTransformsModel(PoseStack matrixStackIn, BakedModel pModel, ItemTransforms.TransformType none, boolean b);
-    //
-    //    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    //    //TODO if (modelIn.isLayered()) { net.minecraftforge.client.ForgeHooksClient.drawItemLayered(this, modelIn, itemStackIn, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, flag1); }
-    //    boolean doItemModelIsLayered(ItemRenderer itemRenderer, BakedModel pModel, ItemStack pItemStack, PoseStack matrixStackIn, MultiBufferSource buffer, int i, int noOverlay, boolean flag1);
-    //
-    //
-    //    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    //    //TODO                 net.minecraftforge.client.RenderProperties.get(pItemStack).getItemStackRenderer().renderByItem(pItemStack, ItemTransforms.TransformType.NONE, matrixStackIn, buffer, 15728880, OverlayTexture.NO_OVERLAY);
-    //    void customRendererRenderByItem(ItemStack pItemStack, ItemTransforms.TransformType type, PoseStack matrixStackIn, MultiBufferSource buffer, int light, int overlay);
+    default boolean isFakePlayer(ServerPlayer player)
+    {
+        return player.connection == null || player.getClass().getSimpleName().toLowerCase(Locale.ROOT).contains("fakeplayer");
+    }
 }

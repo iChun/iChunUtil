@@ -1,20 +1,21 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class WindowContextMenu<M extends IWindows> extends Window<M>
+public class WindowContextMenu<M extends Workspace> extends Window<M>
 {
     private final ElementList<?> list;
     private int minWidth = 1;
@@ -107,22 +108,22 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 
     private class ViewContextMenu extends View<WindowContextMenu<M>>
     {
-        public ViewContextMenu(@Nonnull WindowContextMenu<M> parent, @Nonnull String s)
+        public ViewContextMenu(@NotNull WindowContextMenu<M> parent, @NotNull String s)
         {
             super(parent, s);
 
             ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
-                    .bottom(this, Constraint.Property.Type.BOTTOM, 0)
-                    .right(this, Constraint.Property.Type.RIGHT, 0)
+                .bottom(this, Constraint.Property.Type.BOTTOM, 0)
+                .right(this, Constraint.Property.Type.RIGHT, 0)
             );
             elements.add(sv);
 
             ElementList<?> list = new ElementList<>(this).setScrollVertical(sv);
             list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
-                    .bottom(this, Constraint.Property.Type.BOTTOM, 0)
-                    .top(this, Constraint.Property.Type.TOP, 0)
-                    .right(sv, Constraint.Property.Type.LEFT, 0)
+                .bottom(this, Constraint.Property.Type.BOTTOM, 0)
+                .top(this, Constraint.Property.Type.TOP, 0)
+                .right(sv, Constraint.Property.Type.LEFT, 0)
             );
             elements.add(list);
         }
@@ -130,12 +131,12 @@ public class WindowContextMenu<M extends IWindows> extends Window<M>
 
     public interface IContextMenu
     {
-        @Nonnull List<?> getObjects();
-        @Nonnull BiConsumer<IContextMenu, ElementList.Item<?>> getReceiver();
-        default @Nonnull Function<Object, String> getNameProvider() { return Object::toString; }
+        @NotNull List<?> getObjects();
+        @NotNull BiConsumer<IContextMenu, ElementList.Item<?>> getReceiver();
+        default @NotNull Function<Object, String> getNameProvider() { return Object::toString; }
     }
 
-    public static <M extends IWindows> WindowContextMenu<M> create(M parent, IContextMenu iContextMenu, double posX, double posY, int minWidth, int yFlipHeight)
+    public static <M extends Workspace> WindowContextMenu<M> create(M parent, IContextMenu iContextMenu, double posX, double posY, int minWidth, int yFlipHeight)
     {
         WindowContextMenu<M> windowContextMenu = new WindowContextMenu<>(parent);
         ElementList<?> list = windowContextMenu.getList();

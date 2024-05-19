@@ -1,15 +1,15 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -30,7 +30,7 @@ public class WindowPopup extends Window<Workspace>
 
     public static class ViewPopup extends View<WindowPopup>
     {
-        public ViewPopup(@Nonnull WindowPopup parent, String title, @Nullable Consumer<Workspace> callback, String...text)
+        public ViewPopup(@NotNull WindowPopup parent, String title, @Nullable Consumer<Workspace> callback, String...text)
         {
             super(parent, title);
 

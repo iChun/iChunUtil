@@ -1,19 +1,21 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.constraint.IConstrainable;
+import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
+import me.ichun.mods.ichunutil.client.gui.bns.Rectangle;
+import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
+import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
-import static me.ichun.mods.ichunutil.client.gui.bns.window.constraint.Constraint.Property.Type.*;
-
-public class WindowDock<M extends IWindows> extends Window<M>
+public class WindowDock<M extends Workspace> extends Window<M>
 {
+    //TODO change dock behaviour - window reference is kept, we take the views and render that instead
+
     public LinkedHashMap<ArrayListHolder, Constraint.Property.Type> docked = new LinkedHashMap<>();
     public HashMap<Window<?>, WindowSize> dockedOriSize = new HashMap<>();
     public HashSet<Constraint.Property.Type> disabledDocks = new HashSet<>();
@@ -22,11 +24,8 @@ public class WindowDock<M extends IWindows> extends Window<M>
     {
         super(parent);
         size(parent.getWidth(), parent.getHeight());
-        if(parent instanceof IConstrainable)
-        {
-            setConstraint(Constraint.matchParent(this, (IConstrainable)parent, 0));
-        }
-        borderSize = () -> iChunUtil.configClient.guiDockPadding;
+        setConstraint(Constraint.matchParent(this, parent, 0));
+        borderSize = () -> iChunUtil.configClient.bnsDockPadding;
         titleSize = () -> 0;
     }
 
@@ -78,13 +77,13 @@ public class WindowDock<M extends IWindows> extends Window<M>
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
         List<ArrayListHolder> keys = new ArrayList<>(docked.keySet());
         for(int i = keys.size() - 1; i >= 0; i--)
         {
             ArrayList<Window<?>> windows = keys.get(i).windows;
-            windows.forEach(window -> window.render(stack, mouseX, mouseY, partialTick));
+            windows.forEach(window -> window.render(graphics, mouseX, mouseY, partialTick));
         }
     }
 
@@ -122,12 +121,12 @@ public class WindowDock<M extends IWindows> extends Window<M>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
         Window<?> windowOver = getWindowOver(mouseX, mouseY);
         if(windowOver != null)
         {
-            return windowOver.mouseScrolled(mouseX, mouseY, amount);
+            return windowOver.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
         return false;
     }
@@ -174,7 +173,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return false;
     }
 
-    public boolean sameDockStack(IConstrainable window, IConstrainable window1)
+    public boolean sameDockStack(Rectangle window, Rectangle window1)
     {
         for(ArrayListHolder h : docked.keySet())
         {
@@ -191,14 +190,15 @@ public class WindowDock<M extends IWindows> extends Window<M>
         disabledDocks.add(type);
     }
 
-    public @Nullable IWindows.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
+    @Nullable
+    public DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(dockStack)
         {
             Window<?> window = getWindowOver(mouseX, mouseY);
             if(window != null && window.canDockStack())
             {
-                return new IWindows.DockInfo(window, getAnchorType(window));
+                return new DockInfo(window, getAnchorType(window));
             }
         }
 
@@ -249,27 +249,27 @@ public class WindowDock<M extends IWindows> extends Window<M>
             }
         }
 
-        int dockSnap = iChunUtil.configClient.guiDockBorder;
+        int dockSnap = iChunUtil.configClient.bnsDockBorder;
         if(mouseY >= top && mouseY < bottom)
         {
-            if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(LEFT))
+            if(mouseX >= left && mouseX < left + dockSnap && !disabledDocks.contains(Constraint.Property.Type.LEFT))
             {
-                return new IWindows.DockInfo(null, LEFT);
+                return new DockInfo(null, Constraint.Property.Type.LEFT);
             }
-            else if(mouseX >= right - dockSnap && mouseX < right && !disabledDocks.contains(RIGHT))
+            else if(mouseX >= right - dockSnap && mouseX < right && !disabledDocks.contains(Constraint.Property.Type.RIGHT))
             {
-                return new IWindows.DockInfo(null, Constraint.Property.Type.RIGHT);
+                return new DockInfo(null, Constraint.Property.Type.RIGHT);
             }
         }
         if(mouseX >= left && mouseX < right)
         {
-            if(mouseY >= top && mouseY < top + dockSnap && !disabledDocks.contains(TOP))
+            if(mouseY >= top && mouseY < top + dockSnap && !disabledDocks.contains(Constraint.Property.Type.TOP))
             {
-                return new IWindows.DockInfo(null, Constraint.Property.Type.TOP);
+                return new DockInfo(null, Constraint.Property.Type.TOP);
             }
-            else if(mouseY >= bottom - dockSnap && bottom < right && !disabledDocks.contains(BOTTOM))
+            else if(mouseY >= bottom - dockSnap && bottom < right && !disabledDocks.contains(Constraint.Property.Type.BOTTOM))
             {
-                return new IWindows.DockInfo(null, Constraint.Property.Type.BOTTOM);
+                return new DockInfo(null, Constraint.Property.Type.BOTTOM);
             }
         }
 
@@ -319,13 +319,13 @@ public class WindowDock<M extends IWindows> extends Window<M>
                 for(int i = values.length - 1; i >= 0; i--)
                 {
                     Constraint.Property.Type type1 = values[i];
-                    if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+                    if(type1.equals(Constraint.Property.Type.WIDTH) || type1.equals(Constraint.Property.Type.HEIGHT))
                     {
                         continue;
                     }
 
-                    IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
-                    if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
+                    Rectangle constrainable = getWindowAnchor(lastInStack, type1);
+                    if(dockType.getAxis().isHorizontal() && type1 == Constraint.Property.Type.TOP || dockType.getAxis().isVertical() && type1 == Constraint.Property.Type.LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
                     {
                         constrainable = lastInStack;
 
@@ -333,7 +333,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         lastInStack.constraint.type(type1.getOpposite(), null, null, 0);
 
                         //set the size
-                        if(type1 == TOP) //if we're docked left or right, reset height
+                        if(type1 == Constraint.Property.Type.TOP) //if we're docked left or right, reset height
                         {
                             lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
                         }
@@ -387,12 +387,12 @@ public class WindowDock<M extends IWindows> extends Window<M>
         Constraint constraint = new Constraint(window);
         for(Constraint.Property.Type type1 : Constraint.Property.Type.values())
         {
-            if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+            if(type1.equals(Constraint.Property.Type.WIDTH) || type1.equals(Constraint.Property.Type.HEIGHT))
             {
                 continue;
             }
 
-            IConstrainable constrainable = getAnchor(type1);
+            Rectangle constrainable = getAnchor(type1);
             if(type1 != type.getOpposite())
             {
                 if(constrainable != null)
@@ -433,7 +433,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
             {
                 for(Constraint.Property.Type type : Constraint.Property.Type.values())
                 {
-                    if(type.equals(WIDTH) || type.equals(HEIGHT))
+                    if(type.equals(Constraint.Property.Type.WIDTH) || type.equals(Constraint.Property.Type.HEIGHT))
                     {
                         continue;
                     }
@@ -475,7 +475,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         anchors.forEach((type, property) -> {
                             if(property.getReference() == window)
                             {
-                                IConstrainable constrainable = getAnchor(type, dockWindow);
+                                Rectangle constrainable = getAnchor(type, dockWindow);
                                 if(constrainable != null && constrainable != dockWindow)
                                 {
                                     constraint.type(type, constrainable, type.getOpposite(), -(Integer)dockWindow.borderSize.get() + borderSize.get());
@@ -501,13 +501,13 @@ public class WindowDock<M extends IWindows> extends Window<M>
                         for(int ii = values.length - 1; ii >= 0; ii--)
                         {
                             Constraint.Property.Type type1 = values[ii];
-                            if(type1.equals(WIDTH) || type1.equals(HEIGHT))
+                            if(type1.equals(Constraint.Property.Type.WIDTH) || type1.equals(Constraint.Property.Type.HEIGHT))
                             {
                                 continue;
                             }
 
-                            IConstrainable constrainable = getWindowAnchor(lastInStack, type1);
-                            if(dockType.getAxis().isHorizontal() && type1 == TOP || dockType.getAxis().isVertical() && type1 == LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
+                            Rectangle constrainable = getWindowAnchor(lastInStack, type1);
+                            if(dockType.getAxis().isHorizontal() && type1 == Constraint.Property.Type.TOP || dockType.getAxis().isVertical() && type1 == Constraint.Property.Type.LEFT) //X. if type1 == top, anchor is lastInStack, same for Y.
                             {
                                 constrainable = lastInStack;
 
@@ -515,7 +515,7 @@ public class WindowDock<M extends IWindows> extends Window<M>
                                 lastInStack.constraint.type(type1.getOpposite(), null, null, 0);
 
                                 //set the size
-                                if(type1 == TOP) //if we're docked left or right, reset height
+                                if(type1 == Constraint.Property.Type.TOP) //if we're docked left or right, reset height
                                 {
                                     lastInStack.setHeight(dockedOriSize.get(lastInStack).height);
                                 }
@@ -564,15 +564,16 @@ public class WindowDock<M extends IWindows> extends Window<M>
         dockedOriSize.remove(window);
     }
 
-    public @Nullable IConstrainable getAnchor(Constraint.Property.Type type) //gets the element to anchor on based on type
+    @Nullable
+    public Rectangle getAnchor(Constraint.Property.Type type) //gets the element to anchor on based on type
     {
         return getAnchor(type, null);
     }
 
-
-    public @Nullable IConstrainable getAnchor(Constraint.Property.Type type, IConstrainable ignored) //gets the element to anchor on based on type
+    @Nullable
+    public Rectangle getAnchor(Constraint.Property.Type type, Rectangle ignored) //gets the element to anchor on based on type
     {
-        IConstrainable typeMost = null;
+        Rectangle typeMost = null;
         for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
             if(e.getValue() == type && (ignored == null || !e.getKey().windows.contains(ignored)))
@@ -583,17 +584,19 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return typeMost;
     }
 
-    public @Nullable IConstrainable getWindowAnchor(Window<?> window, Constraint.Property.Type type) //gets the element to anchor on based on type
+    @Nullable
+    public Rectangle getWindowAnchor(Window<?> window, Constraint.Property.Type type) //gets the element to anchor on based on type
     {
         return window.constraint.get(type).getReference();
     }
 
-    public @Nullable Constraint.Property getStackAnchor(ArrayList<Window<?>> stack, Constraint.Property.Type type) //gets the element to anchor on based on type
+    @Nullable
+    public Constraint.Property getStackAnchor(ArrayList<Window<?>> stack, Constraint.Property.Type type) //gets the element to anchor on based on type
     {
         for(Window<?> window : stack)
         {
             Constraint.Property anchor = window.constraint.get(type);
-            if(anchor != Constraint.Property.NONE && !stack.contains(anchor.getReference())) //Window extends IConstrainable
+            if(anchor != Constraint.Property.NONE && !stack.contains(anchor.getReference())) //Window extends Rectangle
             {
                 return anchor;
             }
@@ -628,7 +631,8 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return null;
     }
 
-    public @Nonnull ArrayList<Window<?>> getDockStack(Window<?> window)
+    @NotNull
+    public ArrayList<Window<?>> getDockStack(Window<?> window)
     {
         for(ArrayListHolder h : docked.keySet())
         {
@@ -640,13 +644,13 @@ public class WindowDock<M extends IWindows> extends Window<M>
         return new ArrayList<>();
     }
 
-    public <M extends IWindows> void edgeGrab(Window<M> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
+    public <M extends Workspace> void edgeGrab(Window<M> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
     {
         Constraint.Property.Type anchorType = getAnchorType(draggedWindow);
-        if(anchorType != null && (anchorType.getAxis().isHorizontal() && edgeGrab.left && draggedWindow.constraint.get(LEFT) == Constraint.Property.NONE ||
-                anchorType.getAxis().isHorizontal() && edgeGrab.right && draggedWindow.constraint.get(RIGHT) == Constraint.Property.NONE ||
-                anchorType.getAxis().isVertical() && edgeGrab.top && draggedWindow.constraint.get(TOP) == Constraint.Property.NONE ||
-                anchorType.getAxis().isVertical() && edgeGrab.bottom && draggedWindow.constraint.get(BOTTOM) == Constraint.Property.NONE
+        if(anchorType != null && (anchorType.getAxis().isHorizontal() && edgeGrab.left && draggedWindow.constraint.get(Constraint.Property.Type.LEFT) == Constraint.Property.NONE ||
+            anchorType.getAxis().isHorizontal() && edgeGrab.right && draggedWindow.constraint.get(Constraint.Property.Type.RIGHT) == Constraint.Property.NONE ||
+            anchorType.getAxis().isVertical() && edgeGrab.top && draggedWindow.constraint.get(Constraint.Property.Type.TOP) == Constraint.Property.NONE ||
+            anchorType.getAxis().isVertical() && edgeGrab.bottom && draggedWindow.constraint.get(Constraint.Property.Type.BOTTOM) == Constraint.Property.NONE
         ))
         {
             ArrayList<Window<?>> dockStack = getDockStack(draggedWindow);
@@ -664,27 +668,9 @@ public class WindowDock<M extends IWindows> extends Window<M>
         getWorkspace().getDock().init();
     }
 
-    public static class WindowSize
-    {
-        public final Constraint constraint;
-        public final int x;
-        public final int y;
-        public final int width;
-        public final int height;
+    public record WindowSize(Constraint constraint, int x, int y, int width, int height){}
 
-        public WindowSize(Constraint constraint, int x, int y, int width, int height) {
-            this.constraint = constraint;
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-    }
+    public record ArrayListHolder(ArrayList<Window<?>> windows){} //this is to have a consistent hashcode for hashmaps since there is no IdentityLinkedHashMap
 
-    public static class ArrayListHolder //this is to have a consistent hashcode for hashmaps
-    {
-        public final ArrayList<Window<?>> windows;
-
-        public ArrayListHolder(ArrayList<Window<?>> windows) {this.windows = windows;}
-    }
+    public record DockInfo(@Nullable Window<?> window, @Nullable Constraint.Property.Type type){}
 }
