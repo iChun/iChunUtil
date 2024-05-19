@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -18,6 +19,7 @@ import java.util.function.Function;
 public final class StringUtil
 {
     public static final Gson GSON = new Gson();
+    public static final Gson GSON_PRETTY = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
     public static final Random RAND = new Random(); // "true" random
     public static final Random SEEDED_RAND = new Random(); // this random has its seed set before being used

@@ -7,7 +7,7 @@ import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
 import org.slf4j.Logger;
 
-public abstract class iChunUtil
+public abstract class iChunUtil //TODO double check the display test for the neoforge ports.
 {
     public static final String MOD_ID = "ichunutil";
     public static final String MOD_NAME = "iChunUtil";

@@ -1,9 +1,8 @@
 package me.ichun.mods.ichunutil.client.core;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.File;
@@ -13,6 +12,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -44,8 +47,7 @@ public class ResourceHelper
                 Path defaultTheme = themesDir.resolve("default.json");
                 if(!Files.exists(defaultTheme)) //presume we haven't extracted anything yet
                 {
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    String jsonOutput = gson.toJson(new Theme());
+                    String jsonOutput = StringUtil.GSON_PRETTY.toJson(new Theme());
 
                     try
                     {
@@ -82,11 +84,49 @@ public class ResourceHelper
                         zipStream.close();
                     }
                 }
+
+                if(iChunUtil.d().isDevEnvironment() && iChunUtil.d().env().isFabric())
+                {
+                    createFabricLoaderDependenciesOverride();
+                }
             }
             catch(IOException e)
             {
                 throw new RuntimeException("Error initialising resources!", e);
             }
+        }
+    }
+
+    private static void createFabricLoaderDependenciesOverride() throws IOException
+    {
+        Path file = iChunUtil.d().getConfigDir().resolve("fabric_loader_dependencies.json");
+        if(!Files.exists(file))
+        {
+            LinkedHashMap<String, Object> json = new LinkedHashMap<>();
+            json.put("version", 1);
+            TreeMap<String, Object> modIdToDep = new TreeMap<>(Comparator.naturalOrder());
+            json.put("overrides", modIdToDep);
+
+            ArrayList<String> modsToOverride = new ArrayList<>();
+            modsToOverride.add("betterthanbunnies");
+            modsToOverride.add("betterthanllamas");
+            modsToOverride.add("deathcounter");
+            modsToOverride.add("ding");
+            modsToOverride.add("dogslie");
+            modsToOverride.add("limitedlives");
+            modsToOverride.add("partyparrots");
+            modsToOverride.add("serverpause");
+
+            for(String s : modsToOverride)
+            {
+                TreeMap<String, Object> depToDef = new TreeMap<>();
+                modIdToDep.put(s, depToDef);
+                TreeMap<String, String> def = new TreeMap<>();
+                depToDef.put("-depends", def);
+                def.put("ichunutil", "IGNORED");
+            }
+
+            Files.writeString(file, StringUtil.GSON_PRETTY.toJson(json), StandardCharsets.UTF_8);
         }
     }
 

@@ -61,7 +61,7 @@ public class Theme
 
     public int[] elementScrollBar = new int[] { 34, 34, 34 };
     public int[] elementScrollBarBorder = new int[] { 60, 60, 60 };
-    public int[] elementScrollBarBackground = new int[] { 60, 60, 60 };
+    public int[] elementScrollBarBackground = new int[] { 34, 34, 34 };
 
     public int[] font = new int[] { 255, 255, 255 };
     public int[] fontLight = new int[] { 220, 220, 220 };
