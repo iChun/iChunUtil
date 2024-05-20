@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "id": "ichunutil",
-  "version": "${version}",
+  "version": "${mod_version}",
 
   "name": "iChunUtil",
-  "description": "Shared library mod required by most of iChun's Mods.",
+  "description": "${mod_description}",
   "authors": [
     "iChun"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/members/ohaiichun/projects",
-    "sources": "https://github.com/iChun/iChunUtil",
-    "issues": "https://github.com/iChun/iChunUtil/issues"
+    "homepage": "${mod_url_home}",
+    "sources": "${mod_url_sources}",
+    "issues": "${mod_url_issues}"
   },
 
-  "license": "GNU Lesser General Public License v3.0",
+  "license": "${mod_license}",
   "icon": "icon.png",
 
   "environment": "*",
@@ -37,7 +37,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.discord": "https://discord.gg/wvxVkmpt3g"
+        "modmenu.discord": "${mod_url_discord}"
       }
     }
   },

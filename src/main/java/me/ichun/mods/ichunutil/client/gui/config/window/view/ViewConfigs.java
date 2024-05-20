@@ -10,14 +10,14 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWra
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.TreeSet;
 
 public class ViewConfigs extends View<WindowConfigs>
 {
-    public ViewConfigs(@Nonnull WindowConfigs parent, @Nonnull String s)
+    public ViewConfigs(@NotNull WindowConfigs parent, @NotNull String s)
     {
         super(parent, s);
 

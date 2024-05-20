@@ -21,7 +21,7 @@ base {
 // Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
+minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer-neoforge.cfg')
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
 
 // Default run configurations.
@@ -113,6 +113,9 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+	// TOML implementation
+	implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -126,25 +129,33 @@ tasks.withType(ProcessResources).configureEach {
 	exclude("META-INF/accesstransformer-forge.cfg")
 
     var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range, minecraft_pack_format: minecraft_pack_format,
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range, 
+            minecraft_resource_pack_format: minecraft_resource_pack_format, minecraft_data_pack_format: minecraft_data_pack_format,
             forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
             neoforge_version         : neoforge_version, neoforge_version_range: neoforge_version_range, neoforge_loader_version_range: neoforge_loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description, 
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord,
+            ichunutil_version: ichunutil_version, ichunutil_version_range: ichunutil_version_range
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods-neoforge.toml', 'pack.mcmeta']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
 
-    rename("mods-neoforge.toml", "mods.toml")
+    rename("accesstransformer-neoforge.cfg", "accesstransformer.cfg")
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            from components.java
+            artifactId "${mod_id}"
+            version  "${mod_version}"
+            artifact(jar)
+            {
+                classifier "${project.minecraft_version}-neoforge"
+            }
         }
     }
     repositories {

@@ -43,9 +43,6 @@ public class PacketChannelFabric extends PacketChannel
         {
             ClientClassloaderHaxor.registerClientReceiver(channelId);
         }
-
-        //Register our server listeners
-        ServerListenerFabric.init();
     }
 
     @Environment(EnvType.CLIENT)

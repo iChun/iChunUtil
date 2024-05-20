@@ -3,9 +3,9 @@ package me.ichun.mods.ichunutil.client.key;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -28,7 +28,7 @@ public class KeyBind
         return !KEY_CONFLICT_CONTEXT.isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     public final KeyMapping keyBinding;
     @Nullable
     public final Consumer<KeyBind> pressConsumer;

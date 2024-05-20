@@ -17,6 +17,10 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven {
+		name = 'ParchmentMC'
+		url = 'https://maven.parchmentmc.org'
+	}
 
 	// ModMenu
 	maven {
@@ -39,15 +43,15 @@ dependencies {
 	// Mod Menu for Fabric
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	// TOML implementation for Fabric
-	implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT - Fabric only
+	// TOML implementation
+	implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
 }
 
-//loom {
-//	mixin {
-//		defaultRefmapName = "${project.mod_id}.refmap.json"
-//	}
-//}
+loom {
+	mixin {
+		defaultRefmapName = "${project.mod_id}.refmap.json"
+	}
+}
 
 sourceSets {
 	main {
@@ -60,20 +64,29 @@ sourceSets {
 	}
 }
 
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-	
+tasks.named('processResources', ProcessResources).configure {
 	exclude("META-INF/mods-forge.toml")
 	exclude("META-INF/accesstransformer-forge.cfg")
-	exclude("META-INF/mods-neoforge.toml")
+	exclude("META-INF/neoforge.mods.toml")
 	exclude("META-INF/accesstransformer-neoforge.cfg")
+
+    var replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            minecraft_resource_pack_format: minecraft_resource_pack_format, minecraft_data_pack_format: minecraft_data_pack_format,
+            forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
+            neoforge_version         : neoforge_version, neoforge_version_range: neoforge_version_range, neoforge_loader_version_range: neoforge_loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description,
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['fabric.mod.json', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 	it.options.release = 21
 }
 
@@ -95,19 +108,23 @@ jar {
 
 // configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId "${mod_id}"
+            version  "${mod_version}"
+            artifact(remapJar)
+            {
+                classifier "${project.minecraft_version}-fabric"
+            }
+            //from components.java
+        }
+    }
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
 }
 
 apply from: 'gradle/modpublisher.gradle'

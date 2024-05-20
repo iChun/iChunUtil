@@ -7,8 +7,8 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -26,7 +26,7 @@ public class ViewValues extends View<WindowValues>
     public final TreeSet<WorkspaceConfigs.ConfigInfo.EntryLocalised> values;
     public final ElementList<?> list;
 
-    public ViewValues(@Nonnull WindowValues parent, @Nonnull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.EntryLocalised> values)
+    public ViewValues(@NotNull WindowValues parent, @NotNull String s, WorkspaceConfigs.ConfigInfo info, String category, TreeSet<WorkspaceConfigs.ConfigInfo.EntryLocalised> values)
     {
         super(parent, s);
         this.info = info;

@@ -4,7 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 
-public class ModMenuIntegration implements ModMenuApi //TODO update teh fabric.mod.jsons for all the other mods, add URLS, add modmenu entrypoint.
+public class ModMenuIntegration implements ModMenuApi
 {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory()

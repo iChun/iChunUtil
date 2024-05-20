@@ -5,17 +5,17 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public class NativeImageTexture extends AbstractTexture
 {
-    @Nonnull
+    @NotNull
     public final NativeImage image;
     private final ResourceLocation resourceLocation;
 
-    public NativeImageTexture(@Nonnull NativeImage image)
+    public NativeImageTexture(@NotNull NativeImage image)
     {
         this.image = image;
         this.resourceLocation = new ResourceLocation("ichunutil", "native_image_" + Math.abs(image.hashCode()));

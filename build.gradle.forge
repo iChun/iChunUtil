@@ -34,7 +34,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'parchment', version: "${project.parchment_version}-${project.parchment_mc_version}"
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer-forge.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -100,6 +100,7 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    mavenLocal()
 }
 
 //mixin {
@@ -114,15 +115,23 @@ dependencies {
 
 	//annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
+    // Example mod dependency with JEI
+    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
+    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
+    // compileOnly "mezz.jei:jei-${mc_version}-forge-api:${jei_version}"
+    // runtimeOnly "mezz.jei:jei-${mc_version}-forge:${jei_version}"
 
-    // Examples using mod jars from ./libs
+    // Example mod dependency using a mod jar from ./libs with a flat dir repository
+    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
+    // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
-    // For more info...
+    // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // TOML implementation
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
 }
 
 sourceSets {
@@ -139,14 +148,17 @@ sourceSets {
 tasks.named('processResources', ProcessResources).configure {
 	exclude("fabric.mod.json")
 	exclude("${mod_id}.accesswidener")
-	exclude("META-INF/mods-neoforge.toml")
-	exclude("META-INF/accesstransformer-forge.cfg")
+	exclude("META-INF/neoforge.mods.toml")
+	exclude("META-INF/accesstransformer-neoforge.cfg")
 
     var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range, minecraft_pack_format: minecraft_pack_format,
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range, 
+            minecraft_resource_pack_format: minecraft_resource_pack_format, minecraft_data_pack_format: minecraft_data_pack_format,
             forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
             neoforge_version         : neoforge_version, neoforge_version_range: neoforge_version_range, neoforge_loader_version_range: neoforge_loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description, 
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord,
+            ichunutil_version: ichunutil_version, ichunutil_version_range: ichunutil_version_range
     ]
     inputs.properties replaceProperties
 
@@ -155,6 +167,7 @@ tasks.named('processResources', ProcessResources).configure {
     }
 
     rename("mods-forge.toml", "mods.toml")
+    rename("accesstransformer-forge.cfg", "accesstransformer.cfg")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -182,12 +195,17 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifactId "${mod_id}"
+            version  "${mod_version}"
+            artifact(jar)
+            {
+                classifier "${project.minecraft_version}-forge"
+            }
         }
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            url "file://${project.projectDir}/repo"
         }
     }
 }

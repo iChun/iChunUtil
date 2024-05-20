@@ -13,7 +13,6 @@ import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -95,8 +94,11 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         return false;
     }
 
-    @Nonnull public abstract String getModId();
-    @Nonnull public abstract String getConfigName();
+    @NotNull
+    public abstract String getModId();
+    @NotNull
+    public abstract String getConfigName();
+
     public Type getConfigType()
     {
         return Type.COMMON;

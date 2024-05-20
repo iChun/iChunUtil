@@ -8,8 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +59,8 @@ public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener
         });
     }
 
-    public @Nullable T get(ResourceLocation key)
+    @Nullable
+    public T get(ResourceLocation key)
     {
         return objects.containsKey(key) ? objects.get(key) : defaultObj;
     }
