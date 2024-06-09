@@ -38,7 +38,7 @@ public abstract class iChunUtil //TODO double check the display test for the neo
         return loaderDelegateClient;
     }
 
-    public iChunUtil()
+    public iChunUtil() //TODO hook into set overlay to null for Ding and CCI
     {
     }
 }
