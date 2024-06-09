@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge;
+package me.ichun.mods.ichunutil.loader.neoforge;
 
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;

@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.forge.forge;
+package me.ichun.mods.ichunutil.loader.forge;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;

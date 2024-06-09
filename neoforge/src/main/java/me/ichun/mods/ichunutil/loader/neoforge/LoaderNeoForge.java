@@ -1,9 +1,9 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge;
+package me.ichun.mods.ichunutil.loader.neoforge;
 
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.neoforge.neoforge.client.LoaderDelegateClientNeoForge;
+import me.ichun.mods.ichunutil.loader.neoforge.client.LoaderDelegateClientNeoForge;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;

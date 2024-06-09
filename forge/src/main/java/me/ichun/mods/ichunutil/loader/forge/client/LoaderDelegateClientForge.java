@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.forge.forge.client;
+package me.ichun.mods.ichunutil.loader.forge.client;
 
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;

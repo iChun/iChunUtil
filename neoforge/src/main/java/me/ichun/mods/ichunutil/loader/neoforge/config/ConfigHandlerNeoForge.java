@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge.config;
+package me.ichun.mods.ichunutil.loader.neoforge.config;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.ConfigHandler;

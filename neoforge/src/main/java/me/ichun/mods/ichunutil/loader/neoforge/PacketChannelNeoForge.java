@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge;
+package me.ichun.mods.ichunutil.loader.neoforge;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;

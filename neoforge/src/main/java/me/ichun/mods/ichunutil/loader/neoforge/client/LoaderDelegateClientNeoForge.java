@@ -1,8 +1,8 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge.client;
+package me.ichun.mods.ichunutil.loader.neoforge.client;
 
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
-import me.ichun.mods.ichunutil.loader.neoforge.neoforge.ReflectionReferenceNeoForge;
+import me.ichun.mods.ichunutil.loader.neoforge.ReflectionReferenceNeoForge;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.event.ClientTickEvent;

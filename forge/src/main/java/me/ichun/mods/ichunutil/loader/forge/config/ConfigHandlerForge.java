@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.loader.forge.forge.config;
+package me.ichun.mods.ichunutil.loader.forge.config;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.ConfigHandler;

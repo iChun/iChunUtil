@@ -1,11 +1,11 @@
-package me.ichun.mods.ichunutil.loader.neoforge.neoforge;
+package me.ichun.mods.ichunutil.loader.forge;
 
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityPersistentDataHandlerNeoForge
+public class EntityPersistentDataHandlerForge
     implements EntityPersistentDataHandler
 {
     @Override

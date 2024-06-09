@@ -1,9 +1,9 @@
-package me.ichun.mods.ichunutil.loader.forge.forge;
+package me.ichun.mods.ichunutil.loader.forge;
 
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.forge.forge.client.LoaderDelegateClientForge;
+import me.ichun.mods.ichunutil.loader.forge.client.LoaderDelegateClientForge;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
