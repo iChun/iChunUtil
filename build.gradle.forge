@@ -157,8 +157,7 @@ tasks.named('processResources', ProcessResources).configure {
             forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
             neoforge_version         : neoforge_version, neoforge_version_range: neoforge_version_range, neoforge_loader_version_range: neoforge_loader_version_range,
             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description, 
-            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord,
-            ichunutil_version: ichunutil_version, ichunutil_version_range: ichunutil_version_range
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord
     ]
     inputs.properties replaceProperties
 
