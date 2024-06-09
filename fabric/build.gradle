@@ -1,0 +1,107 @@
+plugins {
+	id 'fabric-loom' version "${fabric_loom_version}"
+    id 'build-conventions'
+}
+
+base {
+	archivesName = "${project.archives_base_name}-${project.minecraft_version}-Fabric"
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.layered() {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-${project.parchment_mc_version}:${project.parchment_version}@zip")
+	}
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Mod Menu for Fabric
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+    if(!isBuildingiChunUtil) {
+        // Mod deps
+        modImplementation "me.ichun:ichunutil:${project.ichunutil_version}:${project.minecraft_version}-fabric"
+    }
+}
+
+loom {
+    if(file("src/main/resources/${mod_id}.accesswidener").exists())
+    {
+        accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
+    }
+	mixin {
+        if(hasMixins)
+        {
+            defaultRefmapName = "${project.mod_id}.refmap.json"
+        }
+	}
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    filesMatching(['fabric.mod.json']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId "${mod_id}"
+            version  "${mod_version}"
+            artifact(remapJar)
+            {
+                classifier "${project.minecraft_version}-fabric"
+            }
+            //from components.java
+        }
+    }
+}
+
+publisher {
+    // Curseforge Project ID
+    setCurseID("${curseforge_project_id_fabric}")
+
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    setArtifact(remapJar)
+
+    // Fancy display name for the upload.
+    // Will default to the project version if not set
+    setDisplayName("[${minecraft_version} Fabric] v ${mod_version}")    
+    
+    // The modloaders your upload supports.
+    // This can also be an Enum from ModLoader,
+    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
+    setLoaders("fabric")
+    
+    // Additional files to upload. Same as artifact, this can be a task, file or string
+    //addAdditionalFile(apiJar)
+
+    // Modrinth Dependencies.
+    // Accepts a slug or id
+    modrinthDepends {
+        if(isBuildingiChunUtil) {
+            required "P7dR8mSH" //Fabric API
+        }
+        else {
+            required "P7dR8mSH", "W6ROj0Hl" //Fabric API and iChunUtil
+        }
+    }
+
+    // Curse Dependencies
+    curseDepends {
+        if(isBuildingiChunUtil) {
+            required "fabric-api" //Fabric API
+        }
+        else {
+            required "fabric-api", "ichunutil" //Fabric API and iChunUtil
+        }
+    }
+}

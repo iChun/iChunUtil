@@ -1,0 +1,159 @@
+plugins {
+    id 'maven-publish'
+    id "com.hypherionmc.modutils.modpublisher" //we can't define version in pre-built scripts
+}
+
+ext {
+    replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            minecraft_resource_pack_format: minecraft_resource_pack_format, minecraft_data_pack_format: minecraft_data_pack_format,
+            forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
+            neoforge_version         : neoforge_version, neoforge_version_range: neoforge_version_range, neoforge_loader_version_range: neoforge_loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description,
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord
+    ]
+    isBuildingiChunUtil = "${mod_id}".toString().equals("ichunutil")
+    if (!isBuildingiChunUtil){
+        replaceProperties.put(ichunutil_version: ichunutil_version)
+        replaceProperties.put(ichunutil_version_range: ichunutil_version_range)
+    }
+    hasMixins = file("${project.rootDir}/common/src/main/resources/${mod_id}.mixins.json").exists()
+    jarManifestAttributes = [
+            "Specification-Title"     : "${project.mod_id}",
+            "Specification-Vendor"    : "iChun",
+            "Specification-Version"   : "${project.mod_version}",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : "iChun",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ]
+    if (hasMixins)
+    {
+        jarManifestAttributes.put("MixinConfigs", "${project.mod_id}.mixins.json")
+    }
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenLocal()
+
+    // Parchment
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+
+    // ModMenu
+    maven {
+        url "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    if (isBuildingiChunUtil) {
+        // TOML implementation
+        implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+    }
+}
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    it.options.release = 21
+}
+
+tasks.withType(ProcessResources).configureEach {
+    from(project.rootDir){
+        include("COPYING")
+        include("COPYING.LESSER")
+    }
+    inputs.properties replaceProperties
+}
+
+sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
+sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
+
+jar {
+    manifest {
+        attributes(jarManifestAttributes)
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+publisher {
+    // Setup the required API keys. You only need to define the keys for
+    // the platforms you plan on uploading to
+    apiKeys {
+        // Modrinth Token
+        if(project.hasProperty('modrinth_token'))
+        {
+            modrinth modrinth_token
+        }
+        // Curseforge Token
+        if(project.hasProperty('curseforge_token'))
+        {
+            curseforge curseforge_token
+        }
+        // GitHub Token
+        //github System.getenv("GITHUB_TOKEN")
+    }
+
+    // Enable Debug mode. When enabled, no files will actually be uploaded
+    //setDebug(true)
+
+    // Modrinth Project ID
+    setModrinthID("${modrinth_project_id}")
+
+    // Type of release. beta, alpha or release
+    // You can also use VersionType.BETA, VersionType.ALPHA or VersionType.RELEASE
+    setVersionType("release")
+
+    // Changelog. This can be a file, string, OR, gist/github url
+    // For example: markdown.md, or "This is my changelog"
+    // Or: https://raw.githubusercontent.com/hypherionmc/changelogs/changelog.md
+    // Or https://gist.githubusercontent.com/hypherionmc/92f825d3c9337964cc77c9c8c9bf65e6/raw/ceeaaee5b98c688a23398864fe480b84796a1651/test_gist.md
+    setChangelog(file("$project.rootDir/changelog.md"))
+
+    // Required for Modrinth/GitHub
+    setVersion("${mod_version}")
+
+    // The supported game versions
+    setGameVersions("${minecraft_version}")
+
+    // The new Curseforge Environment tag. Optional
+    // Valid values are "server", "client" or "both"
+    // You can also use CurseEnvironment.BOTH, or CurseEnvironment.SERVER or CurseEnvironment.CLIENT
+    setCurseEnvironment("${curseforge_environment}")
+
+    // Override the artifact uploaded to modrinth
+    // setPlatformArtifact(Platform.Modrinth, "build/libs/mymod.jar")
+    // setPlatformArtifact(Platform.Modrinth, jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    // Valid platforms are modrinth, curseforge and github
+    //setPlatformArtifact("modrinth", modrinthJar)
+
+    // Disable the built in Fractureizer scanner
+    //setDisableMalwareScanner(true)
+
+    // Safety check to check if the artifact contains a valid mod metadata entry,
+    // which could possibly mean that the jar is empty
+    //setDisableEmptyJarCheck(true)
+}

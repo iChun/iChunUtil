@@ -1,0 +1,25 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+//Loads gradle.properties and populates it in this build script.
+Properties properties = new Properties()
+FileInputStream input = new FileInputStream(file('../gradle.properties'))
+properties.load(input)
+input.close()
+
+for (String key : properties.stringPropertyNames()) {
+    ext.set(key, properties.getProperty(key))
+}
+//End load gradle.properties
+
+repositories {
+    maven {
+        name = 'ModPublisher https://github.com/firstdarkdev/modpublisher'
+        url "https://maven.firstdark.dev/releases"
+    }
+}
+
+dependencies {
+    implementation "com.hypherionmc.modutils:modpublisher:${modpublisher_version}"
+}
