@@ -69,7 +69,7 @@ dependencies {
     // You can however also use the vanilla plugin (net.neoforged.gradle.vanilla) to use a version of Minecraft without the neoforge loader.
     // And its provides the option to then use net.minecraft as the group, and one of; client, server or joined as the module name, plus the game version as version.
     // For all intends and purposes: You can treat this dependency as if it is a normal library you would use.
-    implementation "net.neoforged:neoforge:${neoforge_version}"
+    implementation "net.neoforged:neoforge:${project.neoforge_version}"
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -112,10 +112,9 @@ tasks.withType(ProcessResources).configureEach {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifactId "${mod_id}"
-            version  "${mod_version}"
-            artifact(jar)
-            {
+            artifactId "${project.mod_id}"
+            version  "${project.mod_version}"
+            artifact(jar) {
                 classifier "${project.minecraft_version}-neoforge"
             }
         }
@@ -124,8 +123,8 @@ publishing {
 
 publisher {
     // Curseforge Project ID
-    setCurseID("${curseforge_project_id_forge}")
-    
+    setCurseID("${project.curseforge_project_id_forge}")
+
     // The file to be uploaded. This can be a file, task, or string.
     // setArtifact("build/libs/mymod.jar")
     // setArtifact(jar.getArchiveFile().get())
@@ -134,13 +133,13 @@ publisher {
 
     // Fancy display name for the upload.
     // Will default to the project version if not set
-    setDisplayName("[${minecraft_version} NeoForge] v ${mod_version}")
-    
+    setDisplayName("[${project.minecraft_version} NeoForge] v ${project.mod_version}")
+
     // The modloaders your upload supports.
     // This can also be an Enum from ModLoader,
     // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
     setLoaders("neoforge")
-    
+
     // Additional files to upload. Same as artifact, this can be a task, file or string
     //addAdditionalFile(apiJar)
 

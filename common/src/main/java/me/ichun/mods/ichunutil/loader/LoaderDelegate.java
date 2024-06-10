@@ -23,7 +23,7 @@ public interface LoaderDelegate
         return SharedConstants.IS_RUNNING_IN_IDE;
     }
 
-    Path getModsDir();
+    Path getModsDir(); //TODO is modlloaded
 
     Path getConfigDir();
 

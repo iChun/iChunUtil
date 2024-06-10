@@ -33,7 +33,12 @@ plugins {
 	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
-rootProject.name = 'iChunUtil'
+rootProject.name = "${mod_id}"
+if(file("${rootDir}/api").exists()) //Check if API folder exists, if it does, include it
+{
+	include 'api'
+}
+include 'common'
 include 'fabric'
 include 'forge'
 include 'neoforge'

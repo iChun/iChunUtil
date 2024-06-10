@@ -1,13 +1,13 @@
 plugins {
     id 'eclipse'
     id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
-	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'build-conventions'
 }
 
 base {
-	archivesName = "${project.archives_base_name}-${project.minecraft_version}-Forge"
+    archivesName = "${project.archives_base_name}-${project.minecraft_version}-Forge"
 }
 
 minecraft {
@@ -83,9 +83,8 @@ minecraft {
     }
 }
 
-mixin {
-    if(hasMixins)
-    {
+if(hasMixins) {
+    mixin {
         add sourceSets.main, "${project.mod_id}.refmap.json"
     }
 }
@@ -96,8 +95,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${project.forge_version}"
 
-    if(hasMixins)
-    {
+    if(hasMixins) {
         annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     }
 
@@ -137,10 +135,9 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId "${mod_id}"
-            version  "${mod_version}"
-            artifact(jar)
-            {
+            artifactId "${project.mod_id}"
+            version  "${project.mod_version}"
+            artifact(jar) {
                 classifier "${project.minecraft_version}-forge"
             }
         }
@@ -149,8 +146,8 @@ publishing {
 
 publisher {
     // Curseforge Project ID
-    setCurseID("${curseforge_project_id_forge}")
-    
+    setCurseID("${project.curseforge_project_id_forge}")
+
     // The file to be uploaded. This can be a file, task, or string.
     // setArtifact("build/libs/mymod.jar")
     // setArtifact(jar.getArchiveFile().get())
@@ -159,13 +156,13 @@ publisher {
 
     // Fancy display name for the upload.
     // Will default to the project version if not set
-    setDisplayName("[${minecraft_version} Forge] v ${mod_version}")    
-    
+    setDisplayName("[${project.minecraft_version} Forge] v ${project.mod_version}")
+
     // The modloaders your upload supports.
     // This can also be an Enum from ModLoader,
     // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
     setLoaders("forge")
-    
+
     // Additional files to upload. Same as artifact, this can be a task, file or string
     //addAdditionalFile(apiJar)
 
