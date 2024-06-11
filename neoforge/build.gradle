@@ -108,6 +108,12 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
+if (project.hasProperty('key_store')) {
+    jar {
+        finalizedBy signJar
+    }
+}
+
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {

@@ -132,6 +132,16 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+if (project.hasProperty('key_store')) {
+    jar {
+        finalizedBy signJar
+    }
+    //We need to delay our signing to after the jar gets reobfed
+    signJar {
+        mustRunAfter 'reobfJar'
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {

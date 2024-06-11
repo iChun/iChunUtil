@@ -119,6 +119,29 @@ jar {
     }
 }
 
+if (project.hasProperty('key_store')) {
+    tasks.register('signJar') {
+        doLast {
+            def jarFile = new File("${jar.archivePath}")
+            if("${project.name}".toString().equals("fabric")) {
+                jarFile = new File("${remapJar.archivePath}")
+            }
+            if(jarFile.exists()) {
+                ant.signjar(
+                        jar: jarFile,
+                        destDir: "${layout.buildDirectory.dir("libs").get()}",
+                        alias : "${project.key_store_alias}",
+                        storetype : "${project.key_store_type}",
+                        keystore : "${project.key_store}",
+                        storepass : "${project.key_store_pass}",
+                        keypass : "${project.key_store_key_pass}",
+                        preservelastmodified : true
+                )
+            }
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
@@ -132,14 +155,12 @@ publisher {
     // the platforms you plan on uploading to
     apiKeys {
         // Modrinth Token
-        if(project.hasProperty('modrinth_token'))
-        {
-            modrinth modrinth_token
+        if (project.hasProperty('modrinth_token')) {
+            modrinth project.modrinth_token
         }
         // Curseforge Token
-        if(project.hasProperty('curseforge_token'))
-        {
-            curseforge curseforge_token
+        if (project.hasProperty('curseforge_token')) {
+            curseforge project.curseforge_token
         }
         // GitHub Token
         //github System.getenv("GITHUB_TOKEN")

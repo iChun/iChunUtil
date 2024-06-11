@@ -47,6 +47,12 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
+if (project.hasProperty('key_store')) {
+    remapJar {
+        finalizedBy signJar
+    }
+}
+
 // configure the maven publication
 publishing {
     publications {
