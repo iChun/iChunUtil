@@ -45,7 +45,7 @@ if %_erl%==9 goto :Run
 if %_erl%==8 (if "%publishMods%"=="Yes" ( set "publishMods=No" ) else ( set "build=Yes" & set "publishMods=Yes" )) & cls & goto :Options
 if %_erl%==7 (if "%publishLocal%"=="Yes" ( set "publishLocal=No" ) else ( set "build=Yes" & set "publishLocal=Yes" )) & cls & goto :Options
 if %_erl%==6 (if "%publish%"=="Yes" ( set "publish=No" ) else ( set "build=Yes" & set "publish=Yes" )) & cls & goto :Options
-if %_erl%==5 (if "%build%"=="Yes" ( set "build=No" & set "publish=No" & set "publishLocal=No"& set "publishMods=No" ) else ( set "build=Yes" )) & cls & goto :Options
+if %_erl%==5 (if "%build%"=="Yes" ( set "build=No" & set "publish=No" & set "publishLocal=No" & set "publishMods=No" ) else ( set "build=Yes" )) & cls & goto :Options
 if %_erl%==4 (if "%clean%"=="Yes" ( set "clean=No" ) else ( set "clean=Yes" )) & cls & goto :Options
 if %_erl%==3 (if "%neoforge%"=="Yes" ( set "neoforge=No" ) else ( set "neoforge=Yes" )) & cls & goto :Options
 if %_erl%==2 (if "%forge%"=="Yes" ( set "forge=No" ) else ( set "forge=Yes" )) & cls & goto :Options
@@ -96,9 +96,9 @@ if defined _all (
   if "%forge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :forge:publishToMavenLocal"
   if "%neoforge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :neoforge:publishToMavenLocal"
 
-  if "%fabric%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :fabric:publishMods"
-  if "%forge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :forge:publishMods"
-  if "%neoforge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :neoforge:publishMods"
+  if "%fabric%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :fabric:publishMod"
+  if "%forge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :forge:publishMod"
+  if "%neoforge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :neoforge:publishMod"
 )
 
 echo Executing %command%
