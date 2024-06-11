@@ -1,6 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set _darkGreen=[32m
+set _red=[31m
+set _reset=[0m
+
+for %%I in (.) do set folderName=%%~nxI
+
 set fabric=Yes
 set forge=Yes
 set neoforge=Yes
@@ -14,18 +20,32 @@ set publishMods=No
 
 :Options
 
+set _noML=
+set _noTask=
+if "%fabric%"=="No" if "%forge%"=="No" if "%neoforge%"=="No" set _noML=y
+if "%clean%"=="No" if "%build%"=="No" if "%publish%"=="No" if "%publishLocal%"=="No" if "%publishMods%"=="No" set _noTask=y
+
 cls
-title What Do You Want To Do
-
+title %folderName% - What Do You Want To Do
 
 echo:
 echo:
-echo:    Which Modloaders:
+echo:    %_darkGreen%Project - %folderName%%_reset% 
+echo:    
+if defined _noML ( 
+echo:    %_red%Which Modloaders:%_reset%
+) else ( 
+echo:    Which Modloaders: 
+)
 echo:      [1] Fabric               : %fabric%
 echo:      [2] Forge                : %forge%
 echo:      [3] NeoForge             : %neoforge%
 echo:
-echo:    What do you want to do?
+if defined _noTask ( 
+echo:    %_red%What do you want to do?%_reset%
+) else ( 
+echo:    What do you want to do? 
+)
 echo:      [4] Clean                : %clean%
 echo:      [5] Build                : %build%
 echo:      [6] Publish Maven        : %publish%
@@ -61,11 +81,11 @@ set "command=gradlew"
 
 if "%fabric%"=="No" if "%forge%"=="No" if "%neoforge%"=="No" (
 echo: You need to set a modloader!
-exit /b
+goto :Options
 )
 if "%clean%"=="No" if "%build%"=="No" if "%publish%"=="No" if "%publishLocal%"=="No" if "%publishMods%"=="No" (
 echo: Do nothing? Done!
-exit /b
+goto :Options
 )
 
 set _all=
