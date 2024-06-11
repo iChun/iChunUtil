@@ -24,7 +24,7 @@ dependencies {
 
     if(!isBuildingiChunUtil) {
         // Mod deps
-        modImplementation "me.ichun:ichunutil:${project.ichunutil_version}:${project.minecraft_version}-fabric"
+        modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
     }
 }
 
@@ -47,23 +47,15 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId "${mod_id}"
-            version  "${mod_version}"
-            artifact(remapJar) {
-                classifier "${project.minecraft_version}-fabric"
-            }
-            //from components.java
-        }
+if (project.hasProperty('key_store')) {
+    remapJar {
+        finalizedBy signJar
     }
 }
 
 publisher {
     // Curseforge Project ID
-    setCurseID("${curseforge_project_id_fabric}")
+    setCurseID("${project.curseforge_project_id_fabric}")
 
     // The file to be uploaded. This can be a file, task, or string.
     // setArtifact("build/libs/mymod.jar")
@@ -73,12 +65,7 @@ publisher {
 
     // Fancy display name for the upload.
     // Will default to the project version if not set
-    setDisplayName("[${minecraft_version} Fabric] v ${mod_version}")
-
-    // The modloaders your upload supports.
-    // This can also be an Enum from ModLoader,
-    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
-    setLoaders("fabric")
+    setDisplayName("[${project.minecraft_version} Fabric] v ${project.mod_version}")
 
     // Additional files to upload. Same as artifact, this can be a task, file or string
     //addAdditionalFile(apiJar)

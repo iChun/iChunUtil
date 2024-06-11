@@ -85,22 +85,6 @@ tasks.withType(ProcessResources).configureEach {
     inputs.properties replaceProperties
 }
 
-if (hasApi && isBuildingApi || isBuildingCommon) {
-    //We don't need to build the jars and remap them as we're just testing compile
-    tasks.getByName("jar").enabled = false
-    tasks.getByName("remapJar").enabled = false
-}
-
-//Add the api and common source sets for compile to all the other subprojects
-if (hasApi && !isBuildingApi) {
-    sourceSets.main.java.srcDirs += ["${project.rootDir}/api/src/main/java"]
-    sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
-}
-if (!isBuildingCommon) {
-    sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
-    sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
-}
-
 compileJava {
     //If we have an API, depend on its compile
     if (hasApi && !isBuildingApi) {
@@ -112,6 +96,30 @@ compileJava {
         dependsOn ':common:compileJava'
     }
 }
+
+//Add the api and common source sets for compile to all the other subprojects
+if (hasApi && !isBuildingApi) {
+    sourceSets.main.java.srcDirs += ["${project.rootDir}/api/src/main/java"]
+    sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
+}
+
+if (hasApi && isBuildingApi || isBuildingCommon) {
+    //We don't these tasks as we're just testing compile
+    def disabledTasks = [ "jar", "remapJar", "publish", "publishToMavenLocal", "publishMod", "publishCurseforge", "publishModrinth" ]
+    disabledTasks.forEach { it ->
+        tasks.getByName(it).enabled = false;
+    }
+    if (project.hasProperty('key_store')) tasks.register('signJar') {} //we need to register this as build.gradle in api and common are just copies of Fabric's
+
+    return
+}
+
+// ***************************************************
+// Everything below this is for the actual subprojects
+// ***************************************************
+
+sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
+sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
 
 jar {
     manifest {
@@ -143,9 +151,16 @@ if (project.hasProperty('key_store')) {
 }
 
 publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId "${project.mod_id}-${project.minecraft_version}"
+            version  "${project.name}-${project.mod_version}"
+            from components.java
+        }
+    }
     repositories {
         maven {
-            url "file://${project.projectDir}/repo"
+            url "file://${project.rootDir}/repo"
         }
     }
 }
@@ -183,10 +198,15 @@ publisher {
     setChangelog(file("${project.rootDir}/changelog.md"))
 
     // Required for Modrinth/GitHub
-    setVersion("${project.mod_version}")
+    setProjectVersion("${project.mod_version}")
 
     // The supported game versions
     setGameVersions("${project.minecraft_version}")
+
+    // The modloaders your upload supports.
+    // This can also be an Enum from ModLoader,
+    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
+    setLoaders("${project.name}")
 
     // The new Curseforge Environment tag. Optional
     // Valid values are "server", "client" or "both"
@@ -202,6 +222,10 @@ publisher {
 
     // Disable the built in Fractureizer scanner
     //setDisableMalwareScanner(true)
+
+    // Add supported java versions. Currently only used by CurseForge
+    // Supports anything that can be parsed using JavaVersion.toVersion()
+    setJavaVersions([JavaVersion.VERSION_21])
 
     // Safety check to check if the artifact contains a valid mod metadata entry,
     // which could possibly mean that the jar is empty

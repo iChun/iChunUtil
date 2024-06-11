@@ -19,6 +19,7 @@ build
 .gradle
 libs
 logs
+repo
 
 # other
 run
