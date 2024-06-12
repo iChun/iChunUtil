@@ -26,7 +26,7 @@ if "%fabric%"=="No" if "%forge%"=="No" if "%neoforge%"=="No" set _noML=y
 if "%clean%"=="No" if "%build%"=="No" if "%publish%"=="No" if "%publishLocal%"=="No" if "%publishMods%"=="No" set _noTask=y
 
 cls
-title %folderName% - What Do You Want To Do
+title %folderName% - Build Prompt
 
 echo:
 echo:
@@ -97,7 +97,7 @@ if defined _all (
   if "%build%"=="Yes" set "command=!command! build"
   if "%publish%"=="Yes" set "command=!command! publish"
   if "%publishLocal%"=="Yes" set "command=!command! publishToMavenLocal"
-  if "%publishMods%"=="Yes" set "command=!command! publishMods"
+  if "%publishMods%"=="Yes" set "command=!command! publishMod"
 ) else (
   :: it's ugly but it works
   if "%fabric%"=="Yes" if "%clean%"=="Yes" set "command=!command! :fabric:clean"

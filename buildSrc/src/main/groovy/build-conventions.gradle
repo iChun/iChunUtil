@@ -3,6 +3,9 @@ plugins {
     id "com.hypherionmc.modutils.modpublisher" //we can't define version in pre-built scripts
 }
 
+def javaVersion = JavaVersion.VERSION_21
+def javaLanguageVersion = JavaLanguageVersion.of(javaVersion.toString().toInteger())
+
 ext {
     replaceProperties = [
             minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -63,11 +66,11 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = javaLanguageVersion
     }
 
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -92,7 +95,7 @@ compileJava {
     }
 
     //Depend on common being compilable first
-    if (!isBuildingCommon) {
+    if (!isBuildingCommon && !isBuildingApi) {
         dependsOn ':common:compileJava'
     }
 }
@@ -124,6 +127,63 @@ sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resour
 jar {
     manifest {
         attributes(jarManifestAttributes)
+    }
+}
+
+if (hasApi) {
+    tasks.register('apiJar', Jar) {
+        //Everyone has to have a different task that finalizes their jar...
+        if("${project.name}".toString().equals("fabric")) {
+            mustRunAfter 'remapJar'
+        }
+        else if("${project.name}".toString().equals("forge")) {
+            mustRunAfter 'reobfJar'
+        }
+        else if("${project.name}".toString().equals("neoforge")) {
+            mustRunAfter 'jar'
+        }
+
+        archiveClassifier = "api"
+        from(sourceSets.main.output) {
+            include "me/ichun/mods/${project.mod_id}/api/**"
+        }
+
+        if (project.hasProperty('key_store')) {
+            doLast {
+                def jarFile = new File("${apiJar.archivePath}")
+                if(jarFile.exists()) {
+                    ant.signjar(
+                            jar: jarFile,
+                            destDir: "${layout.buildDirectory.dir("libs").get()}",
+                            alias : "${project.key_store_alias}",
+                            storetype : "${project.key_store_type}",
+                            keystore : "${project.key_store}",
+                            storepass : "${project.key_store_pass}",
+                            keypass : "${project.key_store_key_pass}",
+                            preservelastmodified : true
+                    )
+                }
+            }
+        }
+    }
+
+    configurations {
+        apiElements {
+            extendsFrom configurations.runtimeElements
+
+            canBeResolved = false
+            canBeConsumed = true
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+                attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EMBEDDED)) // means no relocation of packages
+                attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaLanguageVersion.asInt())
+            }
+            //We don't want the runtimeElements' artifacts
+            artifacts.clear()
+            outgoing.artifact(apiJar)
+        }
     }
 }
 
@@ -225,7 +285,7 @@ publisher {
 
     // Add supported java versions. Currently only used by CurseForge
     // Supports anything that can be parsed using JavaVersion.toVersion()
-    setJavaVersions([JavaVersion.VERSION_21])
+    setJavaVersions([javaVersion])
 
     // Safety check to check if the artifact contains a valid mod metadata entry,
     // which could possibly mean that the jar is empty

@@ -156,8 +156,19 @@ publisher {
     // Will default to the project version if not set
     setDisplayName("[${project.minecraft_version} Forge] v ${project.mod_version}")
 
-    // Additional files to upload. Same as artifact, this can be a task, file or string
-    //addAdditionalFile(apiJar)
+    if(hasApi) {
+        // Additional files to upload. Same as artifact, this can be a task, file or string
+        //addAdditionalFile(apiJar)
+
+        // Additional files to upload with a custom display name and changelog.
+        // Currently only supported on Curseforge
+        addAdditionalFile {
+            // File, Task or String
+            artifact apiJar
+            displayName "[${project.minecraft_version} Forge] v ${project.mod_version} API"
+            changelog "API Jar. If you are not a mod developer you don't need this."
+        }
+    }
 
     if(!isBuildingiChunUtil) {
         // Modrinth Dependencies.
