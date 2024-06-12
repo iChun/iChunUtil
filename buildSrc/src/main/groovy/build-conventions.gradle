@@ -62,8 +62,7 @@ dependencies {
         // TOML implementation
         implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
     }
-    if (hasApi && !isBuildingApi)
-    {
+    if (hasApi && !isBuildingApi) {
         compileOnly project(':api')
     }
     if (!isBuildingCommon && !isBuildingApi) {
