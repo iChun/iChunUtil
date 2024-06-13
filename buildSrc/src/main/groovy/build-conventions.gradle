@@ -21,8 +21,8 @@ ext {
     ]
     isBuildingiChunUtil = "${project.mod_id}".toString().equals("ichunutil")
     if (!isBuildingiChunUtil){
-        replaceProperties.put(ichunutil_version: ichunutil_version)
-        replaceProperties.put(ichunutil_version_range: ichunutil_version_range)
+        replaceProperties.put("ichunutil_version", ichunutil_version)
+        replaceProperties.put("ichunutil_version_range", ichunutil_version_range)
     }
     hasMixins = file("${project.rootDir}/common/src/main/resources/${project.mod_id}.mixins.json").exists()
     jarManifestAttributes = [
@@ -72,8 +72,8 @@ dependencies {
     }
     else {
         // Mod deps
-        if(isFabric) {
-            modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
+        if(isFabric || hasApi && isBuildingApi || isBuildingCommon) {
+            modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:fabric-${project.ichunutil_version}" //hardcode this as it is used in common and api as well
         }
         else {
             implementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
