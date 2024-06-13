@@ -5,6 +5,10 @@ plugins {
 
 def javaVersion = JavaVersion.VERSION_21
 def javaLanguageVersion = JavaLanguageVersion.of(javaVersion.toString().toInteger())
+def nameCapitalised = "${project.name}".toString().equals("neoforge") ? "NeoForge" : "${project.name}".capitalize()
+def isFabric = "${project.name}".toString().equals("fabric")
+def isForge = "${project.name}".toString().equals("forge")
+def isNeoForge = "${project.name}".toString().equals("neoforge")
 
 ext {
     replaceProperties = [
@@ -39,6 +43,10 @@ ext {
     isBuildingCommon = "${project.name}".toString().equals("common")
 }
 
+base {
+    archivesName = "${project.archives_base_name}-${project.minecraft_version}-${nameCapitalised}"
+}
+
 version = project.mod_version
 group = project.maven_group
 
@@ -62,10 +70,29 @@ dependencies {
         // TOML implementation
         implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
     }
+    else {
+        // Mod deps
+        if(isFabric) {
+            modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
+        }
+        else {
+            implementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
+        }
+    }
     if (hasApi && !isBuildingApi) {
         compileOnly project(':api')
     }
     if (!isBuildingCommon && !isBuildingApi) {
+        if(isFabric) {
+            // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
+
+            // Fabric API. This is technically optional, but you probably want it anyway.
+            modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+            // Mod Menu for Fabric
+            modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        }
+
         compileOnly project(':common')
     }
 }
@@ -75,13 +102,12 @@ java {
         languageVersion = javaLanguageVersion
     }
 
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+    sourceCompatibility = targetCompatibility = javaVersion
 }
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-    it.options.release = 21
+    it.options.release = javaLanguageVersion.asInt()
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -116,9 +142,10 @@ if (hasApi && isBuildingApi || isBuildingCommon) {
     //We don't these tasks as we're just testing compile
     def disabledTasks = [ "jar", "remapJar", "publish", "publishToMavenLocal", "publishMod", "publishCurseforge", "publishModrinth" ]
     disabledTasks.forEach { it ->
-        tasks.getByName(it).enabled = false;
+        tasks.named(it).configure {
+            enabled = false
+        }
     }
-    if (project.hasProperty('key_store')) tasks.register('signJar') {} //we need to register this as build.gradle in api and common are just copies of Fabric's
 
     return
 }
@@ -137,15 +164,15 @@ jar {
 }
 
 if (hasApi) {
-    tasks.register('apiJar', Jar) {
+    def apiJar = tasks.register('apiJar', Jar) {
         //Everyone has to have a different task that finalizes their jar...
-        if("${project.name}".toString().equals("fabric")) {
+        if(isFabric) {
             mustRunAfter 'remapJar'
         }
-        else if("${project.name}".toString().equals("forge")) {
+        else if(isForge) {
             mustRunAfter 'reobfJar'
         }
-        else if("${project.name}".toString().equals("neoforge")) {
+        else if(isNeoForge) {
             mustRunAfter 'jar'
         }
 
@@ -193,13 +220,10 @@ if (hasApi) {
     }
 }
 
-if (project.hasProperty('key_store')) {
-    tasks.register('signJar') {
+if (project.hasProperty("key_store")) {
+    def signJar = tasks.register("signJar") {
         doLast {
-            def jarFile = new File("${jar.archivePath}")
-            if("${project.name}".toString().equals("fabric")) {
-                jarFile = new File("${remapJar.archivePath}")
-            }
+            def jarFile = isFabric ? new File("${remapJar.archivePath}") : new File("${jar.archivePath}")
             if(jarFile.exists()) {
                 ant.signjar(
                         jar: jarFile,
@@ -212,6 +236,16 @@ if (project.hasProperty('key_store')) {
                         preservelastmodified : true
                 )
             }
+        }
+    }
+
+    tasks.named(isFabric ? "remapJar" : "jar").configure {
+        finalizedBy signJar
+    }
+
+    if(isForge) {
+        tasks.named("signJar").configure {
+            mustRunAfter "reobfJar"
         }
     }
 }
@@ -236,11 +270,11 @@ publisher {
     // the platforms you plan on uploading to
     apiKeys {
         // Modrinth Token
-        if (project.hasProperty('modrinth_token')) {
+        if (project.hasProperty("modrinth_token")) {
             modrinth project.modrinth_token
         }
         // Curseforge Token
-        if (project.hasProperty('curseforge_token')) {
+        if (project.hasProperty("curseforge_token")) {
             curseforge project.curseforge_token
         }
         // GitHub Token
@@ -252,6 +286,9 @@ publisher {
 
     // Modrinth Project ID
     setModrinthID("${project.modrinth_project_id}")
+
+    // Curseforge Project ID
+    setCurseID(isFabric ? "${project.curseforge_project_id_fabric}" : "${project.curseforge_project_id_forge}")
 
     // Type of release. beta, alpha or release
     // You can also use VersionType.BETA, VersionType.ALPHA or VersionType.RELEASE
@@ -296,4 +333,63 @@ publisher {
     // Safety check to check if the artifact contains a valid mod metadata entry,
     // which could possibly mean that the jar is empty
     //setDisableEmptyJarCheck(true)
+
+    // Fancy display name for the upload.
+    // Will default to the project version if not set
+    setDisplayName("[${project.minecraft_version} ${nameCapitalised}] v ${project.mod_version}")
+
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    setArtifact(isFabric ? remapJar : jar)
+
+    if(hasApi) {
+        // Additional files to upload. Same as artifact, this can be a task, file or string
+        //addAdditionalFile(apiJar)
+
+        // Additional files to upload with a custom display name and changelog.
+        // DisplayName and Changelog currently only supported on Curseforge
+        addAdditionalFile {
+            // File, Task or String
+            artifact apiJar
+            displayName "[${project.minecraft_version} ${nameCapitalised}] v ${project.mod_version} API"
+            changelog "API Jar. If you are not a mod developer you don't need this."
+        }
+    }
+
+    if(isFabric) {
+        // Modrinth Dependencies.
+        // Accepts a slug or id
+        modrinthDepends {
+            if(isBuildingiChunUtil) {
+                required "P7dR8mSH" //Fabric API
+            }
+            else {
+                required "P7dR8mSH", "W6ROj0Hl" //Fabric API and iChunUtil
+            }
+        }
+
+        // Curse Dependencies
+        curseDepends {
+            if(isBuildingiChunUtil) {
+                required "fabric-api" //Fabric API
+            }
+            else {
+                required "fabric-api", "ichunutil" //Fabric API and iChunUtil
+            }
+        }
+    }
+    else if(!isBuildingiChunUtil) {
+        // Modrinth Dependencies.
+        // Accepts a slug or id
+        modrinthDepends {
+            required "W6ROj0Hl" //iChunUtil
+        }
+
+        // Curse Dependencies
+        curseDepends {
+            required "ichunutil" //iChunUtil
+        }
+    }
 }

@@ -1,13 +1,9 @@
 plugins {
     id 'java-library'
-    id 'eclipse'
     id 'idea'
     id 'net.neoforged.gradle.userdev' version "${neoforge_gradle_version}"
     id 'build-conventions'
-}
-
-base {
-    archivesName = "${project.archives_base_name}-${project.minecraft_version}-NeoForge"
+    id 'build-conventions-variations'
 }
 
 if(file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
@@ -91,67 +87,14 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-    if(!isBuildingiChunUtil) {
-        // Mod deps
-        implementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
-    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 // When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
-tasks.withType(ProcessResources).configureEach {
+tasks.named('processResources', ProcessResources).configure {
     filesMatching(['META-INF/neoforge.mods.toml']) {
         expand replaceProperties + [project: project]
-    }
-}
-
-if (project.hasProperty('key_store')) {
-    jar {
-        finalizedBy signJar
-    }
-}
-
-publisher {
-    // Curseforge Project ID
-    setCurseID("${project.curseforge_project_id_forge}")
-
-    // The file to be uploaded. This can be a file, task, or string.
-    // setArtifact("build/libs/mymod.jar")
-    // setArtifact(jar.getArchiveFile().get())
-    // If this is a task, the task specified will be executed before publishing
-    setArtifact(jar)
-
-    // Fancy display name for the upload.
-    // Will default to the project version if not set
-    setDisplayName("[${project.minecraft_version} NeoForge] v ${project.mod_version}")
-
-    if(hasApi) {
-        // Additional files to upload. Same as artifact, this can be a task, file or string
-        //addAdditionalFile(apiJar)
-
-        // Additional files to upload with a custom display name and changelog.
-        // Currently only supported on Curseforge
-        addAdditionalFile {
-            // File, Task or String
-            artifact apiJar
-            displayName "[${project.minecraft_version} NeoForge] v ${project.mod_version} API"
-            changelog "API Jar. If you are not a mod developer you don't need this."
-        }
-    }
-
-    if(!isBuildingiChunUtil) {
-        // Modrinth Dependencies.
-        // Accepts a slug or id
-        modrinthDepends {
-            required "W6ROj0Hl" //iChunUtil
-        }
-
-        // Curse Dependencies
-        curseDepends {
-            required "ichunutil" //iChunUtil
-        }
     }
 }

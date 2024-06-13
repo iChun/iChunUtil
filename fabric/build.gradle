@@ -1,10 +1,8 @@
+//If you are reading this, this is a direct copy of the Fabric subproject's build.gradle which is also used for the common and api subprojects. Large proportion of setup is done in build-conventions.gradle
 plugins {
     id 'fabric-loom' version "${fabric_loom_version}"
     id 'build-conventions'
-}
-
-base {
-    archivesName = "${project.archives_base_name}-${project.minecraft_version}-Fabric"
+    id 'build-conventions-variations'
 }
 
 dependencies {
@@ -16,26 +14,15 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Mod Menu for Fabric
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-    if(!isBuildingiChunUtil) {
-        // Mod deps
-        modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
-    }
+    //Additional dependencies defined in build-conventions plugin in buildSrc
 }
 
 loom {
-    if(file("src/main/resources/${mod_id}.accesswidener").exists())
-    {
+    if(file("src/main/resources/${mod_id}.accesswidener").exists()) {
         accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
     }
-    mixin {
-        if(hasMixins)
-        {
+    if(hasMixins) {
+        mixin {
             defaultRefmapName = "${project.mod_id}.refmap.json"
         }
     }
@@ -44,61 +31,5 @@ loom {
 tasks.named('processResources', ProcessResources).configure {
     filesMatching(['fabric.mod.json']) {
         expand replaceProperties + [project: project]
-    }
-}
-
-if (project.hasProperty('key_store')) {
-    remapJar {
-        finalizedBy signJar
-    }
-}
-
-publisher {
-    // Curseforge Project ID
-    setCurseID("${project.curseforge_project_id_fabric}")
-
-    // The file to be uploaded. This can be a file, task, or string.
-    // setArtifact("build/libs/mymod.jar")
-    // setArtifact(jar.getArchiveFile().get())
-    // If this is a task, the task specified will be executed before publishing
-    setArtifact(remapJar)
-
-    // Fancy display name for the upload.
-    // Will default to the project version if not set
-    setDisplayName("[${project.minecraft_version} Fabric] v ${project.mod_version}")
-
-    if(hasApi) {
-        // Additional files to upload. Same as artifact, this can be a task, file or string
-        //addAdditionalFile(apiJar)
-
-        // Additional files to upload with a custom display name and changelog.
-        // Currently only supported on Curseforge
-        addAdditionalFile {
-            // File, Task or String
-            artifact apiJar
-            displayName "[${project.minecraft_version} Fabric] v ${project.mod_version} API"
-            changelog "API Jar. If you are not a mod developer you don't need this."
-        }
-    }
-
-    // Modrinth Dependencies.
-    // Accepts a slug or id
-    modrinthDepends {
-        if(isBuildingiChunUtil) {
-            required "P7dR8mSH" //Fabric API
-        }
-        else {
-            required "P7dR8mSH", "W6ROj0Hl" //Fabric API and iChunUtil
-        }
-    }
-
-    // Curse Dependencies
-    curseDepends {
-        if(isBuildingiChunUtil) {
-            required "fabric-api" //Fabric API
-        }
-        else {
-            required "fabric-api", "ichunutil" //Fabric API and iChunUtil
-        }
     }
 }

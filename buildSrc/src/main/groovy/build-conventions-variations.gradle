@@ -1,0 +1,35 @@
+tasks.register('copyDependencies', Copy) {
+    from configurations.compileClasspath
+    into "${layout.buildDirectory.get()}/output/libs"
+}
+
+if("${project.name}".toString().equals("common")) {
+    tasks.register("createHeadsZip", Zip) {
+        archiveFileName = "heads.zip"
+        destinationDirectory = layout.buildDirectory.dir('assets')
+
+        from fileTree(dir: "${project.rootDir}/heads")
+    }
+
+    tasks.register("createThemesZip", Zip) {
+        archiveFileName = "themes.zip"
+        destinationDirectory = layout.buildDirectory.dir('assets')
+
+        from fileTree(dir: "${project.rootDir}/themes")
+    }
+
+    tasks.named("compileJava").configure {
+        dependsOn createHeadsZip, createThemesZip //do it before compiling
+    }
+}
+else if(!"${project.name}".toString().equals("api")) {
+    tasks.named('processResources', ProcessResources).configure {
+        //inputs.files project(":common").createHeadsZip
+        inputs.files project(":common").createThemesZip
+
+        from(project(":common").layout.buildDirectory.dir('assets').get()) {
+            //include "heads.zip"
+            include "themes.zip"
+        }
+    }
+}
