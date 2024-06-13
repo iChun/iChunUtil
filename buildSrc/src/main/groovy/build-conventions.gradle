@@ -250,6 +250,13 @@ if (project.hasProperty("key_store")) {
     }
 }
 
+if(isFabric) {
+    //Required to make IDEA runs generate for Fabric
+    loom.runConfigs.configureEach {
+        ideConfigGenerated = true
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
