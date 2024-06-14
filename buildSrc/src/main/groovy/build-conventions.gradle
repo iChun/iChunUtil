@@ -10,6 +10,9 @@ def isFabric = "${project.name}".toString().equals("fabric")
 def isForge = "${project.name}".toString().equals("forge")
 def isNeoForge = "${project.name}".toString().equals("neoforge")
 
+def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
+
+
 ext {
     replaceProperties = [
             minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -154,8 +157,11 @@ if (hasApi && isBuildingApi || isBuildingCommon) {
 // Everything below this is for the actual subprojects
 // ***************************************************
 
-sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
-sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
+//IntelliJ doesn't like it when we have combined source sets... We only need this to build and we don't build using the IDE anyway.
+if(!isIDE) {
+    sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
+    sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
+}
 
 jar {
     manifest {
