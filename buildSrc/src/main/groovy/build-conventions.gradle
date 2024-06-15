@@ -47,10 +47,10 @@ ext {
 }
 
 base {
-    archivesName = "${project.archives_base_name}-${project.minecraft_version}-${nameCapitalised}"
+    archivesName = "${project.archives_base_name}"
 }
 
-version = project.mod_version
+version = "${project.minecraft_version}-${nameCapitalised}-${project.mod_version}"
 group = project.maven_group
 
 repositories {
@@ -76,10 +76,10 @@ dependencies {
     else {
         // Mod deps
         if(isFabric || hasApi && isBuildingApi || isBuildingCommon) {
-            modImplementation "me.ichun.mods:ichunutil-${project.minecraft_version}:fabric-${project.ichunutil_version}" //hardcode this as it is used in common and api as well
+            modImplementation "me.ichun.mods:ichunutil:${project.minecraft_version}-fabric-${project.ichunutil_version}" //hardcode this as it is used in common and api as well
         }
         else {
-            implementation "me.ichun.mods:ichunutil-${project.minecraft_version}:${project.name}-${project.ichunutil_version}"
+            implementation "me.ichun.mods:ichunutil:${project.minecraft_version}-${project.name}-${project.ichunutil_version}"
         }
     }
     if (hasApi && !isBuildingApi) {
@@ -266,8 +266,8 @@ if(isFabric) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId "${project.mod_id}-${project.minecraft_version}"
-            version  "${project.name}-${project.mod_version}"
+            artifactId "${project.mod_id}"
+            version  "${project.minecraft_version}-${project.name}-${project.mod_version}"
             from components.java
         }
     }

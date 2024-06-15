@@ -42,3 +42,23 @@ include 'common'
 include 'fabric'
 include 'forge'
 include 'neoforge'
+
+//if("${mod_id}".toString().equals("ichunutil")) {
+//	// Modify to add sub mods
+//	def subMods = [ "Ding" ]
+//	subMods.forEach { it ->
+//		if(file("${rootDir}/../${it}").exists()) {
+//			includeBuild("../${it}")
+//		}
+//	}
+//}
+//else {
+//	includeBuild("../iChunUtil") {
+//		dependencySubstitution {
+//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-common:${ichunutil_version}") using project(":common")
+//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-fabric:${ichunutil_version}") using project(":fabric")
+//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-forge:${ichunutil_version}") using project(":forge")
+//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-neoforge:${ichunutil_version}") using project(":neoforge")
+//		}
+//	}
+//}
