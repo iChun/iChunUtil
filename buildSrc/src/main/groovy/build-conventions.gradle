@@ -108,7 +108,7 @@ dependencies {
         if (hasApi && !isApi) {
             compileOnly project(':api')
         }
-        if (!isCommon && !isBuildingApi) {
+        if (!isCommon && !isApi) {
             compileOnly project(':common')
         }
     }
