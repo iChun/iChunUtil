@@ -57,6 +57,9 @@ if("${mod_id}".toString().equals("all")) { //it's a composite build. Remember to
 				name = modIdLowerCase
 				dependencySubstitution {
 					//I won't know the mod version. We special case for composite builds anyway
+					if(file("../${mod}/api").exists()) {
+						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-api") using project(":api")
+					}
 					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-common") using project(":common")
 					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-fabric") using project(":fabric")
 					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-forge") using project(":forge")

@@ -2,4 +2,5 @@
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
 def isInCompositeBuild = gradle.parent != null
-println "In IDE: ${isIDE}, In Composite Build: ${isInCompositeBuild}"
+def lineCompositeBuild = "${mod_id}".toString().equals("all") ? "Is Parent" : "${isInCompositeBuild}"
+println "In IDE: ${isIDE}, In Composite Build: ${lineCompositeBuild}"
