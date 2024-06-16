@@ -105,10 +105,10 @@ dependencies {
         }
     }
     else if (isIDE) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
-        if (hasApi && !isBuildingApi) {
+        if (hasApi && !isApi) {
             compileOnly project(':api')
         }
-        if (!isBuildingCommon && !isBuildingApi) {
+        if (!isCommon && !isBuildingApi) {
             compileOnly project(':common')
         }
     }
