@@ -102,23 +102,23 @@ dependencies {
             }
         }
     }
-    else {
+    else if (isIDE) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
         if (hasApi && !isBuildingApi) {
             compileOnly project(':api')
         }
         if (!isBuildingCommon && !isBuildingApi) {
-            if(isFabric) {
-                // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
-
-                // Fabric API. This is technically optional, but you probably want it anyway.
-                modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-                // Mod Menu for Fabric
-                modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-            }
-
             compileOnly project(':common')
         }
+    }
+    if(!isBuildingCommon && !isBuildingApi && isFabric)
+    {
+        // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
+
+        // Fabric API. This is technically optional, but you probably want it anyway.
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+        // Mod Menu for Fabric
+        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     }
 }
 
@@ -158,7 +158,7 @@ compileJava {
 }
 
 //Add the api and common source sets for compile to all the other subprojects
-if (hasApi && !isBuildingApi) {
+if (hasApi && !isBuildingApi && !isIDE) {
     sourceSets.main.java.srcDirs += ["${project.rootDir}/api/src/main/java"]
     sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
 }
