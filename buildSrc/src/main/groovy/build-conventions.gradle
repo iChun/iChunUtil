@@ -11,7 +11,8 @@ def isForge = "${project.name}".toString().equals("forge")
 def isNeoForge = "${project.name}".toString().equals("neoforge")
 
 def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
-
+def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
+def isCompositeBuildParent = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
 ext {
     replaceProperties = [
@@ -51,7 +52,7 @@ base {
 }
 
 version = "${project.minecraft_version}-${nameCapitalised}-${project.mod_version}"
-group = project.maven_group
+group = "${project.maven_group}.${project.mod_id}" //we have to append the mod_id because it breaks composite builds, so we explicitly define the groupId when publishing
 
 repositories {
     mavenLocal()
@@ -73,6 +74,12 @@ dependencies {
         // TOML implementation
         implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
     }
+    else if(isInCompositeBuild) {
+        def dep = (hasApi && isBuildingApi || isBuildingCommon) ? "fabric" : project.name
+        //We don't use the iChunUtil version number as these are substituted
+        compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
+        compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
+    }
     else {
         // Mod deps
         if(isFabric || hasApi && isBuildingApi || isBuildingCommon) {
@@ -82,21 +89,33 @@ dependencies {
             implementation "me.ichun.mods:ichunutil:${project.minecraft_version}-${project.name}-${project.ichunutil_version}"
         }
     }
-    if (hasApi && !isBuildingApi) {
-        compileOnly project(':api')
-    }
-    if (!isBuildingCommon && !isBuildingApi) {
-        if(isFabric) {
-            // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
-
-            // Fabric API. This is technically optional, but you probably want it anyway.
-            modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-            // Mod Menu for Fabric
-            modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    if (isCompositeBuildParent) {
+        if(!isBuildingCommon) {
+            gradle.ext.projectSubMods.forEach { mod ->
+                println "Adding ${mod} to dependencies for loading in runs."
+                def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common" //add the common dep
+                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-fabric" //add the modloader specific dep (fabric for common and api)
+            }
         }
+    }
+    else {
+        if (hasApi && !isBuildingApi) {
+            compileOnly project(':api')
+        }
+        if (!isBuildingCommon && !isBuildingApi) {
+            if(isFabric) {
+                // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
 
-        compileOnly project(':common')
+                // Fabric API. This is technically optional, but you probably want it anyway.
+                modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+                // Mod Menu for Fabric
+                modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+            }
+
+            compileOnly project(':common')
+        }
     }
 }
 
@@ -266,6 +285,7 @@ if(isFabric) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = "${project.maven_group}"
             artifactId "${project.mod_id}"
             version  "${project.minecraft_version}-${project.name}-${project.mod_version}"
             from components.java

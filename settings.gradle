@@ -34,31 +34,47 @@ plugins {
 }
 
 rootProject.name = "${mod_id}"
-if(file("${rootDir}/api").exists()) //Check if API folder exists, if it does, include it
-{
-	include 'api'
-}
-include 'common'
-include 'fabric'
-include 'forge'
-include 'neoforge'
 
-//if("${mod_id}".toString().equals("ichunutil")) {
-//	// Modify to add sub mods
-//	def subMods = [ "Ding" ]
-//	subMods.forEach { it ->
-//		if(file("${rootDir}/../${it}").exists()) {
-//			includeBuild("../${it}")
-//		}
-//	}
-//}
-//else {
-//	includeBuild("../iChunUtil") {
-//		dependencySubstitution {
-//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-common:${ichunutil_version}") using project(":common")
-//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-fabric:${ichunutil_version}") using project(":fabric")
-//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-forge:${ichunutil_version}") using project(":forge")
-//			substitute module("me.ichun.mods:ichunutil-${minecraft_version}-neoforge:${ichunutil_version}") using project(":neoforge")
-//		}
-//	}
-//}
+if("${mod_id}".toString().equals("all")) { //it's a composite build. Remember to change mod_id, mod_name, archives_base_name
+	include 'common'
+	include 'fabric'
+	include 'forge' //Required because post-sync tasks by Forge subprojects fail otherwise
+	//include 'neoforge' //If you would like neoforge runs, uncomment this
+
+	gradle.ext {
+		//Comment/delete as necessary
+		projectSubMods = [
+				"iChunUtil", //All mods in this composite build that depend on iChunUtil and uses its plugin should have iChunUtil
+				"BetterThanBunnies",
+				"Ding"
+		]
+	}
+
+	gradle.ext.projectSubMods.forEach { mod ->
+		if(file("../${mod}").exists()) {
+			includeBuild("../${mod}") {
+				def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+				name = modIdLowerCase
+				dependencySubstitution {
+					//I won't know the mod version. We special case for composite builds anyway
+					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-common") using project(":common")
+					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-fabric") using project(":fabric")
+					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-forge") using project(":forge")
+					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-neoforge") using project(":neoforge")
+				}
+			}
+		}
+		else {
+			println "${mod} defined as included build in composite build but directory cannot be found!"
+		}
+	}
+}
+else {
+	if(file("${rootDir}/api").exists()) {//Check if API folder exists, if it does, include it
+		include 'api'
+	}
+	include 'common'
+	include 'fabric'
+	include 'forge'
+	include 'neoforge'
+}

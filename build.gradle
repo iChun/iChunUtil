@@ -1,5 +1,5 @@
 //why not
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
-version = project.mod_version
-group = project.maven_group
+def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
+def isInCompositeBuild = gradle.parent != null
+println "In IDE: ${isIDE}, In Composite Build: ${isInCompositeBuild}"
