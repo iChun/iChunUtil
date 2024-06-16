@@ -1,3 +1,5 @@
+import groovy.json.*
+
 tasks.register('copyDependencies', Copy) {
     from configurations.compileClasspath
     into "${layout.buildDirectory.get()}/output/libs"
@@ -23,6 +25,52 @@ if("${project.name}".toString().equals("common")) {
     }
 }
 else if(!"${project.name}".toString().equals("api")) {
+    if("${project.name}".toString().equals("fabric")) {
+        tasks.register('generateFabricLoaderDependenciesOverrideConfig') {
+            group = "Fabric"
+
+            doLast {
+                def runDir = gradle.root != null ? "${gradle.root.getRootProject().rootDir}/fabric/run" : "${project.projectDir}/run"
+                def configDir = file("${runDir}/config/")
+                if(!configDir.exists()) {
+                    configDir.mkdirs()
+                }
+                def configFile = file("${configDir}/fabric_loader_dependencies.json")
+                println "Creating config file at: ${configFile}"
+
+                def modIdToDep = [:]
+
+                def json = [
+                        "version": 1,
+                        "overrides": modIdToDep
+                ]
+
+                def modsToOverride = [
+                        "betterthanbunnies",
+                        "betterthanllamas",
+                        "deathcounter",
+                        "ding",
+                        "dogslie",
+                        "limitedlives",
+                        "partyparrots",
+                        "serverpause"
+                ]
+
+                modsToOverride.each { id ->
+                    def ignoreMap = [
+                            "ichunutil": "IGNORED"
+                    ]
+                    def depToDef = [
+                            "-depends": ignoreMap
+                    ]
+                    modIdToDep.put(id, depToDef)
+                }
+
+                file(configFile).text = JsonOutput.prettyPrint( JsonOutput.toJson( json ) )
+            }
+        }
+    }
+
     tasks.named('processResources', ProcessResources).configure {
         //inputs.files project(":common").createHeadsZip
         inputs.files project(":common").createThemesZip

@@ -211,7 +211,7 @@ if (hasApi) {
 
         if (project.hasProperty('key_store')) {
             doLast {
-                def jarFile = new File("${apiJar.archivePath}")
+                def jarFile = file("${apiJar.archivePath}")
                 if(jarFile.exists()) {
                     ant.signjar(
                             jar: jarFile,
@@ -251,7 +251,7 @@ if (hasApi) {
 if (project.hasProperty("key_store")) {
     def signJar = tasks.register("signJar") {
         doLast {
-            def jarFile = isFabric ? new File("${remapJar.archivePath}") : new File("${jar.archivePath}")
+            def jarFile = isFabric ? file("${remapJar.archivePath}") : file("${jar.archivePath}")
             if(jarFile.exists()) {
                 ant.signjar(
                         jar: jarFile,
