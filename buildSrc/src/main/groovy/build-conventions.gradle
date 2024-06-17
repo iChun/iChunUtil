@@ -59,10 +59,13 @@ group = "${project.maven_group}.${project.mod_id}" //we have to append the mod_i
 repositories {
     mavenLocal()
 
-    // Parchment
     maven {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
+    }
+    maven {
+        name = 'CurseMaven'
+        url = 'https://cursemaven.com'
     }
 
     // ModMenu
@@ -92,6 +95,9 @@ dependencies {
         }
     }
     if (isCompositeBuildParent) {
+        //iChunUtil will need it
+        implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+
         if(!isCommon) {
             gradle.ext.projectSubMods.forEach { mod ->
                 println "Adding ${mod} to dependencies for loading in runs."
@@ -121,6 +127,9 @@ dependencies {
 
         // Mod Menu for Fabric
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+        //Lazy DFU for 1.19+
+        modImplementation "curse.maven:lazydfu-433518:3821870"
     }
 }
 

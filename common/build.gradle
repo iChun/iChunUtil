@@ -28,6 +28,18 @@ loom {
     }
 }
 
+idea {
+    module {
+        inheritOutputDirs = false
+
+        if(gradle.root != null) { //we are in a composite build
+            def outDir = file("${gradle.root.getRootProject().rootDir}/out")
+            outputDir = file("${outDir}/production/${mod_id}")
+            testOutputDir = file("${outDir}/test/${mod_id}")
+        }
+    }
+}
+
 tasks.named('processResources', ProcessResources).configure {
     filesMatching(['fabric.mod.json']) {
         expand replaceProperties + [project: project]
