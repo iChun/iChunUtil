@@ -1,11 +1,12 @@
 //why not print some info
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-def isIDE = System.getProperty("idea.active") == "true" ? "\u001B[32mtrue\u001B[0m" : "false" //this is the only check I've tried that works in IntelliJ IDEA's setting
+def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
+def isIDEString = isIDE ? "\u001B[32mtrue\u001B[0m" : "false"
 def isInCompositeBuild = gradle.parent != null
 def isCompositeBuildParent = "${mod_id}".toString().equals("all")
 def lineCompositeBuild = isCompositeBuildParent ? "Is Parent" : "${isInCompositeBuild}"
-println "In IDE: ${isIDE}, In Composite Build: ${lineCompositeBuild}"
-if (isCompositeBuildParent) {
+println "In IDE: ${isIDEString}, In Composite Build: ${lineCompositeBuild}"
+if (isIDE && isCompositeBuildParent) {
     println "\u001B[31m=======================================================================\u001B[0m"
     println "\u001B[31mIf you are trying to run Minecraft in IDE, build and run using the IDE!\u001B[0m"
     println "\u001B[31mRunning with Gradle will fail to compile                               \u001B[0m"
