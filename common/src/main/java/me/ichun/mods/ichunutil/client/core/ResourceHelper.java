@@ -19,7 +19,7 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ResourceHelper
+public final class ResourceHelper
 {
     public static final ResourceLocation TEX_TAMED_WOLF = new ResourceLocation("textures/entity/wolf/wolf_tame.png");
     public static final ResourceLocation TEX_WOLF_COLLAR = new ResourceLocation("textures/entity/wolf/wolf_collar.png");

@@ -46,7 +46,13 @@ if("${mod_id}".toString().equals("all")) { //it's a composite build. Remember to
 		projectSubMods = [
 				"iChunUtil", //All mods in this composite build that depend on iChunUtil and uses its plugin should have iChunUtil
 				"BetterThanBunnies",
-				"Ding"
+				"BetterThanLlamas",
+				"DeathCounter",
+				"Ding",
+				"LetSleepingDogsLie",
+				"LimitedLives",
+				"PartyParrots",
+				"ServerPause"
 		]
 	}
 

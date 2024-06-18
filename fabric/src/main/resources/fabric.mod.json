@@ -30,6 +30,7 @@
     ]
   },
 
+  "accessWidener" : "ichunutil.accesswidener",
   "mixins": [
     "ichunutil.mixins.json"
   ],

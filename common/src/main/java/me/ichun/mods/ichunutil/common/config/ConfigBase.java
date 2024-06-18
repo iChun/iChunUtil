@@ -131,7 +131,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         for(Field field : fields)
         {
             field.setAccessible(true);
-            if(!Modifier.isTransient(field.getModifiers()) && isValidField(field))
+            if(!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && isValidField(field))
             {
                 //Get the field's props first.
                 @NotNull Prop props;

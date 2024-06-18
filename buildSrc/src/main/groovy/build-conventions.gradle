@@ -16,6 +16,7 @@ def isFabric = "${project.name}".toString().equals("fabric")
 def isForge = "${project.name}".toString().equals("forge")
 def isNeoForge = "${project.name}".toString().equals("neoforge")
 
+def isFabricBased = hasApi && isApi || isCommon || isFabric
 def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
 def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
 def isCompositeBuildParent = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
@@ -79,15 +80,15 @@ dependencies {
         // TOML implementation
         implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
     }
-    else if (isInCompositeBuild) {
-        def dep = (hasApi && isApi || isCommon) ? "fabric" : project.name
+    else if (isInCompositeBuild) { //we expect iChunUtil if we're in a composite build
+        def dep = isFabricBased ? "fabric" : project.name
         //We don't use the iChunUtil version number as these are substituted
         compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
         compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
     }
     else if (!isCompositeBuildParent) { //do not add iChunUtil to our composite build modules.
         // Mod deps
-        if(isFabric || hasApi && isApi || isCommon) {
+        if(isFabricBased) {
             modImplementation "me.ichun.mods:ichunutil:${project.minecraft_version}-fabric-${project.ichunutil_version}" //hardcode this as it is used in common and api as well
         }
         else {
@@ -101,12 +102,13 @@ dependencies {
         if(!isCommon) {
             gradle.ext.projectSubMods.forEach { mod ->
                 println "Adding ${mod} to dependencies for loading in runs."
+                def dep = (hasApi && isApi || isCommon) ? "fabric" : project.name
                 def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
                 if(file("${project.rootDir}/../${mod}/api").exists()) {
                     compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api" //add the api dep if it exists
                 }
                 compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common" //add the common dep
-                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-fabric" //add the modloader specific dep (fabric for common and api)
+                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
             }
         }
     }
@@ -118,7 +120,7 @@ dependencies {
             compileOnly project(':common')
         }
     }
-    if(!isCommon && !isApi && isFabric)
+    if(isFabric)
     {
         // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
 
@@ -174,6 +176,29 @@ if (hasApi && !isApi && !isIDE) {
     sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
 }
 
+//Add iChunUtil's access wideners/transformers if in composite build
+if (isInCompositeBuild || isCompositeBuildParent)
+{
+    if (isFabricBased) {
+        def accessWidenerFile = file("${project.rootDir}/../iChunUtil/fabric/src/main/resources/ichunutil.accesswidener")
+        if (accessWidenerFile.exists()) {
+            loom.accessWidenerPath = accessWidenerFile
+        }
+    }
+    else if (isForge) {
+        def accessTransformerFile = file("${project.rootDir}/../iChunUtil/forge/src/main/resources/META-INF/accesstransformer.cfg")
+        if (accessTransformerFile.exists()) {
+            minecraft.accessTransformer = accessTransformerFile
+        }
+    }
+    else if (isNeoForge) {
+        def accessTransformerFile = file("${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg")
+        if (accessTransformerFile.exists()) {
+            minecraft.accessTransformers.file(accessTransformerFile)
+        }
+    }
+}
+
 if (hasApi && isApi || isCommon) {
     //We don't these tasks as we're just testing compile
     def disabledTasks = [ "jar", "remapJar", "publish", "publishToMavenLocal", "publishMod", "publishCurseforge", "publishModrinth" ]
@@ -181,6 +206,12 @@ if (hasApi && isApi || isCommon) {
         tasks.named(it).configure {
             enabled = false
         }
+    }
+
+    //Add the project's access widener
+    def accessWidenerFile = file("${project.rootDir}/fabric/src/main/resources/${project.mod_id}.accesswidener")
+    if (accessWidenerFile.exists()) {
+        loom.accessWidenerPath = accessWidenerFile
     }
 
     return
