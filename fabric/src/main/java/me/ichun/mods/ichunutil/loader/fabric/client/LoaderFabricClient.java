@@ -10,8 +10,6 @@ public class LoaderFabricClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        iChunUtil.loaderDelegateClient = new LoaderDelegateClientFabric();
-
         ResourceHelper.init();
 
         iChunUtil.configClient = iChunUtil.d().registerConfig(new ConfigClient());

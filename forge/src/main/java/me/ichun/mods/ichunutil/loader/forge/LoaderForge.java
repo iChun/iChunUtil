@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.loader.forge;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.forge.client.LoaderDelegateClientForge;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -16,8 +15,6 @@ public class LoaderForge extends iChunUtil
     {
         modProxy = this;
 
-        loaderDelegate = new LoaderDelegateForge();
-
         if(FMLEnvironment.dist.isClient())
         {
             initClient();
@@ -29,8 +26,6 @@ public class LoaderForge extends iChunUtil
 
     private void initClient()
     {
-        loaderDelegateClient = new LoaderDelegateClientForge();
-
         ResourceHelper.init();
 
         configClient = d().registerConfig(new ConfigClient()); // configs cannot be initialised in setup stage.

@@ -11,15 +11,30 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.registration.HandlerThread;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class PacketChannelNeoForge extends PacketChannel
 {
     public PacketChannelNeoForge(RegisterPayloadHandlersEvent event, ResourceLocation name, int protocolVersion, Class<? extends AbstractPacket>... packetTypes)
     {
+        this(event, name, protocolVersion, false, packetTypes);
+    }
+
+    public PacketChannelNeoForge(RegisterPayloadHandlersEvent event, ResourceLocation name, int protocolVersion, boolean isOptional, Class<? extends AbstractPacket>... packetTypes)
+    {
         super(name, packetTypes);
 
-        event.registrar(Integer.toString(protocolVersion)) // version number
-            .playBidirectional(new CustomPacketPayload.Type<>(channelId), // payload type - modid
+        PayloadRegistrar registrar = event.registrar(channelId.toString()) // version number
+            .executesOn(HandlerThread.NETWORK)
+            .versioned(Integer.toString(protocolVersion));
+
+        if(isOptional)
+        {
+            registrar = registrar.optional();
+        }
+
+        registrar.playBidirectional(new CustomPacketPayload.Type<>(channelId), // payload type - modid
                 createCodec(),
                 this::handle
             );
@@ -27,7 +42,7 @@ public class PacketChannelNeoForge extends PacketChannel
 
     protected void handle(PacketPayload payload, IPayloadContext context)
     {
-        Player player = context.player(); //should be set unless we're in configuration stage;
+        Player player = context.player();
         payload.process(player).ifPresent(context::enqueueWork);
     }
 

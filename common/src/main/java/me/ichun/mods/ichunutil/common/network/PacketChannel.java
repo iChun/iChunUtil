@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -98,7 +99,7 @@ public abstract class PacketChannel
             packet.writeTo(buffer);
         }
 
-        public Optional<Runnable> process(Player player)
+        public Optional<Runnable> process(@Nullable Player player)
         {
             return packet.process(player);
         }

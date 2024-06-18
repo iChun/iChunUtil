@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 public class LoaderDelegateClientForge implements LoaderDelegateClient
 {
+    public LoaderDelegateClientForge(){}
+
     @Override
     public void registerKeyMapping(KeyMapping key, String... conflictContext)
     {

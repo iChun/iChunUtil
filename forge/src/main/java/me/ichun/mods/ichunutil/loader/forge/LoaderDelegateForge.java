@@ -23,6 +23,8 @@ import java.util.Set;
 
 public class LoaderDelegateForge implements LoaderDelegate
 {
+    public LoaderDelegateForge(){}
+
     @Override
     public Env env()
     {

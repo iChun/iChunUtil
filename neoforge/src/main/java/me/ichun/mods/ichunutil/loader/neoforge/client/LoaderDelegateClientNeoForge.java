@@ -15,6 +15,8 @@ import java.util.function.Consumer;
 
 public class LoaderDelegateClientNeoForge implements LoaderDelegateClient
 {
+    public LoaderDelegateClientNeoForge(){}
+
     @Override
     @SuppressWarnings("all")
     public void registerKeyMapping(KeyMapping key, String... conflictContext)

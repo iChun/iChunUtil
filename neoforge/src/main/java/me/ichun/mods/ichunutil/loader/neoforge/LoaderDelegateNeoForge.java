@@ -21,6 +21,8 @@ import java.util.Set;
 
 public class LoaderDelegateNeoForge implements LoaderDelegate
 {
+    public LoaderDelegateNeoForge(){}
+
     @Override
     public Env env()
     {

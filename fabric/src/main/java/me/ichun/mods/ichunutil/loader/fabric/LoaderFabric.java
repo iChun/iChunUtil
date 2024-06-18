@@ -11,8 +11,6 @@ public class LoaderFabric extends iChunUtil
     {
         modProxy = this;
 
-        loaderDelegate = new LoaderDelegateFabric();
-
         ServerListenerFabric.init();
     }
 }

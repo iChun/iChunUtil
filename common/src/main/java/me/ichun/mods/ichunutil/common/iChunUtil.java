@@ -5,10 +5,16 @@ import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-public abstract class iChunUtil //TODO double check the display test for the neoforge ports.
+public abstract class iChunUtil
 {
+    static
+    {
+        LoaderDelegate.assignLoaderDelegate();
+    }
+
     public static final String MOD_ID = "ichunutil";
     public static final String MOD_NAME = "iChunUtil";
 
@@ -28,11 +34,13 @@ public abstract class iChunUtil //TODO double check the display test for the neo
         return modProxy;
     }
 
+    @NotNull
     public static LoaderDelegate d()
     {
         return loaderDelegate;
     }
 
+    @NotNull
     public static LoaderDelegateClient dC()
     {
         return loaderDelegateClient;

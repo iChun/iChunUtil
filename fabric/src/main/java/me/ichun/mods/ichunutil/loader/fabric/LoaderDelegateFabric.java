@@ -19,6 +19,8 @@ import java.nio.file.Path;
 
 public class LoaderDelegateFabric implements LoaderDelegate
 {
+    public LoaderDelegateFabric(){}
+
     @Override
     public Env env()
     {

@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 
 public class LoaderDelegateClientFabric implements LoaderDelegateClient
 {
+    public LoaderDelegateClientFabric(){}
+
     @Override
     public void registerKeyMapping(KeyMapping key, String...conflictContext)
     {
