@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.loader.neoforge.client;
 
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
-import me.ichun.mods.ichunutil.loader.neoforge.ReflectionReferenceNeoForge;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -42,7 +41,7 @@ public class LoaderDelegateClientNeoForge implements LoaderDelegateClient
             Object keyConflictContext = KeyBind.getKeyConflictContext(conflictContext[0]);
             if(keyConflictContext != null)
             {
-                ReflectionReferenceNeoForge.setKeyConflictContext(key, (IKeyConflictContext)keyConflictContext);
+                key.setKeyConflictContext((IKeyConflictContext)keyConflictContext);
             }
         }
 
