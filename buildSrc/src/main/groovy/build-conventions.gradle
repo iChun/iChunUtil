@@ -100,15 +100,25 @@ dependencies {
         implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
 
         if(!isCommon) {
+            def excludedMods = [
+//                    "Ding",
+//                    "BetterThanBunnies"
+            ]
+
             gradle.ext.projectSubMods.forEach { mod ->
-                println "Adding ${mod} to dependencies for loading in runs."
-                def dep = (hasApi && isApi || isCommon) ? "fabric" : project.name
-                def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
-                if(file("${project.rootDir}/../${mod}/api").exists()) {
-                    compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api" //add the api dep if it exists
+                if (excludedMods.contains(mod)) {
+                    println "${mod} is excluded from dependencies."
                 }
-                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common" //add the common dep
-                compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
+                else {
+                    println "Adding ${mod} to dependencies for loading in runs."
+                    def dep = (hasApi && isApi || isCommon) ? "fabric" : project.name
+                    def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+                    if(file("${project.rootDir}/../${mod}/api").exists()) {
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api" //add the api dep if it exists
+                    }
+                    compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common" //add the common dep
+                    compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
+                }
             }
         }
     }
