@@ -1,7 +1,9 @@
 package me.ichun.mods.ichunutil.loader.neoforge;
 
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,7 +44,15 @@ public class PacketChannelNeoForge extends PacketChannel
 
     protected void handle(PacketPayload payload, IPayloadContext context)
     {
-        Player player = context.player();
+        Player player;
+        if(context.flow() == PacketFlow.CLIENTBOUND)
+        {
+            player = iChunUtil.dC().getPlayer();
+        }
+        else
+        {
+            player = context.player();
+        }
         payload.process(player).ifPresent(context::enqueueWork);
     }
 

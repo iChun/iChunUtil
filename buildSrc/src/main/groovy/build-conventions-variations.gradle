@@ -48,6 +48,7 @@ else if(!"${project.name}".toString().equals("api")) {
                 def modsToOverride = [
                         "betterthanbunnies",
                         "betterthanllamas",
+                        "contentcreatorintegration",
                         "deathcounter",
                         "ding",
                         "dogslie",

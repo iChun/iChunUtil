@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.loader.fabric;
 
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import net.fabricmc.api.EnvType;
@@ -38,7 +39,7 @@ public class PacketChannelFabric extends PacketChannel
         PayloadTypeRegistry.playS2C().register(type, codec);
         PayloadTypeRegistry.playC2S().register(type, codec);
         ServerPlayNetworking.registerGlobalReceiver(type,
-            (payload, context) -> payload.process(context.player()));
+            (payload, context) -> payload.process(context.player()).ifPresent(r -> context.server().execute(r)));
         if(FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT))
         {
             ClientClassloaderHaxor.registerClientReceiver(channelId);
@@ -91,7 +92,7 @@ public class PacketChannelFabric extends PacketChannel
         public static void registerClientReceiver(ResourceLocation channelId)
         {
             ClientPlayNetworking.registerGlobalReceiver(new CustomPacketPayload.Type<PacketPayload>(channelId),
-                (payload, context) -> payload.process(context.player()));
+                (payload, context) -> payload.process(iChunUtil.dC().getPlayer()).ifPresent(r -> context.client().execute(r)));
         }
     }
 }

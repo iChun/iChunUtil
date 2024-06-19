@@ -4,8 +4,10 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
@@ -61,5 +63,11 @@ public interface LoaderDelegateClient
 
     default void fireLivingRenderPreEvent(LivingEntity entity, LivingEntityRenderer livingEntityRenderer, float partialTicks){}
 
-    default void fireClientLevelLoad(ClientLevel level){};
+    default void fireClientLevelLoad(ClientLevel level){}
+
+    @Nullable
+    default LocalPlayer getPlayer()
+    {
+        return Minecraft.getInstance().player;
+    }
 }

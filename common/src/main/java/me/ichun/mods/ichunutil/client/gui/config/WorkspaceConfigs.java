@@ -176,7 +176,9 @@ public class WorkspaceConfigs extends Workspace
         {
             return I18n.get("config.ichunutil.cat."+ cat + "." + suffix);
         }
-        return I18n.get("config." + info.config.getModId() + ".cat."+ cat + "." + suffix);
+        String key = "config." + info.config.getModId() + ".cat."+ cat + "." + suffix;
+        String localized = I18n.get(key);
+        return localized.equals(key) ? cat : localized;
     }
 
     public static class ConfigInfo
@@ -194,7 +196,19 @@ public class WorkspaceConfigs extends Workspace
 
                 for(ConfigBase.Category.Entry entry : category.getEntries())
                 {
-                    entries.add(new EntryLocalised(config, entry, I18n.get("config." + config.getModId() + ".prop." + entry.field.getName() + ".name"), I18n.get("config." + config.getModId() + ".prop." + entry.field.getName() + ".desc")));
+                    String localisedNameKey = "config." + config.getModId() + ".prop." + entry.field.getName() + ".name";
+                    String localisedName = I18n.get(localisedNameKey);
+                    if(localisedName.equals(localisedNameKey))
+                    {
+                        localisedName = entry.field.getName();
+                    }
+                    String localisedDescKey = "";
+                    String localisedDesc = I18n.get("config." + config.getModId() + ".prop." + entry.field.getName() + ".desc");
+                    if(localisedDesc.equals(localisedDescKey))
+                    {
+                        localisedDesc = "";
+                    }
+                    entries.add(new EntryLocalised(config, entry, localisedName, localisedDesc));
                 }
             }
         }
