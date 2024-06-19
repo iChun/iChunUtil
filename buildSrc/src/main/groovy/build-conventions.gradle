@@ -21,6 +21,10 @@ def isIDE = System.getProperty("idea.active") == "true" //this is the only check
 def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
 def isCompositeBuildParent = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
+//Everyone has to have a different task that finalizes their jar...
+def finaliseJarTaskName = isFabric ? "remapJar" : isForge ? "reobfJar" : "jar"
+def shadowsDependencies = isBuildingiChunUtil || "${project.mod_id}".toString().equals("contentcreatorintegration")
+
 ext {
     replaceProperties = [
             minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -76,23 +80,21 @@ repositories {
 }
 
 dependencies {
-    if (isBuildingiChunUtil) {
-        // TOML implementation
-        implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
-    }
-    else if (isInCompositeBuild) { //we expect iChunUtil if we're in a composite build
-        def dep = isFabricBased ? "fabric" : project.name
-        //We don't use the iChunUtil version number as these are substituted
-        compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
-        compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
-    }
-    else if (!isCompositeBuildParent) { //do not add iChunUtil to our composite build modules.
-        // Mod deps
-        if(isFabricBased) {
-            modImplementation "me.ichun.mods:ichunutil:${project.minecraft_version}-fabric-${project.ichunutil_version}" //hardcode this as it is used in common and api as well
-        }
-        else {
-            implementation "me.ichun.mods:ichunutil:${project.minecraft_version}-${project.name}-${project.ichunutil_version}"
+    if (!isBuildingiChunUtil) {
+        if (isInCompositeBuild) { //we expect iChunUtil if we're in a composite build
+            def dep = isFabricBased ? "fabric" : project.name
+            //We don't use the iChunUtil version number as these are substituted
+            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
+            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}"
+            //add the modloader specific dep (fabric for common and api)
+        } else if (!isCompositeBuildParent) { //do not add iChunUtil to our composite build modules.
+            // Mod deps
+            if (isFabricBased) {
+                modImplementation "me.ichun.mods:ichunutil:${project.minecraft_version}-fabric-${project.ichunutil_version}"
+                //hardcode this as it is used in common and api as well
+            } else {
+                implementation "me.ichun.mods:ichunutil:${project.minecraft_version}-${project.name}-${project.ichunutil_version}"
+            }
         }
     }
     if (isCompositeBuildParent) {
@@ -245,16 +247,7 @@ jar {
 
 if (hasApi) {
     def apiJar = tasks.register('apiJar', Jar) {
-        //Everyone has to have a different task that finalizes their jar...
-        if(isFabric) {
-            mustRunAfter 'remapJar'
-        }
-        else if(isForge) {
-            mustRunAfter 'reobfJar'
-        }
-        else if(isNeoForge) {
-            mustRunAfter 'jar'
-        }
+        mustRunAfter finaliseJarTaskName
 
         archiveClassifier = "api"
         from(sourceSets.main.output) {
@@ -317,23 +310,30 @@ if (project.hasProperty("key_store")) {
                 )
             }
         }
+
+        //The "reobfJar" task doesn't exist at configuration stage in Forge for some reason so we tell gradle to run signJar AFTER reobfJar but is finalized by jar
+        if(isForge) {
+            mustRunAfter "reobfJar"
+        }
     }
 
     tasks.named(isFabric ? "remapJar" : "jar").configure {
         finalizedBy signJar
     }
-
-    if(isForge) {
-        tasks.named("signJar").configure {
-            mustRunAfter "reobfJar"
-        }
-    }
 }
 
-if(isFabric) {
+if (isFabric) {
     //Required to make IDEA runs generate for Fabric
     loom.runConfigs.configureEach {
         ideConfigGenerated = true
+    }
+}
+else if (isForge) {
+    if (!shadowsDependencies) { // Reobfing the jar is done in the variants gradle file.
+        // This is the preferred method to reobfuscate your jar file
+        jar.finalizedBy("reobfJar")
+        // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+        // publish.dependsOn('reobfJar')
     }
 }
 
@@ -430,9 +430,11 @@ publisher {
     // setArtifact("build/libs/mymod.jar")
     // setArtifact(jar.getArchiveFile().get())
     // If this is a task, the task specified will be executed before publishing
-    setArtifact(isFabric ? remapJar : jar)
+    if (!shadowsDependencies) {
+        setArtifact(tasks.named(isFabric ? "remapJar" : "jar"))
+    }
 
-    if(hasApi) {
+    if (hasApi) {
         // Additional files to upload. Same as artifact, this can be a task, file or string
         //addAdditionalFile(apiJar)
 
@@ -446,11 +448,11 @@ publisher {
         }
     }
 
-    if(isFabric) {
+    if (isFabric) {
         // Modrinth Dependencies.
         // Accepts a slug or id
         modrinthDepends {
-            if(isBuildingiChunUtil) {
+            if (isBuildingiChunUtil) {
                 required "P7dR8mSH" //Fabric API
             }
             else {
@@ -460,7 +462,7 @@ publisher {
 
         // Curse Dependencies
         curseDepends {
-            if(isBuildingiChunUtil) {
+            if (isBuildingiChunUtil) {
                 required "fabric-api" //Fabric API
             }
             else {
@@ -468,7 +470,7 @@ publisher {
             }
         }
     }
-    else if(!isBuildingiChunUtil) {
+    else if (!isBuildingiChunUtil) {
         // Modrinth Dependencies.
         // Accepts a slug or id
         modrinthDepends {

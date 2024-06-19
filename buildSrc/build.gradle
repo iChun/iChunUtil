@@ -15,6 +15,11 @@ for (String key : properties.stringPropertyNames()) {
 
 repositories {
     maven {
+        name = 'Gradle Plugin Portal'
+        url "https://plugins.gradle.org/m2/"
+    }
+
+    maven {
         name = 'ModPublisher https://github.com/firstdarkdev/modpublisher'
         url "https://maven.firstdark.dev/releases"
     }
@@ -22,4 +27,5 @@ repositories {
 
 dependencies {
     implementation "com.hypherionmc.modutils:modpublisher:${modpublisher_version}"
+    implementation "com.github.johnrengelman:shadow:${shadowjar_version}"
 }

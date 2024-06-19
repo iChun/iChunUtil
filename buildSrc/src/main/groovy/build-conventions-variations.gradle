@@ -1,5 +1,87 @@
 import groovy.json.JsonOutput
 
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+def isFabric = "${project.name}".toString().equals("fabric")
+def isForge = "${project.name}".toString().equals("forge")
+def isNeoForge = "${project.name}".toString().equals("neoforge")
+
+configurations {
+    shadowImplementation //declare the configuration
+    implementation.extendsFrom shadowImplementation //make implementation take these dependencies
+}
+
+dependencies {
+    // TOML implementation
+    shadowImplementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowImplementation]
+
+    relocate('com.moandjiezana', 'me.ichun.shadow.com.moandjiezana')
+
+    dependencies {
+        exclude(dependency('com.google.code.gson:gson:'))
+    }
+
+    if (isForge) {
+        archiveClassifier.set("")
+        finalizedBy("reobfJar")
+    }
+    else if (isNeoForge) {
+        archiveClassifier.set("")
+    }
+
+    if (!"${project.name}".toString().equals("common") && !"${project.name}".toString().equals("api") && project.hasProperty("key_store")) {
+        tasks.named("signJar").configure {
+            mustRunAfter "shadowJar"
+        }
+    }
+}
+
+components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+    skip()
+}
+
+if (isFabric) {
+    tasks.named("remapJar").configure {
+        dependsOn "shadowJar"
+        inputFile = file(shadowJar.archivePath)
+    }
+}
+else if (isForge || isNeoForge) {
+    jar {
+        finalizedBy "shadowJar"
+    }
+
+    //Just because we're reusing the jar for output - gradle complains about lack of dependency
+    tasks.named("generateMetadataFileForMavenJavaPublication").configure {
+        mustRunAfter "shadowJar"
+    }
+}
+
+publisher {
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    setArtifact(tasks.named(isFabric ? "remapJar" : "shadowJar"))
+}
+
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+//
+//tasks.named('shadowJar', ShadowJar).configure {
+//    enableRelocation true
+//    relocationPrefix "me.ichun.shadow"
+//}
+
+//==============
+//Shadow Jar End
+//==============
+
 tasks.register('copyDependencies', Copy) {
     from configurations.compileClasspath
     into "${layout.buildDirectory.get()}/output/libs"
