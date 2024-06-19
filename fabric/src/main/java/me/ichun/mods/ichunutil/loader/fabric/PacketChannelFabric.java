@@ -62,7 +62,7 @@ public class PacketChannelFabric extends PacketChannel
     @Override
     public void sendToAll(AbstractPacket packet)
     {
-        sendTo(packet, PlayerLookup.all(serverInstance));
+        sendTo(packet, PlayerLookup.all(ServerListenerFabric.getServerInstance()));
     }
 
     @Override

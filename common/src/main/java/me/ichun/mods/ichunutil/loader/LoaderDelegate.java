@@ -87,6 +87,8 @@ public interface LoaderDelegate
 
     MinecraftServer getServer();
 
+    boolean isModLoaded(String modId);
+
     void registerAddReloadListener(PreparableReloadListener reloadListener);
 
     default Block getBlockFromRegistry(ResourceLocation rl) //Forge uses its own registries, else uses the built in ones

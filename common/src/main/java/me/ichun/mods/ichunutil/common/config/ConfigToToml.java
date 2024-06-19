@@ -99,7 +99,7 @@ public final class ConfigToToml
             writer.write("\t# Range: ");
 
             boolean isInt = entry.field.getType() == int.class;
-            if(entry.prop.min() != Double.MIN_VALUE) //has a minimum
+            if(entry.prop.min() != -Double.MAX_VALUE) //has a minimum
             {
                 if(entry.prop.intBool()) //is an intbool
                 {

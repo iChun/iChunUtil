@@ -9,6 +9,7 @@ import me.ichun.mods.ichunutil.loader.neoforge.config.ConfigHandlerNeoForge;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
@@ -62,6 +63,12 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     public MinecraftServer getServer()
     {
         return ServerLifecycleHooks.getCurrentServer();
+    }
+
+    @Override
+    public boolean isModLoaded(String modId)
+    {
+        return ModList.get().isLoaded(modId);
     }
 
     @Override

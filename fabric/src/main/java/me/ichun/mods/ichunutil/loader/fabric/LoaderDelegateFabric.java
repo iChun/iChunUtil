@@ -1,12 +1,12 @@
 package me.ichun.mods.ichunutil.loader.fabric;
 
-import me.ichun.mods.ichunutil.api.fabric.event.FabricEvents;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.fabric.config.ConfigHandlerFabric;
+import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -62,6 +62,12 @@ public class LoaderDelegateFabric implements LoaderDelegate
     public MinecraftServer getServer()
     {
         return ServerListenerFabric.getServerInstance();
+    }
+
+    @Override
+    public boolean isModLoaded(String modId)
+    {
+        return FabricLoader.getInstance().isModLoaded(modId);
     }
 
     @Override

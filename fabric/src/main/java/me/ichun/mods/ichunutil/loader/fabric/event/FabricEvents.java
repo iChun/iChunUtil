@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.api.fabric.event;
+package me.ichun.mods.ichunutil.loader.fabric.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

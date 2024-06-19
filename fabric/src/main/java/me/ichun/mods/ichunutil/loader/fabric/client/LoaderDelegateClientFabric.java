@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.loader.fabric.client;
 
-import me.ichun.mods.ichunutil.api.fabric.event.client.FabricClientEvents;
 import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
+import me.ichun.mods.ichunutil.loader.fabric.event.client.FabricClientEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.KeyMapping;

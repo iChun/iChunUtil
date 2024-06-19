@@ -1,4 +1,4 @@
-package me.ichun.mods.ichunutil.api.fabric.event.client;
+package me.ichun.mods.ichunutil.loader.fabric.event.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

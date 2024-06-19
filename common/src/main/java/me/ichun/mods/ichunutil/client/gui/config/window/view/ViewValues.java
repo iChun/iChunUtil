@@ -118,7 +118,7 @@ public class ViewValues extends View<WindowValues>
             if(clz == int.class)
             {
                 ElementNumberInput input = new ElementNumberInput(item, false);
-                input.setMin(props.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)props.min());
+                input.setMin(props.min() == -Double.MAX_VALUE ? Integer.MIN_VALUE : (int)props.min());
                 input.setMax(props.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)props.max());
                 input.setDefaultText(o.toString());
                 input.setSize(80, 14);

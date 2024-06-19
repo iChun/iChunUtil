@@ -14,7 +14,7 @@ public @interface Prop
 
     boolean intBool() default false;
 
-    double min() default Double.MIN_VALUE;
+    double min() default -Double.MAX_VALUE; // Double.MIN_VALUE is the smallest POSITIVE non-zero value that a double can hold
 
     double max() default Double.MAX_VALUE;
 

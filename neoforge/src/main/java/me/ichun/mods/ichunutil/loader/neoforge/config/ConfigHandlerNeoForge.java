@@ -99,7 +99,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler
                     Object o = e.field.get(config);
                     if(clz == int.class)
                     {
-                        value = builder.defineInRange(fieldName, (int)o, prop.intBool() ? 0 : prop.min() == Double.MIN_VALUE ? Integer.MIN_VALUE : (int)prop.min(), prop.intBool() ? 1 : prop.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)prop.max());
+                        value = builder.defineInRange(fieldName, (int)o, prop.intBool() ? 0 : prop.min() == -Double.MAX_VALUE ? Integer.MIN_VALUE : (int)prop.min(), prop.intBool() ? 1 : prop.max() == Double.MAX_VALUE ? Integer.MAX_VALUE : (int)prop.max());
                     }
                     else if(clz == double.class)
                     {

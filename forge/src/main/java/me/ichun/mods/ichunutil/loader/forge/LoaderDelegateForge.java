@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -60,6 +61,12 @@ public class LoaderDelegateForge implements LoaderDelegate
     public MinecraftServer getServer()
     {
         return ServerLifecycleHooks.getCurrentServer();
+    }
+
+    @Override
+    public boolean isModLoaded(String modId)
+    {
+        return ModList.get().isLoaded(modId);
     }
 
     @Override

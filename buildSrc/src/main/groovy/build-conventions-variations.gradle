@@ -1,4 +1,4 @@
-import groovy.json.*
+import groovy.json.JsonOutput
 
 tasks.register('copyDependencies', Copy) {
     from configurations.compileClasspath
