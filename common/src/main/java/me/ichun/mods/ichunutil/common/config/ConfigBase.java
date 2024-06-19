@@ -131,7 +131,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         for(Field field : fields)
         {
             field.setAccessible(true);
-            if(!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && isValidField(field))
+            if(isValidField(field))
             {
                 //Get the field's props first.
                 @NotNull Prop props;
@@ -326,6 +326,61 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         }
     }
 
+    public String getLocalisedName(Category category, boolean comment)
+    {
+        String suffix = comment ? ".desc" : ".name";
+        String key = comment ? category.commentKey : "config." + getModId() + ".cat." + category.name + suffix;
+        String localised = iChunUtil.dC().getLocalisedString(key);
+        if(localised.equals(key)) //it is not localised
+        {
+            if(DEFAULT_CATEGORY_COMMENTS.containsKey(category.name)) //iChunUtil has this as a default category
+            {
+                return iChunUtil.dC().getLocalisedString("config.ichunutil.cat." + category.name + suffix);
+            }
+
+            if(comment)
+            {
+                if(category.comment != null)
+                {
+                    return category.comment;
+                }
+
+                //No comment, return null
+                return null;
+            }
+
+            //We don't have a translation for it, return the category name itself
+            return category.name;
+        }
+        return localised;
+    }
+
+    @Nullable
+    public String getLocalisedName(Category.Entry entry, boolean comment)
+    {
+        String suffix = comment ? ".desc" : ".name";
+        String key = comment ? entry.commentKey : "config." + getModId() + ".prop." + entry.field.getName() + suffix;
+        String localised = iChunUtil.dC().getLocalisedString(key);
+        if(localised.equals(key)) //it is not localised
+        {
+            if(comment)
+            {
+                if(entry.comment != null)
+                {
+                    return entry.comment;
+                }
+
+                //No comment, return null
+                return null;
+            }
+
+            //We don't have a translation for it, return the category name itself
+            return entry.field.getName();
+        }
+        return localised;
+    }
+
+
     @Override
     public int compareTo(ConfigBase o)
     {
@@ -338,7 +393,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
     private static boolean isValidField(Field field)
     {
-        return field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType());
+        return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && (field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType()));
     }
 
     public static class Category
@@ -348,14 +403,14 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         public final String name;
         @Nullable
         public final String comment;
-        @Nullable
+        @NotNull
         public final String commentKey;
 
         public final boolean showInGui;
 
         private final TreeSet<Entry> entries = new TreeSet<>(Comparator.naturalOrder());
 
-        public Category(@NotNull String name, @Nullable String comment, @Nullable String commentKey, boolean showInGui)
+        public Category(@NotNull String name, @Nullable String comment, @NotNull String commentKey, boolean showInGui)
         {
             this.name = name;
             this.comment = comment;
@@ -388,12 +443,12 @@ public abstract class ConfigBase //Configs should be created in the constructor 
             public final Prop prop;
             @Nullable
             public final String comment;
-            @Nullable
+            @NotNull
             public final String commentKey;
             @NotNull
             public final Object defaultValue;
 
-            public Entry(@NotNull Field field, @NotNull Prop prop, @Nullable String comment, @Nullable String commentKey, @NotNull Object defaultValue) {
+            public Entry(@NotNull Field field, @NotNull Prop prop, @Nullable String comment, @NotNull String commentKey, @NotNull Object defaultValue) {
                 this.field = field;
                 this.prop = prop;
                 this.comment = comment;

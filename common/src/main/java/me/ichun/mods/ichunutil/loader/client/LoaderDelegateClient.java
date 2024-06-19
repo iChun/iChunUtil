@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,9 +66,16 @@ public interface LoaderDelegateClient
 
     default void fireClientLevelLoad(ClientLevel level){}
 
+    //Methods below are just Minecraft calls to avoid references to client classes
+
     @Nullable
     default LocalPlayer getPlayer()
     {
         return Minecraft.getInstance().player;
+    }
+
+    default String getLocalisedString(String s, Object...params)
+    {
+        return I18n.get(s, params);
     }
 }
