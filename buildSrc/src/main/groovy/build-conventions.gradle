@@ -188,9 +188,8 @@ if (hasApi && !isApi && !isIDE) {
     sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
 }
 
-//Add iChunUtil's access wideners/transformers if in composite build
-if (isInCompositeBuild || isCompositeBuildParent)
-{
+//Add iChunUtil's access wideners/transformers - some MLs only accept one file so we just put it all in iChunUtil
+if (!isBuildingiChunUtil) {
     if (isFabricBased) {
         def accessWidenerFile = file("${project.rootDir}/../iChunUtil/fabric/src/main/resources/ichunutil.accesswidener")
         if (accessWidenerFile.exists()) {
