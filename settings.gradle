@@ -35,55 +35,67 @@ plugins {
 
 rootProject.name = "${mod_id}"
 
-if("${mod_id}".toString().equals("all")) { //it's a composite build. Remember to change mod_id, mod_name, archives_base_name
-	include 'common'
-	include 'fabric'
-	include 'forge' //Required because post-sync tasks by Forge subprojects fail otherwise
-	//include 'neoforge' //If you would like neoforge runs, uncomment this
+if(file("${rootDir}/api").exists()) {//Check if API folder exists, if it does, include it
+	include 'api'
+}
+include 'common'
+include 'fabric'
+include 'forge'
+if(!"${mod_id}".toString().equals("all")) { //We don't need NeoForge in an "all" composite build
+	include 'neoforge'
+}
 
-	gradle.ext {
-		//Comment/delete as necessary
-		projectSubMods = [
-				"iChunUtil", //All mods in this composite build that depend on iChunUtil and uses its plugin should have iChunUtil
-				"BetterThanBunnies",
-				"BetterThanLlamas",
-				"DeathCounter",
-				"Ding",
-				"LetSleepingDogsLie",
-				"LimitedLives",
-				"PartyParrots",
-				"ServerPause"
+if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that depends on iChunUtil or we're in a composite build for multiple mods
+	if ("${mod_id}".toString().equals("all")) {
+		def excludedMods = [
+//				"BetterThanBunnies",
+//		        "Ding"
 		]
-	}
 
-	gradle.ext.projectSubMods.forEach { mod ->
-		if(file("../${mod}").exists()) {
-			includeBuild("../${mod}") {
-				def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
-				name = modIdLowerCase
-				dependencySubstitution {
-					//I won't know the mod version. We special case for composite builds anyway
-					if(file("../${mod}/api").exists()) {
-						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-api") using project(":api")
-					}
-					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-common") using project(":common")
-					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-fabric") using project(":fabric")
-					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-forge") using project(":forge")
-					substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-neoforge") using project(":neoforge")
-				}
+		gradle.ext.projectSubMods = []
+		file("${rootDir}/..").eachDir {
+			if(!it.equals(rootDir) && !it.name.equals("Temp") && !excludedMods.contains(it.name)) {
+				println "Including ${it.name} in build!"
+				gradle.ext.projectSubMods.add(it.name)
 			}
 		}
-		else {
-			println "${mod} defined as included build in composite build but directory cannot be found!"
+	}
+	else {
+		gradle.ext {
+			// Add any mods if you'd like if you're not in an "all" composite build. Just be aware it will add to gradle setup time.
+			projectSubMods = [
+					"iChunUtil" // Do not comment out - You will have a bad time.
+			]
 		}
 	}
-}
-else {
-	if(file("${rootDir}/api").exists()) {//Check if API folder exists, if it does, include it
-		include 'api'
+
+	if (!gradle.ext.projectSubMods.contains("iChunUtil") || !file("../iChunUtil").exists()) {
+		println "\u001B[31m=====================================================================\u001B[0m"
+		println "\u001B[31mCannot find iChunUtil in list of sub-mods!                           \u001B[0m"
+		println "\u001B[31mDouble check your settings.gradle file and make sure iChunUtil exists\u001B[0m"
+		println "\u001B[31m=====================================================================\u001B[0m"
 	}
-	include 'common'
-	include 'fabric'
-	include 'forge'
-	include 'neoforge'
+	else {
+		gradle.ext.projectSubMods.forEach { mod ->
+			if(file("../${mod}").exists()) {
+				includeBuild("../${mod}") {
+					def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+					name = modIdLowerCase
+					dependencySubstitution {
+						//I won't know the mod version. We special case for composite builds anyway
+						if(file("../${mod}/api").exists()) {
+							substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-api") using project(":api")
+						}
+						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-common") using project(":common")
+						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-fabric") using project(":fabric")
+						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-forge") using project(":forge")
+						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-neoforge") using project(":neoforge")
+					}
+				}
+			}
+			else {
+				println "${mod} defined as included build in composite build but directory cannot be found!"
+			}
+		}
+	}
 }

@@ -19,7 +19,7 @@ def isNeoForge = "${project.name}".toString().equals("neoforge")
 def isFabricBased = hasApi && isApi || isCommon || isFabric
 def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
 def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
-def isCompositeBuildParent = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
+def isAnAllCompositeBuild = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
 //Everyone has to have a different task that finalizes their jar...
 def finaliseJarTaskName = isFabric ? "remapJar" : isForge ? "reobfJar" : "jar"
@@ -81,50 +81,46 @@ repositories {
 
 dependencies {
     if (!isBuildingiChunUtil) {
-        if (isInCompositeBuild) { //we expect iChunUtil if we're in a composite build
+        if (!isInCompositeBuild) { //Add all of our subprojects as dependencies
+            if (!(isCommon && isAnAllCompositeBuild)) { // Don't add it to common in the "all" build
+                def excludedMods = [
+//                    "BetterThanBunnies",
+//                    "Ding"
+                ]
+
+                gradle.ext.projectSubMods.forEach { mod ->
+                    if (excludedMods.contains(mod)) {
+                        println "${mod} is excluded from dependencies."
+                    } else {
+                        println "Adding ${mod} to dependencies for loading in runs."
+                        def dep = isFabricBased ? "fabric" : project.name
+                        def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+                        if (file("${project.rootDir}/../${mod}/api").exists()) {
+                            compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api"
+                            //add the api dep if it exists
+                        }
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
+                        //add the common dep
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
+                        //add the modloader specific dep (fabric for common and api)
+
+                        if ("${mod}".toString().equals("iChunUtil")) {
+                            implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+                        } else if ("${mod}".toString().equals("CCI1.x")) {
+                            implementation "io.socket:socket.io-client:1.0.1" // MIT
+                            implementation "org.java-websocket:Java-WebSocket:1.5.3" // MIT
+                        }
+                    }
+                }
+            }
+        } else {
             def dep = isFabricBased ? "fabric" : project.name
             //We don't use the iChunUtil version number as these are substituted
             compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
             compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}"
-            //add the modloader specific dep (fabric for common and api)
-        } else if (!isCompositeBuildParent) { //do not add iChunUtil to our composite build modules.
-            // Mod deps
-            if (isFabricBased) {
-                modImplementation "me.ichun.mods:ichunutil:${project.minecraft_version}-fabric-${project.ichunutil_version}"
-                //hardcode this as it is used in common and api as well
-            } else {
-                implementation "me.ichun.mods:ichunutil:${project.minecraft_version}-${project.name}-${project.ichunutil_version}"
-            }
         }
     }
-    if (isCompositeBuildParent) {
-        //iChunUtil will need it
-        implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
-
-        if(!isCommon) {
-            def excludedMods = [
-//                    "Ding",
-//                    "BetterThanBunnies"
-            ]
-
-            gradle.ext.projectSubMods.forEach { mod ->
-                if (excludedMods.contains(mod)) {
-                    println "${mod} is excluded from dependencies."
-                }
-                else {
-                    println "Adding ${mod} to dependencies for loading in runs."
-                    def dep = (hasApi && isApi || isCommon) ? "fabric" : project.name
-                    def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
-                    if(file("${project.rootDir}/../${mod}/api").exists()) {
-                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api" //add the api dep if it exists
-                    }
-                    compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common" //add the common dep
-                    compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}" //add the modloader specific dep (fabric for common and api)
-                }
-            }
-        }
-    }
-    else if (isIDE) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
+    if (isIDE && !isAnAllCompositeBuild) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
         if (hasApi && !isApi) {
             compileOnly project(':api')
         }
@@ -441,7 +437,7 @@ publisher {
         // DisplayName and Changelog currently only supported on Curseforge
         addAdditionalFile {
             // File, Task or String
-            artifact apiJar
+            artifact tasks.named("apiJar")
             displayName "[${project.minecraft_version} ${nameCapitalised}] v ${project.mod_version} API"
             changelog "API Jar. If you are not a mod developer you don't need this."
         }

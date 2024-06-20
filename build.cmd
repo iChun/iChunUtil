@@ -88,38 +88,26 @@ echo: Do nothing? Done!
 goto :Options
 )
 
-set _all=
-if "%fabric%"=="Yes" if "%forge%"=="Yes" if "%neoforge%"=="Yes" set _all=y
+:: it's ugly but it works
+if "%fabric%"=="Yes" if "%clean%"=="Yes" set "command=!command! :fabric:clean"
+if "%forge%"=="Yes" if "%clean%"=="Yes" set "command=!command! :forge:clean"
+if "%neoforge%"=="Yes" if "%clean%"=="Yes" set "command=!command! :neoforge:clean"
 
-if defined _all (
-  :: we're doing for all
-  if "%clean%"=="Yes" set "command=!command! clean"
-  if "%build%"=="Yes" set "command=!command! build"
-  if "%publish%"=="Yes" set "command=!command! publish"
-  if "%publishLocal%"=="Yes" set "command=!command! publishToMavenLocal"
-  if "%publishMods%"=="Yes" set "command=!command! publishMod"
-) else (
-  :: it's ugly but it works
-  if "%fabric%"=="Yes" if "%clean%"=="Yes" set "command=!command! :fabric:clean"
-  if "%forge%"=="Yes" if "%clean%"=="Yes" set "command=!command! :forge:clean"
-  if "%neoforge%"=="Yes" if "%clean%"=="Yes" set "command=!command! :neoforge:clean"
+if "%fabric%"=="Yes" if "%build%"=="Yes" set "command=!command! :fabric:build"
+if "%forge%"=="Yes" if "%build%"=="Yes" set "command=!command! :forge:build"
+if "%neoforge%"=="Yes" if "%build%"=="Yes" set "command=!command! :neoforge:build"
 
-  if "%fabric%"=="Yes" if "%build%"=="Yes" set "command=!command! :fabric:build"
-  if "%forge%"=="Yes" if "%build%"=="Yes" set "command=!command! :forge:build"
-  if "%neoforge%"=="Yes" if "%build%"=="Yes" set "command=!command! :neoforge:build"
+if "%fabric%"=="Yes" if "%publish%"=="Yes" set "command=!command! :fabric:publish"
+if "%forge%"=="Yes" if "%publish%"=="Yes" set "command=!command! :forge:publish"
+if "%neoforge%"=="Yes" if "%publish%"=="Yes" set "command=!command! :neoforge:publish"
 
-  if "%fabric%"=="Yes" if "%publish%"=="Yes" set "command=!command! :fabric:publish"
-  if "%forge%"=="Yes" if "%publish%"=="Yes" set "command=!command! :forge:publish"
-  if "%neoforge%"=="Yes" if "%publish%"=="Yes" set "command=!command! :neoforge:publish"
+if "%fabric%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :fabric:publishToMavenLocal"
+if "%forge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :forge:publishToMavenLocal"
+if "%neoforge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :neoforge:publishToMavenLocal"
 
-  if "%fabric%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :fabric:publishToMavenLocal"
-  if "%forge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :forge:publishToMavenLocal"
-  if "%neoforge%"=="Yes" if "%publishLocal%"=="Yes" set "command=!command! :neoforge:publishToMavenLocal"
-
-  if "%fabric%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :fabric:publishMod"
-  if "%forge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :forge:publishMod"
-  if "%neoforge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :neoforge:publishMod"
-)
+if "%fabric%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :fabric:publishMod"
+if "%forge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :forge:publishMod"
+if "%neoforge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :neoforge:publishMod"
 
 echo Executing %command%
 
