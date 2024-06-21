@@ -68,11 +68,23 @@ public interface LoaderDelegateClient
 
     //Methods below are just Minecraft calls to avoid references to client classes
 
+    default String getPlayerName()
+    {
+        return Minecraft.getInstance().getUser().getName();
+    }
+
     @Nullable
     default LocalPlayer getPlayer()
     {
         return Minecraft.getInstance().player;
     }
+
+    @Nullable
+    default ClientLevel getWorld()
+    {
+        return Minecraft.getInstance().level;
+    }
+
 
     default String getLocalisedString(String s, Object...params)
     {
