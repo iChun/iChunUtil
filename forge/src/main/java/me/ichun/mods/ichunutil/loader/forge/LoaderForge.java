@@ -23,8 +23,6 @@ public class LoaderForge extends iChunUtil
             initClient();
         }
 
-        eventHandlerServer = new EventHandlerServerForge();
-
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, IExtensionPoint.DisplayTest.IGNORE_ALL_VERSION);
     }
@@ -33,8 +31,6 @@ public class LoaderForge extends iChunUtil
     private void initClient()
     {
         ResourceHelper.init();
-
-        eventHandlerClient = new EventHandlerClientForge();
 
         configClient = d().registerConfig(new ConfigClient()); // configs cannot be initialised in setup stage.
     }

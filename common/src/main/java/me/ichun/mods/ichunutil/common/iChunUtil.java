@@ -21,7 +21,7 @@ public abstract class iChunUtil
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static iChunUtil modProxy;
+    protected static iChunUtil modProxy;
 
     public static LoaderDelegate loaderDelegate;
 

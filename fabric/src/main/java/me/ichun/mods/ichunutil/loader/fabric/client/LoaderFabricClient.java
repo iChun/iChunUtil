@@ -12,8 +12,6 @@ public class LoaderFabricClient implements ClientModInitializer
     {
         ResourceHelper.init();
 
-        iChunUtil.eventHandlerClient = new EventHandlerClientFabric();
-
         iChunUtil.configClient = iChunUtil.d().registerConfig(new ConfigClient());
     }
 }

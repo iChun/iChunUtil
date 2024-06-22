@@ -100,9 +100,9 @@ dependencies {
                             //add the api dep if it exists
                         }
                         //add the common dep
-                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
-                        //add the modloader specific dep (fabric for common and api)
                         compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
+                        //add the modloader specific dep (fabric for common and api)
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
 
                         if ("${mod}".toString().equals("iChunUtil")) {
                             implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT

@@ -1,9 +1,11 @@
 package me.ichun.mods.ichunutil.loader.forge;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
+import me.ichun.mods.ichunutil.loader.forge.client.EventHandlerClientForge;
 import me.ichun.mods.ichunutil.loader.forge.config.ConfigHandlerForge;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -33,6 +35,17 @@ public class LoaderDelegateForge implements LoaderDelegate
     public Env env()
     {
         return Env.FORGE;
+    }
+
+    @Override
+    public void assignEventHandlers()
+    {
+        iChunUtil.eventHandlerServer = new EventHandlerServerForge();
+
+        if(getSide().isClient())
+        {
+            iChunUtil.eventHandlerClient = new EventHandlerClientForge();
+        }
     }
 
     @Override

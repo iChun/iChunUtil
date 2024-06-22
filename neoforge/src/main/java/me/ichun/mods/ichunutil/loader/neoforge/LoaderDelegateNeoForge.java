@@ -1,9 +1,11 @@
 package me.ichun.mods.ichunutil.loader.neoforge;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
+import me.ichun.mods.ichunutil.loader.neoforge.client.EventHandlerClientNeoForge;
 import me.ichun.mods.ichunutil.loader.neoforge.config.ConfigHandlerNeoForge;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -30,6 +32,17 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     public Env env()
     {
         return Env.NEOFORGE;
+    }
+
+    @Override
+    public void assignEventHandlers()
+    {
+        iChunUtil.eventHandlerServer = new EventHandlerServerNeoForge();
+
+        if(getSide().isClient())
+        {
+            iChunUtil.eventHandlerClient = new EventHandlerClientNeoForge();
+        }
     }
 
     @Override

@@ -12,7 +12,5 @@ public class LoaderFabric extends iChunUtil
         modProxy = this;
 
         ServerListenerFabric.init();
-
-        eventHandlerServer = new EventHandlerServerFabric();
     }
 }

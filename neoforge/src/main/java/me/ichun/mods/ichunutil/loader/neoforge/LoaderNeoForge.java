@@ -21,16 +21,12 @@ public class LoaderNeoForge extends iChunUtil
         {
             initClient(modEventBus);
         }
-
-        eventHandlerServer = new EventHandlerServerNeoForge();
     }
 
     @OnlyIn(Dist.CLIENT)
     private void initClient(IEventBus modEventBus)
     {
         ResourceHelper.init();
-
-        eventHandlerClient = new EventHandlerClientNeoForge();
 
         configClient = d().registerConfig(new ConfigClient(), modEventBus); // configs cannot be initialised in setup stage.
     }

@@ -1,9 +1,11 @@
 package me.ichun.mods.ichunutil.loader.fabric;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
+import me.ichun.mods.ichunutil.loader.fabric.client.EventHandlerClientFabric;
 import me.ichun.mods.ichunutil.loader.fabric.config.ConfigHandlerFabric;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.api.EnvType;
@@ -23,6 +25,17 @@ public class LoaderDelegateFabric implements LoaderDelegate
     public Env env()
     {
         return Env.FABRIC;
+    }
+
+    @Override
+    public void assignEventHandlers()
+    {
+        iChunUtil.eventHandlerServer = new EventHandlerServerFabric();
+
+        if(getSide().isClient())
+        {
+            iChunUtil.eventHandlerClient = new EventHandlerClientFabric();
+        }
     }
 
     @Override

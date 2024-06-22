@@ -55,9 +55,13 @@ public interface LoaderDelegate
         {
             throw new RuntimeException("Unable to create Loader Delegate of type " + clz.getName() + "!", e);
         }
+
+        iChunUtil.d().assignEventHandlers();
     }
 
     Env env();
+
+    void assignEventHandlers();
 
     default boolean isDevEnvironment() //Fabric has a flag that defines dev env
     {
