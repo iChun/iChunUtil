@@ -54,7 +54,7 @@ if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that de
 
 		gradle.ext.projectSubMods = []
 		file("${rootDir}/..").eachDir {
-			if(!it.equals(rootDir) && !it.name.equals("Temp") && !excludedMods.contains(it.name)) {
+			if(!it.equals(rootDir) && !it.name.equals("Temp") && !excludedMods.contains(it.name) && file("${rootDir}/../${it.name}/build.gradle").exists() && file("${rootDir}/../${it.name}/build.cmd").exists()) {
 				println "Including ${it.name} in build!"
 				gradle.ext.projectSubMods.add(it.name)
 			}
