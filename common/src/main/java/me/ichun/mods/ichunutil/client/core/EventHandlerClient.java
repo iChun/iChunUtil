@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.core;
 
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -10,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public abstract class EventHandlerClient
@@ -20,45 +20,28 @@ public abstract class EventHandlerClient
     /**
      * Convenience methods to listen to client tick - regularly used
      */
-    protected final ArrayList<Consumer<Minecraft>> clientTickStartListeners = new ArrayList<>();
-    protected final ArrayList<Consumer<Minecraft>> clientTickEndListeners = new ArrayList<>();
+    private EventListener<Minecraft> clientTickStartListener;
     public final void registerClientTickStartListener(Consumer<Minecraft> consumer)
     {
-        if(clientTickStartListeners.isEmpty())
+        if(clientTickStartListener == null)
         {
-            registerAsClientTickStartListener();
+            clientTickStartListener = new EventListener<>(this::registerAsClientTickStartListener);
         }
-        clientTickStartListeners.add(consumer);
+        clientTickStartListener.register(consumer);
     }
+    protected abstract void registerAsClientTickStartListener(EventListener<Minecraft> eventListener);
 
+    private EventListener<Minecraft> clientTickEndListener;
     public final void registerClientTickEndListener(Consumer<Minecraft> consumer)
     {
-        if(clientTickEndListeners.isEmpty())
+        if(clientTickEndListener == null)
         {
-            registerAsClientTickEndListener();
+            clientTickEndListener = new EventListener<>(this::registerAsClientTickEndListener);
         }
-        clientTickEndListeners.add(consumer);
+        clientTickEndListener.register(consumer);
     }
 
-    protected abstract void registerAsClientTickStartListener();
-
-    protected abstract void registerAsClientTickEndListener();
-
-    protected void onClientTickEventStart()
-    {
-        for(Consumer<Minecraft> listener : clientTickStartListeners)
-        {
-            listener.accept(Minecraft.getInstance());
-        }
-    }
-
-    protected void onClientTickEventEnd()
-    {
-        for(Consumer<Minecraft> listener : clientTickEndListeners)
-        {
-            listener.accept(Minecraft.getInstance());
-        }
-    }
+    protected abstract void registerAsClientTickEndListener(EventListener<Minecraft> eventListener);
 
     /**
      * Fires an event for when the client receives a system message

@@ -2,10 +2,13 @@ package me.ichun.mods.ichunutil.loader.neoforge.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.neoforge.event.client.ClientSystemChatEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
@@ -47,15 +50,15 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     }
 
     @Override
-    protected void registerAsClientTickStartListener()
+    protected void registerAsClientTickStartListener(EventListener<Minecraft> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(event -> this.onClientTickEventStart());
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
     }
 
     @Override
-    protected void registerAsClientTickEndListener()
+    protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(event -> this.onClientTickEventEnd());
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
     }
 
     @Override

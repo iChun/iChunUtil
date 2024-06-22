@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.common.core;
 
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -15,25 +15,17 @@ public abstract class EventHandlerServer
     /**
      * Convenience methods to listen to player tick - regularly used
      */
-    protected final ArrayList<Consumer<Player>> playerTickEndListeners = new ArrayList<>();
+    private EventListener<Player> playerTickEndListener;
     public final void registerPlayerTickEndListener(Consumer<Player> consumer)
     {
-        if(playerTickEndListeners.isEmpty())
+        if(playerTickEndListener == null)
         {
-            registerAsPlayerTickEndListener();
+            playerTickEndListener = new EventListener<>(this::registerAsPlayerTickEndListener);
         }
-        playerTickEndListeners.add(consumer);
+        playerTickEndListener.register(consumer);
     }
 
-    public abstract void registerAsPlayerTickEndListener();
-
-    protected void onPlayerTickEventEnd(Player player)
-    {
-        for(Consumer<Player> listener : playerTickEndListeners)
-        {
-            listener.accept(player);
-        }
-    }
+    public abstract void registerAsPlayerTickEndListener(EventListener<Player> eventListener);
 
     public void firePlayerTickEndEvent(Player player){}
 

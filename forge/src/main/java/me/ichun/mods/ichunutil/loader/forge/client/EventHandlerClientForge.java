@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.loader.forge.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.forge.event.client.ClientSystemChatEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class EventHandlerClientForge extends EventHandlerClient
@@ -46,15 +49,15 @@ public class EventHandlerClientForge extends EventHandlerClient
     }
 
     @Override
-    protected void registerAsClientTickStartListener()
+    protected void registerAsClientTickStartListener(EventListener<Minecraft> eventListener)
     {
-        MinecraftForge.EVENT_BUS.addListener(event -> this.onClientTickEventStart());
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
     }
 
     @Override
-    protected void registerAsClientTickEndListener()
+    protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
-        MinecraftForge.EVENT_BUS.addListener(event -> this.onClientTickEventEnd());
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.Post.class, event -> eventListener.trigger(Minecraft.getInstance()));
     }
 
     @Override

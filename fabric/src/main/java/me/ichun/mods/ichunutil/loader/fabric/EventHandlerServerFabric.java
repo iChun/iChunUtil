@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.loader.fabric;
 import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,9 +22,9 @@ public class EventHandlerServerFabric extends EventHandlerServer
     }
 
     @Override
-    public void registerAsPlayerTickEndListener()
+    public void registerAsPlayerTickEndListener(EventListener<Player> eventListener)
     {
-        FabricEvents.PLAYER_TICK_END.register(this::onPlayerTickEventEnd);
+        FabricEvents.PLAYER_TICK_END.register(eventListener::trigger);
     }
 
     @Override

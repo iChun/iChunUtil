@@ -1,10 +1,12 @@
 package me.ichun.mods.ichunutil.loader.fabric.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.fabric.event.client.FabricClientEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,15 +20,15 @@ public class EventHandlerClientFabric extends EventHandlerClient
     }
 
     @Override
-    protected void registerAsClientTickStartListener()
+    protected void registerAsClientTickStartListener(EventListener<Minecraft> eventListener)
     {
-        ClientTickEvents.START_CLIENT_TICK.register(client -> this.onClientTickEventStart());
+        ClientTickEvents.START_CLIENT_TICK.register(eventListener::trigger);
     }
 
     @Override
-    protected void registerAsClientTickEndListener()
+    protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> this.onClientTickEventEnd());
+        ClientTickEvents.END_CLIENT_TICK.register(eventListener::trigger);
     }
 
     @Override

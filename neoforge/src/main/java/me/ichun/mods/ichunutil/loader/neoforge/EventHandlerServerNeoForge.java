@@ -3,6 +3,9 @@ package me.ichun.mods.ichunutil.loader.neoforge;
 import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.loader.event.EventListener;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -19,13 +22,8 @@ public class EventHandlerServerNeoForge extends EventHandlerServer
     }
 
     @Override
-    public void registerAsPlayerTickEndListener()
+    public void registerAsPlayerTickEndListener(EventListener<Player> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(this::onPlayerTickEnd);
-    }
-
-    private void onPlayerTickEnd(PlayerTickEvent.Post event)
-    {
-        onPlayerTickEventEnd(event.getEntity());
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, PlayerTickEvent.Post.class, event -> eventListener.trigger(event.getEntity()));
     }
 }
