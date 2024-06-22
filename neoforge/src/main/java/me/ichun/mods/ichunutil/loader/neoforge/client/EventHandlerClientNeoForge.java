@@ -1,22 +1,18 @@
 package me.ichun.mods.ichunutil.loader.neoforge.client;
 
+import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
-import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
+import me.ichun.mods.ichunutil.loader.neoforge.event.client.ClientSystemChatEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.function.Consumer;
-
-public class LoaderDelegateClientNeoForge implements LoaderDelegateClient
+public class EventHandlerClientNeoForge extends EventHandlerClient
 {
-    public LoaderDelegateClientNeoForge(){}
-
     @Override
     @SuppressWarnings("all")
     public void registerKeyMapping(KeyMapping key, String... conflictContext)
@@ -51,41 +47,20 @@ public class LoaderDelegateClientNeoForge implements LoaderDelegateClient
     }
 
     @Override
-    public void registerClientTickStartListener(Consumer<Minecraft> consumer)
+    protected void registerAsClientTickStartListener()
     {
-        if(clientTickStartListeners.isEmpty() && clientTickEndListeners.isEmpty())
-        {
-            NeoForge.EVENT_BUS.addListener(this::onClientTickEventStart);
-        }
-        clientTickStartListeners.add(consumer);
+        NeoForge.EVENT_BUS.addListener(event -> this.onClientTickEventStart());
     }
 
     @Override
-    public void registerClientTickEndListener(Consumer<Minecraft> consumer)
+    protected void registerAsClientTickEndListener()
     {
-        if(clientTickStartListeners.isEmpty() && clientTickEndListeners.isEmpty())
-        {
-            NeoForge.EVENT_BUS.addListener(this::onClientTickEventEnd);
-        }
-        clientTickEndListeners.add(consumer);
+        NeoForge.EVENT_BUS.addListener(event -> this.onClientTickEventEnd());
     }
 
-    private final ArrayList<Consumer<Minecraft>> clientTickStartListeners = new ArrayList<>();
-    private final ArrayList<Consumer<Minecraft>> clientTickEndListeners = new ArrayList<>();
-
-    private void onClientTickEventStart(ClientTickEvent.Pre event)
+    @Override
+    public boolean fireClientHandleSystemMessage(Component message, boolean isOverlay)
     {
-        for(Consumer<Minecraft> listener : clientTickStartListeners)
-        {
-            listener.accept(Minecraft.getInstance());
-        }
-    }
-
-    private void onClientTickEventEnd(ClientTickEvent.Post event)
-    {
-        for(Consumer<Minecraft> listener : clientTickEndListeners)
-        {
-            listener.accept(Minecraft.getInstance());
-        }
+        return NeoForge.EVENT_BUS.post(new ClientSystemChatEvent(message, isOverlay)).isCanceled();
     }
 }

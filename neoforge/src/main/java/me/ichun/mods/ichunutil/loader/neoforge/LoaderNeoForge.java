@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.loader.neoforge;
 import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import me.ichun.mods.ichunutil.loader.neoforge.client.EventHandlerClientNeoForge;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -20,12 +21,16 @@ public class LoaderNeoForge extends iChunUtil
         {
             initClient(modEventBus);
         }
+
+        eventHandlerServer = new EventHandlerServerNeoForge();
     }
 
     @OnlyIn(Dist.CLIENT)
     private void initClient(IEventBus modEventBus)
     {
         ResourceHelper.init();
+
+        eventHandlerClient = new EventHandlerClientNeoForge();
 
         configClient = d().registerConfig(new ConfigClient(), modEventBus); // configs cannot be initialised in setup stage.
     }

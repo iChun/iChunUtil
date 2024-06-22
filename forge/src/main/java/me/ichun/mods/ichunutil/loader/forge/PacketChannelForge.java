@@ -44,7 +44,7 @@ public class PacketChannelForge extends PacketChannel
         channel.messageBuilder(PacketPayload.class)
             .codec(createCodec())
             .consumerNetworkThread((payload, context) -> {
-                Player player = context.isServerSide() ? context.getSender() : iChunUtil.dC().getPlayer();
+                Player player = context.isServerSide() ? context.getSender() : iChunUtil.eC().getPlayer();
                 payload.process(player).ifPresent(context::enqueueWork);
                 context.setPacketHandled(true);
             })

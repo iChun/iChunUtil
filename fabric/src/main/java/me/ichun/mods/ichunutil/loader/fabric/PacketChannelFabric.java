@@ -92,7 +92,7 @@ public class PacketChannelFabric extends PacketChannel
         public static void registerClientReceiver(ResourceLocation channelId)
         {
             ClientPlayNetworking.registerGlobalReceiver(new CustomPacketPayload.Type<PacketPayload>(channelId),
-                (payload, context) -> payload.process(iChunUtil.dC().getPlayer()).ifPresent(r -> context.client().execute(r)));
+                (payload, context) -> payload.process(iChunUtil.eC().getPlayer()).ifPresent(r -> context.client().execute(r)));
         }
     }
 }

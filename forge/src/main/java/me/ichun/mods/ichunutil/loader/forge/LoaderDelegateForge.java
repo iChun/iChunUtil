@@ -1,8 +1,6 @@
 package me.ichun.mods.ichunutil.loader.forge;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
-import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
@@ -87,16 +85,6 @@ public class LoaderDelegateForge implements LoaderDelegate
     }
 
     @Override
-    public void registerAddReloadListener(PreparableReloadListener reloadListener)
-    {
-        if(preparableReloadListeners.isEmpty())
-        {
-            MinecraftForge.EVENT_BUS.addListener(this::addReloadListenerEvent);
-        }
-        preparableReloadListeners.add(reloadListener);
-    }
-
-    @Override
     public Block registryBlock(ResourceLocation rl)
     {
         return ForgeRegistries.BLOCKS.getValue(rl);
@@ -109,13 +97,13 @@ public class LoaderDelegateForge implements LoaderDelegate
     }
 
     @Override
-    public EntityPersistentDataHandler getEntityPersistedDataHandler()
+    public void registerAddReloadListener(PreparableReloadListener reloadListener)
     {
-        if(iChunUtil.entityPersistentDataHandler == null)
+        if(preparableReloadListeners.isEmpty())
         {
-            iChunUtil.entityPersistentDataHandler = new EntityPersistentDataHandlerForge();
+            MinecraftForge.EVENT_BUS.addListener(this::addReloadListenerEvent);
         }
-        return iChunUtil.entityPersistentDataHandler;
+        preparableReloadListeners.add(reloadListener);
     }
 
     private final Set<PreparableReloadListener> preparableReloadListeners = new HashSet<>();

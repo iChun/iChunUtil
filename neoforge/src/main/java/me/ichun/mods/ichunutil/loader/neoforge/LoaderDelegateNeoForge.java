@@ -1,8 +1,6 @@
 package me.ichun.mods.ichunutil.loader.neoforge;
 
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
-import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
@@ -95,16 +93,6 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
             NeoForge.EVENT_BUS.addListener(this::addReloadListenerEvent);
         }
         preparableReloadListeners.add(reloadListener);
-    }
-
-    @Override
-    public EntityPersistentDataHandler getEntityPersistedDataHandler()
-    {
-        if(iChunUtil.entityPersistentDataHandler == null)
-        {
-            iChunUtil.entityPersistentDataHandler = new EntityPersistentDataHandlerNeoForge();
-        }
-        return iChunUtil.entityPersistentDataHandler;
     }
 
     private final Set<PreparableReloadListener> preparableReloadListeners = new HashSet<>();

@@ -6,9 +6,12 @@
   "refmap": "ichunutil.refmap.json",
   "mixins": [
     "EntityMixin",
+    "LevelStorageAccessAccessorMixin",
+    "MinecraftServerAccessorMixin",
     "PlayerMixin"
   ],
   "client": [
+    "client.ChatListenerMixin",
     "client.ClientLevelMixin",
     "client.LivingEntityRendererAccessorMixin",
     "client.LivingEntityRendererMixin"

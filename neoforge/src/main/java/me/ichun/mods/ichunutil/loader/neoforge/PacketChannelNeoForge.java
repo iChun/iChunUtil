@@ -47,7 +47,7 @@ public class PacketChannelNeoForge extends PacketChannel
         Player player;
         if(context.flow() == PacketFlow.CLIENTBOUND)
         {
-            player = iChunUtil.dC().getPlayer();
+            player = iChunUtil.eC().getPlayer();
         }
         else
         {

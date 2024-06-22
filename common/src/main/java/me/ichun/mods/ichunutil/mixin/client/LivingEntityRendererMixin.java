@@ -16,6 +16,6 @@ public abstract class LivingEntityRendererMixin
     @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
     private void ichunutil$render(LivingEntity entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci)
     {
-        iChunUtil.dC().fireLivingRenderPreEvent(entity, ((LivingEntityRenderer)(Object)this), partialTicks);
+        iChunUtil.eC().fireLivingRenderPreEvent(entity, ((LivingEntityRenderer)(Object)this), partialTicks);
     }
 }

@@ -13,6 +13,6 @@ public abstract class PlayerMixin
     @Inject(method = "tick", at = @At("TAIL"))
     private void ichunutil$tick(CallbackInfo ci)
     {
-        iChunUtil.d().firePlayerTickEndEvent(((Player)(Object)this));
+        iChunUtil.eS().firePlayerTickEndEvent(((Player)(Object)this));
     }
 }

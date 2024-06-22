@@ -55,9 +55,9 @@ public class KeyBind
         this.pressConsumer = pressConsumer;
         this.releaseConsumer = releaseConsumer;
 
-        iChunUtil.dC().registerKeyMapping(this.keyBinding, conflictContext);
+        iChunUtil.eC().registerKeyMapping(this.keyBinding, conflictContext);
 
-        iChunUtil.dC().registerClientTickEndListener(this::onClientTick);
+        iChunUtil.eC().registerClientTickEndListener(this::onClientTick);
     }
 
     public KeyBind setTickConsumer(Consumer<KeyBind> tickConsumer)

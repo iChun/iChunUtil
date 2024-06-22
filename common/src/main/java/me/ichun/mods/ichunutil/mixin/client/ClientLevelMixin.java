@@ -22,6 +22,6 @@ public abstract class ClientLevelMixin
     @Inject(method = "<init>", at = @At("TAIL"))
     private void ichunutil$constructor(ClientPacketListener pConnection, ClientLevel.ClientLevelData pClientLevelData, ResourceKey<Level> pDimension, Holder<DimensionType> pDimensionType, int pViewDistance, int pServerSimulationDistance, Supplier<ProfilerFiller> pProfiler, LevelRenderer pLevelRenderer, boolean pIsDebug, long pBiomeZoomSeed, CallbackInfo ci)
     {
-        iChunUtil.dC().fireClientLevelLoad(((ClientLevel)(Object)this));
+        iChunUtil.eC().fireClientLevelLoad(((ClientLevel)(Object)this));
     }
 }

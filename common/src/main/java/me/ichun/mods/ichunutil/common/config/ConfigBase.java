@@ -332,12 +332,12 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     {
         String suffix = comment ? ".desc" : ".name";
         String key = comment ? category.commentKey : "config." + getModId() + ".cat." + category.name + suffix;
-        String localised = iChunUtil.dC().getLocalisedString(key);
+        String localised = iChunUtil.eC().getLocalisedString(key);
         if(localised.equals(key)) //it is not localised
         {
             if(DEFAULT_CATEGORY_COMMENTS.containsKey(category.name)) //iChunUtil has this as a default category
             {
-                return iChunUtil.dC().getLocalisedString("config.ichunutil.cat." + category.name + suffix);
+                return iChunUtil.eC().getLocalisedString("config.ichunutil.cat." + category.name + suffix);
             }
 
             if(comment)
@@ -363,7 +363,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     {
         String suffix = comment ? ".desc" : ".name";
         String key = comment ? entry.commentKey : "config." + getModId() + ".prop." + entry.field.getName() + suffix;
-        String localised = iChunUtil.dC().getLocalisedString(key);
+        String localised = iChunUtil.eC().getLocalisedString(key);
         if(localised.equals(key)) //it is not localised
         {
             if(comment)

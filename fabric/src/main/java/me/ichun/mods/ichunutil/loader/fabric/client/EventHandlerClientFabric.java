@@ -1,21 +1,16 @@
 package me.ichun.mods.ichunutil.loader.fabric.client;
 
-import me.ichun.mods.ichunutil.loader.client.LoaderDelegateClient;
+import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.loader.fabric.event.client.FabricClientEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.function.Consumer;
-
-public class LoaderDelegateClientFabric implements LoaderDelegateClient
+public class EventHandlerClientFabric extends EventHandlerClient
 {
-    public LoaderDelegateClientFabric(){}
-
     @Override
     public void registerKeyMapping(KeyMapping key, String...conflictContext)
     {
@@ -23,15 +18,15 @@ public class LoaderDelegateClientFabric implements LoaderDelegateClient
     }
 
     @Override
-    public void registerClientTickStartListener(Consumer<Minecraft> consumer)
+    protected void registerAsClientTickStartListener()
     {
-        ClientTickEvents.START_CLIENT_TICK.register(consumer::accept);
+        ClientTickEvents.START_CLIENT_TICK.register(client -> this.onClientTickEventStart());
     }
 
     @Override
-    public void registerClientTickEndListener(Consumer<Minecraft> consumer)
+    protected void registerAsClientTickEndListener()
     {
-        ClientTickEvents.END_CLIENT_TICK.register(consumer::accept);
+        ClientTickEvents.END_CLIENT_TICK.register(client -> this.onClientTickEventEnd());
     }
 
     @Override
