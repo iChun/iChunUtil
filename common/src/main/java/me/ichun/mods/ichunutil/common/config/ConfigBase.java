@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public abstract class ConfigBase //Configs should be created in the constructor of the mod class
-        implements Comparable<ConfigBase>
+    implements Comparable<ConfigBase>
 {
     @Prop //this annotation is here because I am lazy. Never move this field/annotation combo. EVER. EVER EVER. EVER EVER EVER. This provides the default Prop settings.
     public static final HashMap<String, String> DEFAULT_CATEGORY_COMMENTS = Util.make(new HashMap<>(), map -> {
@@ -326,6 +326,8 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         }
     }
 
+    @Nullable
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public String getLocalisedName(Category category, boolean comment)
     {
         String suffix = comment ? ".desc" : ".name";
@@ -356,6 +358,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     }
 
     @Nullable
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public String getLocalisedName(Category.Entry entry, boolean comment)
     {
         String suffix = comment ? ".desc" : ".name";
@@ -397,7 +400,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     }
 
     public static class Category
-            implements Comparable<Category>
+        implements Comparable<Category>
     {
         @NotNull
         public final String name;
@@ -435,7 +438,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         }
 
         public static class Entry
-                implements Comparable<Entry>
+            implements Comparable<Entry>
         {
             @NotNull
             public final Field field;

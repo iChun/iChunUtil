@@ -99,10 +99,10 @@ dependencies {
                             compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api"
                             //add the api dep if it exists
                         }
-                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
                         //add the common dep
                         compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
                         //add the modloader specific dep (fabric for common and api)
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
 
                         if ("${mod}".toString().equals("iChunUtil")) {
                             implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
@@ -128,7 +128,7 @@ dependencies {
             compileOnly project(':common')
         }
     }
-    if(isFabric)
+    if (isFabric)
     {
         // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
 
@@ -157,7 +157,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.withType(ProcessResources).configureEach {
-    if("${project.mod_license}".toString().equals("GNU Lesser General Public License v3.0")) {
+    if ("${project.mod_license}".toString().equals("GNU Lesser General Public License v3.0")) {
         from(project.rootDir){
             include("COPYING")
             include("COPYING.LESSER")
@@ -229,9 +229,23 @@ if (hasApi && isApi || isCommon) {
 // ===================================================
 
 //IntelliJ doesn't like it when we have combined source sets... We only need this to build and we don't build using the IDE anyway.
-if(!isIDE) {
+if (!isIDE) {
     sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
     sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
+}
+
+if (!isFabric) {
+    // If gradle developers could see me now they'd be rolling in their graves
+    tasks.register("processSource", Sync) {
+        from sourceSets.main.java
+        into "${buildDir}/retokened-${project.name}"
+        def output = isForge ? "@net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)" : "@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)"
+        filter(org.apache.tools.ant.filters.ReplaceTokens, beginToken: '@', endToken: ')', tokens:["net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT": "${output}".toString()])
+    }
+
+    compileJava {
+        source = processSource.outputs
+    }
 }
 
 jar {
@@ -252,7 +266,7 @@ if (hasApi) {
         if (project.hasProperty('key_store')) {
             doLast {
                 def jarFile = file("${apiJar.archivePath}")
-                if(jarFile.exists()) {
+                if (jarFile.exists()) {
                     ant.signjar(
                             jar: jarFile,
                             destDir: "${layout.buildDirectory.dir("libs").get()}",
@@ -292,7 +306,7 @@ if (project.hasProperty("key_store")) {
     def signJar = tasks.register("signJar") {
         doLast {
             def jarFile = isFabric ? file("${remapJar.archivePath}") : file("${jar.archivePath}")
-            if(jarFile.exists()) {
+            if (jarFile.exists()) {
                 ant.signjar(
                         jar: jarFile,
                         destDir: "${layout.buildDirectory.dir("libs").get()}",
@@ -307,7 +321,7 @@ if (project.hasProperty("key_store")) {
         }
 
         //The "reobfJar" task doesn't exist at configuration stage in Forge for some reason so we tell gradle to run signJar AFTER reobfJar but is finalized by jar
-        if(isForge) {
+        if (isForge) {
             mustRunAfter "reobfJar"
         }
     }
