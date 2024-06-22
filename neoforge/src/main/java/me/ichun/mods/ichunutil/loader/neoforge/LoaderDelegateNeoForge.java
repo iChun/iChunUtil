@@ -5,13 +5,16 @@ import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
+import me.ichun.mods.ichunutil.loader.Side;
 import me.ichun.mods.ichunutil.loader.neoforge.config.ConfigHandlerNeoForge;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -19,6 +22,7 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class LoaderDelegateNeoForge implements LoaderDelegate
 {
@@ -54,9 +58,15 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     }
 
     @Override
-    public boolean isOnClient()
+    public Side getSide()
     {
-        return FMLEnvironment.dist.isClient();
+        return FMLEnvironment.dist.isDedicatedServer() ? Side.SERVER : Side.CLIENT;
+    }
+
+    @Override
+    public Side getEffectiveSide()
+    {
+        return EffectiveSide.get().isServer() ? Side.SERVER : Side.CLIENT;
     }
 
     @Override
@@ -69,6 +79,12 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     public boolean isModLoaded(String modId)
     {
         return ModList.get().isLoaded(modId);
+    }
+
+    @Override
+    public boolean sendIMCMessage(String ourId, String modId, String sub, Supplier<?> thing)
+    {
+        return InterModComms.sendTo(ourId, modId, sub, thing);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ConfigHandlerForge extends ConfigHandler
 {
     static
     {
-        if(iChunUtil.d().isOnClient())
+        if(iChunUtil.d().getSide().isClient())
         {
             MinecraftForge.EVENT_BUS.addListener(ConfigHandlerForge::onPlayerLoggedInEvent);
             MinecraftForge.EVENT_BUS.addListener(ConfigHandlerForge::onPlayerLoggedOutEvent);

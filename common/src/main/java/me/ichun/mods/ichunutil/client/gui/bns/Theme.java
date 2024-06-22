@@ -100,7 +100,7 @@ public class Theme
             clz = clz.getSuperclass();
         }
 
-        Block block = iChunUtil.d().getBlockFromRegistry(new ResourceLocation(INSTANCE.workspaceBlock));
+        Block block = iChunUtil.d().registryBlock(new ResourceLocation(INSTANCE.workspaceBlock));
         if(block != null)
         {
             INSTANCE.block = block;

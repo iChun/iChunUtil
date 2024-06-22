@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -55,7 +54,8 @@ public class LoaderDelegateClientForge implements LoaderDelegateClient
     {
         if(clientTickStartListeners.isEmpty() && clientTickEndListeners.isEmpty())
         {
-            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
+            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEventStart);
+            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEventEnd);
         }
         clientTickStartListeners.add(consumer);
     }
@@ -65,7 +65,8 @@ public class LoaderDelegateClientForge implements LoaderDelegateClient
     {
         if(clientTickStartListeners.isEmpty() && clientTickEndListeners.isEmpty())
         {
-            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEvent);
+            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEventStart);
+            MinecraftForge.EVENT_BUS.addListener(this::onClientTickEventEnd);
         }
         clientTickEndListeners.add(consumer);
     }
@@ -73,22 +74,21 @@ public class LoaderDelegateClientForge implements LoaderDelegateClient
     private final ArrayList<Consumer<Minecraft>> clientTickStartListeners = new ArrayList<>();
     private final ArrayList<Consumer<Minecraft>> clientTickEndListeners = new ArrayList<>();
 
-    private void onClientTickEvent(ClientTickEvent event)
+    private void onClientTickEventStart(ClientTickEvent.Pre event)
     {
         Minecraft mc = Minecraft.getInstance();
-        if(event.phase == TickEvent.Phase.START)
+        for(Consumer<Minecraft> listener : clientTickStartListeners)
         {
-            for(Consumer<Minecraft> listener : clientTickStartListeners)
-            {
-                listener.accept(mc);
-            }
+            listener.accept(mc);
         }
-        else
+    }
+
+    private void onClientTickEventEnd(ClientTickEvent.Post event)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        for(Consumer<Minecraft> listener : clientTickEndListeners)
         {
-            for(Consumer<Minecraft> listener : clientTickEndListeners)
-            {
-                listener.accept(mc);
-            }
+            listener.accept(mc);
         }
     }
 }

@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import me.ichun.mods.ichunutil.loader.LoaderDelegate;
+import me.ichun.mods.ichunutil.loader.Side;
 import me.ichun.mods.ichunutil.loader.fabric.config.ConfigHandlerFabric;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.api.EnvType;
@@ -16,6 +17,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.player.Player;
 
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.function.Supplier;
 
 public class LoaderDelegateFabric implements LoaderDelegate
 {
@@ -53,9 +56,22 @@ public class LoaderDelegateFabric implements LoaderDelegate
     }
 
     @Override
-    public boolean isOnClient()
+    public Side getSide()
     {
-        return FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
+        return FabricLoader.getInstance().getEnvironmentType().equals(EnvType.SERVER) ? Side.SERVER : Side.CLIENT;
+    }
+
+    @Override
+    public Side getEffectiveSide()
+    {
+        return !currentEffectiveSideIsClient() ? Side.SERVER : Side.CLIENT;
+    }
+
+    private boolean currentEffectiveSideIsClient()
+    {
+        final Thread thread = Thread.currentThread();
+        final ThreadGroup group = thread.getThreadGroup();
+        return !(group.getName().toLowerCase(Locale.ROOT).contains("server") || thread.getName().toLowerCase(Locale.ROOT).contains("server"));
     }
 
     @Override
@@ -68,6 +84,13 @@ public class LoaderDelegateFabric implements LoaderDelegate
     public boolean isModLoaded(String modId)
     {
         return FabricLoader.getInstance().isModLoaded(modId);
+    }
+
+    @Override
+    public boolean sendIMCMessage(String ourId, String modId, String sub, Supplier<?> thing)
+    {
+        // Fabric doesn't have IMC
+        return false;
     }
 
     @Override

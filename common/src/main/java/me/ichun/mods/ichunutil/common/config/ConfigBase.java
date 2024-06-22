@@ -69,7 +69,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
             fileName = getModId() + "/" + fileName;
         }
 
-        if(iChunUtil.d().isOnClient())
+        if(iChunUtil.d().getSide().isClient())
         {
             registerGuiElementOverrides();
         }

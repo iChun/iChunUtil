@@ -22,7 +22,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler
 {
     static
     {
-        if(iChunUtil.d().isOnClient())
+        if(iChunUtil.d().getSide().isClient())
         {
             NeoForge.EVENT_BUS.addListener(ConfigHandlerNeoForge::onPlayerLoggedInEvent);
             NeoForge.EVENT_BUS.addListener(ConfigHandlerNeoForge::onPlayerLoggedOutEvent);

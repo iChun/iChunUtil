@@ -10,12 +10,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public interface LoaderDelegate
 {
@@ -59,7 +61,7 @@ public interface LoaderDelegate
             throw new RuntimeException("Unable to create Loader Delegate of type " + clz.getName() + "!", e);
         }
 
-        if(iChunUtil.d().isOnClient())
+        if(iChunUtil.d().getSide().isClient())
         {
             LoaderDelegateClient.assignLoaderDelegateClient();
         }
@@ -78,23 +80,30 @@ public interface LoaderDelegate
 
     <T extends ConfigBase> T registerConfig(T config, Object...params);
 
-    boolean isOnClient();
+    Side getSide();
 
-    default boolean isOnDedicatedServer()
-    {
-        return !isOnClient();
-    }
+    Side getEffectiveSide();
 
     MinecraftServer getServer();
 
     boolean isModLoaded(String modId);
 
+    boolean sendIMCMessage(String ourId, String modId, String sub, Supplier<?> thing);
+
     void registerAddReloadListener(PreparableReloadListener reloadListener);
 
-    default Block getBlockFromRegistry(ResourceLocation rl) //Forge uses its own registries, else uses the built in ones
+    //Forge uses its own registries, else uses the built in ones
+    default Block registryBlock(ResourceLocation rl)
     {
         return BuiltInRegistries.BLOCK.get(rl);
     }
+
+    default SoundEvent registrySoundEvents(ResourceLocation rl)
+    {
+        return BuiltInRegistries.SOUND_EVENT.get(rl);
+    }
+
+    //END registry block
 
     EntityPersistentDataHandler getEntityPersistedDataHandler();
 
