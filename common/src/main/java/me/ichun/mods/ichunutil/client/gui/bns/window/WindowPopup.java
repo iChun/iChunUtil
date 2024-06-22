@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class WindowPopup extends Window<Workspace>
+public class WindowPopup extends Window<Workspace, WindowPopup.ViewPopup>
 {
     //title will be localised, text won't.
     public WindowPopup(Workspace parent, String title, @Nullable Consumer<Workspace> callback, String...text)

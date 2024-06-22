@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class View<P extends Window<?>> extends Fragment<P>
+public abstract class View<P extends Window<?,?>> extends Fragment<P>
 {
     public ArrayList<Element<?>> elements = new ArrayList<>();
 

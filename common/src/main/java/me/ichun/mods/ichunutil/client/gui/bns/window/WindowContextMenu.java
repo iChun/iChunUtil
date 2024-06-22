@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class WindowContextMenu<M extends Workspace> extends Window<M>
+public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
 {
     private final ElementList<?> list;
     private int minWidth = 1;

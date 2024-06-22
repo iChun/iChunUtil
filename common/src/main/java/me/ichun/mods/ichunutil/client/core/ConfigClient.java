@@ -48,12 +48,12 @@ public class ConfigClient extends ConfigBase
     public void registerGuiElementOverrides()
     {
         guiElementOverrides.put("iChunUtil:bnsTheme", (entry, item) -> {
-            Field field = entry.entry.field;
+            Field field = entry.field;
             field.setAccessible(true);
             Object o;
             try
             {
-                o = field.get(entry.config);
+                o = field.get(this);
             }
             catch(IllegalAccessException e)
             {
@@ -85,7 +85,7 @@ public class ConfigClient extends ConfigBase
                     {
                         try
                         {
-                            field.set(entry.config, contextMenu.text);
+                            field.set(this, contextMenu.text);
                         }
                         catch(IllegalAccessException ignored){}
                     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.moandjiezana.toml.Toml;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
-import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -40,7 +39,8 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
     public final TreeSet<Category> categories = new TreeSet<>(Comparator.naturalOrder());
 
-    public final HashMap<String, BiFunction<WorkspaceConfigs.ConfigInfo.EntryLocalised, ElementList.Item<?>, Boolean>> guiElementOverrides = new HashMap<>();
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+    public final HashMap<String, BiFunction<Category.Entry, ElementList.Item<?>, Boolean>> guiElementOverrides = new HashMap<>();
 
     @NotNull
     private transient String fileName;
@@ -392,7 +392,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         {
             return Integer.compare(getConfigType().ordinal(), o.getConfigType().ordinal());
         }
-        return getConfigName().compareTo(o.getConfigName());
+        return getConfigName().toLowerCase(Locale.ROOT).compareTo(o.getConfigName().toLowerCase(Locale.ROOT));
     }
 
     private static boolean isValidField(Field field)
@@ -412,7 +412,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
         public final boolean showInGui;
 
-        private final TreeSet<Entry> entries = new TreeSet<>(Comparator.naturalOrder());
+        private final LinkedHashSet<Entry> entries = new LinkedHashSet<>();
 
         public Category(@NotNull String name, @Nullable String comment, @NotNull String commentKey, boolean showInGui)
         {
@@ -427,7 +427,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
             entries.add(new Entry(f, props, comment, commentKey, defaultValue));
         }
 
-        public TreeSet<Entry> getEntries()
+        public LinkedHashSet<Entry> getEntries()
         {
             return entries;
         }

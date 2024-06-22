@@ -29,6 +29,7 @@
 
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.configs": "Configs",
+  "gui.ichunutil.configs.needsRestart": "Some configs changed require a restart to take effect!",
 
   "gui.ichunutil.configs.noEditingServerConfig": "You can only edit a SERVER config in a single player world environment!",
 

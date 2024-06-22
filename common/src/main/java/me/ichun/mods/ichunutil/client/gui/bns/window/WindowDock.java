@@ -4,6 +4,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Rectangle;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class WindowDock<M extends Workspace> extends Window<M>
+public class WindowDock<M extends Workspace> extends Window<M, View<?>>
 {
     //TODO change dock behaviour - window reference is kept, we take the views and render that instead
 
     public LinkedHashMap<ArrayListHolder, Constraint.Property.Type> docked = new LinkedHashMap<>();
-    public HashMap<Window<?>, WindowSize> dockedOriSize = new HashMap<>();
+    public HashMap<Window<?,?>, WindowSize> dockedOriSize = new HashMap<>();
     public HashSet<Constraint.Property.Type> disabledDocks = new HashSet<>();
 
     public WindowDock(M parent)
@@ -82,7 +83,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         List<ArrayListHolder> keys = new ArrayList<>(docked.keySet());
         for(int i = keys.size() - 1; i >= 0; i--)
         {
-            ArrayList<Window<?>> windows = keys.get(i).windows;
+            ArrayList<Window<?,?>> windows = keys.get(i).windows;
             windows.forEach(window -> window.render(graphics, mouseX, mouseY, partialTick));
         }
     }
@@ -123,7 +124,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
     {
-        Window<?> windowOver = getWindowOver(mouseX, mouseY);
+        Window<?,?> windowOver = getWindowOver(mouseX, mouseY);
         if(windowOver != null)
         {
             return windowOver.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -147,7 +148,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
             Fragment<?> fragment = this;
             for(ArrayListHolder h : this.docked.keySet())
             {
-                for(Window<?> window : h.windows)
+                for(Window<?,?> window : h.windows)
                 {
                     Fragment<?> fragment1 = window.getTopMostFragment(mouseX, mouseY);
                     if(fragment1 != null)
@@ -161,7 +162,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return null;
     }
 
-    public boolean isDocked(Window<?> window)
+    public boolean isDocked(Window<?,?> window)
     {
         for(ArrayListHolder h : docked.keySet())
         {
@@ -195,7 +196,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
     {
         if(dockStack)
         {
-            Window<?> window = getWindowOver(mouseX, mouseY);
+            Window<?,?> window = getWindowOver(mouseX, mouseY);
             if(window != null && window.canDockStack())
             {
                 return new DockInfo(window, getAnchorType(window));
@@ -208,7 +209,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         double bottom = height;
         for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
-            for(Window<?> key : e.getKey().windows)
+            for(Window<?,?> key : e.getKey().windows)
             {
                 Constraint.Property.Type value = e.getValue();
                 switch(value)
@@ -276,7 +277,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return null;
     }
 
-    public boolean addToDocked(Window<?> dockedWin, Window<?> window)
+    public boolean addToDocked(Window<?,?> dockedWin, Window<?,?> window)
     {
         for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
@@ -285,15 +286,15 @@ public class WindowDock<M extends Workspace> extends Window<M>
                 dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
 
                 Constraint.Property.Type dockType = e.getValue();
-                ArrayList<Window<?>> dockStack = e.getKey().windows;
-                Window<?> lastInStack = dockStack.get(dockStack.size() - 1); // we stack downwards and to the right.
+                ArrayList<Window<?,?>> dockStack = e.getKey().windows;
+                Window<?,?> lastInStack = dockStack.get(dockStack.size() - 1); // we stack downwards and to the right.
 
                 int maxWidth = -1;
                 int maxHeight = -1;
                 if(dockType.getAxis().isHorizontal())
                 {
                     maxWidth = window.width;
-                    for(Window<?> window1 : dockStack)
+                    for(Window<?,?> window1 : dockStack)
                     {
                         if(window1.width > maxWidth)
                         {
@@ -304,7 +305,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
                 else if(dockType.getAxis().isVertical())
                 {
                     maxHeight = window.height;
-                    for(Window<?> window1 : dockStack)
+                    for(Window<?,?> window1 : dockStack)
                     {
                         if(window1.height > maxHeight)
                         {
@@ -358,7 +359,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
                 e.getKey().windows.add(window);
                 window.setConstraint(constraint);
 
-                for(Window<?> window1 : dockStack)
+                for(Window<?,?> window1 : dockStack)
                 {
                     if(maxWidth >= 0)
                     {
@@ -380,7 +381,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return false;
     }
 
-    public void addToDock(Window<?> window, Constraint.Property.Type type)
+    public void addToDock(Window<?,?> window, Constraint.Property.Type type)
     {
         dockedOriSize.put(window, new WindowSize(window.constraint, window.getLeft(), window.getTop(), window.getWidth(), window.getHeight()));
 
@@ -406,7 +407,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
             }
         }
 
-        ArrayList<Window<?>> windows = new ArrayList<>();
+        ArrayList<Window<?,?>> windows = new ArrayList<>();
         windows.add(window);
         docked.put(new WindowDock.ArrayListHolder(windows), type);
         window.setConstraint(constraint);
@@ -417,7 +418,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         }
     }
 
-    public void removeFromDock(Window<?> window)
+    public void removeFromDock(Window<?,?> window)
     {
         boolean redoConstraints = false;
 
@@ -425,7 +426,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         while(iterator.hasNext())
         {
             Map.Entry<ArrayListHolder, Constraint.Property.Type> e = iterator.next();
-            ArrayList<Window<?>> windows = e.getKey().windows;
+            ArrayList<Window<?,?>> windows = e.getKey().windows;
 
             //redo the constraints
             EnumMap<Constraint.Property.Type, Constraint.Property> anchors = new EnumMap<>(Constraint.Property.Type.class);
@@ -468,7 +469,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
                 //Update the constraints
                 for(int i = 0; i < windows.size(); i++)
                 {
-                    Window<?> dockWindow = windows.get(i);
+                    Window<?,?> dockWindow = windows.get(i);
                     if(i == 0)
                     {
                         Constraint constraint = new Constraint(dockWindow);
@@ -494,7 +495,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
                     }
                     else
                     {
-                        Window<?> lastInStack = windows.get(i - 1); // we stack downwards and to the right.
+                        Window<?,?> lastInStack = windows.get(i - 1); // we stack downwards and to the right.
 
                         Constraint constraint = new Constraint(dockWindow);
                         Constraint.Property.Type[] values = Constraint.Property.Type.values();
@@ -540,7 +541,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
                     }
                 }
 
-                for(Window<?> window1 : windows)
+                for(Window<?,?> window1 : windows)
                 {
                     window1.constraint.apply();
                     if(getWorkspace().hasInit())
@@ -585,15 +586,15 @@ public class WindowDock<M extends Workspace> extends Window<M>
     }
 
     @Nullable
-    public Rectangle getWindowAnchor(Window<?> window, Constraint.Property.Type type) //gets the element to anchor on based on type
+    public Rectangle getWindowAnchor(Window<?,?> window, Constraint.Property.Type type) //gets the element to anchor on based on type
     {
         return window.constraint.get(type).getReference();
     }
 
     @Nullable
-    public Constraint.Property getStackAnchor(ArrayList<Window<?>> stack, Constraint.Property.Type type) //gets the element to anchor on based on type
+    public Constraint.Property getStackAnchor(ArrayList<Window<?,?>> stack, Constraint.Property.Type type) //gets the element to anchor on based on type
     {
-        for(Window<?> window : stack)
+        for(Window<?,?> window : stack)
         {
             Constraint.Property anchor = window.constraint.get(type);
             if(anchor != Constraint.Property.NONE && !stack.contains(anchor.getReference())) //Window extends Rectangle
@@ -604,7 +605,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return null;
     }
 
-    public Constraint.Property.Type getAnchorType(Window<?> window)
+    public Constraint.Property.Type getAnchorType(Window<?,?> window)
     {
         for(Map.Entry<ArrayListHolder, Constraint.Property.Type> e : docked.entrySet())
         {
@@ -616,11 +617,11 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return null;
     }
 
-    public Window<?> getWindowOver(double mouseX, double mouseY)
+    public Window<?,?> getWindowOver(double mouseX, double mouseY)
     {
         for(ArrayListHolder h : docked.keySet())
         {
-            for(Window<?> window : h.windows)
+            for(Window<?,?> window : h.windows)
             {
                 if(window.isMouseOver(mouseX, mouseY))
                 {
@@ -632,7 +633,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
     }
 
     @NotNull
-    public ArrayList<Window<?>> getDockStack(Window<?> window)
+    public ArrayList<Window<?,?>> getDockStack(Window<?,?> window)
     {
         for(ArrayListHolder h : docked.keySet())
         {
@@ -644,7 +645,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
         return new ArrayList<>();
     }
 
-    public <M extends Workspace> void edgeGrab(Window<M> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
+    public void edgeGrab(Window<?,?> draggedWindow, double mouseX, double mouseY, EdgeGrab edgeGrab)
     {
         Constraint.Property.Type anchorType = getAnchorType(draggedWindow);
         if(anchorType != null && (anchorType.getAxis().isHorizontal() && edgeGrab.left && draggedWindow.constraint.get(Constraint.Property.Type.LEFT) == Constraint.Property.NONE ||
@@ -653,11 +654,11 @@ public class WindowDock<M extends Workspace> extends Window<M>
             anchorType.getAxis().isVertical() && edgeGrab.bottom && draggedWindow.constraint.get(Constraint.Property.Type.BOTTOM) == Constraint.Property.NONE
         ))
         {
-            ArrayList<Window<?>> dockStack = getDockStack(draggedWindow);
+            ArrayList<Window<?,?>> dockStack = getDockStack(draggedWindow);
 
             for(int i = 0; i < dockStack.size(); i++)
             {
-                Window<?> window = dockStack.get(i);
+                Window<?,?> window = dockStack.get(i);
                 if(window != draggedWindow)
                 {
                     window.dragResize(mouseX, mouseY, edgeGrab);
@@ -670,7 +671,7 @@ public class WindowDock<M extends Workspace> extends Window<M>
 
     public record WindowSize(Constraint constraint, int x, int y, int width, int height){}
 
-    public record ArrayListHolder(ArrayList<Window<?>> windows){} //this is to have a consistent hashcode for hashmaps since there is no IdentityLinkedHashMap
+    public record ArrayListHolder(ArrayList<Window<?,?>> windows){} //this is to have a consistent hashcode for hashmaps since there is no IdentityLinkedHashMap
 
-    public record DockInfo(@Nullable Window<?> window, @Nullable Constraint.Property.Type type){}
+    public record DockInfo(@Nullable Window<?,?> window, @Nullable Constraint.Property.Type type){}
 }

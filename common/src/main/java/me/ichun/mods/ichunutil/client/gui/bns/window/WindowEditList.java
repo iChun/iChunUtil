@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class WindowEditList<M extends Workspace> extends Window<M>
+public class WindowEditList<M extends Workspace> extends Window<M, ViewEditList>
 {
     public WindowEditList(@NotNull M parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder)
     {

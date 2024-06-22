@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class Window<W extends Workspace> extends Fragment<W>
+public abstract class Window<W extends Workspace, V extends View<?>> extends Fragment<W> //TODO have a "generic window" class, MOST of our windows don't do anything special
 {
     //TODO get rid of this when working with more advanced UI eg Tabula/CCI
     public Supplier<Integer> borderSize;
@@ -58,29 +58,29 @@ public abstract class Window<W extends Workspace> extends Fragment<W>
     }
 
     //TODO get rid of this when working with more advanced UI eg Tabula/CCI
-    public <T extends Window<?>> T setBorderSize(Supplier<Integer> borderSize)
+    public <T extends Window<W, V>> T setBorderSize(Supplier<Integer> borderSize)
     {
         this.borderSize = borderSize;
         return (T)this;
     }
 
-    public <T extends Window<?>> T pos(int x, int y)
+    public <T extends Window<W, V>> T pos(int x, int y)
     {
         return (T)this.setPos(x, y);
     }
 
-    public <T extends Window<?>> T size(int width, int height)
+    public <T extends Window<W, V>> T size(int width, int height)
     {
         return (T)setSize(width, height);
     }
 
     @NotNull
-    public <V extends View<?>> V getCurrentView()
+    public V getCurrentView()
     {
         return (V)currentView;
     }
 
-    public <T extends Window<?>> T setView(View<?> v)
+    public <T extends Window<W, V>> T setView(View<?> v)
     {
         this.views.add(v);
         setCurrentView(v);
@@ -92,55 +92,55 @@ public abstract class Window<W extends Workspace> extends Fragment<W>
         this.currentView = v;
     }
 
-    public <T extends Window<?>> T disableTitle()
+    public <T extends Window<W, V>> T disableTitle()
     {
         showTitle = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableDrag()
+    public <T extends Window<W, V>> T disableDrag()
     {
         canDrag = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableDragResize()
+    public <T extends Window<W, V>> T disableDragResize()
     {
         canDragResize = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableBringToFront()
+    public <T extends Window<W, V>> T disableBringToFront()
     {
         canBringToFront = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableDockingEntirely()
+    public <T extends Window<W, V>> T disableDockingEntirely()
     {
         canDockStack = canBeUndocked = canBeDocked = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableDocking()
+    public <T extends Window<W, V>> T disableDocking()
     {
         canBeDocked = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableUndocking()
+    public <T extends Window<W, V>> T disableUndocking()
     {
         canBeUndocked = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T disableDockStacking()
+    public <T extends Window<W, V>> T disableDockStacking()
     {
         canDockStack = false;
         return (T)this;
     }
 
-    public <T extends Window<?>> T isNotUnique() //you're plainer than a plain white tee
+    public <T extends Window<W, V>> T isNotUnique() //you're plainer than a plain white tee
     {
         isUnique = false;
         return (T)this;
@@ -455,7 +455,7 @@ public abstract class Window<W extends Workspace> extends Fragment<W>
             double bottom = getWorkspace().getHeight();
             for(Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type> e : dock.docked.entrySet())
             {
-                for(Window<?> key : e.getKey().windows())
+                for(Window<?,?> key : e.getKey().windows())
                 {
                     Constraint.Property.Type value = e.getValue();
                     switch(value)
@@ -496,7 +496,7 @@ public abstract class Window<W extends Workspace> extends Fragment<W>
                 }
             }
 
-            Window<?> window = this;
+            Window<W, V> window = this;
             int oriX = window.posX;
             int oriY = window.posY;
             window.pos(-10000, -10000);

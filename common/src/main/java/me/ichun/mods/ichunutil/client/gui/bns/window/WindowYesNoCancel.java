@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class WindowYesNoCancel extends Window<Workspace>
+public class WindowYesNoCancel extends Window<Workspace, WindowYesNoCancel.ViewConfirmation>
 {
     //title will be localised, text won't.
     public WindowYesNoCancel(Workspace parent, String title, String text, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)

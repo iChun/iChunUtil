@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class WindowConfirmation extends Window<Workspace>
+public class WindowConfirmation extends Window<Workspace, WindowConfirmation.ViewConfirmation>
 {
     //title will be localised, text won't.
     public WindowConfirmation(Workspace parent, String title, String text, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel, boolean isYesNo)
