@@ -18,9 +18,10 @@ public abstract class EventHandlerClient
     public abstract void registerKeyMapping(KeyMapping key, String...conflictContext);
 
     /**
-     * Convenience methods to listen to client tick - regularly used
+     * Convenience methods to listen to specific regularly used events
      */
     private EventListener<Minecraft> clientTickStartListener;
+    protected abstract void registerAsClientTickStartListener(EventListener<Minecraft> eventListener);
     public final void registerClientTickStartListener(Consumer<Minecraft> consumer)
     {
         if(clientTickStartListener == null)
@@ -29,9 +30,9 @@ public abstract class EventHandlerClient
         }
         clientTickStartListener.register(consumer);
     }
-    protected abstract void registerAsClientTickStartListener(EventListener<Minecraft> eventListener);
 
     private EventListener<Minecraft> clientTickEndListener;
+    protected abstract void registerAsClientTickEndListener(EventListener<Minecraft> eventListener);
     public final void registerClientTickEndListener(Consumer<Minecraft> consumer)
     {
         if(clientTickEndListener == null)
@@ -41,7 +42,27 @@ public abstract class EventHandlerClient
         clientTickEndListener.register(consumer);
     }
 
-    protected abstract void registerAsClientTickEndListener(EventListener<Minecraft> eventListener);
+    private EventListener<Minecraft> clientConnectListener;
+    protected abstract void registerAsOnClientConnectListener(EventListener<Minecraft> eventListener);
+    public final void registerOnClientConnectListener(Consumer<Minecraft> consumer)
+    {
+        if(clientConnectListener == null)
+        {
+            clientConnectListener = new EventListener<>(this::registerAsOnClientConnectListener);
+        }
+        clientConnectListener.register(consumer);
+    }
+
+    private EventListener<Minecraft> clientDisconnectListener;
+    protected abstract void registerAsOnClientDisconnectListener(EventListener<Minecraft> eventListener);
+    public final void registerOnClientDisconnectListener(Consumer<Minecraft> consumer)
+    {
+        if(clientDisconnectListener == null)
+        {
+            clientDisconnectListener = new EventListener<>(this::registerAsOnClientDisconnectListener);
+        }
+        clientDisconnectListener.register(consumer);
+    }
 
     /**
      * Fires an event for when the client receives a system message

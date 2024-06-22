@@ -8,6 +8,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
@@ -59,6 +60,18 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
         NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
+    }
+
+    @Override
+    protected void registerAsOnClientConnectListener(EventListener<Minecraft> eventListener)
+    {
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientPlayerNetworkEvent.LoggingIn.class, event -> eventListener.trigger(Minecraft.getInstance()));
+    }
+
+    @Override
+    protected void registerAsOnClientDisconnectListener(EventListener<Minecraft> eventListener)
+    {
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientPlayerNetworkEvent.LoggingOut.class, event -> eventListener.trigger(Minecraft.getInstance()));
     }
 
     @Override

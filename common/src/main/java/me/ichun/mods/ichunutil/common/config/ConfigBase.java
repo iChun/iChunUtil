@@ -277,6 +277,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     }
 
     /**
+     * Called after the field has already been changed
      * @param file true if changes were from file
      * @param name name of the config/field
      * @param field our field that was changed
