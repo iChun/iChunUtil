@@ -14,7 +14,8 @@
     "client.ChatListenerMixin",
     "client.ClientLevelMixin",
     "client.LivingEntityRendererAccessorMixin",
-    "client.LivingEntityRendererMixin"
+    "client.LivingEntityRendererMixin",
+    "client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

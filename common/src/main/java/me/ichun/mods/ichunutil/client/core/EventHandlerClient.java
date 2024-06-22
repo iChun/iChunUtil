@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.core;
 import me.ichun.mods.ichunutil.loader.event.EventListener;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -75,6 +76,8 @@ public abstract class EventHandlerClient
     public void fireLivingRenderPreEvent(LivingEntity entity, LivingEntityRenderer livingEntityRenderer, float partialTicks){}
 
     public void fireClientLevelLoad(ClientLevel level){}
+
+    public abstract void fireOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay);
 
 
     //Methods below are just Minecraft calls to avoid references to client classes

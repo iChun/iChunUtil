@@ -4,8 +4,10 @@ import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.neoforge.event.client.ClientSystemChatEvent;
+import me.ichun.mods.ichunutil.loader.neoforge.event.client.OverlayChangeEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -14,6 +16,7 @@ import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerClientNeoForge extends EventHandlerClient
 {
@@ -78,5 +81,11 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     public boolean fireClientHandleSystemMessage(Component message, boolean isOverlay)
     {
         return NeoForge.EVENT_BUS.post(new ClientSystemChatEvent(message, isOverlay)).isCanceled();
+    }
+
+    @Override
+    public void fireOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay)
+    {
+        NeoForge.EVENT_BUS.post(new OverlayChangeEvent(currentOverlay, newOverlay));
     }
 }

@@ -4,8 +4,10 @@ import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.forge.event.client.ClientSystemChatEvent;
+import me.ichun.mods.ichunutil.loader.forge.event.client.OverlayChangeEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
@@ -14,6 +16,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerClientForge extends EventHandlerClient
 {
@@ -77,5 +80,11 @@ public class EventHandlerClientForge extends EventHandlerClient
     public boolean fireClientHandleSystemMessage(Component message, boolean isOverlay)
     {
         return MinecraftForge.EVENT_BUS.post(new ClientSystemChatEvent(message, isOverlay));
+    }
+
+    @Override
+    public void fireOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay)
+    {
+        MinecraftForge.EVENT_BUS.post(new OverlayChangeEvent(currentOverlay, newOverlay));
     }
 }

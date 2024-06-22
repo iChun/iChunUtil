@@ -4,9 +4,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public final class FabricClientEvents
@@ -26,6 +28,13 @@ public final class FabricClientEvents
         }
     });
 
+    public static final Event<OverlayChange> OVERLAY_CHANGE = EventFactory.createArrayBacked(OverlayChange.class, callbacks -> (currentOverlay, newOverlay) -> {
+        for(OverlayChange callback : callbacks)
+        {
+            callback.onOverlayChange(currentOverlay, newOverlay);
+        }
+    });
+
     @FunctionalInterface
     public interface ClientLevelLoad
     {
@@ -36,5 +45,11 @@ public final class FabricClientEvents
     public interface LivingRenderPre
     {
         void onLivingRenderPre(LivingEntity living, LivingEntityRenderer renderer, float partialTick);
+    }
+
+    @FunctionalInterface
+    public interface OverlayChange
+    {
+        void onOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay);
     }
 }

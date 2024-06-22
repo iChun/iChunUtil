@@ -9,9 +9,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerClientFabric extends EventHandlerClient
 {
@@ -55,5 +57,11 @@ public class EventHandlerClientFabric extends EventHandlerClient
     public void fireClientLevelLoad(ClientLevel level)
     {
         FabricClientEvents.CLIENT_LEVEL_LOAD.invoker().onClientLevelLoad(level);
+    }
+
+    @Override
+    public void fireOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay)
+    {
+        FabricClientEvents.OVERLAY_CHANGE.invoker().onOverlayChange(currentOverlay, newOverlay);
     }
 }
