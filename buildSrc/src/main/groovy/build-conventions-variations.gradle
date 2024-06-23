@@ -18,65 +18,79 @@ dependencies {
     shadowImplementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
 }
 
-shadowJar {
-    configurations = [project.configurations.shadowImplementation]
+if (isFabric || isForge || isNeoForge) {
+    shadowJar {
+        configurations = [project.configurations.shadowImplementation]
 
-    relocate('com.moandjiezana', 'me.ichun.shadow.com.moandjiezana')
+        relocate('com.moandjiezana', 'me.ichun.shadow.com.moandjiezana')
 
-    dependencies {
-        exclude(dependency('com.google.code.gson:gson:'))
+        dependencies {
+            exclude(dependency('com.google.code.gson:gson:'))
+        }
+
+        if (isForge) {
+            archiveClassifier.set("")
+            mustRunAfter "reobfJar"
+        }
+        else if (isNeoForge) {
+            archiveClassifier.set("")
+        }
+
+        if (project.hasProperty("key_store")) {
+            tasks.named("signJar").configure {
+                if (isForge) {
+                    mustRunAfter "reobfShadowJar"
+                }
+                else {
+                    mustRunAfter "shadowJar"
+                }
+            }
+        }
     }
 
-    if (isForge) {
-        archiveClassifier.set("")
-        finalizedBy("reobfJar")
-    }
-    else if (isNeoForge) {
-        archiveClassifier.set("")
+    components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+        skip()
     }
 
-    if (!"${project.name}".toString().equals("common") && !"${project.name}".toString().equals("api") && project.hasProperty("key_store")) {
-        tasks.named("signJar").configure {
+    if (isFabric) {
+        tasks.named("remapJar").configure {
+            dependsOn "shadowJar"
+            inputFile = file(shadowJar.archivePath)
+        }
+    }
+    else if (isForge) {
+        reobf {
+            shadowJar {}
+        }
+
+        jar {
+            finalizedBy "reobfShadowJar"
+        }
+
+        //Just because we're reusing the jar for output - gradle complains about lack of dependency
+        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
             mustRunAfter "shadowJar"
         }
     }
-}
+    else {
+        jar {
+            finalizedBy "shadowJar"
+        }
 
-components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
-    skip()
-}
-
-if (isFabric) {
-    tasks.named("remapJar").configure {
-        dependsOn "shadowJar"
-        inputFile = file(shadowJar.archivePath)
-    }
-}
-else if (isForge || isNeoForge) {
-    jar {
-        finalizedBy "shadowJar"
+        //Just because we're reusing the jar for output - gradle complains about lack of dependency
+        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
+            mustRunAfter "shadowJar"
+        }
     }
 
-    //Just because we're reusing the jar for output - gradle complains about lack of dependency
-    tasks.named("generateMetadataFileForMavenJavaPublication").configure {
-        mustRunAfter "shadowJar"
+    publisher {
+        // The file to be uploaded. This can be a file, task, or string.
+        // setArtifact("build/libs/mymod.jar")
+        // setArtifact(jar.getArchiveFile().get())
+        // If this is a task, the task specified will be executed before publishing
+        setArtifact(tasks.named(isFabric ? "remapJar" : "shadowJar"))
     }
 }
-
-publisher {
-    // The file to be uploaded. This can be a file, task, or string.
-    // setArtifact("build/libs/mymod.jar")
-    // setArtifact(jar.getArchiveFile().get())
-    // If this is a task, the task specified will be executed before publishing
-    setArtifact(tasks.named(isFabric ? "remapJar" : "shadowJar"))
-}
-
-//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-//
-//tasks.named('shadowJar', ShadowJar).configure {
-//    enableRelocation true
-//    relocationPrefix "me.ichun.shadow"
-//}
 
 //==============
 //Shadow Jar End
