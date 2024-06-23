@@ -15,7 +15,8 @@
     "client.ClientLevelMixin",
     "client.LivingEntityRendererAccessorMixin",
     "client.LivingEntityRendererMixin",
-    "client.MinecraftMixin"
+    "client.MinecraftMixin",
+    "client.MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

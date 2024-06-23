@@ -64,4 +64,10 @@ public class EventHandlerClientFabric extends EventHandlerClient
     {
         FabricClientEvents.OVERLAY_CHANGE.invoker().onOverlayChange(currentOverlay, newOverlay);
     }
+
+    @Override
+    public boolean fireMouseScroll(double scrollDeltaX, double scrollDeltaY)
+    {
+        return FabricClientEvents.MOUSE_SCROLL.invoker().onMouseScroll(scrollDeltaX, scrollDeltaY);
+    }
 }

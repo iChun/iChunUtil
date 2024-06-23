@@ -79,6 +79,13 @@ public abstract class EventHandlerClient
 
     public abstract void fireOverlayChange(@Nullable Overlay currentOverlay, @Nullable Overlay newOverlay);
 
+    /**
+     * @return Return true to cancel the event
+     */
+    public boolean fireMouseScroll(double scrollDeltaX, double scrollDeltaY)
+    {
+        return false;
+    }
 
     //Methods below are just Minecraft calls to avoid references to client classes
 
@@ -88,20 +95,17 @@ public abstract class EventHandlerClient
     }
 
     @Nullable
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public LocalPlayer getPlayer()
     {
         return Minecraft.getInstance().player;
     }
 
     @Nullable
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public ClientLevel getWorld()
     {
         return Minecraft.getInstance().level;
     }
 
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
     public String getLocalisedString(String s, Object...params)
     {
         return I18n.get(s, params);
