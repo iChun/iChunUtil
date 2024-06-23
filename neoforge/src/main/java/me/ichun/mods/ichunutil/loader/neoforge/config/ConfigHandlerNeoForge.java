@@ -39,7 +39,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler
         onServerDisconnect();
     }
 
-    private final IdentityHashMap<ConfigBase.Category.Entry, ModConfigSpec.ConfigValue> entryToValues = new IdentityHashMap<>();
+    private IdentityHashMap<ConfigBase.Category.Entry, ModConfigSpec.ConfigValue> entryToValues;
 
     private ModConfig modConfig; //our mod config
 
@@ -53,6 +53,8 @@ public class ConfigHandlerNeoForge extends ConfigHandler
     @Override
     public void init()
     {
+        entryToValues = new IdentityHashMap<>();
+
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         boolean inCat = false;
         for(ConfigBase.Category cat : config.categories)

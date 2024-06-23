@@ -39,7 +39,7 @@ public class ConfigHandlerForge extends ConfigHandler
         onServerDisconnect();
     }
 
-    private final IdentityHashMap<ConfigBase.Category.Entry, ForgeConfigSpec.ConfigValue> entryToValues = new IdentityHashMap<>();
+    private IdentityHashMap<ConfigBase.Category.Entry, ForgeConfigSpec.ConfigValue> entryToValues;
 
     private ModConfig modConfig; //our mod config
 
@@ -51,6 +51,8 @@ public class ConfigHandlerForge extends ConfigHandler
     @Override
     public void init()
     {
+        entryToValues = new IdentityHashMap<>();
+
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         boolean inCat = false;
         for(ConfigBase.Category cat : config.categories)
