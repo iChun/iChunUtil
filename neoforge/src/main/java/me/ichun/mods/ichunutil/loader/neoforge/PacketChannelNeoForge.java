@@ -10,6 +10,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -37,9 +39,9 @@ public class PacketChannelNeoForge extends PacketChannel
         }
 
         registrar.playBidirectional(new CustomPacketPayload.Type<>(channelId), // payload type - modid
-                createCodec(),
-                this::handle
-            );
+            createCodec(),
+            this::handle
+        );
     }
 
     protected void handle(PacketPayload payload, IPayloadContext context)
@@ -47,7 +49,7 @@ public class PacketChannelNeoForge extends PacketChannel
         Player player;
         if(context.flow() == PacketFlow.CLIENTBOUND)
         {
-            player = iChunUtil.eC().getPlayer();
+            player = getPlayer();
         }
         else
         {
@@ -84,5 +86,11 @@ public class PacketChannelNeoForge extends PacketChannel
     public void sendToAround(AbstractPacket packet, ServerLevel world, double x, double y, double z, double radius)
     {
         PacketDistributor.sendToPlayersNear(world, null, x, y, z, radius, payload(packet));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public Player getPlayer()
+    {
+        return iChunUtil.eC().getPlayer();
     }
 }

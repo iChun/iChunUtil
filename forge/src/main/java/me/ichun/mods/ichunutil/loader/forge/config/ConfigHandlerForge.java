@@ -203,6 +203,8 @@ public class ConfigHandlerForge extends ConfigHandler
         {
             for(ConfigBase.Category.Entry e : cat.getEntries())
             {
+                if(e.prop.skip()) continue;
+
                 ForgeConfigSpec.ConfigValue configValue = entryToValues.get(e);
                 Object o = configValue.get();
                 try
@@ -230,6 +232,8 @@ public class ConfigHandlerForge extends ConfigHandler
         {
             for(ConfigBase.Category.Entry e : cat.getEntries())
             {
+                if(e.prop.skip()) continue;
+
                 ForgeConfigSpec.ConfigValue configValue = entryToValues.get(e);
                 Object o = configValue.get();
                 try
