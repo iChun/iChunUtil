@@ -3,8 +3,6 @@ package me.ichun.mods.ichunutil.common.config;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.moandjiezana.toml.Toml;
-import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
@@ -12,8 +10,6 @@ import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.Env;
 import net.minecraft.Util;
-import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
-import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,10 +38,10 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     });
     public static final Set<ConfigBase> CONFIGS = Collections.<ConfigBase>synchronizedSet(new TreeSet<>(Comparator.naturalOrder())); //generic required to compile. Synchronised set because concurrency when registering configs with mods
 
-    public final TreeSet<Category> categories = new TreeSet<>(Comparator.naturalOrder());
+    public transient final TreeSet<Category> categories = new TreeSet<>(Comparator.naturalOrder());
 
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public final HashMap<String, BiFunction<Category.Entry, ElementList.Item<?>, Boolean>> guiElementOverrides = new HashMap<>();
+    public transient HashMap<String, BiFunction<Category.Entry, ElementList.Item<?>, Boolean>> guiElementOverrides;
 
     @NotNull
     private transient String fileName;
@@ -76,6 +72,8 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
         if(iChunUtil.d().getSide().isClient())
         {
+            guiElementOverrides = new HashMap<>();
+
             registerGuiElementOverrides();
         }
         else if(getConfigType() == Type.CLIENT)
@@ -387,20 +385,6 @@ public abstract class ConfigBase //Configs should be created in the constructor 
             return entry.field.getName();
         }
         return localised;
-    }
-
-    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public boolean createButtonToKeyBinds(Category.Entry entry, ElementList.Item<?> item)
-    {
-        ElementButton<?> button = new ElementButton<>(item, "controls.title", btn ->
-        {
-            item.getMinecraft().setScreen(new KeyBindsScreen(item.getWorkspace(), item.getMinecraft().options));
-        });
-        button.setTooltip(I18n.get("options.controls"));
-        button.setSize(80, 14);
-        button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
-        item.addElement(button);
-        return true;
     }
 
     @Override

@@ -228,6 +228,8 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                             parent.parent.viewConfigs.createRestartAlertButton();
                         }
                         isDirty = true;
+
+                        config.onPropertyChanged(false, field.getName(), field, o, field.get(config));
                     }
                 }
                 catch(IllegalAccessException ex)
@@ -428,7 +430,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             }
             else if(clz == KeyBind.class)
             {
-                config.createButtonToKeyBinds(entry, item);
+                WorkspaceConfigs.createButtonToKeyBinds(entry, item);
             }
         }
     }
