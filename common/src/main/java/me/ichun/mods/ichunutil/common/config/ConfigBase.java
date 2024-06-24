@@ -6,6 +6,7 @@ import com.moandjiezana.toml.Toml;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
+import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -414,7 +415,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
     private static boolean isValidField(Field field)
     {
-        return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && (field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType()));
+        return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && (field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType()) || field.getType() == KeyBind.class);
     }
 
     public static class Category

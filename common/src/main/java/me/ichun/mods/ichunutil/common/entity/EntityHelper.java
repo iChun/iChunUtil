@@ -22,4 +22,17 @@ public final class EntityHelper
     {
         return iChunUtil.eS().isFakePlayer(player);
     }
+
+    public static int wrap(int input, int min, int max)
+    {
+        while(input > max)
+        {
+            input = min + (input - 1 - max);
+        }
+        while(input < min)
+        {
+            input = max - (input + 1 - min);
+        }
+        return input;
+    }
 }

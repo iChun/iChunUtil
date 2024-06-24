@@ -78,6 +78,8 @@ public class ConfigHandlerNeoForge extends ConfigHandler
 
             for(ConfigBase.Category.Entry e : cat.getEntries())
             {
+                if(e.prop.skip()) continue;
+
                 if(e.comment != null)
                 {
                     builder.comment(e.comment);

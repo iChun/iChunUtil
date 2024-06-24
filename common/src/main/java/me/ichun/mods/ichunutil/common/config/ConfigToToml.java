@@ -30,6 +30,7 @@ public final class ConfigToToml
 
             for(ConfigBase.Category.Entry entry : category.getEntries())
             {
+                if(entry.prop.skip()) continue;
                 if(entry.comment != null && !minify) writeComment(writer, entry.comment, true);
                 if(!minify) writeOptions(writer, entry);
                 writeField(writer, entry, config);
@@ -160,6 +161,7 @@ public final class ConfigToToml
         {
             for(ConfigBase.Category.Entry entry : category.getEntries())
             {
+                if(entry.prop.skip()) continue;
                 entryToValue.put(entry, entry.field.get(config));
             }
         }
@@ -298,6 +300,29 @@ public final class ConfigToToml
                         {
                             Gson gson = StringUtil.GSON;
                             ArrayList<?> newList = new ArrayList<>((List<?>)gson.fromJson(gson.toJson(tomlValue), entry.field.getType()));
+
+                            if(!newList.isEmpty())
+                            {
+                                ArrayList<Integer> newListInts = new ArrayList<>();
+                                boolean isAllInts = true;
+                                for(Object o : newList)
+                                {
+                                    if(o instanceof Double d)
+                                    {
+                                        if(d.intValue() == d)
+                                        {
+                                            newListInts.add(d.intValue());
+                                            continue;
+                                        }
+                                    }
+                                    isAllInts = false;
+                                    break;
+                                }
+                                if(isAllInts)
+                                {
+                                    newList = newListInts;
+                                }
+                            }
 
                             if(!(entry.prop.validator().equals("undefined") || entry.prop.validator().isEmpty()))
                             {

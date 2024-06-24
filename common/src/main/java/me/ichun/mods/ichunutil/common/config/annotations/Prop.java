@@ -28,4 +28,6 @@ public @interface Prop
 
     @NotNull
     Env[] env() default Env.ALL; //if not ALL, only loader specific
+
+    boolean skip() default false;
 }

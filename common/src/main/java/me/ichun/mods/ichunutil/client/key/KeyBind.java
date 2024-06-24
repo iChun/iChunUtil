@@ -28,20 +28,7 @@ public class KeyBind
         return !KEY_CONFLICT_CONTEXT.isEmpty();
     }
 
-    @NotNull
-    public final KeyMapping keyBinding;
-    @Nullable
-    public final Consumer<KeyBind> pressConsumer;
-    @Nullable
-    public final Consumer<KeyBind> releaseConsumer;
-    @Nullable
-    public Consumer<KeyBind> tickConsumer;
-
-    public boolean pressed = false;
-    public int pressTime = 0;
-
-    public boolean holdable = false;
-    public int holdTime = 0;
+    public final KeyListener keyListener;
 
     /**
      * Construct during Client Setup Event
@@ -49,78 +36,29 @@ public class KeyBind
      * @param pressConsumer press consumer
      * @param releaseConsumer release consumer
      */
-    public KeyBind(KeyMapping keyBinding, @Nullable Consumer<KeyBind> pressConsumer, @Nullable Consumer<KeyBind> releaseConsumer, String...conflictContext)
+    public KeyBind(@NotNull KeyMapping keyBinding, @Nullable Consumer<KeyListener> pressConsumer, @Nullable Consumer<KeyListener> releaseConsumer, String...conflictContext)
     {
-        this.keyBinding = keyBinding;
-        this.pressConsumer = pressConsumer;
-        this.releaseConsumer = releaseConsumer;
+        this.keyListener = new KeyListener(keyBinding, pressConsumer, releaseConsumer);
 
-        iChunUtil.eC().registerKeyMapping(this.keyBinding, conflictContext);
+        iChunUtil.eC().registerKeyMapping(this.keyListener.keyBinding, conflictContext);
 
         iChunUtil.eC().registerClientTickEndListener(this::onClientTick);
     }
 
-    public KeyBind setTickConsumer(Consumer<KeyBind> tickConsumer)
+    public KeyBind setTickConsumer(Consumer<KeyListener> tickConsumer)
     {
-        this.tickConsumer = tickConsumer;
+        this.keyListener.setTickConsumer(tickConsumer);
         return this;
     }
 
     public KeyBind setHoldable()
     {
-        this.holdable = true;
+        this.keyListener.setHoldable();
         return this;
     }
 
     public void onClientTick(Minecraft mc)
     {
-        if(pressed)
-        {
-            pressTime++;
-            if(!keyBinding.isDown())
-            {
-                pressed = false;
-                holdTime = 0;
-                if(releaseConsumer != null)
-                {
-                    releaseConsumer.accept(this);
-                }
-            }
-            else
-            {
-                if(tickConsumer != null)
-                {
-                    tickConsumer.accept(this);
-                }
-                if(holdTime > 0)
-                {
-                    holdTime--;
-                    if(holdTime == 0)
-                    {
-                        holdTime = 5;
-                        if(pressConsumer != null)
-                        {
-                            pressConsumer.accept(this);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            pressTime = 0;
-            if(keyBinding.isDown())
-            {
-                pressed = true;
-                if(pressConsumer != null)
-                {
-                    pressConsumer.accept(this);
-                }
-                if(holdable)
-                {
-                    holdTime = 20;
-                }
-            }
-        }
+        this.keyListener.tick(mc);
     }
 }
