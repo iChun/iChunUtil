@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.impl;
 
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
@@ -187,7 +188,7 @@ public class ViewEditList<W extends Window<?,?>> extends View<W>
     }
 
     @Override
-    public void setWindowGenericProperties(W window)
+    public void setWindowGenericProperties(WindowGeneric<?, ?> window)
     {
         window.disableDockingEntirely();
     }

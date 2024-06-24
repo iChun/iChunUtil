@@ -2,8 +2,9 @@ package me.ichun.mods.ichunutil.client.gui.config;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.config.window.WindowConfigs;
-import me.ichun.mods.ichunutil.client.gui.config.window.WindowValues;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
+import me.ichun.mods.ichunutil.client.gui.config.view.ViewConfigs;
+import me.ichun.mods.ichunutil.client.gui.config.view.ViewValues;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -16,8 +17,8 @@ public class WorkspaceConfigs extends Workspace
 {
     public final LinkedHashMap<String, TreeSet<ConfigBase>> modToConfig = new LinkedHashMap<>();
 
-    public WindowConfigs windowConfigs;
-    public WindowValues windowValues;
+    public ViewConfigs viewConfigs;
+    public ViewValues viewValues;
 
     public WorkspaceConfigs(Screen lastScreen)
     {
@@ -29,15 +30,17 @@ public class WorkspaceConfigs extends Workspace
             modConfigs.add(config);
         }
 
-        addToDock(windowConfigs = new WindowConfigs(this), Constraint.Property.Type.LEFT);
+        WindowGeneric<WorkspaceConfigs, ViewConfigs> window = WindowGeneric.create(this, windowGeneric -> new ViewConfigs(windowGeneric, "gui.ichunutil.configs.configs"));
+        viewConfigs = window.getCurrentView();
+        addToDock(window, Constraint.Property.Type.LEFT);
     }
 
     @Override
     public void onClose()
     {
-        if(windowValues != null)
+        if(viewValues != null)
         {
-            windowValues.getCurrentView().save();
+            viewValues.save();
         }
         super.onClose();
     }

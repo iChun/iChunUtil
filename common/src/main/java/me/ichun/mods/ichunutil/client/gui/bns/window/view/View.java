@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
@@ -34,7 +35,7 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
         }
     }
 
-    public void setWindowGenericProperties(P window) {}
+    public void setWindowGenericProperties(WindowGeneric<?, ?> window) {}
 
     @Override
     public List<Element<?>> children()

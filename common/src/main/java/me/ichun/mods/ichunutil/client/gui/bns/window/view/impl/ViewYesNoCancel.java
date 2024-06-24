@@ -12,10 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ViewConfirmation extends View<Window<?,?>>
+public class ViewYesNoCancel extends View<Window<?, ?>>
 {
-    //title will be localised, text won't.
-    public ViewConfirmation(@NotNull Window<?,?> parent, String title, String text1, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel, boolean isYesNo)
+    public ViewYesNoCancel(@NotNull Window<?, ?> parent, String title, String text1, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)
     {
         super(parent, title);
 
@@ -24,8 +23,7 @@ public class ViewConfirmation extends View<Window<?,?>>
         text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
         elements.add(text);
 
-        ElementButton<?> button = new ElementButton<>(this, I18n.get(isYesNo ? "gui.no" : "gui.cancel"), btn ->
-        {
+        ElementButton<?> button = new ElementButton<>(this, I18n.get("gui.cancel"), button3 -> {
             parent.parent.removeWindow(parent);
 
             if(callbackCancel != null)
@@ -37,18 +35,29 @@ public class ViewConfirmation extends View<Window<?,?>>
         button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 10).right(this, Constraint.Property.Type.RIGHT, 10));
         elements.add(button);
 
-        ElementButton<?> button1 = new ElementButton<>(this, I18n.get(isYesNo ? "gui.yes" : "gui.ok"), btn ->
-        {
+        ElementButton<?> button1 = new ElementButton<>(this, I18n.get("gui.no"), button3 -> {
             parent.parent.removeWindow(parent);
 
-            if(callbackOk != null)
+            if(callbackNo != null)
             {
-                callbackOk.accept(parent.parent);
+                callbackNo.accept(parent.parent);
             }
         });
         button1.setSize(60, 20);
         button1.setConstraint(new Constraint(button1).right(button, Constraint.Property.Type.LEFT, 10));
         elements.add(button1);
+
+        ElementButton<?> button2 = new ElementButton<>(this, I18n.get("gui.yes"), button3 -> {
+            parent.parent.removeWindow(parent);
+
+            if(callbackYes != null)
+            {
+                callbackYes.accept(parent.parent);
+            }
+        });
+        button2.setSize(60, 20);
+        button2.setConstraint(new Constraint(button2).right(button1, Constraint.Property.Type.LEFT, 10));
+        elements.add(button2);
     }
 
     @Override
@@ -59,18 +68,13 @@ public class ViewConfirmation extends View<Window<?,?>>
         window.isNotUnique();
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, Consumer<W> callbackYes, Consumer<W> callbackNo, Consumer<W> callbackCancel)
     {
-        popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackOk, callbackCancel);
+        popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackYes, callbackNo, callbackCancel);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackYes, Consumer<W> callbackNo, Consumer<W> callbackCancel)
     {
-        popup(parent, widthRatio, heightRatio, title, text, callbackOk, callbackCancel, true);
-    }
-
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel, boolean isYesNo)
-    {
-        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewConfirmation(windowGeneric, title, text, (Consumer<Workspace>)callbackOk, (Consumer<Workspace>)callbackCancel, isYesNo)), widthRatio, heightRatio, true);
+        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewYesNoCancel(windowGeneric, title, text, (Consumer<Workspace>)callbackYes, (Consumer<Workspace>)callbackNo, (Consumer<Workspace>)callbackCancel)), widthRatio, heightRatio, true);
     }
 }

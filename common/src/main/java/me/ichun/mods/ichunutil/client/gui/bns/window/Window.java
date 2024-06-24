@@ -74,7 +74,6 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
         return (T)setSize(width, height);
     }
 
-    @NotNull
     public V getCurrentView()
     {
         return currentView;
