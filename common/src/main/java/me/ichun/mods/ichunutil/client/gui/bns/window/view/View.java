@@ -34,6 +34,8 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
         }
     }
 
+    public void setWindowGenericProperties(P window) {}
+
     @Override
     public List<Element<?>> children()
     {

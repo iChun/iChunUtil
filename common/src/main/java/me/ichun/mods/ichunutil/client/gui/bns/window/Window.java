@@ -34,8 +34,8 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     public W parent;
 
     @NotNull
-    public List<View<?>> views = new ArrayList<>(); //Not technically the children.... only the alternate views we have
-    public View<?> currentView = null; //should never be null (except for WindowDock)
+    private List<V> views = new ArrayList<>(); //Not technically the children.... only the alternate views we have
+    private V currentView = null; //should never be null (except for WindowDock)
 
     //docked stuff
     private boolean showTitle = true;
@@ -77,19 +77,20 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     @NotNull
     public V getCurrentView()
     {
-        return (V)currentView;
+        return currentView;
     }
 
-    public <T extends Window<W, V>> T setView(View<?> v)
+    public <T extends Window<W, V>> T setView(V v)
     {
         this.views.add(v);
         setCurrentView(v);
         return (T)this;
     }
 
-    public void setCurrentView(View<?> v)
+    public <T extends Window<W, V>> T setCurrentView(V v)
     {
         this.currentView = v;
+        return (T)this;
     }
 
     public <T extends Window<W, V>> T disableTitle()
@@ -180,7 +181,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     public boolean isUnique() { return isUnique; }
 
     @Override
-    public List<View<?>> children()
+    public List<V> children()
     {
         return currentView != null ? ImmutableList.of(currentView) : views;
     }
@@ -440,7 +441,6 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
             //TODO draw the inside background as well - when ridding border size & handling proper padding
         }
     }
-
 
     public void renderDockHighlight(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {

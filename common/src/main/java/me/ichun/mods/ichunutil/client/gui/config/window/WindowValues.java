@@ -2,11 +2,13 @@ package me.ichun.mods.ichunutil.client.gui.config.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
-import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowPopup;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.*;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.impl.ViewEditList;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
+import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
@@ -34,7 +36,7 @@ public class WindowValues extends Window<WorkspaceConfigs, WindowValues.ViewValu
         disableBringToFront();
     }
 
-    public static class ViewValues extends View<WindowValues>
+    public static class ViewValues extends View<ViewValues, WindowValues>
     {
         public final TreeSet<ConfigBase> configs;
         public final ElementList<?> list;
@@ -396,45 +398,48 @@ public class WindowValues extends Window<WorkspaceConfigs, WindowValues.ViewValu
                                         });
                                     }
 
-                                    WindowEditList<?> window = new WindowEditList<>(getWorkspace(), entryName, list, validator, list1 -> {
-                                        try
-                                        {
-                                            List listToUse = list;
-                                            if(list instanceof ArrayList)
-                                            {
-                                                listToUse = (List)((ArrayList)list).clone();
-                                            }
-                                            listToUse.clear();
-                                            for(ElementList.Item<?> item1 : list1.items)
-                                            {
-                                                ElementTextField oriText = (ElementTextField)item1.elements.get(0);
-                                                if(!oriText.getText().isEmpty())
-                                                {
-                                                    if(types[0] == String.class)
-                                                    {
-                                                        listToUse.add(oriText.getText());
-                                                    }
-                                                    else if(types[0] == Double.class)
-                                                    {
-                                                        listToUse.add(Double.parseDouble(oriText.getText()));
-                                                    }
-                                                    else if(types[0] == Integer.class)
-                                                    {
-                                                        listToUse.add(Integer.parseInt(oriText.getText()));
-                                                    }
-                                                }
-                                            }
-                                            entry.field.set(config, listToUse);
-                                            if(entry.prop.needsRestart())
-                                            {
-                                                parent.parent.windowConfigs.getCurrentView().createRestartAlertButton();
-                                            }
-                                            config.save();
-                                        }
-                                        catch(IllegalAccessException ignored){}
-                                    });
-                                    getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
-                                    window.init();//reinit cause we're using lists and they're weird
+                                    Predicate<String> finalValidator = validator;
+                                    WindowGeneric<WorkspaceConfigs, ViewEditList> workspaceConfigsViewEditListWindowGeneric = WindowGeneric.create(parent.parent, ViewEditList.class);
+                                    //                                    WindowGeneric.create(parent.parent, ViewEditList.class, windowGeneric -> new ViewEditList<>(windowGeneric, entryName, list, finalValidator, list1 -> {}));
+//                                    WindowGeneric<WorkspaceConfigs, ViewEditList> window = WindowGeneric.create(parent.parent, ViewEditList.class, windowGeneric -> new ViewEditList<>(windowGeneric, entryName, list, finalValidator, list1 -> {
+//                                        try
+//                                        {
+//                                            List listToUse = list;
+//                                            if(list instanceof ArrayList)
+//                                            {
+//                                                listToUse = (List)((ArrayList)list).clone();
+//                                            }
+//                                            listToUse.clear();
+//                                            for(ElementList.Item<?> item1 : list1.items)
+//                                            {
+//                                                ElementTextField oriText = (ElementTextField)item1.elements.get(0);
+//                                                if(!oriText.getText().isEmpty())
+//                                                {
+//                                                    if(types[0] == String.class)
+//                                                    {
+//                                                        listToUse.add(oriText.getText());
+//                                                    }
+//                                                    else if(types[0] == Double.class)
+//                                                    {
+//                                                        listToUse.add(Double.parseDouble(oriText.getText()));
+//                                                    }
+//                                                    else if(types[0] == Integer.class)
+//                                                    {
+//                                                        listToUse.add(Integer.parseInt(oriText.getText()));
+//                                                    }
+//                                                }
+//                                            }
+//                                            entry.field.set(config, listToUse);
+//                                            if(entry.prop.needsRestart())
+//                                            {
+//                                                parent.parent.windowConfigs.getCurrentView().createRestartAlertButton();
+//                                            }
+//                                            config.save();
+//                                        }
+//                                        catch(IllegalAccessException ignored){}
+//                                    }));
+//                                    getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
+//                                    window.init();//reinit cause we're using lists and they're weird
                                 }
                             }
                         }
@@ -443,6 +448,10 @@ public class WindowValues extends Window<WorkspaceConfigs, WindowValues.ViewValu
                     button.setSize(80, 14);
                     button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
                     item.addElement(button);
+                }
+                else if(clz == KeyBind.class)
+                {
+                    config.createButtonToKeyBinds(entry, item);
                 }
             }
         }

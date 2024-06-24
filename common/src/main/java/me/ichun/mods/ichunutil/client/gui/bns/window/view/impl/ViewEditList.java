@@ -1,7 +1,8 @@
-package me.ichun.mods.ichunutil.client.gui.bns.window.view;
+package me.ichun.mods.ichunutil.client.gui.bns.window.view.impl;
 
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
-import me.ichun.mods.ichunutil.client.gui.bns.window.WindowEditList;
+import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
@@ -17,18 +18,18 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ViewEditList extends View<WindowEditList<?>>
+public class ViewEditList<W extends Window<?,?>> extends View<W>
 {
     public final List<?> objectList;
     public final Predicate<String> validatorFinal;
     public final Consumer<ElementList<?>> responder;
 
-    public ViewEditList(@NotNull WindowEditList<?> parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder)
+    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder)
     {
         this(parent, s, objectList, validator, responder, null);
     }
 
-    public ViewEditList(@NotNull WindowEditList<?> parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
+    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent, s);
         this.objectList = objectList;
@@ -37,19 +38,19 @@ public class ViewEditList extends View<WindowEditList<?>>
 
         ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
-                .bottom(this, Constraint.Property.Type.BOTTOM, 30)
-                .right(this, Constraint.Property.Type.RIGHT, 0)
+            .bottom(this, Constraint.Property.Type.BOTTOM, 30)
+            .right(this, Constraint.Property.Type.RIGHT, 0)
         );
         elements.add(sv);
 
         ElementList<?> list = new ElementList<>(this).setScrollVertical(sv)
-                .setDragHandler((i, j) -> {})
-                .setRearrangeHandler((i, j) -> {})
-                ;
+            .setDragHandler((i, j) -> {})
+            .setRearrangeHandler((i, j) -> {})
+            ;
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
-                .bottom(this, Constraint.Property.Type.BOTTOM, 30)
-                .top(this, Constraint.Property.Type.TOP, 0)
-                .right(sv, Constraint.Property.Type.LEFT, 0)
+            .bottom(this, Constraint.Property.Type.BOTTOM, 30)
+            .top(this, Constraint.Property.Type.TOP, 0)
+            .right(sv, Constraint.Property.Type.LEFT, 0)
         );
 
         ElementButton<?> btn = new ElementButton<>(this, "gui.cancel", button -> {
@@ -58,7 +59,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         });
         btn.setSize(60, 20);
         btn.setConstraint(new Constraint(btn).right(this, Constraint.Property.Type.RIGHT, 10)
-                .bottom(this, Constraint.Property.Type.BOTTOM, 5)
+            .bottom(this, Constraint.Property.Type.BOTTOM, 5)
         );
         elements.add(btn);
 
@@ -69,7 +70,7 @@ public class ViewEditList extends View<WindowEditList<?>>
         });
         btn1.setSize(60, 20);
         btn1.setConstraint(new Constraint(btn1).right(btn, Constraint.Property.Type.LEFT, 10)
-                .bottom(this, Constraint.Property.Type.BOTTOM, 5)
+            .bottom(this, Constraint.Property.Type.BOTTOM, 5)
         );
         elements.add(btn1);
 
@@ -183,5 +184,11 @@ public class ViewEditList extends View<WindowEditList<?>>
         textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
         item.addElement(textField);
         elements.add(list);
+    }
+
+    @Override
+    public void setWindowGenericProperties(W window)
+    {
+        window.disableDockingEntirely();
     }
 }

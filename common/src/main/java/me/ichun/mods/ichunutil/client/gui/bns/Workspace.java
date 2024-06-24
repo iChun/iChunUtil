@@ -8,6 +8,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGreyout;
+import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
@@ -404,6 +405,20 @@ public abstract class Workspace extends Screen
             }
         }
         return (T)o;
+    }
+
+    @Nullable
+    public <T extends View<?>> T getByViewType(Class<T> clz)
+    {
+        List<Window<?,?>> windows = children();
+        for(Window<?,?> window : windows)
+        {
+            if(clz.isAssignableFrom(window.getCurrentView().getClass()))
+            {
+                return (T)window.getCurrentView();
+            }
+        }
+        return null;
     }
 
     @Nullable

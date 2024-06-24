@@ -28,7 +28,7 @@ public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
         setBorderSize(() -> 1);
         setView(new ViewContextMenu(this, ""));
 
-        list = (ElementList<?>)((ViewContextMenu)currentView).elements.get(1);
+        list = (ElementList<?>)getCurrentView().elements.get(1);
 
         disableTitle();
         disableDocking();
