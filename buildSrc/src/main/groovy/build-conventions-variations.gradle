@@ -28,11 +28,7 @@ if (isFabric || isForge || isNeoForge) {
             exclude(dependency('com.google.code.gson:gson:'))
         }
 
-        if (isForge) {
-            archiveClassifier.set("")
-            mustRunAfter "reobfJar"
-        }
-        else if (isNeoForge) {
+        if (isForge || isNeoForge) {
             archiveClassifier.set("")
         }
     }
@@ -43,12 +39,7 @@ if (isFabric || isForge || isNeoForge) {
 
     if (project.hasProperty("key_store")) {
         tasks.named("signJar").configure {
-            if (isForge) {
-                mustRunAfter "reobfShadowJar"
-            }
-            else {
-                mustRunAfter "shadowJar"
-            }
+            mustRunAfter "shadowJar"
         }
     }
 
@@ -56,24 +47,6 @@ if (isFabric || isForge || isNeoForge) {
         tasks.named("remapJar").configure {
             dependsOn "shadowJar"
             inputFile = file(shadowJar.archivePath)
-        }
-    }
-    else if (isForge) {
-        reobf {
-            shadowJar {
-                if (project.hasProperty("key_store")) {
-                    finalizedBy "signJar"
-                }
-            }
-        }
-
-        jar {
-            finalizedBy "reobfShadowJar"
-        }
-
-        //Just because we're reusing the jar for output - gradle complains about lack of dependency
-        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
-            mustRunAfter "shadowJar"
         }
     }
     else {

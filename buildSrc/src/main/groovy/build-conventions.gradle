@@ -22,7 +22,7 @@ def isInCompositeBuild = gradle.parent != null //this is only true for included 
 def isAnAllCompositeBuild = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
 //Everyone has to have a different task that finalizes their jar...
-def finaliseJarTaskName = isFabric ? "remapJar" : isForge ? "reobfJar" : "jar"
+def finaliseJarTaskName = isFabric ? "remapJar" : "jar"
 def shadowsDependencies = isBuildingiChunUtil || "${project.mod_id}".toString().equals("contentcreatorintegration")
 
 ext {
@@ -319,17 +319,10 @@ if (project.hasProperty("key_store")) {
                 )
             }
         }
-
-        //The "reobfJar" task doesn't exist at configuration stage in Forge for some reason so we tell gradle to run signJar AFTER reobfJar but is finalized by jar
-        if (isForge) {
-            mustRunAfter "reobfJar"
-        }
     }
 
-    if (!(isForge && shadowsDependencies)) {
-        tasks.named(isFabric ? "remapJar" : "jar").configure {
-            finalizedBy signJar
-        }
+    tasks.named(finaliseJarTaskName).configure {
+        finalizedBy signJar
     }
 }
 
@@ -337,14 +330,6 @@ if (isFabric) {
     //Required to make IDEA runs generate for Fabric
     loom.runConfigs.configureEach {
         ideConfigGenerated = true
-    }
-}
-else if (isForge) {
-    if (!shadowsDependencies) { // Reobfing the jar is done in the variants gradle file.
-        // This is the preferred method to reobfuscate your jar file
-        jar.finalizedBy("reobfJar")
-        // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-        // publish.dependsOn('reobfJar')
     }
 }
 
@@ -442,7 +427,7 @@ publisher {
     // setArtifact(jar.getArchiveFile().get())
     // If this is a task, the task specified will be executed before publishing
     if (!shadowsDependencies) {
-        setArtifact(tasks.named(isFabric ? "remapJar" : "jar"))
+        setArtifact(tasks.named(finaliseJarTaskName))
     }
 
     if (hasApi) {

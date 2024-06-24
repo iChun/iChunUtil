@@ -26,6 +26,9 @@ minecraft {
         accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
     }
 
+    // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
+    reobf = false
+
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
