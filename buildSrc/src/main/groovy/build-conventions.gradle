@@ -326,8 +326,10 @@ if (project.hasProperty("key_store")) {
         }
     }
 
-    tasks.named(isFabric ? "remapJar" : "jar").configure {
-        finalizedBy signJar
+    if (!(isForge && shadowsDependencies)) {
+        tasks.named(isFabric ? "remapJar" : "jar").configure {
+            finalizedBy signJar
+        }
     }
 }
 

@@ -22,7 +22,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'parchment', version: "${project.parchment_version}-${project.parchment_mc_version}"
 
-    if(file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
         accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
     }
 
@@ -79,7 +79,7 @@ minecraft {
     }
 }
 
-if(hasMixins) {
+if (hasMixins && !"${minecraft_version}".toString().equals("1.20.6")) {
     mixin {
         add sourceSets.main, "${project.mod_id}.refmap.json"
     }
@@ -91,7 +91,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${project.forge_version}"
 
-    if(hasMixins) {
+    if (hasMixins) {
         annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     }
 

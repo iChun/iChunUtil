@@ -18,10 +18,10 @@ dependencies {
 }
 
 loom {
-    if(file("src/main/resources/${mod_id}.accesswidener").exists()) {
+    if (file("src/main/resources/${mod_id}.accesswidener").exists()) {
         accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
     }
-    if(hasMixins) {
+    if (hasMixins) {
         mixin {
             defaultRefmapName = "${project.mod_id}.refmap.json"
         }
@@ -32,7 +32,7 @@ idea {
     module {
         inheritOutputDirs = false
 
-        if(gradle.root != null) { //we are in a composite build
+        if (gradle.root != null) { //we are in a composite build
             def outDir = file("${gradle.root.getRootProject().rootDir}/out")
             outputDir = file("${outDir}/production/${mod_id}")
             testOutputDir = file("${outDir}/test/${mod_id}")

@@ -6,7 +6,7 @@ plugins {
     id 'build-conventions-variations'
 }
 
-if(file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
     minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager

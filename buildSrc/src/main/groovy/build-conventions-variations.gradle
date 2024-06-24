@@ -35,21 +35,21 @@ if (isFabric || isForge || isNeoForge) {
         else if (isNeoForge) {
             archiveClassifier.set("")
         }
-
-        if (project.hasProperty("key_store")) {
-            tasks.named("signJar").configure {
-                if (isForge) {
-                    mustRunAfter "reobfShadowJar"
-                }
-                else {
-                    mustRunAfter "shadowJar"
-                }
-            }
-        }
     }
 
     components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
         skip()
+    }
+
+    if (project.hasProperty("key_store")) {
+        tasks.named("signJar").configure {
+            if (isForge) {
+                mustRunAfter "reobfShadowJar"
+            }
+            else {
+                mustRunAfter "shadowJar"
+            }
+        }
     }
 
     if (isFabric) {
@@ -60,7 +60,11 @@ if (isFabric || isForge || isNeoForge) {
     }
     else if (isForge) {
         reobf {
-            shadowJar {}
+            shadowJar {
+                if (project.hasProperty("key_store")) {
+                    finalizedBy "signJar"
+                }
+            }
         }
 
         jar {

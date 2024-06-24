@@ -111,7 +111,7 @@ if "%neoforge%"=="Yes" if "%publishMods%"=="Yes" set "command=!command! :neoforg
 
 echo Executing %command%
 
-start %command%
+start /B %command%
 
 exit /b
 
