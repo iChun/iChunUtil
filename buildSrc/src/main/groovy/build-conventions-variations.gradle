@@ -125,6 +125,7 @@ else if(!"${project.name}".toString().equals("api")) {
                         "deathcounter",
                         "ding",
                         "dogslie",
+                        "hotbarswapper",
                         "limitedlives",
                         "partyparrots",
                         "serverpause"
