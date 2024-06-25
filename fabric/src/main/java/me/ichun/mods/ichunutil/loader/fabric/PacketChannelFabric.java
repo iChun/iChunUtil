@@ -24,8 +24,6 @@ import java.util.Collection;
 
 public class PacketChannelFabric extends PacketChannel
 {
-    public MinecraftServer serverInstance;
-
     @SafeVarargs
     public PacketChannelFabric(ResourceLocation name, Class<? extends AbstractPacket>... packetTypes)
     {
