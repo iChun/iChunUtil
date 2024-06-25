@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public final class EntityHelperClient
 {
     public static List<? extends Entity> clientGetTarget(@NotNull String input)
@@ -52,6 +53,13 @@ public final class EntityHelperClient
             {
                 try {
                     UUID uuid = UUID.fromString(input);
+                    for(Entity entity : Minecraft.getInstance().level.entitiesForRendering())
+                    {
+                        if(uuid.equals(entity.getUUID()))
+                        {
+                            return Lists.newArrayList(entity);
+                        }
+                    }
                     for(Player worldPlayer : player.level().players())
                     {
                         if(worldPlayer.getUUID().equals(uuid))

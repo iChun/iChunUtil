@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public abstract class EventHandlerClient
 {
     public abstract void registerKeyMapping(KeyMapping key, String...conflictContext);

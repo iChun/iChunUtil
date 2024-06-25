@@ -3,6 +3,8 @@ package me.ichun.mods.ichunutil.loader.fabric.client;
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.fabric.event.client.FabricClientEvents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
+@Environment(EnvType.CLIENT)
 public class EventHandlerClientFabric extends EventHandlerClient
 {
     @Override
