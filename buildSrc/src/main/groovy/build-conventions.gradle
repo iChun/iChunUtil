@@ -321,8 +321,10 @@ if (project.hasProperty("key_store")) {
         }
     }
 
-    tasks.named(finaliseJarTaskName).configure {
-        finalizedBy signJar
+    if (!isInCompositeBuild) { //If we're in a composite build - we ain't publishing anyway, no need for signed jar
+        tasks.named(finaliseJarTaskName).configure {
+            finalizedBy signJar
+        }
     }
 }
 
