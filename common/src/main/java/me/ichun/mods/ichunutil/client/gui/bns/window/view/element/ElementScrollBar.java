@@ -134,20 +134,20 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
             if(orientation == Orientation.VERTICAL)
             {
                 //draw scroll bar slot
-                RenderHelper.startDrawBatch();
+                BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
                 int i = height - 6;
                 int x = getTop() + 3;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    RenderHelper.drawBatch(stack, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
+                    RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.drawBatch(stack, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                RenderHelper.drawBatch(stack, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
-                RenderHelper.endDrawBatch();
+                RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                RenderHelper.endDrawBatch(bufferbuilder);
 
                 //draw scroll bar
                 bindTexture(resourceScroller());
@@ -155,20 +155,20 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
                 //x, y, width, height
                 //getLeft(), getTop() + preSpace, 14, scrollBar
 
-                RenderHelper.startDrawBatch();
+                bufferbuilder = RenderHelper.startDrawBatch();
                 i = scrollBar - 7 - 2;
                 x = getTop() + preSpace + 4 + 1;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.drawBatch(stack, getLeft() + 1, x, 12, dist, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
+                    RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, x, 12, dist, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
-                RenderHelper.drawBatch(stack, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
-                RenderHelper.endDrawBatch();
+                RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
+                RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
+                RenderHelper.endDrawBatch(bufferbuilder);
             }
             else
             {
@@ -344,12 +344,11 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix = stack.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .uv((float)u2, (float)v1).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).uv((float)u2, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .uv((float)u1, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .uv((float)u1, (float)v1).endVertex();
-        tessellator.end();
+        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .setUv((float)u2, (float)v1);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .setUv((float)u1, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .setUv((float)u1, (float)v1);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 }

@@ -138,8 +138,8 @@ dependencies {
         // Mod Menu for Fabric
         modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-        //Lazy DFU for 1.19+
-        modImplementation "curse.maven:lazydfu-433518:3821870"
+        //Lazy DFU for 1.19+ - broke in 1.21
+        //modImplementation "curse.maven:lazydfu-433518:3821870"
     }
 }
 

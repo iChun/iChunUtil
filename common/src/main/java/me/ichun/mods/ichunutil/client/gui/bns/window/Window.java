@@ -3,6 +3,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
@@ -414,24 +415,24 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
             //draw the corners
             bindTexture(resourceHorse());
 
-            RenderHelper.startDrawBatch();
+            BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
 
             //fill space
-            RenderHelper.drawBatch(stack, getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 82D/256D, 166D/256D, 20D/256D, 68D/256D); //fill space
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 4, getTop() + 4, width - 8, height - 8, 0, 82D/256D, 166D/256D, 20D/256D, 68D/256D); //fill space
 
             //draw borders
-            RenderHelper.drawBatch(stack, getLeft(), getTop() + 4, 4, height - 8, 0, 0D/256D, 4D/256D, 4D/256D, 162D/256D); //left border
-            RenderHelper.drawBatch(stack, getLeft() + 4, getTop(), width - 8, 4, 0, 4D/256D, 172D/256D, 0D/256D, 4D/256D); //top border
-            RenderHelper.drawBatch(stack, getRight() - 4, getTop() + 4, 4, height - 8, 0, 172D/256D, 176D/256D, 4D/256D, 162D/256D); //right border
-            RenderHelper.drawBatch(stack, getLeft() + 4, getBottom() - 4, width - 8, 4, 0, 4D/256D, 172D/256D, 162D/256D, 166D/256D); //bottom border
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getTop() + 4, 4, height - 8, 0, 0D/256D, 4D/256D, 4D/256D, 162D/256D); //left border
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 4, getTop(), width - 8, 4, 0, 4D/256D, 172D/256D, 0D/256D, 4D/256D); //top border
+            RenderHelper.drawBatch(stack, bufferbuilder, getRight() - 4, getTop() + 4, 4, height - 8, 0, 172D/256D, 176D/256D, 4D/256D, 162D/256D); //right border
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 4, getBottom() - 4, width - 8, 4, 0, 4D/256D, 172D/256D, 162D/256D, 166D/256D); //bottom border
 
             //draw corners
-            RenderHelper.drawBatch(stack, getLeft(), getTop(), 4, 4, 0, 0D/256D, 4D/256D, 0D/256D, 4D/256D); //top left
-            RenderHelper.drawBatch(stack, getRight() - 4, getTop(), 4, 4, 0, 172D/256D, 176D/256D, 0D/256D, 4D/256D); //top right
-            RenderHelper.drawBatch(stack, getLeft(), getBottom() - 4, 4, 4, 0, 0D/256D, 4D/256D, 162D/256D, 166D/256D); //bottom left
-            RenderHelper.drawBatch(stack, getRight() - 4, getBottom() - 4, 4, 4, 0, 172D/256D, 176D/256D, 162D/256D, 166D/256D); //bottom right
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getTop(), 4, 4, 0, 0D/256D, 4D/256D, 0D/256D, 4D/256D); //top left
+            RenderHelper.drawBatch(stack, bufferbuilder, getRight() - 4, getTop(), 4, 4, 0, 172D/256D, 176D/256D, 0D/256D, 4D/256D); //top right
+            RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getBottom() - 4, 4, 4, 0, 0D/256D, 4D/256D, 162D/256D, 166D/256D); //bottom left
+            RenderHelper.drawBatch(stack, bufferbuilder, getRight() - 4, getBottom() - 4, 4, 4, 0, 172D/256D, 176D/256D, 162D/256D, 166D/256D); //bottom right
 
-            RenderHelper.endDrawBatch();
+            RenderHelper.endDrawBatch(bufferbuilder);
         }
         else
         {

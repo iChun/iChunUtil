@@ -33,7 +33,7 @@ import java.util.Map;
 public final class FabricConfigLoader
 {
     private static final Map<ConfigBase.Type, ArrayList<ConfigBase>> REGISTERED_CONFIGS = Collections.synchronizedMap(new EnumMap<>(ConfigBase.Type.class));
-    private static final PacketChannelFabric CHANNEL = new PacketChannelFabric(new ResourceLocation(iChunUtil.MOD_ID, "config"), PacketConfig.class);
+    private static final PacketChannelFabric CHANNEL = new PacketChannelFabric(ResourceLocation.fromNamespaceAndPath(iChunUtil.MOD_ID, "config"), PacketConfig.class);
 
     private static Path currentServerConfigPath = null;
 

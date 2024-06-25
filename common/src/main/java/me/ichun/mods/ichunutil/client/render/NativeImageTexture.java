@@ -18,7 +18,7 @@ public class NativeImageTexture extends AbstractTexture
     public NativeImageTexture(@NotNull NativeImage image)
     {
         this.image = image;
-        this.resourceLocation = new ResourceLocation("ichunutil", "native_image_" + Math.abs(image.hashCode()));
+        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("ichunutil", "native_image_" + Math.abs(image.hashCode()));
     }
 
     @Override

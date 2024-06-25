@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
@@ -89,7 +90,7 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
         TextureDefinition texButton = TEXDEF_BUTTON;
         if(height == 20 && width > 15)
         {
-            RenderHelper.startDrawBatch();
+            BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
 
             //gg easy life
             int i = width - 28;
@@ -97,27 +98,27 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
             while(i > 0)
             {
                 int dist = Math.min(i, 172);
-                RenderHelper.drawBatch(stack, x, posY, dist, 20, 0, 14D / texButton.width(), (14 + dist) / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw body
+                RenderHelper.drawBatch(stack, bufferbuilder, x, posY, dist, 20, 0, 14D / texButton.width(), (14 + dist) / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw body
                 i -= dist;
                 x += dist;
             }
 
 
-            RenderHelper.drawBatch(stack, posX, posY, 14, 20, 0, 0D / texButton.width(), 14D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
-            RenderHelper.drawBatch(stack, posX + width - 14, posY, 14, 20, 0, 186D / texButton.width(), 200D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
+            RenderHelper.drawBatch(stack, bufferbuilder, posX, posY, 14, 20, 0, 0D / texButton.width(), 14D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
+            RenderHelper.drawBatch(stack, bufferbuilder, posX + width - 14, posY, 14, 20, 0, 186D / texButton.width(), 200D / texButton.width(), 0 / texButton.height(), 20 / texButton.height()); //draw leftblock
 
-            RenderHelper.endDrawBatch();
+            RenderHelper.endDrawBatch(bufferbuilder);
         }
         else if(height < 20 && width < 200) //default button length
         {
-            RenderHelper.startDrawBatch();
+            BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
 
-            RenderHelper.drawBatch(stack, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomLeft
-            RenderHelper.drawBatch(stack, posX, posY, (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topLeft
-            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/texButton.width(), 200D/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topRight
-            RenderHelper.drawBatch(stack, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/texButton.width(), 200D/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomRight
+            RenderHelper.drawBatch(stack, bufferbuilder, posX, posY + height - (height - 3), (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomLeft
+            RenderHelper.drawBatch(stack, bufferbuilder, posX, posY, (width - 3), (height - 3), 0, 0D/texButton.width(), (width - 3)/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topLeft
+            RenderHelper.drawBatch(stack, bufferbuilder, posX + width - (width - 3), posY, (width - 3), (height - 3), 0, (200D - (width - 3))/texButton.width(), 200D/texButton.width(), 0/texButton.height(), (height - 3)/texButton.height()); //draw topRight
+            RenderHelper.drawBatch(stack, bufferbuilder, posX + width - (width - 3), posY + height - (height - 3), (width - 3), (height - 3), 0, (200 - (width - 3))/texButton.width(), 200D/texButton.width(), (20 - (height - 3))/texButton.height(), 20/texButton.height()); //draw bottomRight
 
-            RenderHelper.endDrawBatch();
+            RenderHelper.endDrawBatch(bufferbuilder);
         }
         else //big bois
         {
@@ -132,7 +133,7 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
 
     public static void cropAndStitch(PoseStack stack, int posX, int posY, int width, int height, int borderSize, double u, double v, int uLength, int vLength, double texWidth, double texHeight)
     {
-        RenderHelper.startDrawBatch();
+        BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
 
         int ii = width - (borderSize * 2);
         int xx = posX + borderSize;
@@ -144,7 +145,7 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
             while(jj > 0)
             {
                 int disty = Math.min(jj, vLength - (borderSize * 2));
-                RenderHelper.drawBatch(stack, xx, yy, distx, disty, 0, (u + borderSize)/texWidth, ((u + borderSize) + distx)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + disty)/texWidth); //draw body
+                RenderHelper.drawBatch(stack, bufferbuilder, xx, yy, distx, disty, 0, (u + borderSize)/texWidth, ((u + borderSize) + distx)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + disty)/texWidth); //draw body
                 jj -= disty;
                 yy += disty;
             }
@@ -158,8 +159,8 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
         while(i > 0)
         {
             int dist = Math.min(i, uLength - (borderSize * 2));
-            RenderHelper.drawBatch(stack, x, posY, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw top bar
-            RenderHelper.drawBatch(stack, x, posY + height - borderSize, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottom bar
+            RenderHelper.drawBatch(stack, bufferbuilder, x, posY, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw top bar
+            RenderHelper.drawBatch(stack, bufferbuilder, x, posY + height - borderSize, dist, borderSize, 0, (u + borderSize)/texWidth, ((u + borderSize) + dist)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottom bar
             i -= dist;
             x += dist;
         }
@@ -169,18 +170,18 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
         while(i > 0)
         {
             int dist = Math.min(i, vLength - (borderSize * 2));
-            RenderHelper.drawBatch(stack, posX, x, borderSize, dist, 0, u/texWidth, (u + borderSize)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
-            RenderHelper.drawBatch(stack, posX + width - borderSize, x, borderSize, dist, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            RenderHelper.drawBatch(stack, bufferbuilder, posX, x, borderSize, dist, 0, u/texWidth, (u + borderSize)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
+            RenderHelper.drawBatch(stack, bufferbuilder, posX + width - borderSize, x, borderSize, dist, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + borderSize)/texWidth, ((v + borderSize) + dist)/texWidth); //draw left bar
             i -= dist;
             x += dist;
         }
 
-        RenderHelper.drawBatch(stack, posX, posY + height - borderSize, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomLeft
-        RenderHelper.drawBatch(stack, posX, posY, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topLeft
-        RenderHelper.drawBatch(stack, posX + width - borderSize, posY, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topRight
-        RenderHelper.drawBatch(stack, posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
+        RenderHelper.drawBatch(stack, bufferbuilder, posX, posY + height - borderSize, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomLeft
+        RenderHelper.drawBatch(stack, bufferbuilder, posX, posY, borderSize, borderSize, 0, u/texWidth, (u + borderSize)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topLeft
+        RenderHelper.drawBatch(stack, bufferbuilder, posX + width - borderSize, posY, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, v/texHeight, (v + borderSize)/texHeight); //draw topRight
+        RenderHelper.drawBatch(stack, bufferbuilder, posX + width - borderSize, posY + height - borderSize, borderSize, borderSize, 0, (u + uLength - borderSize)/texWidth, (u + uLength)/texWidth, (v + vLength - borderSize)/texHeight, (v + vLength)/texHeight); //draw bottomRight
 
-        RenderHelper.endDrawBatch();
+        RenderHelper.endDrawBatch(bufferbuilder);
     }
 
     public enum ButtonState

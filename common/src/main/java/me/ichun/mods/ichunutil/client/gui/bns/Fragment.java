@@ -19,36 +19,36 @@ import java.util.List;
 public abstract class Fragment<P extends Rectangle>
     implements Rectangle, Constrainable, ContainerEventHandler
 {
-    private static final ResourceLocation VANILLA_HORSE = new ResourceLocation("textures/gui/container/horse.png"); //
-    private static final ResourceLocation HORSE = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/horse.png");
+    private static final ResourceLocation VANILLA_HORSE = ResourceLocation.withDefaultNamespace("textures/gui/container/horse.png"); //
+    private static final ResourceLocation HORSE = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/horse.png");
     public ResourceLocation resourceHorse() { return renderMinecraftStyle() == 2 ? VANILLA_HORSE : HORSE; }
 
-    private static final ResourceLocation VANILLA_TAB_ITEMS = new ResourceLocation("textures/gui/container/creative_inventory/tab_items.png");
-    private static final ResourceLocation TAB_ITEMS = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/tab_items.png");
+    private static final ResourceLocation VANILLA_TAB_ITEMS = ResourceLocation.withDefaultNamespace("textures/gui/container/creative_inventory/tab_items.png");
+    private static final ResourceLocation TAB_ITEMS = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/tab_items.png");
     public ResourceLocation resourceTabItems() { return renderMinecraftStyle() == 2 ? VANILLA_TAB_ITEMS : TAB_ITEMS; }
 
     public static final TextureDefinition TEXDEF_SCROLLER = new TextureDefinition(12D, 15D, 0, 12, 0, 15, 2, 2, 2, 10, 2, 13);
-    private static final ResourceLocation VANILLA_SCROLLER = new ResourceLocation("textures/gui/sprites/container/creative_inventory/scroller.png");
-    private static final ResourceLocation SCROLLER = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/scroller.png");
+    private static final ResourceLocation VANILLA_SCROLLER = ResourceLocation.withDefaultNamespace("textures/gui/sprites/container/creative_inventory/scroller.png");
+    private static final ResourceLocation SCROLLER = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/scroller.png");
     public ResourceLocation resourceScroller() { return renderMinecraftStyle() == 2 ? VANILLA_SCROLLER : SCROLLER; }
 
     public static final TextureDefinition TEXDEF_UP = new TextureDefinition(32D, 32D, 3, 14, 3, 14, 0, 0, 3, 14, 3, 14);
-    private static final ResourceLocation VANILLA_UP = new ResourceLocation("textures/gui/sprites/server_list/move_up.png");
-    private static final ResourceLocation UP = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/move_up.png");
+    private static final ResourceLocation VANILLA_UP = ResourceLocation.withDefaultNamespace("textures/gui/sprites/server_list/move_up.png");
+    private static final ResourceLocation UP = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/move_up.png");
     public ResourceLocation resourceUp() { return renderMinecraftStyle() == 2 ? VANILLA_UP : UP; }
 
     public static final TextureDefinition TEXDEF_DOWN = new TextureDefinition(32D, 32D, 3, 14, 18, 29, 0, 0, 3, 14, 18, 29);
-    private static final ResourceLocation VANILLA_DOWN = new ResourceLocation("textures/gui/sprites/server_list/move_down.png");
-    private static final ResourceLocation DOWN = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/move_down.png");
+    private static final ResourceLocation VANILLA_DOWN = ResourceLocation.withDefaultNamespace("textures/gui/sprites/server_list/move_down.png");
+    private static final ResourceLocation DOWN = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/move_down.png");
     public ResourceLocation resourceDown() { return renderMinecraftStyle() == 2 ? VANILLA_DOWN : DOWN; }
 
     public static final TextureDefinition TEXDEF_BUTTON = new TextureDefinition(200D, 20D, 0, 200, 0, 20, 3, 3, 3, 197, 3, 17);
-    private static final ResourceLocation VANILLA_BUTTON = new ResourceLocation("textures/gui/sprites/widget/button.png");
-    private static final ResourceLocation VANILLA_BUTTON_DISABLED = new ResourceLocation("textures/gui/sprites/widget/button_disabled.png");
-    private static final ResourceLocation VANILLA_BUTTON_HIGHLIGHTED = new ResourceLocation("textures/gui/sprites/widget/button_highlighted.png");
-    private static final ResourceLocation BUTTON = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/button.png");
-    private static final ResourceLocation BUTTON_DISABLED = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/button_disabled.png");
-    private static final ResourceLocation BUTTON_HIGHLIGHTED = new ResourceLocation("ichunutil", "textures/gui/bns/vanilla/button_highlighted.png");
+    private static final ResourceLocation VANILLA_BUTTON = ResourceLocation.withDefaultNamespace("textures/gui/sprites/widget/button.png");
+    private static final ResourceLocation VANILLA_BUTTON_DISABLED = ResourceLocation.withDefaultNamespace("textures/gui/sprites/widget/button_disabled.png");
+    private static final ResourceLocation VANILLA_BUTTON_HIGHLIGHTED = ResourceLocation.withDefaultNamespace("textures/gui/sprites/widget/button_highlighted.png");
+    private static final ResourceLocation BUTTON = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/button.png");
+    private static final ResourceLocation BUTTON_DISABLED = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/button_disabled.png");
+    private static final ResourceLocation BUTTON_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/button_highlighted.png");
     public ResourceLocation resourceButton(Element.ButtonState state)
     {
         if(renderMinecraftStyle() == 1) // Vanilla style

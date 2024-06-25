@@ -3,11 +3,14 @@ package me.ichun.mods.ichunutil.client.entity;
 import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,13 +40,17 @@ public final class EntityHelperClient
                     return Collections.emptyList();
                 }
 
-                //taken from EntitySelector.select
+                //taken from EntitySelector.findEntities
                 Vec3 vec3d = selector.position.apply(new Vec3(player.getX(), player.getY(), player.getZ()));
-                Predicate<Entity> predicate = selector.getPredicate(vec3d);
+                AABB aABB = selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256);
+                Predicate<Entity> predicate;
                 if (selector.currentEntity) {
-                    return (List<? extends Entity>)(predicate.test(player) ? Lists.newArrayList(player) : Collections.emptyList());
+                    predicate = selector.getPredicate(vec3d, aABB, (FeatureFlagSet)null);
+                    return predicate.test(player) ? List.of(player) : List.of();
                 } else {
-                    List<Entity> list = Lists.newArrayList();
+                    predicate = selector.getPredicate(vec3d, aABB, (FeatureFlagSet)player.level().enabledFeatures());
+
+                    List<Entity> list = new ObjectArrayList();
                     list.addAll(player.level().getEntities(selector.type, selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256), predicate));
 
                     return selector.sortAndLimit(vec3d, list);
@@ -68,6 +75,7 @@ public final class EntityHelperClient
                         }
                     }
                 } catch (IllegalArgumentException var4) {
+                    //is when the string passed isn't a UUID
                     for(Player worldPlayer : player.level().players())
                     {
                         if(worldPlayer.getName().getString().equals(input))

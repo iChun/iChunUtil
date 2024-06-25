@@ -365,7 +365,7 @@ public abstract class Workspace extends Screen
             RenderHelper.drawColour(graphics, getTheme().windowBorderActive, 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
             RenderHelper.drawColour(graphics, getTheme().windowBackground, 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
 
-            MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource renderType = graphics.bufferSource();
             stack.translate(0.0D, 0.0D, zLevel);
 
             int tooltipTop = tooltipY;
@@ -386,8 +386,9 @@ public abstract class Workspace extends Screen
                 tooltipY += 10;
             }
 
-            renderType.endBatch();
             stack.popPose();
+
+            graphics.flush();
 
             RenderSystem.enableDepthTest();
         }

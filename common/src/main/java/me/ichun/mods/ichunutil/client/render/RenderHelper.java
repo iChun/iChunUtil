@@ -29,37 +29,33 @@ public class RenderHelper
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Matrix4f matrix = stack.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).uv((float)u1, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).uv((float)u2, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).uv((float)u2, (float)v1).endVertex();
-        bufferbuilder.vertex(matrix, (float)posX, (float)posY, (float)zLevel).uv((float)u1, (float)v1).endVertex();
-        tessellator.end();
+        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setUv((float)u1, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setUv((float)u2, (float)v1);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setUv((float)u1, (float)v1);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 
-    public static void startDrawBatch()
+    public static BufferBuilder startDrawBatch()
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        return tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
     }
 
-    public static void drawBatch(PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    public static void drawBatch(PoseStack stack, BufferBuilder bufferbuilder, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
     {
         Matrix4f matrix = stack.last().pose();
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.vertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).uv((float)u1, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).uv((float)u2, (float)v2).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).uv((float)u2, (float)v1).endVertex();
-        bufferbuilder.vertex(matrix, (float)posX, (float)posY, (float)zLevel).uv((float)u1, (float)v1).endVertex();
+        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setUv((float)u1, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setUv((float)u2, (float)v1);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setUv((float)u1, (float)v1);
     }
 
-    public static void endDrawBatch()
+    public static void endDrawBatch(BufferBuilder bufferbuilder)
     {
-        Tesselator.getInstance().end();
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 
     public static void drawColour(GuiGraphics graphics, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
@@ -85,13 +81,12 @@ public class RenderHelper
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Matrix4f matrix = graphics.pose().last().pose();
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.vertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).color(r, g, b, alpha).endVertex();
-        bufferbuilder.vertex(matrix, (float)posX, (float)posY, (float)zLevel).color(r, g, b, alpha).endVertex();
-        tessellator.end();
+        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setColor(r, g, b, alpha);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setColor(r, g, b, alpha);
+        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setColor(r, g, b, alpha);
+        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setColor(r, g, b, alpha);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 
     public static void colour(int color)

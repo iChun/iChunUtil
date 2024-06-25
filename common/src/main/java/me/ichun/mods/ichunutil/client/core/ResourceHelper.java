@@ -21,9 +21,9 @@ import java.util.zip.ZipInputStream;
 
 public final class ResourceHelper
 {
-    public static final ResourceLocation TEX_TAMED_WOLF = new ResourceLocation("textures/entity/wolf/wolf_tame.png");
-    public static final ResourceLocation TEX_WOLF_COLLAR = new ResourceLocation("textures/entity/wolf/wolf_collar.png");
-    public static final ResourceLocation TEX_PIG = new ResourceLocation("textures/entity/pig/pig.png");
+    public static final ResourceLocation TEX_TAMED_WOLF = ResourceLocation.withDefaultNamespace("textures/entity/wolf/wolf_tame.png");
+    public static final ResourceLocation TEX_WOLF_COLLAR = ResourceLocation.withDefaultNamespace("textures/entity/wolf/wolf_collar.png");
+    public static final ResourceLocation TEX_PIG = ResourceLocation.withDefaultNamespace("textures/entity/pig/pig.png");
 
     private static Path workingDir;
     private static Path themesDir;
