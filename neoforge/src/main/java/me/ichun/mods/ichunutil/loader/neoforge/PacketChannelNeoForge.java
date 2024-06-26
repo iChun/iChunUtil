@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.PlayNetworkDirection;
@@ -34,7 +35,7 @@ public class PacketChannelNeoForge extends PacketChannel
             .encoder(PacketPayload::write)
             .decoder(this::readPacket)
             .consumerNetworkThread((payload, context) -> {
-                Player player = context.getDirection() == PlayNetworkDirection.PLAY_TO_SERVER ? context.getSender() : getPlayer();
+                Player player = context.getDirection().getReceptionSide() == LogicalSide.SERVER ? context.getSender() : getPlayer();
                 payload.process(player).ifPresent(context::enqueueWork);
                 context.setPacketHandled(true);
             })
