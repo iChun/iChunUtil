@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.loader.neoforge;
 
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import net.minecraft.network.protocol.PacketFlow;
@@ -10,8 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -86,11 +83,5 @@ public class PacketChannelNeoForge extends PacketChannel
     public void sendToAround(AbstractPacket packet, ServerLevel world, double x, double y, double z, double radius)
     {
         PacketDistributor.sendToPlayersNear(world, null, x, y, z, radius, payload(packet));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public Player getPlayer()
-    {
-        return iChunUtil.eC().getPlayer();
     }
 }
