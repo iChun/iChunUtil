@@ -1,0 +1,47 @@
+{
+  "config.ichunutil.cat.general.name": "General",
+  "config.ichunutil.cat.general.desc": "These configs are general configs that don't fit any other category.",
+  "config.ichunutil.cat.gameplay.name": "Gameplay",
+  "config.ichunutil.cat.gameplay.desc": "These configs affect the gameplay while using the mod.",
+  "config.ichunutil.cat.global.name": "Global",
+  "config.ichunutil.cat.global.desc": "These configs affect both servers and clients that load the mod.",
+  "config.ichunutil.cat.serverOnly.name": "Server Only",
+  "config.ichunutil.cat.serverOnly.desc": "These configs affect only the server that loads the mod.",
+  "config.ichunutil.cat.clientOnly.name": "Client Only",
+  "config.ichunutil.cat.clientOnly.desc": "These configs affect only the client that loads the mod.",
+  "config.ichunutil.cat.block.name": "Blocks",
+  "config.ichunutil.cat.block.desc": "These configs affect the blocks in the mod.",
+
+  "config.ichunutil.cat.bns.name": "Boxes & Stuff (B&S)",
+  "config.ichunutil.cat.bns.desc": "These configs affect GUIs using B&S.",
+  "config.ichunutil.prop.bnsMinecraftStyle.name": "B&S in Minecraft Style",
+  "config.ichunutil.prop.bnsMinecraftStyle.desc": "Renders B&S's GUIs in a Minecraft Style instead.\n0 = Default Style\n1 = Vanilla Style\n2 = Texture Pack Style.",
+  "config.ichunutil.prop.bnsDockPadding.name": "Dock Padding",
+  "config.ichunutil.prop.bnsDockPadding.desc": "How much padding to add to the docked windows.",
+  "config.ichunutil.prop.bnsDockBorder.name": "Dock Border Size",
+  "config.ichunutil.prop.bnsDockBorder.desc": "Number of pixels before iChunUtil thinks you're trying to dock a window.",
+  "config.ichunutil.prop.bnsDoubleClickSpeed.name": "Double Click Speed",
+  "config.ichunutil.prop.bnsDoubleClickSpeed.desc": "Speed (in ticks) to register a double click.",
+  "config.ichunutil.prop.bnsTooltipCooldown.name": "Tooltip Cooldown",
+  "config.ichunutil.prop.bnsTooltipCooldown.desc": "How long to mouse over an element (in ticks) before showing a tooltip.",
+  "config.ichunutil.prop.bnsTheme.name": "Theme",
+  "config.ichunutil.prop.bnsTheme.desc": "Theme to use for Boxes & Stuff",
+
+  "gui.ichunutil.configs.title": "Config Editor",
+  "gui.ichunutil.configs.configs": "Configs",
+  "gui.ichunutil.configs.needsRestart": "Some configs changed require a restart to take effect!",
+
+  "gui.ichunutil.configs.noEditingServerConfig": "You can only edit a SERVER config in a single player world environment!",
+
+  "gui.ichunutil.element.textField": "Text Field",
+
+  "window.popup.title": "Alert!",
+
+  "window.saveAs.title": "Save As",
+  "window.saveAs.fileName": "File Name",
+  "window.saveAs.overwrite": "Overwrite?",
+  "window.saveAs.confirmOverwrite": "File already exists! Confirm overwrite?",
+  "window.saveAs.failed": "Failed to save file.",
+
+  "element.button.clear": "Clear"
+}

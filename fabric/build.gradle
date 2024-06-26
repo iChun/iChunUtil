@@ -1,0 +1,47 @@
+//If you are reading this, this is a direct copy of the Fabric subproject's build.gradle which is also used for the common and api subprojects. Large proportion of setup is done in build-conventions.gradle
+plugins {
+    id 'fabric-loom' version "${fabric_loom_version}"
+    id 'build-conventions'
+    id 'build-conventions-variations'
+}
+
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${project.parchment_mc_version}:${project.parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    //Additional dependencies defined in build-conventions plugin in buildSrc
+}
+
+loom {
+    if (file("src/main/resources/${mod_id}.accesswidener").exists()) {
+        accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
+    }
+    if (hasMixins) {
+        mixin {
+            defaultRefmapName = "${project.mod_id}.refmap.json"
+        }
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+
+        if (gradle.root != null) { //we are in a composite build
+            def outDir = file("${gradle.root.getRootProject().rootDir}/out")
+            outputDir = file("${outDir}/production/${mod_id}")
+            testOutputDir = file("${outDir}/test/${mod_id}")
+        }
+    }
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    filesMatching(['fabric.mod.json']) {
+        expand replaceProperties + [project: project]
+    }
+}

@@ -1,0 +1,499 @@
+plugins {
+    id 'maven-publish'
+    id "com.hypherionmc.modutils.modpublisher" //we can't define version in pre-built scripts
+}
+
+def javaVersion = JavaVersion.VERSION_17
+def javaLanguageVersion = JavaLanguageVersion.of(javaVersion.toString().toInteger())
+def nameCapitalised = "${project.name}".toString().equals("neoforge") ? "NeoForge" : "${project.name}".capitalize()
+def isBuildingiChunUtil = "${project.mod_id}".toString().equals("ichunutil")
+
+def hasApi = file("${project.rootDir}/api").exists()
+def isApi = "${project.name}".toString().equals("api")
+def isCommon = "${project.name}".toString().equals("common")
+
+def isFabric = "${project.name}".toString().equals("fabric")
+def isForge = "${project.name}".toString().equals("forge")
+def isNeoForge = "${project.name}".toString().equals("neoforge")
+
+def isFabricBased = hasApi && isApi || isCommon || isFabric
+def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
+def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
+def isAnAllCompositeBuild = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
+
+//Everyone has to have a different task that finalizes their jar...
+def finaliseJarTaskName = isFabric ? "remapJar" : isForge ? "reobfJar" : "jar"
+def shadowsDependencies = isBuildingiChunUtil || "${project.mod_id}".toString().equals("contentcreatorintegration")
+
+ext {
+    replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            minecraft_resource_pack_format: minecraft_resource_pack_format, minecraft_data_pack_format: minecraft_data_pack_format,
+            forge_version         : forge_version, forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_description : mod_description,
+            mod_url_home: mod_url_home, mod_url_sources: mod_url_sources, mod_url_issues: mod_url_issues, mod_url_discord: mod_url_discord
+    ]
+    if (!isBuildingiChunUtil){
+        replaceProperties.put("ichunutil_version", ichunutil_version)
+        replaceProperties.put("ichunutil_version_range", ichunutil_version_range)
+    }
+    hasMixins = file("${project.rootDir}/common/src/main/resources/${project.mod_id}.mixins.json").exists()
+    jarManifestAttributes = [
+            "Specification-Title"     : "${project.mod_id}",
+            "Specification-Vendor"    : "iChun",
+            "Specification-Version"   : "${project.mod_version}",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : "iChun",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ]
+    if (hasMixins)
+    {
+        jarManifestAttributes.put("MixinConfigs", "${project.mod_id}.mixins.json")
+    }
+}
+
+base {
+    archivesName = "${project.archives_base_name}"
+}
+
+version = "${project.minecraft_version}-${nameCapitalised}-${project.mod_version}"
+group = "${project.maven_group}.${project.mod_id}" //we have to append the mod_id because it breaks composite builds, so we explicitly define the groupId when publishing
+
+repositories {
+    mavenLocal()
+
+    maven {
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org'
+    }
+    maven {
+        name = 'CurseMaven'
+        url = 'https://cursemaven.com'
+    }
+
+    // ModMenu
+    maven {
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Nucleoid" 
+        url = "https://maven.nucleoid.xyz/"
+    }
+}
+
+dependencies {
+    if (!isBuildingiChunUtil) {
+        if (!isInCompositeBuild) { //Add all of our subprojects as dependencies
+            if (!(isCommon && isAnAllCompositeBuild)) { // Don't add it to common in the "all" build
+                def excludedMods = [
+//                    "BetterThanBunnies",
+//                    "Ding"
+                ]
+
+                gradle.ext.projectSubMods.forEach { mod ->
+                    if (excludedMods.contains(mod)) {
+                        println "${mod} is excluded from dependencies."
+                    } else {
+                        println "Adding ${mod} to dependencies for loading in runs."
+                        def dep = isFabricBased ? "fabric" : project.name
+                        def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
+                        if (file("${project.rootDir}/../${mod}/api").exists()) {
+                            compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api"
+                            //add the api dep if it exists
+                        }
+                        //add the common dep
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
+                        //add the modloader specific dep (fabric for common and api)
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
+
+                        if ("${mod}".toString().equals("iChunUtil")) {
+                            implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+                        } else if ("${mod}".toString().equals("CCI1.x")) {
+                            implementation "io.socket:socket.io-client:1.0.1" // MIT
+                            implementation "org.java-websocket:Java-WebSocket:1.5.3" // MIT
+                        }
+                    }
+                }
+            }
+        } else {
+            def dep = isFabricBased ? "fabric" : project.name
+            //We don't use the iChunUtil version number as these are substituted
+            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
+            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}"
+        }
+    }
+    if (isIDE && !isAnAllCompositeBuild) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
+        if (hasApi && !isApi) {
+            compileOnly project(':api')
+        }
+        if (!isCommon && !isApi) {
+            compileOnly project(':common')
+        }
+    }
+    if (isFabric)
+    {
+        // API and Common are just copies of Fabric build.gradle without loader or API to ensure it compiles without Fabric so we have to add these
+
+        // Fabric API. This is technically optional, but you probably want it anyway.
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+        // Mod Menu for Fabric
+        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+        //Lazy DFU for 1.18.2
+        modImplementation "curse.maven:lazydfu-433518:3209972"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = javaLanguageVersion
+    }
+
+    sourceCompatibility = targetCompatibility = javaVersion
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    it.options.release = javaLanguageVersion.asInt()
+}
+
+tasks.withType(ProcessResources).configureEach {
+    if ("${project.mod_license}".toString().equals("GNU Lesser General Public License v3.0")) {
+        from(project.rootDir){
+            include("COPYING")
+            include("COPYING.LESSER")
+        }
+    }
+    inputs.properties replaceProperties
+}
+
+compileJava {
+    //If we have an API, depend on its compile
+    if (hasApi && !isApi) {
+        dependsOn ":api:compileJava"
+    }
+
+    //Depend on common being compilable first
+    if (!isCommon && !isApi) {
+        dependsOn ':common:compileJava'
+    }
+}
+
+//Add the api and common source sets for compile to all the other subprojects
+if (hasApi && !isApi && !isIDE) {
+    sourceSets.main.java.srcDirs += ["${project.rootDir}/api/src/main/java"]
+    sourceSets.main.resources.srcDirs += ["${project.rootDir}/api/src/main/resources"]
+}
+
+//Add iChunUtil's access wideners/transformers - some MLs only accept one file so we just put it all in iChunUtil
+if (!isBuildingiChunUtil) {
+    if (isFabricBased) {
+        def accessWidenerFile = file("${project.rootDir}/../iChunUtil/fabric/src/main/resources/ichunutil.accesswidener")
+        if (accessWidenerFile.exists()) {
+            loom.accessWidenerPath = accessWidenerFile
+        }
+    }
+    else if (isForge) {
+        def accessTransformerFile = file("${project.rootDir}/../iChunUtil/forge/src/main/resources/META-INF/accesstransformer.cfg")
+        if (accessTransformerFile.exists()) {
+            minecraft.accessTransformer = accessTransformerFile
+        }
+    }
+    else if (isNeoForge) {
+        def accessTransformerFile = file("${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg")
+        if (accessTransformerFile.exists()) {
+            minecraft.accessTransformers.file(accessTransformerFile)
+        }
+    }
+}
+
+if (hasApi && isApi || isCommon) {
+    //We don't these tasks as we're just testing compile
+    def disabledTasks = [ "jar", "remapJar", "publish", "publishToMavenLocal", "publishMod", "publishCurseforge", "publishModrinth" ]
+    disabledTasks.forEach { it ->
+        tasks.named(it).configure {
+            enabled = false
+        }
+    }
+
+    //Add the project's access widener
+    def accessWidenerFile = file("${project.rootDir}/fabric/src/main/resources/${project.mod_id}.accesswidener")
+    if (accessWidenerFile.exists()) {
+        loom.accessWidenerPath = accessWidenerFile
+    }
+
+    return
+}
+
+// ===================================================
+// Everything below this is for the actual subprojects
+// ===================================================
+
+//IntelliJ doesn't like it when we have combined source sets... We only need this to build and we don't build using the IDE anyway.
+if (!isIDE) {
+    sourceSets.main.java.srcDirs += ["${project.rootDir}/common/src/main/java"]
+    sourceSets.main.resources.srcDirs += ["${project.rootDir}/common/src/main/resources"]
+}
+
+if (!isFabric) {
+    // If gradle developers could see me now they'd be rolling in their graves
+    tasks.register("processSource", Sync) {
+        from sourceSets.main.java
+        into "${buildDir}/retokened-${project.name}"
+        def output = isForge ? "@net.minecraftforge.api.distmarker.OnlyIn(net.minecraftforge.api.distmarker.Dist.CLIENT)" : "@net.neoforged.api.distmarker.OnlyIn(net.neoforged.api.distmarker.Dist.CLIENT)"
+        filter(org.apache.tools.ant.filters.ReplaceTokens, beginToken: '@', endToken: ')', tokens:["net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT": "${output}".toString()])
+    }
+
+    compileJava {
+        source = processSource.outputs
+    }
+}
+
+jar {
+    manifest {
+        attributes(jarManifestAttributes)
+    }
+}
+
+if (hasApi) {
+    def apiJar = tasks.register('apiJar', Jar) {
+        mustRunAfter finaliseJarTaskName
+
+        archiveClassifier = "api"
+        from(sourceSets.main.output) {
+            include "me/ichun/mods/${project.mod_id}/api/**"
+        }
+
+        if (project.hasProperty('key_store')) {
+            doLast {
+                def jarFile = file("${apiJar.archivePath}")
+                if (jarFile.exists()) {
+                    ant.signjar(
+                            jar: jarFile,
+                            destDir: "${layout.buildDirectory.dir("libs").get()}",
+                            alias : "${project.key_store_alias}",
+                            storetype : "${project.key_store_type}",
+                            keystore : "${project.key_store}",
+                            storepass : "${project.key_store_pass}",
+                            keypass : "${project.key_store_key_pass}",
+                            preservelastmodified : true
+                    )
+                }
+            }
+        }
+    }
+
+    configurations {
+        apiElements {
+            extendsFrom configurations.runtimeElements
+
+            canBeResolved = false
+            canBeConsumed = true
+            attributes {
+                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+                attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EMBEDDED)) // means no relocation of packages
+                attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, javaLanguageVersion.asInt())
+            }
+            //We don't want the runtimeElements' artifacts
+            artifacts.clear()
+            outgoing.artifact(apiJar)
+        }
+    }
+}
+
+if (project.hasProperty("key_store")) {
+    def signJar = tasks.register("signJar") {
+        doLast {
+            def jarFile = isFabric ? file("${remapJar.archivePath}") : file("${jar.archivePath}")
+            if (jarFile.exists()) {
+                ant.signjar(
+                        jar: jarFile,
+                        destDir: "${layout.buildDirectory.dir("libs").get()}",
+                        alias : "${project.key_store_alias}",
+                        storetype : "${project.key_store_type}",
+                        keystore : "${project.key_store}",
+                        storepass : "${project.key_store_pass}",
+                        keypass : "${project.key_store_key_pass}",
+                        preservelastmodified : true
+                )
+            }
+        }
+
+        //The "reobfJar" task doesn't exist at configuration stage in Forge for some reason so we tell gradle to run signJar AFTER reobfJar but is finalized by jar
+        if (isForge) {
+            mustRunAfter "reobfJar"
+        }
+    }
+
+    if (!(isForge && shadowsDependencies) && !isInCompositeBuild) {
+        tasks.named(isFabric ? "remapJar" : "jar").configure {
+            finalizedBy signJar
+        }
+    }
+}
+
+if (isFabric) {
+    //Required to make IDEA runs generate for Fabric
+    loom.runConfigs.configureEach {
+        ideConfigGenerated = true
+    }
+}
+else if (isForge) {
+    if (!shadowsDependencies) { // Reobfing the jar is done in the variants gradle file.
+        // This is the preferred method to reobfuscate your jar file
+        jar.finalizedBy("reobfJar")
+        // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+        // publish.dependsOn('reobfJar')
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "${project.maven_group}"
+            artifactId "${project.mod_id}"
+            version  "${project.minecraft_version}-${project.name}-${project.mod_version}"
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.rootDir}/repo"
+        }
+    }
+}
+
+publisher {
+    // Setup the required API keys. You only need to define the keys for
+    // the platforms you plan on uploading to
+    apiKeys {
+        // Modrinth Token
+        if (project.hasProperty("modrinth_token")) {
+            modrinth project.modrinth_token
+        }
+        // Curseforge Token
+        if (project.hasProperty("curseforge_token")) {
+            curseforge project.curseforge_token
+        }
+        // GitHub Token
+        //github System.getenv("GITHUB_TOKEN")
+    }
+
+    // Enable Debug mode. When enabled, no files will actually be uploaded
+    //setDebug(true)
+
+    // Modrinth Project ID
+    setModrinthID("${project.modrinth_project_id}")
+
+    // Curseforge Project ID
+    setCurseID(isFabric ? "${project.curseforge_project_id_fabric}" : "${project.curseforge_project_id_forge}")
+
+    // Type of release. beta, alpha or release
+    // You can also use VersionType.BETA, VersionType.ALPHA or VersionType.RELEASE
+    setVersionType("release")
+
+    // Changelog. This can be a file, string, OR, gist/github url
+    // For example: markdown.md, or "This is my changelog"
+    // Or: https://raw.githubusercontent.com/hypherionmc/changelogs/changelog.md
+    // Or https://gist.githubusercontent.com/hypherionmc/92f825d3c9337964cc77c9c8c9bf65e6/raw/ceeaaee5b98c688a23398864fe480b84796a1651/test_gist.md
+    setChangelog(file("${project.rootDir}/changelog.md"))
+
+    // Required for Modrinth/GitHub
+    setProjectVersion("${project.mod_version}")
+
+    // The supported game versions
+    setGameVersions("1.18", "1.18.1", "${project.minecraft_version}")
+
+    // The modloaders your upload supports.
+    // This can also be an Enum from ModLoader,
+    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
+    setLoaders("${project.name}")
+
+    // The new Curseforge Environment tag. Optional
+    // Valid values are "server", "client" or "both"
+    // You can also use CurseEnvironment.BOTH, or CurseEnvironment.SERVER or CurseEnvironment.CLIENT
+    setCurseEnvironment("${project.curseforge_environment}")
+
+    // Override the artifact uploaded to modrinth
+    // setPlatformArtifact(Platform.Modrinth, "build/libs/mymod.jar")
+    // setPlatformArtifact(Platform.Modrinth, jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    // Valid platforms are modrinth, curseforge and github
+    //setPlatformArtifact("modrinth", modrinthJar)
+
+    // Disable the built in Fractureizer scanner
+    //setDisableMalwareScanner(true)
+
+    // Add supported java versions. Currently only used by CurseForge
+    // Supports anything that can be parsed using JavaVersion.toVersion()
+    setJavaVersions([javaVersion])
+
+    // Safety check to check if the artifact contains a valid mod metadata entry,
+    // which could possibly mean that the jar is empty
+    //setDisableEmptyJarCheck(true)
+
+    // Fancy display name for the upload.
+    // Will default to the project version if not set
+    setDisplayName("[${project.minecraft_version} ${nameCapitalised}] v ${project.mod_version}")
+
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    if (!shadowsDependencies) {
+        setArtifact(tasks.named(isFabric ? "remapJar" : "jar"))
+    }
+
+    if (hasApi) {
+        // Additional files to upload. Same as artifact, this can be a task, file or string
+        //addAdditionalFile(apiJar)
+
+        // Additional files to upload with a custom display name and changelog.
+        // DisplayName and Changelog currently only supported on Curseforge
+        addAdditionalFile {
+            // File, Task or String
+            artifact tasks.named("apiJar")
+            displayName "[${project.minecraft_version} ${nameCapitalised}] v ${project.mod_version} API"
+            changelog "API Jar. If you are not a mod developer you don't need this."
+        }
+    }
+
+    if (isFabric) {
+        // Modrinth Dependencies.
+        // Accepts a slug or id
+        modrinthDepends {
+            if (isBuildingiChunUtil) {
+                required "P7dR8mSH" //Fabric API
+            }
+            else {
+                required "P7dR8mSH", "W6ROj0Hl" //Fabric API and iChunUtil
+            }
+        }
+
+        // Curse Dependencies
+        curseDepends {
+            if (isBuildingiChunUtil) {
+                required "fabric-api" //Fabric API
+            }
+            else {
+                required "fabric-api", "ichunutil" //Fabric API and iChunUtil
+            }
+        }
+    }
+    else if (!isBuildingiChunUtil) {
+        // Modrinth Dependencies.
+        // Accepts a slug or id
+        modrinthDepends {
+            required "W6ROj0Hl" //iChunUtil
+        }
+
+        // Curse Dependencies
+        curseDepends {
+            required "ichunutil" //iChunUtil
+        }
+    }
+}

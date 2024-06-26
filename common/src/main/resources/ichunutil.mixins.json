@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.ichun.mods.ichunutil.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "ichunutil.refmap.json",
+  "mixins": [
+    "EntityMixin",
+    "LevelStorageAccessAccessorMixin",
+    "MinecraftServerAccessorMixin",
+    "PlayerMixin"
+  ],
+  "client": [
+    "client.ChatListenerMixin",
+    "client.ClientLevelMixin",
+    "client.LivingEntityRendererAccessorMixin",
+    "client.LivingEntityRendererMixin",
+    "client.MinecraftMixin",
+    "client.MouseHandlerMixin",
+    "client.NarratorChatListenerAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

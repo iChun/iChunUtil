@@ -1,0 +1,187 @@
+import groovy.json.JsonOutput
+
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+def isFabric = "${project.name}".toString().equals("fabric")
+def isForge = "${project.name}".toString().equals("forge")
+def isNeoForge = "${project.name}".toString().equals("neoforge")
+
+def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
+
+configurations {
+    shadowImplementation //declare the configuration
+    implementation.extendsFrom shadowImplementation //make implementation take these dependencies
+}
+
+dependencies {
+    // TOML implementation
+    shadowImplementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
+}
+
+if (isFabric || isForge || isNeoForge) {
+    shadowJar {
+        configurations = [project.configurations.shadowImplementation]
+
+        relocate('com.moandjiezana', 'me.ichun.shadow.com.moandjiezana')
+
+        dependencies {
+            exclude(dependency('com.google.code.gson:gson:'))
+        }
+
+        if (isForge) {
+            archiveClassifier.set("")
+            mustRunAfter "reobfJar"
+        }
+        else if (isNeoForge) {
+            archiveClassifier.set("")
+        }
+    }
+
+    components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+        skip()
+    }
+
+    if (project.hasProperty("key_store")) {
+        tasks.named("signJar").configure {
+            if (isForge) {
+                mustRunAfter "reobfShadowJar"
+            }
+            else {
+                mustRunAfter "shadowJar"
+            }
+        }
+    }
+
+    if (isFabric) {
+        tasks.named("remapJar").configure {
+            dependsOn "shadowJar"
+            inputFile = file(shadowJar.archivePath)
+        }
+    }
+    else if (isForge) {
+        reobf {
+            shadowJar {
+                if (project.hasProperty("key_store") && !isInCompositeBuild) {
+                    finalizedBy "signJar"
+                }
+            }
+        }
+
+        jar {
+            finalizedBy "reobfShadowJar"
+        }
+
+        //Just because we're reusing the jar for output - gradle complains about lack of dependency
+        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
+            mustRunAfter "shadowJar"
+        }
+    }
+    else {
+        jar {
+            finalizedBy "shadowJar"
+        }
+
+        //Just because we're reusing the jar for output - gradle complains about lack of dependency
+        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
+            mustRunAfter "shadowJar"
+        }
+    }
+
+    publisher {
+        // The file to be uploaded. This can be a file, task, or string.
+        // setArtifact("build/libs/mymod.jar")
+        // setArtifact(jar.getArchiveFile().get())
+        // If this is a task, the task specified will be executed before publishing
+        setArtifact(tasks.named(isFabric ? "remapJar" : "shadowJar"))
+    }
+}
+
+//==============
+//Shadow Jar End
+//==============
+
+tasks.register('copyDependencies', Copy) {
+    from configurations.compileClasspath
+    into "${layout.buildDirectory.get()}/output/libs"
+}
+
+if("${project.name}".toString().equals("common")) {
+    tasks.register("createHeadsZip", Zip) {
+        archiveFileName = "heads.zip"
+        destinationDirectory = layout.buildDirectory.dir('assets')
+
+        from fileTree(dir: "${project.rootDir}/heads")
+    }
+
+    tasks.register("createThemesZip", Zip) {
+        archiveFileName = "themes.zip"
+        destinationDirectory = layout.buildDirectory.dir('assets')
+
+        from fileTree(dir: "${project.rootDir}/themes")
+    }
+
+    tasks.named("compileJava").configure {
+        dependsOn createHeadsZip, createThemesZip //do it before compiling
+    }
+}
+else if(!"${project.name}".toString().equals("api")) {
+    if("${project.name}".toString().equals("fabric")) {
+        tasks.register('generateFabricLoaderDependenciesOverrideConfig') {
+            group = "Fabric"
+
+            doLast {
+                def runDir = gradle.root != null ? "${gradle.root.getRootProject().rootDir}/fabric/run" : "${project.projectDir}/run"
+                def configDir = file("${runDir}/config/")
+                if(!configDir.exists()) {
+                    configDir.mkdirs()
+                }
+                def configFile = file("${configDir}/fabric_loader_dependencies.json")
+                println "Creating config file at: ${configFile}"
+
+                def modIdToDep = [:]
+
+                def json = [
+                        "version": 1,
+                        "overrides": modIdToDep
+                ]
+
+                def modsToOverride = [
+                        "betterthanbunnies",
+                        "betterthanllamas",
+                        "contentcreatorintegration",
+                        "deathcounter",
+                        "ding",
+                        "dogslie",
+                        "hotbarswapper",
+                        "limitedlives",
+                        "partyparrots",
+                        "serverpause"
+                ]
+
+                modsToOverride.each { id ->
+                    def ignoreMap = [
+                            "ichunutil": "IGNORED"
+                    ]
+                    def depToDef = [
+                            "-depends": ignoreMap
+                    ]
+                    modIdToDep.put(id, depToDef)
+                }
+
+                file(configFile).text = JsonOutput.prettyPrint( JsonOutput.toJson( json ) )
+            }
+        }
+    }
+
+    tasks.named('processResources', ProcessResources).configure {
+        //inputs.files project(":common").createHeadsZip
+        inputs.files project(":common").createThemesZip
+
+        from(project(":common").layout.buildDirectory.dir('assets').get()) {
+            //include "heads.zip"
+            include "themes.zip"
+        }
+    }
+}
