@@ -9,6 +9,7 @@ import me.ichun.mods.ichunutil.loader.fabric.client.EventHandlerClientFabric;
 import me.ichun.mods.ichunutil.loader.fabric.config.ConfigHandlerFabric;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -28,14 +29,16 @@ public class LoaderDelegateFabric implements LoaderDelegate
     }
 
     @Override
-    public void assignEventHandlers()
+    public void assignEventHandlerServer()
     {
         iChunUtil.eventHandlerServer = new EventHandlerServerFabric();
+    }
 
-        if(getSide().isClient())
-        {
-            iChunUtil.eventHandlerClient = new EventHandlerClientFabric();
-        }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void assignEventHandlerClient()
+    {
+        iChunUtil.eventHandlerClient = new EventHandlerClientFabric();
     }
 
     @Override

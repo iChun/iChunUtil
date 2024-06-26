@@ -56,19 +56,27 @@ public interface LoaderDelegate
             throw new RuntimeException("Unable to create Loader Delegate of type " + clz.getName() + "!", e);
         }
 
-        iChunUtil.d().assignEventHandlers();
+        iChunUtil.d().assignEventHandlerServer();
+
+        if(iChunUtil.d().getSide().isClient())
+        {
+            iChunUtil.d().assignEventHandlerClient();
+        }
     }
 
     Env env();
 
-    void assignEventHandlers();
+    void assignEventHandlerServer();
+
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+    void assignEventHandlerClient();
 
     default boolean isDevEnvironment() //Fabric has a flag that defines dev env
     {
         return SharedConstants.IS_RUNNING_IN_IDE;
     }
 
-    Path getModsDir(); //TODO is modlloaded
+    Path getModsDir();
 
     Path getConfigDir();
 
