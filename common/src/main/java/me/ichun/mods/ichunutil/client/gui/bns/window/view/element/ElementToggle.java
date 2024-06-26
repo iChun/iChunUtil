@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,12 +28,12 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         super.render(graphics, mouseX, mouseY, partialTick);
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderMinecraftStyle() > 0)
         {
             renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || parent.isDragging() && parent.getFocused() == this || toggleState ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
@@ -72,14 +71,21 @@ public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
         renderText(graphics);
     }
 
-    public void renderText(GuiGraphics graphics)
+    public void renderText(PoseStack graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, width - 4);
 
             //draw the text
-            graphics.drawString(getFontRenderer(), s, (int)(getLeft() + (this.width - getFontRenderer().width(s)) / 2F), (int)(getTop() + (height - getFontRenderer().lineHeight) / 2F + 1), (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font)), renderMinecraftStyle() > 0);
+            if(renderMinecraftStyle() > 0)
+            {
+                getFontRenderer().drawShadow(graphics, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, getMinecraftFontColour());
+            }
+            else
+            {
+                getFontRenderer().draw(graphics, s, getLeft() + (this.width - getFontRenderer().width(s)) / 2F, getTop() + (height - getFontRenderer().lineHeight) / 2F + 1, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
+            }
         }
     }
 

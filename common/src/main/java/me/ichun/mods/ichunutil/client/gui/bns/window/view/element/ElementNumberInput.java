@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
@@ -99,9 +98,9 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public void drawTextBox(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderMinecraftStyle() > 0)
         {
             widget.setBordered(true);

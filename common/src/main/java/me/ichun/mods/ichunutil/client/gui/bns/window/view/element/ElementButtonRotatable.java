@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
-import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,13 +29,13 @@ public class ElementButtonRotatable<T extends ElementButtonRotatable> extends El
     }
 
     @Override
-    public void renderText(GuiGraphics graphics)
+    public void renderText(PoseStack graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
 
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             stack.pushPose();
             stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
             stack.mulPose(Axis.ZP.rotationDegrees(90F * rotationCount));

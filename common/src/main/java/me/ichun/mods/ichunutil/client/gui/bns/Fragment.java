@@ -1,12 +1,12 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constrainable;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.ResourceLocation;
@@ -231,24 +231,31 @@ public abstract class Fragment<P extends Rectangle>
         RenderHelper.endGlScissor();
     }
 
-    public void fill(GuiGraphics graphics, int[] colours, int border)
+    public void fill(PoseStack graphics, int[] colours, int border)
     {
         fill(graphics, colours, 255, border);
     }
 
-    public void fill(GuiGraphics graphics, int[] colours, int alpha, int border)
+    public void fill(PoseStack graphics, int[] colours, int alpha, int border)
     {
         RenderHelper.drawColour(graphics, colours[0], colours[1], colours[2], alpha, getLeft() + border, getTop() + border, width - (border * 2), height - (border * 2), 0);
     }
 
-    public void drawString(GuiGraphics graphics, String s, float posX, float posY)
+    public void drawString(PoseStack graphics, String s, float posX, float posY)
     {
         drawString(graphics, s, posX, posY, renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font));
     }
 
-    public void drawString(GuiGraphics graphics, String s, float posX, float posY, int color)
+    public void drawString(PoseStack graphics, String s, float posX, float posY, int color)
     {
-        graphics.drawString(getFontRenderer(), s, (int)posX, (int)posY, color, renderMinecraftStyle() > 0);
+        if(renderMinecraftStyle() > 0)
+        {
+            getFontRenderer().drawShadow(graphics, s, posX, posY, color);
+        }
+        else
+        {
+            getFontRenderer().draw(graphics, s, posX, posY, color);
+        }
     }
 
     public int getMinecraftFontColour()

@@ -12,7 +12,6 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -357,7 +356,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         if(isMouseOver(mouseX, mouseY))
         {
@@ -406,11 +405,11 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
         endScissor();
     }
 
-    public void renderBackground(GuiGraphics graphics)
+    public void renderBackground(PoseStack graphics)
     {
         if(renderMinecraftStyle() > 0)
         {
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             //draw the corners
             bindTexture(resourceHorse());
 
@@ -441,7 +440,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
         }
     }
 
-    public void renderDockHighlight(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderDockHighlight(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {

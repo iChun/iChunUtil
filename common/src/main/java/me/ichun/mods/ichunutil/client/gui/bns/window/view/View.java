@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
@@ -7,7 +8,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +44,7 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         setScissor();
         //render our background
@@ -59,7 +59,7 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
         resetScissorToParent();
     }
 
-    public void renderBackground(GuiGraphics graphics)
+    public void renderBackground(PoseStack graphics)
     {
         if(renderMinecraftStyle() == 0)
         {

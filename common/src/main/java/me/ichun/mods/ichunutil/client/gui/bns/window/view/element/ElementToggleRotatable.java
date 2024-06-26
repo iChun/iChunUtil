@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
-import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,13 +30,13 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
     }
 
     @Override
-    public void renderText(GuiGraphics graphics)
+    public void renderText(PoseStack graphics)
     {
         if(!text.isEmpty())
         {
             String s = reString(text, (rotationCount % 2 != 0 ? height : width) - 4);
 
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             stack.pushPose();
             stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
             stack.mulPose(Axis.ZP.rotationDegrees(90F * rotationCount));
@@ -46,11 +45,11 @@ public class ElementToggleRotatable<T extends ElementToggleRotatable> extends El
             //draw the text
             if(renderMinecraftStyle() > 0)
             {
-                graphics.drawString(getFontRenderer(), s, 0, 0, getMinecraftFontColour(), true);
+                getFontRenderer().drawShadow(stack, s, 0, 0, getMinecraftFontColour());
             }
             else
             {
-                graphics.drawString(getFontRenderer(), s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim), false);
+                getFontRenderer().draw(stack, s, 0, 0, Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim));
             }
 
             stack.popPose();

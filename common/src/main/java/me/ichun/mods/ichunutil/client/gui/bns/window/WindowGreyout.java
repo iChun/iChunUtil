@@ -1,12 +1,12 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.function.Consumer;
 
@@ -61,7 +61,7 @@ public class WindowGreyout<M extends Workspace> extends Window<M, View<?>>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

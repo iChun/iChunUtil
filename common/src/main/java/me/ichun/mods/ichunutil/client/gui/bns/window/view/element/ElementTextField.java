@@ -7,7 +7,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
@@ -169,7 +168,7 @@ public class ElementTextField extends Element<Fragment<?>>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         if(isMouseOver(mouseX, mouseY))
         {
@@ -186,7 +185,7 @@ public class ElementTextField extends Element<Fragment<?>>
         drawTextBox(graphics, mouseX, mouseY, partialTick);
     }
 
-    public void drawTextBox(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void drawTextBox(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         if(renderMinecraftStyle() > 0)
         {
@@ -195,7 +194,7 @@ public class ElementTextField extends Element<Fragment<?>>
         }
         else
         {
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             int[] colour;
             if(isMouseOver(mouseX, mouseY))
             {

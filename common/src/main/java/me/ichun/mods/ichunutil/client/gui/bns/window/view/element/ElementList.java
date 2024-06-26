@@ -9,7 +9,6 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
@@ -172,9 +171,9 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderBackground)
         {
             if(renderMinecraftStyle() > 0)
@@ -585,9 +584,9 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+        public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
         {
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             if(shouldRender())
             {
                 boolean draggingUs = parent.isDragging() && parent.getFocused() == this && parent.pos != null;

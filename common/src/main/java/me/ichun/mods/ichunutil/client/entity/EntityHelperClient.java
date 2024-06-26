@@ -44,7 +44,7 @@ public final class EntityHelperClient
                     return (List<? extends Entity>)(predicate.test(player) ? Lists.newArrayList(player) : Collections.emptyList());
                 } else {
                     List<Entity> list = Lists.newArrayList();
-                    list.addAll(player.level().getEntities(selector.type, selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256), predicate));
+                    list.addAll(player.level.getEntities(selector.type, selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256), predicate));
 
                     return selector.sortAndLimit(vec3d, list);
                 }
@@ -60,7 +60,7 @@ public final class EntityHelperClient
                             return Lists.newArrayList(entity);
                         }
                     }
-                    for(Player worldPlayer : player.level().players())
+                    for(Player worldPlayer : player.level.players())
                     {
                         if(worldPlayer.getUUID().equals(uuid))
                         {
@@ -68,7 +68,7 @@ public final class EntityHelperClient
                         }
                     }
                 } catch (IllegalArgumentException var4) {
-                    for(Player worldPlayer : player.level().players())
+                    for(Player worldPlayer : player.level.players())
                     {
                         if(worldPlayer.getName().getString().equals(input))
                         {

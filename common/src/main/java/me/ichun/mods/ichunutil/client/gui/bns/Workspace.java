@@ -13,7 +13,6 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +29,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public abstract class Workspace extends Screen
@@ -162,11 +160,11 @@ public abstract class Workspace extends Screen
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         cursorState = CURSOR_ARROW;
 
-        graphics.pose().pushPose();
+        graphics.pushPose();
 
         renderBackground(graphics);
 
@@ -176,13 +174,13 @@ public abstract class Workspace extends Screen
 
         resetBackground();
 
-        graphics.pose().popPose();
+        graphics.popPose();
 
         GLFW.glfwSetCursor(this.minecraft.getWindow().getWindow(), cursorState);
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics)
+    public void renderBackground(PoseStack graphics)
     {
         if(renderMinecraftStyle > 0)
         {
@@ -199,17 +197,17 @@ public abstract class Workspace extends Screen
     {
     }
 
-    public void renderWindows(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderWindows(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
             Window<?,?> window = windows.get(i);
-            graphics.pose().translate(0D, 0D, 10D);
+            graphics.translate(0D, 0D, 10D);
             window.render(graphics, mouseX, mouseY, partialTick);
         }
     }
 
-    public void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderTooltip(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         //render tooltip
         Fragment<?> topMost = getTopMostFragment(mouseX, mouseY);
@@ -236,7 +234,7 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void renderTooltip(GuiGraphics graphics, @NotNull String tooltip, int mouseX, int mouseY)
+    public void renderTooltip(PoseStack graphics, @NotNull String tooltip, int mouseX, int mouseY)
     {
         List<String> textStrings = Splitter.on("\n").splitToList(tooltip);
         if(renderMinecraftStyle > 0)
@@ -246,7 +244,7 @@ public abstract class Workspace extends Screen
             {
                 textLines.add(Component.literal(s));
             }
-            graphics.renderTooltip(font, textLines, Optional.empty(), mouseX, mouseY);
+            super.renderComponentTooltip(graphics, textLines, mouseX, mouseY);
         }
         else //Mostly taken from GuiUtils
         {
@@ -357,7 +355,7 @@ public abstract class Workspace extends Screen
                 tooltipY = screenHeight - tooltipHeight - 4;
             }
 
-            PoseStack stack = graphics.pose();
+            PoseStack stack = graphics;
             final int zLevel = 400;
             stack.pushPose();
             Matrix4f mat = stack.last().pose();

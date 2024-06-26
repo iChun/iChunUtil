@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
@@ -62,7 +61,7 @@ public class RenderHelper
         Tesselator.getInstance().end();
     }
 
-    public static void drawColour(GuiGraphics graphics, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
+    public static void drawColour(PoseStack graphics, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         int r = (colour >> 16 & 0xff);
         int g = (colour >> 8 & 0xff);
@@ -70,12 +69,12 @@ public class RenderHelper
         drawColour(graphics, r, g, b, alpha, posX, posY, width, height, zLevel);
     }
 
-    public static void drawColour(GuiGraphics graphics, int[] rgb, int alpha, double posX, double posY, double width, double height, double zLevel)
+    public static void drawColour(PoseStack graphics, int[] rgb, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         drawColour(graphics, rgb[0], rgb[1], rgb[2], alpha, posX, posY, width, height, zLevel);
     }
 
-    public static void drawColour(GuiGraphics graphics, int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
+    public static void drawColour(PoseStack graphics, int r, int g, int b, int alpha, double posX, double posY, double width, double height, double zLevel)
     {
         if(width <= 0 || height <= 0)
         {
@@ -83,7 +82,7 @@ public class RenderHelper
         }
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Matrix4f matrix = graphics.pose().last().pose();
+        Matrix4f matrix = graphics.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -150,7 +149,7 @@ public class RenderHelper
         RenderSystem.disableScissor();
     }
 
-    public static void renderTestScissor(GuiGraphics graphics)
+    public static void renderTestScissor(PoseStack graphics)
     {
         //Basic scissor test
         Minecraft mc = Minecraft.getInstance();

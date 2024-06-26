@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +21,9 @@ public class ElementProgressBar extends Element
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderMinecraftStyle() > 0)
         {
             bindTexture(resourceHorse());

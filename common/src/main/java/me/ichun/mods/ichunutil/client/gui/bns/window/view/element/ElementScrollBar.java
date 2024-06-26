@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -114,13 +113,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         if(width <= 0 || height <= 0)
         {
             return;
         }
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
 
         int scrollBar = Math.max(8, (int)(getDistance() * scrollBarSize)); // the size of the scroll bar over the entire
         int space = getDistance() - scrollBar; //how much space we have.

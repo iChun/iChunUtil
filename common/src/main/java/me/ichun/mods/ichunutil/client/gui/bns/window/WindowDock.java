@@ -1,5 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Rectangle;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
@@ -7,7 +8,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +78,7 @@ public class WindowDock<M extends Workspace> extends Window<M, View<?>>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         List<ArrayListHolder> keys = new ArrayList<>(docked.keySet());
         for(int i = keys.size() - 1; i >= 0; i--)

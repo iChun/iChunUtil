@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
-import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -24,10 +23,10 @@ public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         super.render(graphics, mouseX, mouseY, partialTick);
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderMinecraftStyle() > 0)
         {
             renderMinecraftStyleButton(stack, getLeft(), getTop(), width, height, disabled || (parent.isDragging() && parent.getFocused() == this) ? ButtonState.CLICK : (hover ? ButtonState.HOVER : ButtonState.IDLE));

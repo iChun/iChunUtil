@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +66,7 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick){}
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick){}
 
     @Override
     public void resize(Minecraft mc, int width, int height)

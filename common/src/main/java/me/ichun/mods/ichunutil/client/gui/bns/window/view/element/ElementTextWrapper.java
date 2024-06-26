@@ -1,10 +1,10 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -132,7 +132,7 @@ public class ElementTextWrapper extends Element<Fragment<?>>
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         int textX = getLeft() + 2;
         int textY = getTop() + 4;
@@ -145,9 +145,16 @@ public class ElementTextWrapper extends Element<Fragment<?>>
     }
 
     @Override
-    public void drawString(GuiGraphics graphics, String s, float posX, float posY)
+    public void drawString(PoseStack graphics, String s, float posX, float posY)
     {
-        graphics.drawString(getFontRenderer(), s, (int)posX, (int)posY, color != null ? color : (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font)), renderMinecraftStyle() > 0);
+        if(renderMinecraftStyle() > 0)
+        {
+            getFontRenderer().drawShadow(graphics, s, posX, posY, color != null ? color : getMinecraftFontColour());
+        }
+        else
+        {
+            getFontRenderer().draw(graphics, s, posX, posY, color != null ? color : Theme.getAsHex(getTheme().font));
+        }
     }
 
     @Override

@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
-import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,10 +35,10 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTick)
     {
         super.render(graphics, mouseX, mouseY, partialTick);
-        PoseStack stack = graphics.pose();
+        PoseStack stack = graphics;
         if(renderMinecraftStyle() > 0)
         {
             RenderHelper.drawColour(graphics, -6250336, 255, getLeft(), getTop(), width - ElementNumberInput.BUTTON_WIDTH, height, 0);
