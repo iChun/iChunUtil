@@ -72,7 +72,7 @@ public abstract class EventHandlerClient
      * @param isOverlay is message for overlay
      * @return Return true to cancel the event - Fabric defaults false as Fabric has own handling
      */
-    public boolean fireClientHandleSystemMessage(Component message, boolean isOverlay) { return false; }
+    public abstract boolean fireClientHandleSystemMessage(Component message, boolean isOverlay);
 
     public void fireLivingRenderPreEvent(LivingEntity entity, LivingEntityRenderer livingEntityRenderer, float partialTicks){}
 

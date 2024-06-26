@@ -2,12 +2,12 @@ package me.ichun.mods.ichunutil.loader.fabric.event.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +46,17 @@ public final class FabricClientEvents
         return false;
     });
 
+    //Not available in Fabric 1.19.2 backwards
+    public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
+        for (AllowGame listener : listeners) {
+            if (!listener.allowReceiveGameMessage(message, overlay)) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
     @FunctionalInterface
     public interface ClientLevelLoad
     {
@@ -68,5 +79,11 @@ public final class FabricClientEvents
     public interface MouseScroll
     {
         boolean onMouseScroll(double scrollDeltaX, double scrollDeltaY);
+    }
+
+    //Not available in Fabric 1.19.2 backwards
+    @FunctionalInterface
+    public interface AllowGame {
+        boolean allowReceiveGameMessage(Component message, boolean overlay);
     }
 }

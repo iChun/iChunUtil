@@ -2,9 +2,9 @@ package me.ichun.mods.ichunutil.client.gui.bns;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Widget;
 
-public interface Rectangle extends Renderable //Yes, ironic that "Boxes & Stuff" uses RECTANGLES
+public interface Rectangle extends Widget //Yes, ironic that "Boxes & Stuff" uses RECTANGLES
 {
     int getLeft();
     int getRight();

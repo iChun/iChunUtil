@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +49,12 @@ public class EventHandlerClientFabric extends EventHandlerClient
     protected void registerAsOnClientDisconnectListener(EventListener<Minecraft> eventListener)
     {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> eventListener.trigger(client));
+    }
+
+    @Override
+    public boolean fireClientHandleSystemMessage(Component message, boolean isOverlay)
+    {
+        return !FabricClientEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message, isOverlay);
     }
 
     @Override

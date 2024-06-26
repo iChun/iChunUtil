@@ -3,7 +3,7 @@ package me.ichun.mods.ichunutil.loader;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -95,12 +95,12 @@ public interface LoaderDelegate
     //Forge uses its own registries, else uses the built in ones
     default Block registryBlock(ResourceLocation rl)
     {
-        return BuiltInRegistries.BLOCK.get(rl);
+        return Registry.BLOCK.get(rl);
     }
 
     default SoundEvent registrySoundEvents(ResourceLocation rl)
     {
-        return BuiltInRegistries.SOUND_EVENT.get(rl);
+        return Registry.SOUND_EVENT.get(rl);
     }
 
     //END registry block

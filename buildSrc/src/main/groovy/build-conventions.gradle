@@ -406,7 +406,7 @@ publisher {
     setProjectVersion("${project.mod_version}")
 
     // The supported game versions
-    setGameVersions("${project.minecraft_version}")
+    setGameVersions("1.19", "1.19.1", "${project.minecraft_version}")
 
     // The modloaders your upload supports.
     // This can also be an Enum from ModLoader,

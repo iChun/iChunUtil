@@ -182,15 +182,15 @@ public class ElementNumberInput extends ElementTextField
         {
             if(renderMinecraftStyle() > 0) //5 px to draw the button
             {
-                widget.setX(getLeft() + 1);
-                widget.setY(getTop() + 1);
+                widget.x = (getLeft() + 1);
+                widget.y = (getTop() + 1);
                 widget.setWidth(this.width - 2 - BUTTON_WIDTH);
                 widget.height = (this.height - 2);
             }
             else
             {
-                widget.setX(getLeft() + 5);
-                widget.setY(getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2));
+                widget.x = (getLeft() + 5);
+                widget.y = (getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2));
                 widget.setWidth(this.width - 6 - BUTTON_WIDTH);
                 widget.height = (this.height - 2);
             }

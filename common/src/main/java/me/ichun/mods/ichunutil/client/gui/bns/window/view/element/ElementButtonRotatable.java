@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ public class ElementButtonRotatable<T extends ElementButtonRotatable> extends El
             PoseStack stack = graphics;
             stack.pushPose();
             stack.translate(getLeft() + (width / 2F), getTop() + (height / 2F), 0F);
-            stack.mulPose(Axis.ZP.rotationDegrees(90F * rotationCount));
+            stack.mulPose(Vector3f.ZP.rotationDegrees(90F * rotationCount));
             stack.translate(- getFontRenderer().width(s) / 2F,  - (getFontRenderer().lineHeight) / 2F + 1, 0F);
 
             //draw the text
