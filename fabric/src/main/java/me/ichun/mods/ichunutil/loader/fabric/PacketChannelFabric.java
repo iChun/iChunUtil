@@ -1,18 +1,15 @@
 package me.ichun.mods.ichunutil.loader.fabric;
 
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -34,15 +31,12 @@ public class PacketChannelFabric extends PacketChannel
         //Fabric doesn't do any network protocol checks.
 
         //receiving the packet
-        CustomPacketPayload.Type<PacketPayload> type = new CustomPacketPayload.Type<>(channelId);
-        StreamCodec<FriendlyByteBuf, PacketPayload> codec = createCodec();
-        PayloadTypeRegistry.playS2C().register(type, codec);
-        PayloadTypeRegistry.playC2S().register(type, codec);
-        ServerPlayNetworking.registerGlobalReceiver(type,
-            (payload, context) -> payload.process(context.player()).ifPresent(r -> context.server().execute(r)));
+        ServerPlayNetworking.registerGlobalReceiver(channelId, (server, player, handler, buffer, responseSender) -> {
+            readPacket(buffer).process(player).ifPresent(server::execute);
+        });
         if(FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT))
         {
-            ClientClassloaderHaxor.registerClientReceiver(channelId);
+            ClientClassloaderHaxor.registerClientReceiver(this, channelId);
         }
     }
 
@@ -50,13 +44,13 @@ public class PacketChannelFabric extends PacketChannel
     @Override
     public void sendToServer(AbstractPacket packet)
     {
-        ClientPlayNetworking.send(payload(packet));
+        ClientPlayNetworking.send(channelId, asBuffer(payload(packet)));
     }
 
     @Override
     public void sendTo(AbstractPacket packet, ServerPlayer player)
     {
-        ServerPlayNetworking.send(player, payload(packet));
+        ServerPlayNetworking.send(player, channelId, asBuffer(payload(packet)));
     }
 
     @Override
@@ -81,18 +75,26 @@ public class PacketChannelFabric extends PacketChannel
     {
         for(ServerPlayer player : players)
         {
-            ServerPlayNetworking.send(player, payload(packet));
+            ServerPlayNetworking.send(player, channelId, asBuffer(payload(packet)));
         }
+    }
+
+    private FriendlyByteBuf asBuffer(PacketPayload packet)
+    {
+        FriendlyByteBuf buffer = PacketByteBufs.create();
+        packet.write(buffer);
+        return buffer;
     }
 
     @Environment(EnvType.CLIENT)
     public static class ClientClassloaderHaxor
     {
         @Environment(EnvType.CLIENT)
-        public static void registerClientReceiver(ResourceLocation channelId)
+        public static void registerClientReceiver(PacketChannelFabric channel, ResourceLocation channelId)
         {
-            ClientPlayNetworking.registerGlobalReceiver(new CustomPacketPayload.Type<PacketPayload>(channelId),
-                (payload, context) -> payload.process(iChunUtil.eC().getPlayer()).ifPresent(r -> context.client().execute(r)));
+            ClientPlayNetworking.registerGlobalReceiver(channelId, (client, handler, buffer, responseSender) -> {
+                channel.readPacket(buffer).process(client.player).ifPresent(client::execute);
+            });
         }
     }
 }

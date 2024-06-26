@@ -12,10 +12,10 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 
 public class EventHandlerServerNeoForge extends EventHandlerServer
@@ -33,7 +33,9 @@ public class EventHandlerServerNeoForge extends EventHandlerServer
     @Override
     public void registerAsPlayerTickEndListener(EventListener<Player> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, PlayerTickEvent.Post.class, event -> eventListener.trigger(event.getEntity()));
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.PlayerTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.END) eventListener.trigger(event.player);
+        });
     }
 
 

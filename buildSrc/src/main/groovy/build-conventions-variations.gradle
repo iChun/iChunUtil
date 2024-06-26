@@ -8,6 +8,8 @@ def isFabric = "${project.name}".toString().equals("fabric")
 def isForge = "${project.name}".toString().equals("forge")
 def isNeoForge = "${project.name}".toString().equals("neoforge")
 
+def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
+
 configurations {
     shadowImplementation //declare the configuration
     implementation.extendsFrom shadowImplementation //make implementation take these dependencies
@@ -28,7 +30,11 @@ if (isFabric || isForge || isNeoForge) {
             exclude(dependency('com.google.code.gson:gson:'))
         }
 
-        if (isForge || isNeoForge) {
+        if (isForge) {
+            archiveClassifier.set("")
+            mustRunAfter "reobfJar"
+        }
+        else if (isNeoForge) {
             archiveClassifier.set("")
         }
     }
@@ -39,7 +45,12 @@ if (isFabric || isForge || isNeoForge) {
 
     if (project.hasProperty("key_store")) {
         tasks.named("signJar").configure {
-            mustRunAfter "shadowJar"
+            if (isForge) {
+                mustRunAfter "reobfShadowJar"
+            }
+            else {
+                mustRunAfter "shadowJar"
+            }
         }
     }
 
@@ -47,6 +58,24 @@ if (isFabric || isForge || isNeoForge) {
         tasks.named("remapJar").configure {
             dependsOn "shadowJar"
             inputFile = file(shadowJar.archivePath)
+        }
+    }
+    else if (isForge) {
+        reobf {
+            shadowJar {
+                if (project.hasProperty("key_store") && !isInCompositeBuild) {
+                    finalizedBy "signJar"
+                }
+            }
+        }
+
+        jar {
+            finalizedBy "reobfShadowJar"
+        }
+
+        //Just because we're reusing the jar for output - gradle complains about lack of dependency
+        tasks.named("generateMetadataFileForMavenJavaPublication").configure {
+            mustRunAfter "shadowJar"
         }
     }
     else {

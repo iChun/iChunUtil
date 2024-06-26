@@ -51,7 +51,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
                         parent.parent.viewValues = null;
                     }
 
-                    WindowGeneric<WorkspaceConfigs, ViewValues> window = WindowGeneric.create(parent.parent, windowGeneric -> new ViewValues(windowGeneric, e.getValue().getFirst().getConfigName(), e.getValue()));
+                    WindowGeneric<WorkspaceConfigs, ViewValues> window = WindowGeneric.create(parent.parent, windowGeneric -> new ViewValues(windowGeneric, e.getValue().first().getConfigName(), e.getValue()));
                     parent.parent.viewValues = window.getCurrentView();
                     parent.parent.addToDock(window, Constraint.Property.Type.LEFT);
                     window.constraint.right(parent.parent.getDock(), Constraint.Property.Type.RIGHT, -window.borderSize.get() + 1 + (Integer)parent.parent.getDock().borderSize.get());

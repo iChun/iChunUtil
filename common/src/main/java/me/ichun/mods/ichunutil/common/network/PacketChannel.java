@@ -1,8 +1,8 @@
 package me.ichun.mods.ichunutil.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -66,22 +66,10 @@ public abstract class PacketChannel
         return new PacketPayload(packet);
     }
 
-    protected StreamCodec<FriendlyByteBuf, PacketPayload> createCodec()
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+    protected Player getPlayer()
     {
-        return new StreamCodec<>()
-        {
-            @Override
-            public PacketPayload decode(FriendlyByteBuf buffer)
-            {
-                return readPacket(buffer);
-            }
-
-            @Override
-            public void encode(FriendlyByteBuf buffer, PacketPayload payload)
-            {
-                payload.write(buffer);
-            }
-        };
+        return iChunUtil.eC().getPlayer();
     }
 
     protected class PacketPayload implements CustomPacketPayload
@@ -99,15 +87,15 @@ public abstract class PacketChannel
             packet.writeTo(buffer);
         }
 
+        @Override
+        public ResourceLocation id()
+        {
+            return channelId;
+        }
+
         public Optional<Runnable> process(@Nullable Player player)
         {
             return packet.process(player);
-        }
-
-        @Override
-        public Type<? extends CustomPacketPayload> type()
-        {
-            return new Type<>(channelId);
         }
     }
 }

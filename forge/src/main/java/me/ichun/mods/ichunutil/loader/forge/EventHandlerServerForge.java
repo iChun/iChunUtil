@@ -32,7 +32,9 @@ public class EventHandlerServerForge extends EventHandlerServer
     @Override
     public void registerAsPlayerTickEndListener(EventListener<Player> eventListener)
     {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.PlayerTickEvent.Post.class, event -> eventListener.trigger(event.player));
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.PlayerTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.END) eventListener.trigger(event.player);
+        });
     }
 
     @Override

@@ -58,13 +58,17 @@ public class EventHandlerClientForge extends EventHandlerClient
     @Override
     protected void registerAsClientTickStartListener(EventListener<Minecraft> eventListener)
     {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.START) eventListener.trigger(Minecraft.getInstance());
+        });
     }
 
     @Override
     protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.Post.class, event -> eventListener.trigger(Minecraft.getInstance()));
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.END) eventListener.trigger(Minecraft.getInstance());
+        });
     }
 
     @Override

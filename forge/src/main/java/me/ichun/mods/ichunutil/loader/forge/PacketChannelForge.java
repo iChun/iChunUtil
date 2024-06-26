@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.loader.forge;
 
-import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
 import net.minecraft.client.Minecraft;
@@ -42,9 +41,10 @@ public class PacketChannelForge extends PacketChannel
         }
         channel = channelBuilder.simpleChannel();
         channel.messageBuilder(PacketPayload.class)
-            .codec(createCodec())
+            .encoder(PacketPayload::write)
+            .decoder(this::readPacket)
             .consumerNetworkThread((payload, context) -> {
-                Player player = context.isServerSide() ? context.getSender() : iChunUtil.eC().getPlayer();
+                Player player = context.isServerSide() ? context.getSender() : getPlayer();
                 payload.process(player).ifPresent(context::enqueueWork);
                 context.setPacketHandled(true);
             })

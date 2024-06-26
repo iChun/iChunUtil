@@ -13,10 +13,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,13 +59,17 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     @Override
     protected void registerAsClientTickStartListener(EventListener<Minecraft> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.START) eventListener.trigger(Minecraft.getInstance());
+        });
     }
 
     @Override
     protected void registerAsClientTickEndListener(EventListener<Minecraft> eventListener)
     {
-        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientTickEvent.Pre.class, event -> eventListener.trigger(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, TickEvent.ClientTickEvent.class, event -> {
+            if(event.phase == TickEvent.Phase.END) eventListener.trigger(Minecraft.getInstance());
+        });
     }
 
     @Override

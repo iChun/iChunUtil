@@ -3,7 +3,7 @@ plugins {
     id "com.hypherionmc.modutils.modpublisher" //we can't define version in pre-built scripts
 }
 
-def javaVersion = JavaVersion.VERSION_21
+def javaVersion = JavaVersion.VERSION_17
 def javaLanguageVersion = JavaLanguageVersion.of(javaVersion.toString().toInteger())
 def nameCapitalised = "${project.name}".toString().equals("neoforge") ? "NeoForge" : "${project.name}".capitalize()
 def isBuildingiChunUtil = "${project.mod_id}".toString().equals("ichunutil")
@@ -22,7 +22,7 @@ def isInCompositeBuild = gradle.parent != null //this is only true for included 
 def isAnAllCompositeBuild = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
 //Everyone has to have a different task that finalizes their jar...
-def finaliseJarTaskName = isFabric ? "remapJar" : "jar"
+def finaliseJarTaskName = isFabric ? "remapJar" : isForge ? "reobfJar" : "jar"
 def shadowsDependencies = isBuildingiChunUtil || "${project.mod_id}".toString().equals("contentcreatorintegration")
 
 ext {
@@ -75,7 +75,11 @@ repositories {
 
     // ModMenu
     maven {
-        url "https://maven.terraformersmc.com/"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Nucleoid" 
+        url = "https://maven.nucleoid.xyz/"
     }
 }
 
@@ -319,10 +323,15 @@ if (project.hasProperty("key_store")) {
                 )
             }
         }
+
+        //The "reobfJar" task doesn't exist at configuration stage in Forge for some reason so we tell gradle to run signJar AFTER reobfJar but is finalized by jar
+        if (isForge) {
+            mustRunAfter "reobfJar"
+        }
     }
 
-    if (!isInCompositeBuild) { //If we're in a composite build - we ain't publishing anyway, no need for signed jar
-        tasks.named(finaliseJarTaskName).configure {
+    if (!(isForge && shadowsDependencies) && !isInCompositeBuild) {
+        tasks.named(isFabric ? "remapJar" : "jar").configure {
             finalizedBy signJar
         }
     }
@@ -332,6 +341,14 @@ if (isFabric) {
     //Required to make IDEA runs generate for Fabric
     loom.runConfigs.configureEach {
         ideConfigGenerated = true
+    }
+}
+else if (isForge) {
+    if (!shadowsDependencies) { // Reobfing the jar is done in the variants gradle file.
+        // This is the preferred method to reobfuscate your jar file
+        jar.finalizedBy("reobfJar")
+        // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+        // publish.dependsOn('reobfJar')
     }
 }
 
@@ -429,7 +446,7 @@ publisher {
     // setArtifact(jar.getArchiveFile().get())
     // If this is a task, the task specified will be executed before publishing
     if (!shadowsDependencies) {
-        setArtifact(tasks.named(finaliseJarTaskName))
+        setArtifact(tasks.named(isFabric ? "remapJar" : "jar"))
     }
 
     if (hasApi) {
