@@ -229,14 +229,14 @@ public class ElementTextField extends Element<Fragment<?>>
                 widget.setX(getLeft() + 1);
                 widget.setY(getTop() + 1);
                 widget.setWidth(this.width - 2);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2);
             }
             else
             {
                 widget.setX(getLeft() + 5);
                 widget.setY(getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2));
                 widget.setWidth(this.width - 6);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2);
             }
         }
     }

@@ -122,12 +122,12 @@ public class WindowDock<M extends Workspace> extends Window<M, View<?>>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY)
     {
         Window<?,?> windowOver = getWindowOver(mouseX, mouseY);
         if(windowOver != null)
         {
-            return windowOver.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+            return windowOver.mouseScrolled(mouseX, mouseY, scrollY);
         }
         return false;
     }

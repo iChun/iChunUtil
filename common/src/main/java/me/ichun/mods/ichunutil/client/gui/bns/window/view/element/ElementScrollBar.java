@@ -274,7 +274,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY)
     {
         if(isMouseOver(mouseX, mouseY) && scrollBarSize < 1F)
         {

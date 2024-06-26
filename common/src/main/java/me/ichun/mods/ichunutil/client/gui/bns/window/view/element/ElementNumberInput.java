@@ -186,14 +186,14 @@ public class ElementNumberInput extends ElementTextField
                 widget.setX(getLeft() + 1);
                 widget.setY(getTop() + 1);
                 widget.setWidth(this.width - 2 - BUTTON_WIDTH);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2);
             }
             else
             {
                 widget.setX(getLeft() + 5);
                 widget.setY(getTop() + 1 + ((this.height - getFontRenderer().lineHeight) / 2));
                 widget.setWidth(this.width - 6 - BUTTON_WIDTH);
-                widget.setHeight(this.height - 2);
+                widget.height = (this.height - 2);
             }
         }
     }
@@ -259,7 +259,7 @@ public class ElementNumberInput extends ElementTextField
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY)
     {
         if(isMouseBetween(mouseX, getLeft(), getLeft() + width - BUTTON_WIDTH) && isMouseBetween(mouseY, getTop(), getTop() + height))
         {

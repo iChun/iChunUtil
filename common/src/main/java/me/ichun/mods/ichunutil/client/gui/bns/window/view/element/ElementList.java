@@ -316,11 +316,11 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY)
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+            boolean defaultScroll = super.mouseScrolled(mouseX, mouseY, scrollY);
             if(defaultScroll)
             {
                 return true;

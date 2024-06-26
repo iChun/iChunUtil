@@ -168,7 +168,7 @@ public abstract class Workspace extends Screen
 
         graphics.pose().pushPose();
 
-        renderBackground(graphics, mouseX, mouseY, partialTick);
+        renderBackground(graphics);
 
         renderWindows(graphics, mouseX, mouseY, partialTick);
 
@@ -182,11 +182,11 @@ public abstract class Workspace extends Screen
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void renderBackground(GuiGraphics graphics)
     {
         if(renderMinecraftStyle > 0)
         {
-            super.renderBackground(graphics, mouseX, mouseY, partialTick);
+            super.renderBackground(graphics);
         }
         else
         {

@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.common.network;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,7 +71,7 @@ public abstract class PacketChannel
         return iChunUtil.eC().getPlayer();
     }
 
-    protected class PacketPayload implements CustomPacketPayload
+    protected class PacketPayload
     {
         private final AbstractPacket packet;
 
@@ -85,12 +84,6 @@ public abstract class PacketChannel
         {
             buffer.writeByte(clzToId.getByte(packet.getClass()));
             packet.writeTo(buffer);
-        }
-
-        @Override
-        public ResourceLocation id()
-        {
-            return channelId;
         }
 
         public Optional<Runnable> process(@Nullable Player player)
