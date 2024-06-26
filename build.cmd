@@ -9,7 +9,7 @@ for %%I in (.) do set folderName=%%~nxI
 
 set fabric=Yes
 set forge=Yes
-set neoforge=Yes
+set neoforge=No
 set clean=No
 set build=Yes
 set publish=No
