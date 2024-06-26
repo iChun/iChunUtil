@@ -7,7 +7,6 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.loader.event.EventListener;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.commands.CommandSourceStack;
@@ -67,11 +66,5 @@ public class EventHandlerServerFabric extends EventHandlerServer
     public void firePlayerTickEndEvent(Player player)
     {
         FabricEvents.PLAYER_TICK_END.invoker().onPlayerTickEnd(player);
-    }
-
-    @Override
-    public boolean isFakePlayer(ServerPlayer player)
-    {
-        return player instanceof FakePlayer || super.isFakePlayer(player);
     }
 }

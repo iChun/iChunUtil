@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -219,9 +217,9 @@ public class ElementScrollView extends ElementFertile
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
-        return null;
+        return false;
     }
 
     @Override

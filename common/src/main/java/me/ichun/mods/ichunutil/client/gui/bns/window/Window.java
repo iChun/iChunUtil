@@ -11,8 +11,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -585,13 +583,18 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction)
     {
         if(parent.getFocused() == this)
         {
-            return super.nextFocusPath(event);
+            boolean flag = super.changeFocus(direction);
+            if(!flag)
+            {
+                flag = super.changeFocus(direction);
+            }
+            return flag;
         }
-        return null; //we're not focused anyway, so, nah
+        return false; //we're not focused anyway, so, nah
     }
 
     @Override

@@ -8,9 +8,7 @@ import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
@@ -448,9 +446,9 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
-        return null;
+        return false;
     }
 
     @Override

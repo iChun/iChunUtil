@@ -1,8 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ElementPadding extends Element
@@ -30,9 +28,9 @@ public class ElementPadding extends Element
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
-        return null;
+        return false;
     }
 
     @Override

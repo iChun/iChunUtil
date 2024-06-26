@@ -2,8 +2,6 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,9 +63,9 @@ public class ElementContextMenu extends Element<Fragment<?>>
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
-        return null;
+        return false;
     }
 
     @NotNull

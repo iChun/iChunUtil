@@ -7,8 +7,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowGeneric;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.Element;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,13 +73,18 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction)
     {
         if(parent.getFocused() == this)
         {
-            return super.nextFocusPath(event);
+            boolean flag = super.changeFocus(direction);
+            if(!flag)
+            {
+                flag = super.changeFocus(direction);
+            }
+            return flag;
         }
-        return null; //we're not focused anyway, so, nah
+        return false; //we're not focused anyway, so, nah
     }
 
     @Override

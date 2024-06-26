@@ -5,8 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
@@ -309,9 +307,9 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event) //we can't change focus on this
+    public boolean changeFocus(boolean direction) //we can't change focus on this
     {
-        return null;
+        return false;
     }
 
     @Override

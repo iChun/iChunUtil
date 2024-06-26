@@ -5,8 +5,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,9 +73,9 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction)
     {
-        return parent.nextFocusPath(event);
+        return parent.getFocused() != this; //focus on us if we're not focused
     }
 
     public void renderMinecraftStyleButton(PoseStack stack, int posX, int posY, int width, int height, ButtonState state) // BUTTONS NEED TO BE LARGER THAN 3x3

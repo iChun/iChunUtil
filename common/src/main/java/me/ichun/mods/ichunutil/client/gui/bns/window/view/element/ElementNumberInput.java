@@ -203,7 +203,7 @@ public class ElementNumberInput extends ElementTextField
         if(isMouseOver(mouseX, mouseY))
         {
             setFocused(widget);
-            widget.setFocused(true);
+            widget.setFocus(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
                 widget.setValue("");

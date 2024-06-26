@@ -373,7 +373,7 @@ public abstract class Workspace extends Screen
                 FormattedText line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, Font.DisplayMode.NORMAL, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, false, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)

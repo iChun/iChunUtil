@@ -6,10 +6,8 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -257,7 +255,7 @@ public class ElementTextField extends Element<Fragment<?>>
         if(isMouseOver(mouseX, mouseY))
         {
             setFocused(widget);
-            widget.setFocused(true);
+            widget.setFocus(true);
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
                 widget.setValue("");
@@ -276,20 +274,20 @@ public class ElementTextField extends Element<Fragment<?>>
     public void unfocus(@Nullable GuiEventListener guiReplacing)
     {
         super.unfocus(guiReplacing);
-        widget.setFocused(false);
+        widget.setFocus(false);
         setFocused(null);
     }
 
     @Override
-    public ComponentPath nextFocusPath(FocusNavigationEvent event)
+    public boolean changeFocus(boolean direction)
     {
         if(parent.getFocused() != this)
         {
             setFocused(widget);
-            widget.setFocused(true);
-            return super.nextFocusPath(event);
+            widget.setFocus(true);
+            return true;
         }
-        return null;
+        return false;
     }
 
     public void setText(@NotNull String s) //ONLY do AFTER init
