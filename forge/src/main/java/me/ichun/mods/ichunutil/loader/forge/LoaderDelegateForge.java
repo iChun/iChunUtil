@@ -12,6 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -38,14 +40,16 @@ public class LoaderDelegateForge implements LoaderDelegate
     }
 
     @Override
-    public void assignEventHandlers()
+    public void assignEventHandlerServer()
     {
         iChunUtil.eventHandlerServer = new EventHandlerServerForge();
+    }
 
-        if(getSide().isClient())
-        {
-            iChunUtil.eventHandlerClient = new EventHandlerClientForge();
-        }
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void assignEventHandlerClient()
+    {
+        iChunUtil.eventHandlerClient = new EventHandlerClientForge();
     }
 
     @Override

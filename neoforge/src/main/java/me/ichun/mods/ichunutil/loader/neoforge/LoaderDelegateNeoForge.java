@@ -9,6 +9,8 @@ import me.ichun.mods.ichunutil.loader.neoforge.client.EventHandlerClientNeoForge
 import me.ichun.mods.ichunutil.loader.neoforge.config.ConfigHandlerNeoForge;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
@@ -35,14 +37,16 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     }
 
     @Override
-    public void assignEventHandlers()
+    public void assignEventHandlerServer()
     {
         iChunUtil.eventHandlerServer = new EventHandlerServerNeoForge();
+    }
 
-        if(getSide().isClient())
-        {
-            iChunUtil.eventHandlerClient = new EventHandlerClientNeoForge();
-        }
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void assignEventHandlerClient()
+    {
+        iChunUtil.eventHandlerClient = new EventHandlerClientNeoForge();
     }
 
     @Override
