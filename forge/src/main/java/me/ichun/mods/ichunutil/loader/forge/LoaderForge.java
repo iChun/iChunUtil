@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.client.core.ConfigClient;
 import me.ichun.mods.ichunutil.client.core.ResourceHelper;
 import me.ichun.mods.ichunutil.client.gui.config.WorkspaceConfigs;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.forge.client.EventHandlerClientForge;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -26,7 +25,7 @@ public class LoaderForge extends iChunUtil
         }
 
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, IExtensionPoint.DisplayTest.IGNORE_ALL_VERSION);
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "", (remoteVersion, isFromServer) -> true));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -36,6 +35,6 @@ public class LoaderForge extends iChunUtil
 
         configClient = d().registerConfig(new ConfigClient()); // configs cannot be initialised in setup stage.
 
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(WorkspaceConfigs::new));
+        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> new WorkspaceConfigs(screen)));
     }
 }

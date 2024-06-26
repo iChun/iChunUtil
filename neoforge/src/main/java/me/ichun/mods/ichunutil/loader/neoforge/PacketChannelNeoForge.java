@@ -2,83 +2,72 @@ package me.ichun.mods.ichunutil.loader.neoforge;
 
 import me.ichun.mods.ichunutil.common.network.AbstractPacket;
 import me.ichun.mods.ichunutil.common.network.PacketChannel;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 
 public class PacketChannelNeoForge extends PacketChannel
 {
-    public PacketChannelNeoForge(RegisterPayloadHandlerEvent event, ResourceLocation name, int protocolVersion, Class<? extends AbstractPacket>... packetTypes)
+    private final SimpleChannel channel;
+
+    public PacketChannelNeoForge(ResourceLocation name, int protocolVersion, Class<? extends AbstractPacket>... packetTypes)
     {
-        this(event, name, protocolVersion, false, packetTypes);
+        this(name, protocolVersion, true, true, packetTypes);
     }
 
-    public PacketChannelNeoForge(RegisterPayloadHandlerEvent event, ResourceLocation name, int protocolVersion, boolean isOptional, Class<? extends AbstractPacket>... packetTypes)
+    public PacketChannelNeoForge(ResourceLocation name, int protocolVersion, boolean clientRequired, boolean serverRequired, Class<? extends AbstractPacket>... packetTypes)
     {
         super(name, packetTypes);
 
-        IPayloadRegistrar registrar = event.registrar(channelId.toString()); // version number
-        registrar.versioned(Integer.toString(protocolVersion));
-
-        if(isOptional)
-        {
-            registrar = registrar.optional();
-        }
-
-        registrar.play(channelId, // payload type - modid
-            this::readPacket,
-            this::handle
-        );
-    }
-
-    protected void handle(PacketPayload payload, IPayloadContext context)
-    {
-        Player player = null;
-        if(context.flow() == PacketFlow.CLIENTBOUND)
-        {
-            player = getPlayer();
-        }
-        else if(context.player().isPresent())
-        {
-            player = context.player().get();
-        }
-        payload.process(player).ifPresent(r -> context.workHandler().submitAsync(r));
+        final String protVersion = Integer.toString(protocolVersion);
+        channel = NetworkRegistry.ChannelBuilder.named(name).networkProtocolVersion(() -> protVersion)
+            .clientAcceptedVersions(version -> protVersion.equals(version) || !clientRequired)
+            .serverAcceptedVersions(version -> protVersion.equals(version) || !serverRequired)
+            .simpleChannel();
+        channel.messageBuilder(PacketPayload.class, 0)
+            .encoder(PacketPayload::write)
+            .decoder(this::readPacket)
+            .consumerNetworkThread((payload, context) -> {
+                Player player = context.getDirection() == PlayNetworkDirection.PLAY_TO_SERVER ? context.getSender() : getPlayer();
+                payload.process(player).ifPresent(context::enqueueWork);
+                context.setPacketHandled(true);
+            })
+            .add();
     }
 
     @Override
     public void sendToServer(AbstractPacket packet)
     {
-        PacketDistributor.SERVER.noArg().send(payload(packet));
+        channel.sendToServer(payload(packet));
     }
 
     @Override
     public void sendTo(AbstractPacket packet, ServerPlayer player)
     {
-        PacketDistributor.PLAYER.with(player).send(payload(packet));
+        channel.send(PacketDistributor.PLAYER.with(() -> player), payload(packet));
     }
 
     @Override
     public void sendToAll(AbstractPacket packet)
     {
-        PacketDistributor.ALL.noArg().send(payload(packet));
+        channel.send(PacketDistributor.ALL.noArg(), payload(packet));
     }
 
     @Override
     public void sendToTracking(AbstractPacket packet, Entity entity)
     {
-        PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(payload(packet));
+        channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), payload(packet));
     }
 
     @Override
     public void sendToAround(AbstractPacket packet, ServerLevel world, double x, double y, double z, double radius)
     {
-        PacketDistributor.NEAR.with(new PacketDistributor.TargetPoint(x, y, z, radius, world.dimension())).send(payload(packet));
+        channel.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(x, y, z, radius, world.dimension())), payload(packet));
     }
 }

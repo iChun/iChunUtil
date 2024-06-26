@@ -24,13 +24,13 @@ issueTrackerURL="${mod_url_issues}"
 
 [[dependencies.${mod_id}]]
     modId="neoforge"
-    type="required"
+    mandatory=true #mandatory
     versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    type="required"
+    mandatory=true #mandatory
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
