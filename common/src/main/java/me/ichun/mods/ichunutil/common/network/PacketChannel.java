@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.common.network;
 
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
+import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -64,6 +65,12 @@ public abstract class PacketChannel
             throw new RuntimeException("Unable to create packet for " + channelId.toString() + " with id " + id, e);
         }
         return new PacketPayload(packet);
+    }
+
+    @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+    protected Player getPlayer()
+    {
+        return iChunUtil.eC().getPlayer();
     }
 
     protected StreamCodec<FriendlyByteBuf, PacketPayload> createCodec()
