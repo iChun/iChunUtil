@@ -41,9 +41,6 @@ if(file("${rootDir}/api").exists()) {//Check if API folder exists, if it does, i
 include 'common'
 include 'fabric'
 include 'forge'
-if(!"${mod_id}".toString().equals("all")) { //We don't need NeoForge in an "all" composite build
-	include 'neoforge'
-}
 
 if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that depends on iChunUtil or we're in a composite build for multiple mods
 	if ("${mod_id}".toString().equals("all")) {
@@ -89,7 +86,6 @@ if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that de
 						substitute module("me.ichun.mods:${modIdLowerCase}:common") using project(":common")
 						substitute module("me.ichun.mods:${modIdLowerCase}:fabric") using project(":fabric")
 						substitute module("me.ichun.mods:${modIdLowerCase}:forge") using project(":forge")
-						substitute module("me.ichun.mods:${modIdLowerCase}:neoforge") using project(":neoforge")
 					}
 				}
 			}
