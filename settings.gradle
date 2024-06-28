@@ -41,6 +41,9 @@ if(file("${rootDir}/api").exists()) {//Check if API folder exists, if it does, i
 include 'common'
 include 'fabric'
 include 'forge'
+if(!"${mod_id}".toString().equals("all")) { //We don't need NeoForge in an "all" composite build
+	include 'neoforge'
+}
 
 if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that depends on iChunUtil or we're in a composite build for multiple mods
 	if ("${mod_id}".toString().equals("all")) {
@@ -74,18 +77,19 @@ if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that de
 	}
 	else {
 		gradle.ext.projectSubMods.forEach { mod ->
-			if(file("../${mod}").exists()) {
+			if (file("../${mod}").exists()) {
 				includeBuild("../${mod}") {
 					def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.ROOT)
 					name = modIdLowerCase
 					dependencySubstitution {
 						//I won't know the mod version. We special case for composite builds anyway
 						if(file("../${mod}/api").exists()) {
-							substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-api") using project(":api")
+							substitute module("me.ichun.mods:${modIdLowerCase}:api") using project(":api")
 						}
-						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-common") using project(":common")
-						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-fabric") using project(":fabric")
-						substitute module("me.ichun.mods:${modIdLowerCase}:${minecraft_version}-forge") using project(":forge")
+						substitute module("me.ichun.mods:${modIdLowerCase}:common") using project(":common")
+						substitute module("me.ichun.mods:${modIdLowerCase}:fabric") using project(":fabric")
+						substitute module("me.ichun.mods:${modIdLowerCase}:forge") using project(":forge")
+						substitute module("me.ichun.mods:${modIdLowerCase}:neoforge") using project(":neoforge")
 					}
 				}
 			}
@@ -94,4 +98,8 @@ if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that de
 			}
 		}
 	}
+}
+// If this repo exists then we pull out changelogs and versions from here - allows for centralized repo for them. Yes, I'm lazy
+if (file("../AllChangelogs").exists()) {
+	includeBuild("../AllChangelogs")
 }

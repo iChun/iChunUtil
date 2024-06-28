@@ -2,16 +2,16 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
-//Loads gradle.properties and populates it in this build script.
+//Loads iChunUtil's common.properties and populates it in this build script.
 Properties properties = new Properties()
-FileInputStream input = new FileInputStream(file('../gradle.properties'))
+FileInputStream input = new FileInputStream(file("${rootDir}/../../iChunUtil/common.properties")) // Root dir = buildSrc so we need to go up two levels
 properties.load(input)
 input.close()
 
 for (String key : properties.stringPropertyNames()) {
     ext.set(key, properties.getProperty(key))
 }
-//End load gradle.properties
+//End load common.properties
 
 repositories {
     maven {
