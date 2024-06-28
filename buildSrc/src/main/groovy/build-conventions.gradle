@@ -3,6 +3,51 @@ plugins {
     id "com.hypherionmc.modutils.modpublisher" //we can't define version in pre-built scripts
 }
 
+//All mods depend on iChunUtil anyway - loads iChunUtil's common.properties
+Properties properties = new Properties()
+FileInputStream input = new FileInputStream(file("${rootDir}/../iChunUtil/common.properties"))
+properties.load(input)
+input.close()
+
+for (String key : properties.stringPropertyNames()) {
+    ext.set(key, properties.getProperty(key))
+}
+//End load common.properties
+
+//Load our override.properties if it exists
+if (file("${rootDir}/override.properties").exists()) {
+    Properties properties1 = new Properties()
+    FileInputStream input1 = new FileInputStream(file("${rootDir}/override.properties"))
+    properties1.load(input1)
+    input1.close()
+
+    for (String key : properties1.stringPropertyNames()) {
+        ext.set(key, properties1.getProperty(key))
+    }
+}
+//End load override.properties
+
+def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
+def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
+def isAnAllCompositeBuild = "${project.mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
+
+def changelogFile = null
+def actualRootDir = gradle.root != null ? gradle.root.getRootProject().rootDir : project.rootDir
+if (!isAnAllCompositeBuild && file("${actualRootDir}/../AllChangelogs").exists()) { // we have an All Changelogs folder - pull our changelog file and version from there
+    changelogFile = file("${actualRootDir}/../AllChangelogs/${project.mod_id}/changelog.md")
+    Properties properties1 = new Properties()
+    FileInputStream input1 = new FileInputStream("${actualRootDir}/../AllChangelogs/${project.mod_id}/version.properties") // Literally has one property called "mod_version"
+    properties1.load(input1)
+    input1.close()
+
+    for (String key : properties1.stringPropertyNames()) {
+        ext.set(key, properties1.getProperty(key))
+    }
+}
+else {
+    ext.set("mod_version", "Unknown!")
+}
+
 def javaVersion = JavaVersion.VERSION_21
 def javaLanguageVersion = JavaLanguageVersion.of(javaVersion.toString().toInteger())
 def nameCapitalised = "${project.name}".toString().equals("neoforge") ? "NeoForge" : "${project.name}".capitalize()
@@ -17,9 +62,6 @@ def isForge = "${project.name}".toString().equals("forge")
 def isNeoForge = "${project.name}".toString().equals("neoforge")
 
 def isFabricBased = hasApi && isApi || isCommon || isFabric
-def isIDE = System.getProperty("idea.active") == "true" //this is the only check I've tried that works in IntelliJ IDEA's setting
-def isInCompositeBuild = gradle.parent != null //this is only true for included builds in a composite build, not the root composite build itself
-def isAnAllCompositeBuild = "${mod_id}".toString().equals("all")  // an "all" project is a composite build of all mods. We are on this project currently.
 
 //Everyone has to have a different task that finalizes their jar...
 def finaliseJarTaskName = isFabric ? "remapJar" : "jar"
@@ -96,13 +138,13 @@ dependencies {
                         def dep = isFabricBased ? "fabric" : project.name
                         def modIdLowerCase = "${mod}".toString().toLowerCase(Locale.US)
                         if (file("${project.rootDir}/../${mod}/api").exists()) {
-                            compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-api"
+                            compileOnly "me.ichun.mods:${modIdLowerCase}:api"
                             //add the api dep if it exists
                         }
                         //add the common dep
-                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-common"
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:common"
                         //add the modloader specific dep (fabric for common and api)
-                        compileOnly "me.ichun.mods:${modIdLowerCase}:${project.minecraft_version}-${dep}"
+                        compileOnly "me.ichun.mods:${modIdLowerCase}:${dep}"
 
                         if ("${mod}".toString().equals("iChunUtil")) {
                             implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
@@ -116,8 +158,8 @@ dependencies {
         } else {
             def dep = isFabricBased ? "fabric" : project.name
             //We don't use the iChunUtil version number as these are substituted
-            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-common" //add the common dep
-            compileOnly "me.ichun.mods:ichunutil:${project.minecraft_version}-${dep}"
+            compileOnly "me.ichun.mods:ichunutil:common" //add the common dep
+            compileOnly "me.ichun.mods:ichunutil:${dep}"
         }
     }
     if (isIDE && !isAnAllCompositeBuild) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
@@ -384,7 +426,9 @@ publisher {
     // For example: markdown.md, or "This is my changelog"
     // Or: https://raw.githubusercontent.com/hypherionmc/changelogs/changelog.md
     // Or https://gist.githubusercontent.com/hypherionmc/92f825d3c9337964cc77c9c8c9bf65e6/raw/ceeaaee5b98c688a23398864fe480b84796a1651/test_gist.md
-    setChangelog(file("${project.rootDir}/changelog.md"))
+    if (changelogFile != null) {
+        setChangelog(changelogFile)
+    }
 
     // Required for Modrinth/GitHub
     setProjectVersion("${project.mod_version}")
