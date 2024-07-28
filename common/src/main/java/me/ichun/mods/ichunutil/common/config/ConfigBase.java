@@ -50,8 +50,6 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
     private transient String fieldCache = null; //a toml minified version of the file, to reset to when players disconnect from servers for server configs.
 
-    //TODO how do KeyBinds handle in the config?
-
     public ConfigBase(String...name)
     {
         CONFIGS.add(this);

@@ -51,6 +51,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                 }
             });
             rotatable.setSize(60, 14).setId("configType");
+            rotatable.setTooltip(config.getFileName());
             rotatable.setConstraint(new Constraint(rotatable).left(lastRotatable != null ? lastRotatable : this, lastRotatable != null ? Constraint.Property.Type.RIGHT : Constraint.Property.Type.LEFT, 0).top(this, Constraint.Property.Type.TOP, 0));
             if(i == 0)
             {

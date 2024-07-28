@@ -167,10 +167,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler
             builder.pop();
         }
 
-        ModLoadingContext.get().getActiveContainer().addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builder.build(), ModLoadingContext.get().getActiveContainer(), config.getFileName()));
+        ModConfigSpec spec = builder.build();
+        ModLoadingContext.get().getActiveContainer().registerConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, spec, config.getFileName());
 
         config.setSaveMethod(() -> {
-            ModConfigSpec spec = (ModConfigSpec)modConfig.getSpec();
             if(spec.isLoaded() && updateConfigValuesFromFields())
             {
                 spec.save();
