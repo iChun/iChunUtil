@@ -24,7 +24,7 @@ public class PacketChannelNeoForge extends PacketChannel
     {
         super(name, packetTypes);
 
-        IPayloadRegistrar registrar = event.registrar(channelId.toString()); // version number
+        IPayloadRegistrar registrar = event.registrar(channelId.getNamespace());
         registrar.versioned(Integer.toString(protocolVersion));
 
         if(isOptional)
