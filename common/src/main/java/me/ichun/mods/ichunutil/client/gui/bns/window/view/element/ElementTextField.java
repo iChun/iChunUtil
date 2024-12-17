@@ -257,8 +257,7 @@ public class ElementTextField extends Element<Fragment<?>>
     {
         if(isMouseOver(mouseX, mouseY))
         {
-            setFocused(widget);
-            widget.setFocused(true);
+            focus();
             if(button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {
                 widget.setValue("");
@@ -271,6 +270,12 @@ public class ElementTextField extends Element<Fragment<?>>
             return true;
         }
         return false;
+    }
+
+    public void focus()
+    {
+        setFocused(widget);
+        widget.setFocused(true);
     }
 
     @Override

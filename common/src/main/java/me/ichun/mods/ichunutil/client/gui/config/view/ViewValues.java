@@ -119,8 +119,15 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                             if(e != null)
                             {
                                 e.parent.setFocused(e);
-                                e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
-                                e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                                if(e instanceof ElementTextField text)
+                                {
+                                    text.focus();
+                                }
+                                else
+                                {
+                                    e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                                    e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                                }
                             }
 
                             save(); // prompts a restart button and also lets us save every time a config is changed.
