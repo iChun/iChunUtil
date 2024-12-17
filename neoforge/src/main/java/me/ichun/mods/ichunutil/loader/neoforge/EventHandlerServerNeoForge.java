@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -67,5 +68,11 @@ public class EventHandlerServerNeoForge extends EventHandlerServer
     protected void registerAsCommandRegistrationListener(EventListener<CommandDispatcher<CommandSourceStack>> eventListener)
     {
         NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, RegisterCommandsEvent.class, event -> eventListener.trigger(event.getDispatcher()));
+    }
+
+    @Override
+    public boolean isFakePlayer(ServerPlayer player)
+    {
+        return player instanceof FakePlayer || super.isFakePlayer(player);
     }
 }
