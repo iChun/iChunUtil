@@ -8,10 +8,13 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import java.lang.reflect.InaccessibleObjectException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
@@ -171,10 +174,35 @@ public class ConfigHandlerForge extends ConfigHandler
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigReload);
 
         config.setSaveMethod(() -> {
-            ForgeConfigSpec spec = (ForgeConfigSpec)modConfig.getSpec();
-            if(spec.isLoaded() && updateConfigValuesFromFields())
+            IConfigSpec modSpec = modConfig.getSpec();
+            ForgeConfigSpec forgeSpec = null;
+            if(modSpec instanceof ForgeConfigSpec spec)
             {
-                spec.save();
+                forgeSpec = spec;
+            }
+            else if(modSpec.getClass().getName().equals("fuzs.nightconfigfixes.config.ConfigSpecWrapper"))
+            {
+                //https://github.com/Fuzss/nightconfigfixes/blob/main/1.20/Forge/src/main/java/fuzs/nightconfigfixes/config/ConfigSpecWrapper.java
+                Class clz = modSpec.getClass();
+                try
+                {
+                    Method getSpec = clz.getDeclaredMethod("getSpec");
+                    getSpec.setAccessible(true);
+                    forgeSpec = (ForgeConfigSpec)getSpec.invoke(modSpec);
+                }
+                catch(NoSuchMethodException | InaccessibleObjectException | ClassCastException | IllegalAccessException | InvocationTargetException e)
+                {
+                    iChunUtil.LOGGER.error("Error getting spec from ConfigSpecWrapper", e);
+                }
+            }
+            else
+            {
+                iChunUtil.LOGGER.warn("We don't know how to handle this config type, configs won't save properly: {}", modSpec.getClass().getName());
+            }
+
+            if(forgeSpec != null && forgeSpec.isLoaded() && updateConfigValuesFromFields())
+            {
+                forgeSpec.save();
             }
         });
     }
