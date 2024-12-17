@@ -14,10 +14,10 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
@@ -53,7 +53,7 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
             }
         }
 
-        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, key); //Originally from Forge: ClientRegistry.registerKeyBinding(this.keyBinding);
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, RegisterKeyMappingsEvent.class, event -> event.register(key));
     }
 
     @Override
