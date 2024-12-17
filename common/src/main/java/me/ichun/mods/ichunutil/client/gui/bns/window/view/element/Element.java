@@ -79,7 +79,11 @@ public abstract class Element<P extends Fragment<?>> extends Fragment<P>
     @Override
     public ComponentPath nextFocusPath(FocusNavigationEvent event)
     {
-        return parent.nextFocusPath(event);
+        if(parent.getFocused() == this)
+        {
+            return super.nextFocusPath(event);
+        }
+        return null; //we're not focused anyway, so, nah
     }
 
     public void renderMinecraftStyleButton(PoseStack stack, int posX, int posY, int width, int height, ButtonState state) // BUTTONS NEED TO BE LARGER THAN 3x3
