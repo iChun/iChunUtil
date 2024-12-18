@@ -29,5 +29,5 @@ public @interface Prop
     @NotNull
     Env[] env() default Env.ALL; //if not ALL, only loader specific
 
-    boolean skip() default false;
+    boolean skip() default false; //true if config handling is done somewhere else
 }

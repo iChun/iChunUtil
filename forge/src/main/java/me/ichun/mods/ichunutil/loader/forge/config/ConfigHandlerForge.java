@@ -7,11 +7,11 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
@@ -46,9 +46,17 @@ public class ConfigHandlerForge extends ConfigHandler
 
     private ModConfig modConfig; //our mod config
 
-    public ConfigHandlerForge(ConfigBase config)
+    private final IEventBus eventBus;
+
+    public ConfigHandlerForge(ConfigBase config, IEventBus bus)
     {
         super(config);
+
+        this.eventBus = bus;
+
+        registerKeybinds();
+
+        registerListeners(this.eventBus);
     }
 
     @Override
@@ -170,9 +178,6 @@ public class ConfigHandlerForge extends ConfigHandler
 
         ModLoadingContext.get().getActiveContainer().addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builder.build(), ModLoadingContext.get().getActiveContainer(), config.getFileName()));
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigLoad);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onConfigReload);
-
         config.setSaveMethod(() -> {
             IConfigSpec modSpec = modConfig.getSpec();
             ForgeConfigSpec forgeSpec = null;
@@ -205,6 +210,18 @@ public class ConfigHandlerForge extends ConfigHandler
                 forgeSpec.save();
             }
         });
+    }
+
+    @Override
+    public Object getEventBus()
+    {
+        return eventBus;
+    }
+
+    private void registerListeners(IEventBus bus)
+    {
+        bus.addListener(this::onConfigLoad);
+        bus.addListener(this::onConfigReload);
     }
 
     private void onConfigLoad(ModConfigEvent.Loading event)
