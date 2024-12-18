@@ -30,6 +30,8 @@ public class KeyBind
 
     public final KeyListener keyListener;
 
+    public final String[] conflictContext;
+
     /**
      * Construct during Client Setup Event
      * @param keyBinding key binding!
@@ -40,9 +42,7 @@ public class KeyBind
     {
         this.keyListener = new KeyListener(keyBinding, pressConsumer, releaseConsumer);
 
-        iChunUtil.eC().registerKeyMapping(this.keyListener.keyBinding, conflictContext);
-
-        iChunUtil.eC().registerClientTickEndListener(this::onClientTick);
+        this.conflictContext = conflictContext;
     }
 
     public KeyBind setTickConsumer(Consumer<KeyListener> tickConsumer)
@@ -55,6 +55,13 @@ public class KeyBind
     {
         this.keyListener.setHoldable();
         return this;
+    }
+
+    public void register(Object eventBus)
+    {
+        iChunUtil.eC().registerKeyMapping(this.keyListener.keyBinding, eventBus, this.conflictContext);
+
+        iChunUtil.eC().registerClientTickEndListener(this::onClientTick);
     }
 
     public void onClientTick(Minecraft mc)

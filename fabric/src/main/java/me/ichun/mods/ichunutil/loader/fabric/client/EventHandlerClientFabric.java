@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class EventHandlerClientFabric extends EventHandlerClient
 {
     @Override
-    public void registerKeyMapping(KeyMapping key, String...conflictContext)
+    public void registerKeyMapping(KeyMapping key, Object eventBus, String...conflictContext)
     {
         KeyBindingRegistryImpl.registerKeyBinding(key);
     }

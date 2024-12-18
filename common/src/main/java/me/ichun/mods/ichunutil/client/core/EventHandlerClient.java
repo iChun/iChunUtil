@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public abstract class EventHandlerClient
 {
-    public abstract void registerKeyMapping(KeyMapping key, String...conflictContext);
+    public abstract void registerKeyMapping(KeyMapping key, Object eventBus, String...conflictContext);
 
     /**
      * Convenience methods to listen to specific regularly used events
