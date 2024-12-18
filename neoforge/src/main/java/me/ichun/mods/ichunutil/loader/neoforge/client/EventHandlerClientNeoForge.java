@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
@@ -25,7 +26,7 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
 {
     @Override
     @SuppressWarnings("all")
-    public void registerKeyMapping(KeyMapping key, String... conflictContext)
+    public void registerKeyMapping(KeyMapping key, Object eventBus, String... conflictContext)
     {
         if(!KeyBind.areKeyConflictContextsRegistered())
         {
@@ -53,7 +54,7 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
             }
         }
 
-        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, RegisterKeyMappingsEvent.class, event -> event.register(key));
+        ((IEventBus)eventBus).addListener(EventPriority.NORMAL, false, RegisterKeyMappingsEvent.class, event -> event.register(key));
     }
 
     @Override

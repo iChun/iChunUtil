@@ -9,11 +9,19 @@ public class ConfigHandlerFabric extends ConfigHandler
     public ConfigHandlerFabric(ConfigBase config)
     {
         super(config);
+
+        registerKeybinds();
     }
 
     @Override
     public void init()
     {
         FabricConfigLoader.registerConfig(config);
+    }
+
+    @Override
+    public Object getEventBus()
+    {
+        return null;
     }
 }
