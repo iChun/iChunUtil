@@ -43,11 +43,17 @@ public class ConfigHandlerNeoForge extends ConfigHandler
 
     private ModConfig modConfig; //our mod config
 
+    private final IEventBus eventBus;
+
     public ConfigHandlerNeoForge(ConfigBase config, IEventBus bus)
     {
         super(config);
 
-        registerListeners(bus);
+        this.eventBus = bus;
+
+        registerKeybinds();
+
+        registerListeners(this.eventBus);
     }
 
     @Override
@@ -176,6 +182,12 @@ public class ConfigHandlerNeoForge extends ConfigHandler
                 spec.save();
             }
         });
+    }
+
+    @Override
+    public Object getEventBus()
+    {
+        return eventBus;
     }
 
     private void registerListeners(IEventBus bus)

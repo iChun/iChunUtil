@@ -12,19 +12,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraftforge.eventbus.api.IEventBus;
 import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class EventHandlerClientForge extends EventHandlerClient
 {
     @Override
-    public void registerKeyMapping(KeyMapping key, String... conflictContext)
+    public void registerKeyMapping(KeyMapping key, Object eventBus, String... conflictContext)
     {
         if(!KeyBind.areKeyConflictContextsRegistered())
         {
@@ -52,7 +53,7 @@ public class EventHandlerClientForge extends EventHandlerClient
             }
         }
 
-        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, key); //Originally from Forge: ClientRegistry.registerKeyBinding(this.keyBinding);
+        ((IEventBus)eventBus).addListener(EventPriority.NORMAL, false, RegisterKeyMappingsEvent.class, event -> event.register(key));
     }
 
     @Override
