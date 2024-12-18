@@ -16,8 +16,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
@@ -67,7 +69,16 @@ public class LoaderDelegateForge implements LoaderDelegate
     @Override
     public <T extends ConfigBase> T registerConfig(T config, Object... params)
     {
-        new ConfigHandlerForge(config);
+        IEventBus eventBus;
+        if(params.length > 0 && params[0] instanceof IEventBus)
+        {
+            eventBus = (IEventBus)params[0];
+        }
+        else
+        {
+            eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        }
+        new ConfigHandlerForge(config, eventBus);
         return config;
     }
 
