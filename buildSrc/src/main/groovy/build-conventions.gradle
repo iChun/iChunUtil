@@ -243,7 +243,7 @@ if (!isBuildingiChunUtil) {
     else if (isNeoForge) {
         def accessTransformerFile = file("${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg")
         if (accessTransformerFile.exists()) {
-            minecraft.accessTransformers.file(accessTransformerFile)
+            neoForge.accessTransformers = accessTransformerFile
         }
     }
 }

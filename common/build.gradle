@@ -1,5 +1,6 @@
 //If you are reading this, this is a direct copy of the Fabric subproject's build.gradle which is also used for the common and api subprojects. Large proportion of setup is done in build-conventions.gradle
 plugins {
+    id 'idea'
     id 'fabric-loom' version "${fabric_loom_version}"
     id 'build-conventions'
     id 'build-conventions-variations'
@@ -30,6 +31,8 @@ loom {
 
 idea {
     module {
+        downloadSources = true
+        downloadJavadoc = true
         inheritOutputDirs = false
 
         if (gradle.root != null) { //we are in a composite build
