@@ -162,7 +162,13 @@ dependencies {
             compileOnly "me.ichun.mods:ichunutil:${dep}"
         }
     }
-    if (isIDE && !isAnAllCompositeBuild) { //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
+    if (isIDE && !isAnAllCompositeBuild) {
+        if (isNeoForge) {
+            //New NeoForge's ModDevGradle doesn't generate our NeoForge assets in subprojects, we rely on the parent's project for this now.
+            compileOnly files("${actualRootDir}/neoforge/build/moddev/artifacts/neoforge-${project.neoforge_version}-minecraft-merged.jar", "${actualRootDir}/neoforge/build/moddev/artifacts/neoforge-${project.neoforge_version}-minecraft-resources-aka-client-extra.jar")
+        }
+
+        //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
         if (hasApi && !isApi) {
             compileOnly project(':api')
         }
@@ -243,7 +249,7 @@ if (!isBuildingiChunUtil) {
     else if (isNeoForge) {
         def accessTransformerFile = file("${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg")
         if (accessTransformerFile.exists()) {
-            neoForge.accessTransformers = accessTransformerFile
+            neoForge.accessTransformers = ["${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg"]
         }
     }
 }

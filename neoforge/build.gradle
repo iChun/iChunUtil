@@ -16,8 +16,8 @@ neoForge {
     }
 
     // This line is optional. Access Transformers are automatically detected
-    if (project.file('neoforge/src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-        accessTransformers = project.file('neoforge/src/main/resources/META-INF/accesstransformer.cfg')
+    if (project.file("${project.rootDir}/neoforge/src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformers = ["${project.rootDir}/neoforge/src/main/resources/META-INF/accesstransformer.cfg"]
     }
 
     // Default run configurations.
