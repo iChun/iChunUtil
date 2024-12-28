@@ -4,7 +4,6 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,16 +59,12 @@ public abstract class ElementFertile<P extends Fragment<?>> extends Element<P>
     public int getMinWidth()
     {
         int min = 0;
-        for(GuiEventListener child : children())
+        for(Fragment<?> fragment : children())
         {
-            if(child instanceof Fragment<?>)
+            int fragWidth = getConstraintSensitiveMinWidth(fragment);
+            if(fragWidth > min)
             {
-                Fragment<?> fragment = (Fragment<?>)child;
-                int fragWidth = getConstraintSensitiveMinWidth(fragment);
-                if(fragWidth > min)
-                {
-                    min = fragWidth;
-                }
+                min = fragWidth;
             }
         }
         return min > 0 ? min + (getBorderSize() * 2) : 4;
@@ -79,16 +74,12 @@ public abstract class ElementFertile<P extends Fragment<?>> extends Element<P>
     public int getMinHeight()
     {
         int min = 0;
-        for(GuiEventListener child : children())
+        for(Fragment<?> fragment : children())
         {
-            if(child instanceof Fragment<?>)
+            int fragHeight = getConstraintSensitiveMinHeight(fragment);
+            if(fragHeight > min)
             {
-                Fragment<?> fragment = (Fragment<?>)child;
-                int fragHeight = getConstraintSensitiveMinHeight(fragment);
-                if(fragHeight > min)
-                {
-                    min = fragHeight;
-                }
+                min = fragHeight;
             }
         }
         return min > 0 ? min + (getBorderSize() * 2) : 4;

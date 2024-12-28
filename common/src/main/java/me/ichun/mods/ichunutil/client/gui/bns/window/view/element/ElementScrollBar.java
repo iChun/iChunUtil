@@ -15,7 +15,8 @@ import org.joml.Matrix4f;
 
 import java.util.function.Consumer;
 
-public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragment<?>>
+@SuppressWarnings("unchecked")
+public class ElementScrollBar extends Element<Fragment<?>>
 {
     public enum Orientation
     {
@@ -25,23 +26,23 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
 
     public final Orientation orientation;
     private float scrollBarSize;
-    public Consumer<T> callback;
+    public Consumer<ElementScrollBar> callback;
     public float scrollProg;
     public boolean resizing;
 
     public MousePos pos;
 
-    public ElementScrollBar(@NotNull Fragment parent, Orientation orientation, float scrollBarSize)
+    public ElementScrollBar(@NotNull Fragment<?> parent, Orientation orientation, float scrollBarSize)
     {
         super(parent);
         this.orientation = orientation;
         this.scrollBarSize = scrollBarSize;
     }
 
-    public T setCallback(Consumer<T> callback)
+    public ElementScrollBar setCallback(Consumer<ElementScrollBar> callback)
     {
         this.callback = callback;
-        return (T)this;
+        return this;
     }
 
     public void setScrollBarSize(float f)
@@ -73,7 +74,7 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
             scrollProg = scroll;
             if(callback != null)
             {
-                callback.accept((T)this);
+                callback.accept(this);
             }
         }
     }

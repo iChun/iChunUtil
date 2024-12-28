@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class ElementTextWrapper extends Element<Fragment<?>>
 {
     private List<String> text = new ArrayList<>();

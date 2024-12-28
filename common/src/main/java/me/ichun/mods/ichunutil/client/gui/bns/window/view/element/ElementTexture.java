@@ -8,12 +8,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class ElementTexture extends Element
+public class ElementTexture extends Element<Fragment<?>>
 {
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementTexture(@NotNull Fragment parent, ResourceLocation rl)
+    public ElementTexture(@NotNull Fragment<?> parent, ResourceLocation rl)
     {
         super(parent);
         this.textureLocation = rl;

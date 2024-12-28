@@ -8,10 +8,11 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
@@ -47,12 +48,14 @@ public class ConfigHandlerForge extends ConfigHandler
     private ModConfig modConfig; //our mod config
 
     private final IEventBus eventBus;
+    private final FMLModContainer modContainer;
 
-    public ConfigHandlerForge(ConfigBase config, IEventBus bus)
+    public ConfigHandlerForge(ConfigBase config, FMLJavaModLoadingContext context)
     {
         super(config);
 
-        this.eventBus = bus;
+        this.eventBus = context.getModEventBus();
+        this.modContainer = context.getContainer();
 
         registerKeybinds();
 
@@ -176,7 +179,7 @@ public class ConfigHandlerForge extends ConfigHandler
             builder.pop();
         }
 
-        ModLoadingContext.get().getActiveContainer().addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builder.build(), ModLoadingContext.get().getActiveContainer(), config.getFileName()));
+        modContainer.addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builder.build(), modContainer, config.getFileName()));
 
         config.setSaveMethod(() -> {
             IConfigSpec modSpec = modConfig.getSpec();

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class Window<W extends Workspace, V extends View<?>> extends Fragment<W> //TODO have a "generic window" class, MOST of our windows don't do anything special
+public abstract class Window<W extends Workspace, V extends View<?>> extends Fragment<W>
 {
     //TODO get rid of this when working with more advanced UI eg Tabula/CCI
     public Supplier<Integer> borderSize;

@@ -30,7 +30,7 @@ public class ElementNumberInput extends ElementTextField
     public boolean clickUp;
     public boolean clickDown;
 
-    public ElementNumberInput(@NotNull Fragment parent, boolean isDouble)
+    public ElementNumberInput(@NotNull Fragment<?> parent, boolean isDouble)
     {
         super(parent);
         this.isDouble = isDouble;

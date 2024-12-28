@@ -18,6 +18,8 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
 {
     public boolean createdRestartAlert = false;
 
+    public final ElementList<ViewConfigs, TreeSet<ConfigBase>> modsList;
+
     public ViewConfigs(@NotNull WindowGeneric<WorkspaceConfigs,ViewConfigs> parent, @NotNull String s)
     {
         super(parent, s);
@@ -30,16 +32,16 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
         btn.setConstraint(new Constraint(btn).left(this, Constraint.Property.Type.LEFT, 5).right(this, Constraint.Property.Type.RIGHT, 30).bottom(this, Constraint.Property.Type.BOTTOM, 5));
         elements.add(btn);
 
-        ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0).bottom(btn, Constraint.Property.Type.TOP, 5).right(this, Constraint.Property.Type.RIGHT, 0));
         elements.add(sv);
 
-        ElementList<?> list = new ElementList<>(this).setScrollVertical(sv);
-        list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0).bottom(btn, Constraint.Property.Type.TOP, 5).top(this, Constraint.Property.Type.TOP, 0).right(sv, Constraint.Property.Type.LEFT, 0));
+        modsList = new ElementList<>(this);
+        modsList.setScrollVertical(sv).setConstraint(new Constraint(modsList).left(this, Constraint.Property.Type.LEFT, 0).bottom(btn, Constraint.Property.Type.TOP, 5).top(this, Constraint.Property.Type.TOP, 0).right(sv, Constraint.Property.Type.LEFT, 0));
 
         for(Map.Entry<String, TreeSet<ConfigBase>> e : parent.parent.modToConfig.entrySet())
         {
-            list.addItem(e.getValue()).addTextWrapper(e.getKey()).setSelectionHandler(item -> {
+            modsList.addItem(e.getValue()).addTextWrapper(e.getKey()).setSelectionHandler(item -> {
                 if(item.selected)
                 {
                     //destroy window values if exists
@@ -64,7 +66,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
                 }
             });
         }
-        elements.add(list);
+        elements.add(modsList);
     }
 
     @Override

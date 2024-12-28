@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -24,7 +25,10 @@ public class WorkspaceConfigs extends Workspace
     public ViewConfigs viewConfigs;
     public ViewValues viewValues;
 
-    public WorkspaceConfigs(Screen lastScreen)
+    @Nullable
+    public String selectedModId;
+
+    public WorkspaceConfigs(Screen lastScreen, @Nullable String selectedModId)
     {
         super(lastScreen, Component.translatable("gui.ichunutil.configs.title"));
 
@@ -37,6 +41,30 @@ public class WorkspaceConfigs extends Workspace
         WindowGeneric<WorkspaceConfigs, ViewConfigs> window = WindowGeneric.create(this, windowGeneric -> new ViewConfigs(windowGeneric, "gui.ichunutil.configs.configs"));
         viewConfigs = window.getCurrentView();
         addToDock(window, Constraint.Property.Type.LEFT);
+
+        this.selectedModId = selectedModId;
+    }
+
+    @Override
+    protected void init()
+    {
+        boolean hasInit = hasInit();
+        super.init();
+
+        if(!hasInit && selectedModId != null)
+        {
+            for(ElementList.Item<TreeSet<ConfigBase>> item : viewConfigs.modsList.items)
+            {
+                TreeSet<ConfigBase> configs = item.getObject();
+                if(configs.getFirst().getModId().equals(selectedModId))
+                {
+                    item.parent.setFocused(item);
+                    item.selected = true;
+                    item.triggerSelectionHandler();
+                    break;
+                }
+            }
+        }
     }
 
     @Override

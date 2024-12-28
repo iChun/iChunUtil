@@ -546,12 +546,9 @@ public abstract class Workspace extends Screen
 
         if(greyout)
         {
-            addWindowWithGreyout(window);
+            addGreyout(window);
         }
-        else
-        {
-            addWindow(window);
-        }
+        addWindow(window);
         putInCenter(window);
         setFocused(window);
 
@@ -573,13 +570,13 @@ public abstract class Workspace extends Screen
         openWindowInCenter(window, false);
     }
 
-    public void addWindowWithGreyout(Window<?,?> window)
+    public WindowGreyout<?> addGreyout(Window<?, ?> window)
     {
         WindowGreyout<?> greyout = new WindowGreyout<>(this, window);
         addWindow(greyout);
         greyout.init();
 
-        addWindow(window);
+        return greyout;
     }
 
     //Dock management

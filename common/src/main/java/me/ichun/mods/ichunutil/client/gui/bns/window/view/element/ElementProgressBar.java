@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class ElementProgressBar extends Element
+public class ElementProgressBar extends Element<Fragment<?>>
 {
     public float progress;
 
-    public ElementProgressBar(@NotNull Fragment parent)
+    public ElementProgressBar(@NotNull Fragment<?> parent)
     {
         super(parent);
     }

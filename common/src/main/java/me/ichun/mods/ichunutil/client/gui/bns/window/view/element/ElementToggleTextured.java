@@ -10,22 +10,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ElementToggleTextured<T extends ElementToggleTextured> extends ElementToggle<T>
+public class ElementToggleTextured extends ElementToggle<ElementToggleTextured>
 {
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementToggleTextured(@NotNull Fragment<?> parent, @NotNull String tooltip, ResourceLocation rl, Consumer<T> callback)
+    public ElementToggleTextured(@NotNull Fragment<?> parent, @NotNull String tooltip, ResourceLocation rl, Consumer<ElementToggleTextured> callback)
     {
         super(parent, "", callback);
         this.tooltip = tooltip;
         this.textureLocation = rl;
     }
 
-    public <T extends ElementToggleTextured<?>> T setWarping()
+    public ElementToggleTextured setWarping()
     {
         warping = true;
-        return (T)this;
+        return this;
     }
 
     @Override

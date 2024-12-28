@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
+import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +16,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
+public class WindowContextMenu<M extends Workspace, I> extends Window<M, View<?>>
 {
-    private final ElementList<?> list;
+    private final ElementList<ViewContextMenu, I> list;
     private int minWidth = 1;
     private boolean killed;
 
@@ -28,7 +29,7 @@ public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
         setBorderSize(() -> 1);
         setView(new ViewContextMenu(this, ""));
 
-        list = (ElementList<?>)getCurrentView().elements.get(1);
+        list = (ElementList<ViewContextMenu, I>)getCurrentView().elements.get(1);
 
         disableTitle();
         disableDocking();
@@ -38,12 +39,12 @@ public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
         disableUndocking();
     }
 
-    public ElementList<?> getList()
+    private ElementList<ViewContextMenu, I> getList()
     {
         return list;
     }
 
-    public void setupAround(double posX, double posY, int minWidth, int yFlipHeight) //this sets the placement of the window.
+    private void setupAround(double posX, double posY, int minWidth, int yFlipHeight) //this sets the placement of the window.
     {
         this.width = this.minWidth = minWidth;
         resize(Minecraft.getInstance(), parent.getWidth(), parent.getHeight());
@@ -106,21 +107,22 @@ public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
         }
     }
 
-    private class ViewContextMenu extends View<WindowContextMenu<M>>
+    private class ViewContextMenu extends View<WindowContextMenu<M, I>>
     {
-        public ViewContextMenu(@NotNull WindowContextMenu<M> parent, @NotNull String s)
+        public ViewContextMenu(@NotNull WindowContextMenu<M, I> parent, @NotNull String s)
         {
             super(parent, s);
 
-            ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+            ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
             sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                 .right(this, Constraint.Property.Type.RIGHT, 0)
             );
             elements.add(sv);
 
-            ElementList<?> list = new ElementList<>(this).setScrollVertical(sv);
-            list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
+            ElementList<ViewContextMenu, I> list = new ElementList<>(this);
+            list.setScrollVertical(sv)
+                .setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
                 .bottom(this, Constraint.Property.Type.BOTTOM, 0)
                 .top(this, Constraint.Property.Type.TOP, 0)
                 .right(sv, Constraint.Property.Type.LEFT, 0)
@@ -129,25 +131,25 @@ public class WindowContextMenu<M extends Workspace> extends Window<M, View<?>>
         }
     }
 
-    public interface IContextMenu
+    public interface IContextMenu<M, I>
     {
-        @NotNull List<?> getObjects();
-        @NotNull BiConsumer<IContextMenu, ElementList.Item<?>> getReceiver();
-        default @NotNull Function<Object, String> getNameProvider() { return Object::toString; }
+        @NotNull List<I> getObjects();
+        @NotNull BiConsumer<M, ElementList.Item<I>> getReceiver();
+        default @NotNull Function<I, List<String>> getNameProvider() { return StringUtil::getInterpretedInfo; }
     }
 
-    public static <M extends Workspace> WindowContextMenu<M> create(M parent, IContextMenu iContextMenu, double posX, double posY, int minWidth, int yFlipHeight)
+    public static <W extends Workspace, I, M extends IContextMenu<M, I>> WindowContextMenu<W, I> create(W parent, M context, double posX, double posY, int minWidth, int yFlipHeight)
     {
-        WindowContextMenu<M> windowContextMenu = new WindowContextMenu<>(parent);
-        ElementList<?> list = windowContextMenu.getList();
-        List<?> contextMenuObjects = iContextMenu.getObjects();
-        Function<Object, String> nameProvider = iContextMenu.getNameProvider();
-        BiConsumer<IContextMenu, ElementList.Item<?>> contextMenuReceiver = iContextMenu.getReceiver();
+        WindowContextMenu<W, I> windowContextMenu = new WindowContextMenu<>(parent);
+        ElementList<?, I> list = windowContextMenu.getList();
+        List<I> contextMenuObjects = context.getObjects();
+        Function<I, List<String>> nameProvider = context.getNameProvider();
+        BiConsumer<M, ElementList.Item<I>> contextMenuContext = context.getReceiver();
 
         contextMenuObjects.forEach(o -> {
-            list.addItem(o).addTextWrapper(nameProvider.apply(o)).setSelectionHandler(item -> {
+            list.addItem(o).addTextWrapper(nameProvider.apply(o).getFirst()).setSelectionHandler(item -> {
                 item.getWorkspace().setFocused(null);
-                contextMenuReceiver.accept(iContextMenu, item);
+                contextMenuContext.accept(context, item);
             });
         });
         if(windowContextMenu.getWorkspace().hasInit())

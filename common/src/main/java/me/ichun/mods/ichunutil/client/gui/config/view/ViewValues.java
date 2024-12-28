@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>>
 {
     public final TreeSet<ConfigBase> configs;
-    public final ElementList<?> list;
+    public final ElementList<ViewValues, Object> list;
 
     public ViewValues(@NotNull WindowGeneric<WorkspaceConfigs, ViewValues> parent, @NotNull String s, TreeSet<ConfigBase> configs)
     {
@@ -62,12 +62,12 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             i++;
         }
 
-        ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(lastRotatable, Constraint.Property.Type.BOTTOM, 0).bottom(this, Constraint.Property.Type.BOTTOM, 0).right(this, Constraint.Property.Type.RIGHT, 0));
         elements.add(sv);
 
-        this.list = new ElementList<>(this).setScrollVertical(sv);
-        list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0).bottom(this, Constraint.Property.Type.BOTTOM, 0).top(lastRotatable, Constraint.Property.Type.BOTTOM, 0).right(sv, Constraint.Property.Type.LEFT, 0));
+        this.list = new ElementList<>(this);
+        list.setScrollVertical(sv).setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0).bottom(this, Constraint.Property.Type.BOTTOM, 0).top(lastRotatable, Constraint.Property.Type.BOTTOM, 0).right(sv, Constraint.Property.Type.LEFT, 0));
 
         populateList();
 
@@ -304,7 +304,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             }
             else if(clz == boolean.class)
             {
-                ElementToggleTextable<?> toggle = new ElementToggleTextable<>(item, entryName, elementClickable -> {
+                ElementToggleTextable toggle = new ElementToggleTextable(item, entryName, elementClickable -> {
                 }).setToggled((boolean)o);
                 toggle.setSize(80, 14);
                 toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
@@ -386,7 +386,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                                 }
 
                                 Predicate<String> finalValidator = validator;
-                                WindowGeneric<WorkspaceConfigs, ViewEditList<WindowGeneric<?, ?>>> window = WindowGeneric.create(parent.parent, windowGeneric -> new ViewEditList<>(windowGeneric, entryName, list, finalValidator, list1 -> {
+                                WindowGeneric<WorkspaceConfigs, ViewEditList<WindowGeneric<?, ?>, Object>> window = WindowGeneric.create(parent.parent, windowGeneric -> new ViewEditList<>(windowGeneric, entryName, list, finalValidator, list1 -> {
                                     try
                                     {
                                         List listToUse = list;
@@ -425,7 +425,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                                     {
                                     }
                                 }));
-                                getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
+                                getWorkspace().openWindowInCenter(window, 0.6D, 0.8D, true);
                                 window.init();//reinit cause we're using lists and they're weird
                             }
                         }

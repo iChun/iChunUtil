@@ -6,17 +6,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ElementToggleTextable<T extends ElementToggleTextable> extends ElementToggle<T>
+public class ElementToggleTextable extends ElementToggle<ElementToggleTextable>
 {
     public @NotNull String offString;
     public @NotNull String onString;
 
-    public ElementToggleTextable(@NotNull Fragment parent, @NotNull String tooltip, Consumer<T> callback)
+    public ElementToggleTextable(@NotNull Fragment<?> parent, @NotNull String tooltip, Consumer<ElementToggleTextable> callback)
     {
         this(parent, tooltip, "gui.no", "gui.yes", callback);
     }
 
-    public ElementToggleTextable(@NotNull Fragment parent, @NotNull String tooltip, @NotNull String off, @NotNull String on, Consumer<T> callback)
+    public ElementToggleTextable(@NotNull Fragment<?> parent, @NotNull String tooltip, @NotNull String off, @NotNull String on, Consumer<ElementToggleTextable> callback)
     {
         super(parent, tooltip, callback);
         this.tooltip = tooltip;
@@ -26,11 +26,11 @@ public class ElementToggleTextable<T extends ElementToggleTextable> extends Elem
     }
 
     @Override
-    public <T extends ElementToggle<?>> T setToggled(boolean flag)
+    public ElementToggleTextable setToggled(boolean flag)
     {
         toggleState = flag;
         text = toggleState ? onString : offString;
-        return (T)this;
+        return this;
     }
 
     @Override

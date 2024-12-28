@@ -10,18 +10,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ElementButtonTextured<T extends ElementButtonTextured> extends ElementButton<T>
+public class ElementButtonTextured extends ElementButton<ElementButtonTextured>
 {
     public ResourceLocation textureLocation;
     public boolean warping;
 
-    public ElementButtonTextured(@NotNull Fragment parent, ResourceLocation rl, Consumer<T> callback)
+    public ElementButtonTextured(@NotNull Fragment<?> parent, ResourceLocation rl, Consumer<ElementButtonTextured> callback)
     {
         super(parent, "", callback);
         this.textureLocation = rl;
     }
 
-    public ElementButtonTextured<T> setWarping()
+    public ElementButtonTextured setWarping()
     {
         warping = true;
         return this;

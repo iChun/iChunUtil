@@ -13,27 +13,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementScrollView extends ElementFertile
+@SuppressWarnings("unchecked")
+public class ElementScrollView extends ElementFertile<Fragment<?>>
 {
     public List<Element<?>> elements = new ArrayList<>();
-    private @Nullable ElementScrollBar<?> scrollVert;
-    private @Nullable ElementScrollBar<?> scrollHori;
+    private @Nullable ElementScrollBar scrollVert;
+    private @Nullable ElementScrollBar scrollHori;
 
     public boolean hasInit;
 
-    public ElementScrollView(@NotNull Fragment parent)
+    public ElementScrollView(@NotNull Fragment<?> parent)
     {
         super(parent);
     }
 
-    public <T extends ElementScrollView> T setScrollVertical(ElementScrollBar<?> scroll)
+    public <T extends ElementScrollView> T setScrollVertical(ElementScrollBar scroll)
     {
         scrollVert = scroll;
         scrollVert.setCallback((scr) -> alignItems());
         return (T)this;
     }
 
-    public <T extends ElementScrollView> T setScrollHorizontal(ElementScrollBar<?> scroll)
+    public <T extends ElementScrollView> T setScrollHorizontal(ElementScrollBar scroll)
     {
         scrollHori = scroll;
         scrollHori.setCallback((scr) -> alignItems());

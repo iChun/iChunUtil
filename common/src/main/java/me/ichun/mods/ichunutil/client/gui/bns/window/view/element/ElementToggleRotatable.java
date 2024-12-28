@@ -10,18 +10,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ElementToggleRotatable<T extends ElementToggleRotatable> extends ElementToggle<T>
+public class ElementToggleRotatable extends ElementToggle<ElementToggleRotatable>
 {
     public int rotationCount;
 
-    public ElementToggleRotatable(@NotNull Fragment parent, @NotNull String s, int rotCount, Consumer<T> callback)
+    public ElementToggleRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, Consumer<ElementToggleRotatable> callback)
     {
         super(parent, s, callback);
         this.rotationCount = rotCount;
     }
 
     @Override
-    public ElementToggleRotatable<?> setSize(int width, int height)
+    @SuppressWarnings("unchecked")
+    public ElementToggleRotatable setSize(int width, int height)
     {
         if(rotationCount % 2 != 0)
         {

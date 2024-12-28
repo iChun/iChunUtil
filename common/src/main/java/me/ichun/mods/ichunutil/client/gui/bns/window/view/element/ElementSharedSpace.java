@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementSharedSpace extends ElementFertile
+public class ElementSharedSpace extends ElementFertile<Fragment<?>>
 {
     public final ElementScrollBar.Orientation orientation;
     public List<Element<?>> elements = new ArrayList<>();
 
-    public ElementSharedSpace(@NotNull Fragment parent, ElementScrollBar.Orientation orientation)
+    public ElementSharedSpace(@NotNull Fragment<?> parent, ElementScrollBar.Orientation orientation)
     {
         super(parent);
         this.orientation = orientation;

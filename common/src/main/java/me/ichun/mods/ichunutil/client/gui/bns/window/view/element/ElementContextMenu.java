@@ -2,6 +2,7 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
+import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
@@ -11,28 +12,32 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class ElementContextMenu extends Element<Fragment<?>>
-        implements WindowContextMenu.IContextMenu
+/**
+ * This is an invisible element that is meant to overlay another element and opens a new WindowContextMenu when clicked
+ * @param <I> Class type of items in list.
+ */
+public class ElementContextMenu<I> extends Element<Fragment<?>>
+        implements WindowContextMenu.IContextMenu<ElementContextMenu<I>, I>
 {
-    public final @NotNull List<?> contextMenuObjects;
-    public final @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
-    public @NotNull Function<Object, String> nameProvider = Object::toString;
+    public final @NotNull List<I> contextMenuObjects;
+    public final @NotNull BiConsumer<ElementContextMenu<I>, ElementList.Item<I>> contextMenuReceiver;
+    public @NotNull Function<I, List<String>> nameProvider = StringUtil::getInterpretedInfo;
     public boolean lmbTriggers = false;
 
-    public ElementContextMenu(@NotNull Fragment<?> parent, @NotNull List<?> contextMenuObjects, @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementContextMenu(@NotNull Fragment<?> parent, @NotNull List<I> contextMenuObjects, @NotNull BiConsumer<ElementContextMenu<I>, ElementList.Item<I>> contextMenuReceiver)
     {
         super(parent);
         this.contextMenuObjects = contextMenuObjects;
         this.contextMenuReceiver = contextMenuReceiver;
     }
 
-    public ElementContextMenu setNameProvider(Function<Object, String> nameProvider)
+    public ElementContextMenu<I> setNameProvider(Function<I, List<String>> nameProvider)
     {
         this.nameProvider = nameProvider;
         return this;
     }
 
-    public ElementContextMenu lmbTriggers()
+    public ElementContextMenu<I> lmbTriggers()
     {
         lmbTriggers = true;
         return this;
@@ -72,21 +77,21 @@ public class ElementContextMenu extends Element<Fragment<?>>
 
     @NotNull
     @Override
-    public List<?> getObjects()
+    public List<I> getObjects()
     {
         return contextMenuObjects;
     }
 
     @NotNull
     @Override
-    public BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> getReceiver()
+    public BiConsumer<ElementContextMenu<I>, ElementList.Item<I>> getReceiver()
     {
         return contextMenuReceiver;
     }
 
     @NotNull
     @Override
-    public Function<Object, String> getNameProvider()
+    public Function<I, List<String>> getNameProvider()
     {
         return nameProvider;
     }

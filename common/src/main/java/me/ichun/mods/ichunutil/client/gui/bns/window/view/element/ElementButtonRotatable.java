@@ -9,18 +9,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ElementButtonRotatable<T extends ElementButtonRotatable> extends ElementButton<T>
+public class ElementButtonRotatable extends ElementButton<ElementButtonRotatable>
 {
     public int rotationCount;
 
-    public ElementButtonRotatable(@NotNull Fragment parent, @NotNull String s, int rotCount, Consumer<T> callback)
+    public ElementButtonRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, Consumer<ElementButtonRotatable> callback)
     {
         super(parent, s, callback);
         this.rotationCount = rotCount;
     }
 
+    @SuppressWarnings({"SuspiciousNameCombination", "unchecked"})
     @Override
-    public ElementButtonRotatable<?> setSize(int width, int height)
+    public ElementButtonRotatable setSize(int width, int height)
     {
         if(rotationCount % 2 != 0)
         {

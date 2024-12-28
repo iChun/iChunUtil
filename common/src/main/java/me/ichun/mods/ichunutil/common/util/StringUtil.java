@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -55,8 +56,10 @@ public final class StringUtil
     });
 
     @NotNull
-    public static List<String> getInterpretedInfo(Object o)
+    public static List<String> getInterpretedInfo(@Nullable Object o)
     {
+        if(o == null) return List.of("");
+
         Map.Entry<Class<?>, Function<Object, List<String>>> lastEntryUsed = null;
         List<String> infos = null;
         for(Map.Entry<Class<?>, Function<Object, List<String>>> e : OBJECT_INTERPRETER.entrySet())

@@ -6,6 +6,7 @@ import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
+import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,15 +14,15 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> extends ElementClickable<T>
-        implements WindowContextMenu.IContextMenu
+public class ElementDropdownContextMenu<I> extends ElementClickable<ElementDropdownContextMenu<I>>
+        implements WindowContextMenu.IContextMenu<ElementDropdownContextMenu<I>, I>
 {
     public @NotNull String text;
-    public final @NotNull List<?> contextMenuObjects;
-    public final @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver;
-    public @NotNull Function<Object, String> nameProvider = Object::toString;
+    public final @NotNull List<I> contextMenuObjects;
+    public final @NotNull BiConsumer<ElementDropdownContextMenu<I>, ElementList.Item<I>> contextMenuReceiver;
+    public @NotNull Function<I, List<String>> nameProvider = StringUtil::getInterpretedInfo;
 
-    public ElementDropdownContextMenu(@NotNull Fragment parent, String text, @NotNull List<?> contextMenuObjects, @NotNull BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> contextMenuReceiver)
+    public ElementDropdownContextMenu(@NotNull Fragment<?> parent, @NotNull String text, @NotNull List<I> contextMenuObjects, @NotNull BiConsumer<ElementDropdownContextMenu<I>, ElementList.Item<I>> contextMenuReceiver)
     {
         super(parent, e -> {});
         this.text = text;
@@ -29,7 +30,7 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
         this.contextMenuReceiver = contextMenuReceiver;
     }
 
-    public ElementDropdownContextMenu<T> setNameProvider(Function<Object, String> nameProvider)
+    public ElementDropdownContextMenu<I> setNameProvider(Function<I, List<String>> nameProvider)
     {
         this.nameProvider = nameProvider;
         return this;
@@ -106,23 +107,29 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
         WindowContextMenu.create(getWorkspace(), this, getLeft(), getBottom() - 1, width, height - 2);
     }
 
+    @Override
+    public void onRightClickRelease()
+    {
+        WindowContextMenu.create(getWorkspace(), this, getLeft(), getBottom() - 1, width, height - 2);
+    }
+
     @NotNull
     @Override
-    public List<?> getObjects()
+    public List<I> getObjects()
     {
         return contextMenuObjects;
     }
 
     @NotNull
     @Override
-    public BiConsumer<WindowContextMenu.IContextMenu, ElementList.Item<?>> getReceiver()
+    public BiConsumer<ElementDropdownContextMenu<I>, ElementList.Item<I>> getReceiver()
     {
         return contextMenuReceiver;
     }
 
     @NotNull
     @Override
-    public Function<Object, String> getNameProvider()
+    public Function<I, List<String>> getNameProvider()
     {
         return nameProvider;
     }

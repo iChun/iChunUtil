@@ -19,32 +19,33 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ViewEditList<W extends Window<?,?>> extends View<W>
+public class ViewEditList<W extends Window<?,?>, I> extends View<W>
 {
-    public final List<?> objectList;
+    public final List<I> objectList;
     public final Predicate<String> validatorFinal;
-    public final Consumer<ElementList<?>> responder;
+    public final Consumer<ElementList<ViewEditList<W, I>, I>> responder;
 
-    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder)
+    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<I> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<ViewEditList<W, I>, I>> responder)
     {
         this(parent, s, objectList, validator, responder, null);
     }
 
-    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<?> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<?>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
+    public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<I> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<ViewEditList<W, I>, I>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent, s);
         this.objectList = objectList;
         this.validatorFinal = validator;
         this.responder = responder;
 
-        ElementScrollBar<?> sv = new ElementScrollBar<>(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
+        ElementScrollBar sv = new ElementScrollBar(this, ElementScrollBar.Orientation.VERTICAL, 0.6F);
         sv.setConstraint(new Constraint(sv).top(this, Constraint.Property.Type.TOP, 0)
             .bottom(this, Constraint.Property.Type.BOTTOM, 30)
             .right(this, Constraint.Property.Type.RIGHT, 0)
         );
         elements.add(sv);
 
-        ElementList<?> list = new ElementList<>(this).setScrollVertical(sv)
+        ElementList<ViewEditList<W, I>, I> list = new ElementList<>(this);
+        list.setScrollVertical(sv)
             .setDragHandler((i, j) -> {})
             .setRearrangeHandler((i, j) -> {})
             ;
@@ -78,7 +79,7 @@ public class ViewEditList<W extends Window<?,?>> extends View<W>
         Consumer<String> sharedResponder = (str) -> { // share a responder for all the text fields
             Consumer<String> anyResponder = null;
             boolean needRefresh = false;
-            List<ElementList.Item<?>> items = list.items;
+            List<ElementList.Item<I>> items = list.items;
             for(int i = 0; i < items.size(); i++)
             {
                 ElementList.Item<?> item = items.get(i);
@@ -98,98 +99,71 @@ public class ViewEditList<W extends Window<?,?>> extends View<W>
                 if(str.isEmpty()) //if the text changed is empty, remove all the fields and only add the ones with text. And one empty field
                 {
                     list.setFocused(null);
-                    List<ElementList.Item<?>> oriItems = new ArrayList<>(list.items);
+                    List<ElementList.Item<I>> oriItems = new ArrayList<>(list.items);
                     list.items.clear();
-                    for(ElementList.Item<?> oriItem : oriItems)
+                    for(ElementList.Item<I> oriItem : oriItems)
                     {
                         ElementTextField oriText = (ElementTextField)oriItem.elements.get(0);
                         if(!oriText.getText().isEmpty())
                         {
                             String ori = oriText.getText();
-                            ElementList.Item<?> item = list.addItem(ori);
-                            ElementTextField textField = new ElementTextField(item);
-                            textField.setDefaultText(ori);
-                            textField.setValidator(oriText.getValidator());
-                            textField.setResponder(oriText.getResponder());
-                            if(textFormatter != null)
-                            {
-                                textField.setTextFormatter(textFormatter);
-                            }
-                            textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
-                            item.addElement(textField);
-                            textField.init();
+                            ElementList.Item<I> item = list.addItem(oriItem.getObject());
+                            setTextField(item, ori, oriText.getValidator(), oriText.getResponder(), textFormatter).init();
                             anyResponder = oriText.getResponder();
                         }
                     }
                     if(anyResponder != null)
                     {
-                        ElementList.Item<?> item = list.addItem("");
-                        ElementTextField textField = new ElementTextField(item);
-                        textField.setDefaultText("");
-                        textField.setValidator(validatorFinal);
-                        textField.setResponder(anyResponder);
-                        if(textFormatter != null)
-                        {
-                            textField.setTextFormatter(textFormatter);
-                        }
-                        textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
-                        item.addElement(textField);
-                        textField.init();
+                        ElementList.Item<I> item = list.addItem(null);
+                        setTextField(item, "", validatorFinal, anyResponder, textFormatter).init();
                     }
                 }
                 else if(!((ElementTextField)list.items.get(list.items.size() - 1).elements.get(0)).getText().isEmpty()) //if the last field is not empty, add another empty field
                 {
                     if(anyResponder != null)
                     {
-                        ElementList.Item<?> item = list.addItem("");
-                        ElementTextField textField = new ElementTextField(item);
-                        textField.setDefaultText("");
-                        textField.setValidator(validatorFinal);
-                        textField.setResponder(anyResponder);
-                        if(textFormatter != null)
-                        {
-                            textField.setTextFormatter(textFormatter);
-                        }
-                        textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
-                        item.addElement(textField);
-                        textField.init();
+                        ElementList.Item<I> item = list.addItem(null);
+                        setTextField(item, "", validatorFinal, anyResponder, textFormatter).init();
                     }
                 }
                 list.resize(Minecraft.getInstance(), list.getParentWidth(), list.getParentHeight());
             }
         };
-        for(Object o1 : objectList)
+
+        //Add our objects
+        for(I o1 : objectList)
         {
             String ori = o1.toString();
-            ElementList.Item<?> item = list.addItem(ori);
-            ElementTextField textField = new ElementTextField(item);
-            textField.setDefaultText(ori);
-            textField.setValidator(validator);
-            textField.setResponder(sharedResponder);
-            if(textFormatter != null)
-            {
-                textField.setTextFormatter(textFormatter);
-            }
-            textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
-            item.addElement(textField);
+            ElementList.Item<I> item = list.addItem(o1);
+            setTextField(item, ori, validator, sharedResponder, textFormatter);
         }
-        ElementList.Item<?> item = list.addItem("");
+
+        //Add a new empty line
+        ElementList.Item<I> item = list.addItem((I)null);
+        setTextField(item, "", validator, sharedResponder, textFormatter);
+        elements.add(list);
+    }
+
+    private ElementTextField setTextField(ElementList.Item<I> item, String text, Predicate<String> validator, Consumer<String> responder, BiFunction<String, Integer, FormattedCharSequence> textFormatter)
+    {
         ElementTextField textField = new ElementTextField(item);
-        textField.setDefaultText("");
+        textField.setDefaultText(text);
         textField.setValidator(validator);
-        textField.setResponder(sharedResponder);
+        textField.setResponder(responder);
         if(textFormatter != null)
         {
             textField.setTextFormatter(textFormatter);
         }
         textField.setConstraint(Constraint.matchParent(textField, item, item.getBorderSize()));
         item.addElement(textField);
-        elements.add(list);
+        return textField;
     }
+
 
     @Override
     public void setWindowGenericProperties(WindowGeneric<?, ?> window)
     {
         window.disableDockingEntirely();
     }
+
 }

@@ -7,17 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class ElementCheckbox<T extends ElementCheckbox> extends ElementClickable<T>
+public class ElementCheckbox extends ElementClickable<ElementCheckbox>
 {
     public boolean toggleState;
 
-    public ElementCheckbox(@NotNull Fragment parent, String tooltip, Consumer<T> callback)
+    public ElementCheckbox(@NotNull Fragment<?> parent, String tooltip, Consumer<ElementCheckbox> callback)
     {
         super(parent, callback);
         this.tooltip = tooltip;
     }
 
-    public ElementCheckbox<T> setToggled(boolean flag)
+    public ElementCheckbox setToggled(boolean flag)
     {
         toggleState = flag;
         return this;

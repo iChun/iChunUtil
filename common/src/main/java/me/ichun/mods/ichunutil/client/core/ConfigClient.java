@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ConfigClient extends ConfigBase
@@ -73,24 +74,23 @@ public class ConfigClient extends ConfigBase
 
             Collections.sort(files);
 
-            ElementDropdownContextMenu<?> input = new ElementDropdownContextMenu<>(item, o.toString(), files, (menu, listItem) -> {
+            ElementDropdownContextMenu<Path> input = new ElementDropdownContextMenu<>(item, o.toString(), files, (menu, listItem) -> {
                 if(listItem.selected)
                 {
-                    ElementDropdownContextMenu<?> contextMenu = (ElementDropdownContextMenu<?>)menu;
-                    Path path = (Path)listItem.getObject();
-                    contextMenu.text = path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5);//trim the ".json"
+                    Path path = listItem.getObject();
+                    menu.text = path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5);//trim the ".json"
 
                     //update the theme here
                     if(Theme.loadTheme(path))
                     {
                         try
                         {
-                            field.set(this, contextMenu.text);
+                            field.set(this, menu.text);
                         }
                         catch(IllegalAccessException ignored){}
                     }
                 }
-            }).setNameProvider(o1 -> ((Path)o1).getFileName().toString().substring(0, ((Path)o1).getFileName().toString().length() - 5));
+            }).setNameProvider(path -> List.of(path.getFileName().toString().substring(0, path.getFileName().toString().length() - 5)));
             input.setSize(80, 14);
             input.setConstraint(new Constraint(input).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
             item.addElement(input);

@@ -11,18 +11,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ElementToggle<T extends ElementToggle> extends ElementClickable<T>
+@SuppressWarnings("unchecked")
+public class ElementToggle<T extends ElementToggle<T>> extends ElementClickable<T>
 {
     public String text;
     public boolean toggleState;
 
-    public ElementToggle(@NotNull Fragment parent, @NotNull String s, Consumer<T> callback)
+    public ElementToggle(@NotNull Fragment<?> parent, @NotNull String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = !s.isEmpty() ? I18n.get(s) : "";
     }
 
-    public <T extends ElementToggle<?>> T setToggled(boolean flag)
+    public T setToggled(boolean flag)
     {
         toggleState = flag;
         return (T)this;

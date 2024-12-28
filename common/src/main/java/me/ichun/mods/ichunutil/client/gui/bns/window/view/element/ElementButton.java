@@ -10,12 +10,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ElementButton<T extends ElementButton> extends ElementClickable<T>
+public class ElementButton<T extends ElementButton<T>> extends ElementClickable<T>
 {
     public @NotNull String text;
     public boolean renderBackground = true;
 
-    public ElementButton(@NotNull Fragment parent, String s, Consumer<T> callback)
+    public ElementButton(@NotNull Fragment<?> parent, String s, Consumer<T> callback)
     {
         super(parent, callback);
         text = I18n.get(s);

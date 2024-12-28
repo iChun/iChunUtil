@@ -5,12 +5,12 @@ import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ElementPadding extends Element
+public class ElementPadding extends Element<Fragment<?>>
 {
     public int minWidth;
     public int minHeight;
 
-    public ElementPadding(@NotNull Fragment parent, int minWidth, int minHeight)
+    public ElementPadding(@NotNull Fragment<?> parent, int minWidth, int minHeight)
     {
         super(parent);
         this.minWidth = minWidth;

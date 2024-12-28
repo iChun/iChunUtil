@@ -82,7 +82,6 @@ public class ElementTextField extends Element<Fragment<?>>
         return !s.startsWith(".");
     };
 
-    //    private List<IGuiEventListener> children = Lists.newArrayList();
     protected EditBox widget;
     private String defaultText = "";
     private int maxStringLength = 32767;
@@ -94,7 +93,7 @@ public class ElementTextField extends Element<Fragment<?>>
     private int lastLeft;
     private int lastTop;
 
-    public ElementTextField(@NotNull Fragment parent)
+    public ElementTextField(@NotNull Fragment<?> parent)
     {
         super(parent);
     }
