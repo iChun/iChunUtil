@@ -27,10 +27,8 @@ public class ElementProgressBar extends Element
         PoseStack stack = graphics.pose();
         if(renderMinecraftStyle() > 0)
         {
-            bindTexture(resourceHorse());
-
-            cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256); //taken from ElementList$Item
-            cropAndStitch(stack, getLeft(), getTop(), (int)Math.floor(width * progress), height, 2, 79, 17, 90, 54, 256, 256);
+            cropAndStitch(resourceHorse(), stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256); //taken from ElementList$Item
+            cropAndStitch(resourceHorse(), stack, getLeft(), getTop(), (int)Math.floor(width * progress), height, 2, 79, 17, 90, 54, 256, 256);
         }
         else
         {

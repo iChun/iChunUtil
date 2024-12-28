@@ -1,7 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
@@ -9,7 +9,6 @@ import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
@@ -128,66 +127,65 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
 
         if(renderMinecraftStyle() > 0)
         {
-            bindTexture(resourceTabItems());
             TextureDefinition texdefScroller = TEXDEF_SCROLLER;
 
             if(orientation == Orientation.VERTICAL)
             {
                 //draw scroll bar slot
-                BufferBuilder bufferbuilder = RenderHelper.startDrawBatch();
+                VertexConsumer vertexConsumer = RenderHelper.startDrawBatch(resourceTabItems());
                 int i = height - 6;
                 int x = getTop() + 3;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
+                    RenderHelper.drawBatch(stack, vertexConsumer, getLeft(), x, 14, dist, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                RenderHelper.drawBatch(stack, bufferbuilder, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
-                RenderHelper.endDrawBatch(bufferbuilder);
+                RenderHelper.drawBatch(stack, vertexConsumer, getLeft(), getTop()       , 14, 3, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                RenderHelper.drawBatch(stack, vertexConsumer, getLeft(), getBottom() - 3, 14, 3, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                RenderHelper.endDrawBatch();
 
                 //draw scroll bar
-                bindTexture(resourceScroller());
 
                 //x, y, width, height
                 //getLeft(), getTop() + preSpace, 14, scrollBar
 
-                bufferbuilder = RenderHelper.startDrawBatch();
+                vertexConsumer = RenderHelper.startDrawBatch(resourceScroller());
                 i = scrollBar - 7 - 2;
                 x = getTop() + preSpace + 4 + 1;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, x, 12, dist, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
+                    RenderHelper.drawBatch(stack, vertexConsumer, getLeft() + 1, x, 12, dist, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
-                RenderHelper.drawBatch(stack, bufferbuilder, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
-                RenderHelper.endDrawBatch(bufferbuilder);
+                RenderHelper.drawBatch(stack, vertexConsumer, getLeft() + 1, getTop() + preSpace + 1, 12, 4, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
+                RenderHelper.drawBatch(stack, vertexConsumer, getLeft() + 1, getTop() + preSpace + scrollBar - 3 - 1, 12, 3, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
+                RenderHelper.endDrawBatch();
             }
             else
             {
                 //draw scroll bar slot
+                VertexConsumer vertexConsumer = RenderHelper.startDrawBatch(resourceTabItems());
                 int i = width - 6;
                 int x = getLeft() + 3;
                 while(i > 0)
                 {
                     int dist = Math.min(i, 106);
-                    draw(stack, x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
+                    drawBatch(stack, vertexConsumer, x, getTop(), dist, 14, 0, 174D / 256D, 188D / 256D, 20D / 256D, 126D / 256D); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                draw(stack, getLeft(), getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
-                draw(stack, getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
+                drawBatch(stack, vertexConsumer, getLeft(), getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 17D / 256D, 20D / 256D); //draw top
+                drawBatch(stack, vertexConsumer, getRight() - 3, getTop(), 3, 14, 0, 174D / 256D, 188D / 256D, 126D / 256D, 129D / 256D); //draw bottom
 
                 //draw scroll bar
-                bindTexture(resourceScroller());
+                vertexConsumer = RenderHelper.startDrawBatch(resourceScroller());
 
                 //x, y, width, height
                 //getLeft() + preSpace, getTop(), scrollBar, 14
@@ -196,13 +194,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
                 while(i > 0)
                 {
                     int dist = Math.min(i, 8);
-                    draw(stack, x, getTop() + 1, dist, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
+                    drawBatch(stack, vertexConsumer, x, getTop() + 1, dist, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 4D / texdefScroller.height(), (4 + dist) / texdefScroller.height()); //draw body
                     i -= dist;
                     x += dist;
                 }
 
-                draw(stack, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
-                draw(stack, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
+                drawBatch(stack, vertexConsumer, getLeft() + preSpace + 1, getTop() + 1, 4, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 0D / texdefScroller.height(), 4D / texdefScroller.height()); //draw top of scroll
+                drawBatch(stack, vertexConsumer, getLeft() + preSpace + scrollBar - 3 - 1, getTop() + 1, 3, 12, 0, texdefScroller.x1() / texdefScroller.width(), texdefScroller.x2() / texdefScroller.width(), 12D / texdefScroller.height(), 15D / texdefScroller.height()); //draw bottom of scroll
             }
         }
         else
@@ -339,16 +337,13 @@ public class ElementScrollBar<T extends ElementScrollBar> extends Element<Fragme
         return orientation == Orientation.HORIZONTAL && scrollBarSize < 1F ? 14 : orientation == Orientation.VERTICAL ? 10000 : 0;
     }
 
-    public static void draw(PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
+    private static void drawBatch(PoseStack stack, VertexConsumer vertexConsumer, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2) //In case you're wondering, yes this function is actually different from RenderHelper's -Past iChun
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        //The u and v coords are different from RenderHelper#drawBatch
         Matrix4f matrix = stack.last().pose();
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .setUv((float)u2, (float)v1);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .setUv((float)u1, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .setUv((float)u1, (float)v1);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        vertexConsumer.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .setUv((float)u2, (float)v1).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .setUv((float)u1, (float)v2).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .setUv((float)u1, (float)v1).setColor(1F, 1F, 1F, 1F);
     }
 }

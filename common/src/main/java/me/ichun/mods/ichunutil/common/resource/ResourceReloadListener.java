@@ -7,13 +7,14 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener
+public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener<JsonElement>
 {
     private static final Gson DEFAULT_GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -30,7 +31,7 @@ public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener
 
     public ResourceReloadListener(Gson gsonParser, String resourceFolder, Class<T> classType)
     {
-        super(gsonParser, resourceFolder);
+        super(ExtraCodecs.JSON, resourceFolder);
 
         this.classType = classType;
         this.parser = gsonParser;

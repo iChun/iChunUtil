@@ -13,8 +13,8 @@
   "client": [
     "client.ChatListenerMixin",
     "client.ClientLevelMixin",
+    "client.EntityRenderDispatcherMixin",
     "client.LivingEntityRendererAccessorMixin",
-    "client.LivingEntityRendererMixin",
     "client.MinecraftMixin",
     "client.MouseHandlerMixin"
   ],

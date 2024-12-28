@@ -95,12 +95,12 @@ public interface LoaderDelegate
     //Forge uses its own registries, else uses the built in ones
     default Block registryBlock(ResourceLocation rl)
     {
-        return BuiltInRegistries.BLOCK.get(rl);
+        return BuiltInRegistries.BLOCK.getValue(rl);
     }
 
     default SoundEvent registrySoundEvents(ResourceLocation rl)
     {
-        return BuiltInRegistries.SOUND_EVENT.get(rl);
+        return BuiltInRegistries.SOUND_EVENT.getValue(rl);
     }
 
     //END registry block

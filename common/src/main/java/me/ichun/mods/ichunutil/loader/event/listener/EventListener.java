@@ -1,4 +1,6 @@
-package me.ichun.mods.ichunutil.loader.event;
+package me.ichun.mods.ichunutil.loader.event.listener;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -7,9 +9,9 @@ public class EventListener<T>
 {
     private final ArrayList<Consumer<T>> listeners = new ArrayList<>();
 
-    public EventListener(Consumer<EventListener<T>> registration)
+    public EventListener(@Nullable Consumer<EventListener<T>> registration)
     {
-        registration.accept(this);
+        if(registration != null) registration.accept(this);
     }
 
     public void register(Consumer<T> listener)

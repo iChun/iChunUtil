@@ -112,13 +112,11 @@ public class ElementNumberInput extends ElementTextField
             renderMinecraftStyleButton(stack, getRight() - BUTTON_WIDTH, getTop() + (int)(height / 2d), BUTTON_WIDTH, (int)(height / 2d), clickDown ? ButtonState.CLICK : (isMouseBetween(mouseX, getRight() - BUTTON_WIDTH, getRight()) && isMouseBetween(mouseY, getTop() + (height / 2D), getBottom())) ? ButtonState.HOVER : ButtonState.IDLE); //top half
 
             int size = 4;
-            bindTexture(resourceUp());
             double[] coords = TEXDEF_UP.getCoords(TextureDefinition.DrawType.FILL);
-            RenderHelper.draw(stack, getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //up icon
+            RenderHelper.draw(resourceUp(), stack, getRight() - size - 3, getTop() + ((height / 2d) / 2) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //up icon
 
-            bindTexture(resourceDown());
             coords = TEXDEF_DOWN.getCoords(TextureDefinition.DrawType.FILL);
-            RenderHelper.draw(stack, getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //down icon
+            RenderHelper.draw(resourceDown(), stack, getRight() - size - 3, getTop() + (((height - 0.5D) / 2d) / 2 * 3) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //down icon
         }
         else
         {

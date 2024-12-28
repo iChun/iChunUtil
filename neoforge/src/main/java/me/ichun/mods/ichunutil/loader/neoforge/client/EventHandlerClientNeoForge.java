@@ -2,13 +2,17 @@ package me.ichun.mods.ichunutil.loader.neoforge.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
-import me.ichun.mods.ichunutil.loader.event.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListenerBi;
 import me.ichun.mods.ichunutil.loader.neoforge.event.client.ClientSystemChatEvent;
 import me.ichun.mods.ichunutil.loader.neoforge.event.client.OverlayChangeEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
@@ -19,6 +23,8 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
@@ -79,6 +85,22 @@ public class EventHandlerClientNeoForge extends EventHandlerClient
     protected void registerAsOnClientDisconnectListener(EventListener<Minecraft> eventListener)
     {
         NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientPlayerNetworkEvent.LoggingOut.class, event -> eventListener.trigger(Minecraft.getInstance()));
+    }
+
+    @Override
+    protected void registerClientLevelLoadListener(EventListener<LevelAccessor> eventListener)
+    {
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, LevelEvent.Load.class, event -> {
+            if(event.getLevel().isClientSide()) eventListener.trigger(event.getLevel());
+        });
+    }
+
+    @Override
+    protected void registerClientEntityJoinLevelListener(EventListenerBi<Level, Entity> eventListener)
+    {
+        NeoForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, EntityJoinLevelEvent.class, event -> {
+            if(event.getLevel().isClientSide()) eventListener.trigger(event.getLevel(), event.getEntity());
+        });
     }
 
     @Override

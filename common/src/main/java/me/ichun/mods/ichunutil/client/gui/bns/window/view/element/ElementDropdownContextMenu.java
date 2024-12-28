@@ -50,10 +50,9 @@ public class ElementDropdownContextMenu<T extends ElementDropdownContextMenu> ex
 
             renderMinecraftStyleButton(stack, getRight() - ElementNumberInput.BUTTON_WIDTH, getTop(), ElementNumberInput.BUTTON_WIDTH, (int)(height), disabled || parent.isDragging() && parent.getFocused() == this ? ButtonState.CLICK : hover ? ButtonState.HOVER : ButtonState.IDLE);
 
-            bindTexture(resourceDown());
             double[] coords = TEXDEF_DOWN.getCoords(TextureDefinition.DrawType.FILL);
             int size = 4;
-            RenderHelper.draw(stack, getRight() - size - 3, getTop() + (height / 2d) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //down icon
+            RenderHelper.draw(resourceDown(), stack, getRight() - size - 3, getTop() + (height / 2d) - size / 2d, size, size, 0, coords[0], coords[1], coords[2], coords[3]); //down icon
         }
         else
         {

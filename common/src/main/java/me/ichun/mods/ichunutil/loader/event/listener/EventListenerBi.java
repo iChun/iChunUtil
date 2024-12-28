@@ -1,4 +1,6 @@
-package me.ichun.mods.ichunutil.loader.event;
+package me.ichun.mods.ichunutil.loader.event.listener;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
@@ -8,9 +10,9 @@ public class EventListenerBi<T, U>
 {
     private final ArrayList<BiConsumer<T, U>> listeners = new ArrayList<>();
 
-    public EventListenerBi(Consumer<EventListenerBi<T, U>> registration)
+    public EventListenerBi(@Nullable Consumer<EventListenerBi<T, U>> registration)
     {
-        registration.accept(this);
+        if(registration != null) registration.accept(this);
     }
 
     public void register(BiConsumer<T, U> listener)

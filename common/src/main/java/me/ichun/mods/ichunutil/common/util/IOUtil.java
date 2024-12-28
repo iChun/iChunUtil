@@ -35,7 +35,7 @@ public final class IOUtil
             {
                 for(int y = 0; y < img1.getHeight(); y++)
                 {
-                    if(img1.getPixelRGBA(x, y) != img2.getPixelRGBA(x, y))
+                    if(img1.getPixel(x, y) != img2.getPixel(x, y))
                     {
                         return false;
                     }

@@ -1,6 +1,7 @@
-package me.ichun.mods.ichunutil.loader.event;
+package me.ichun.mods.ichunutil.loader.event.listener;
 
 import org.apache.commons.lang3.function.TriConsumer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -9,9 +10,9 @@ public class EventListenerTri<T, U, V>
 {
     private final ArrayList<TriConsumer<T, U, V>> listeners = new ArrayList<>();
 
-    public EventListenerTri(Consumer<EventListenerTri<T, U, V>> registration)
+    public EventListenerTri(@Nullable Consumer<EventListenerTri<T, U, V>> registration)
     {
-        registration.accept(this);
+        if(registration != null) registration.accept(this);
     }
 
     public void register(TriConsumer<T, U, V> listener)

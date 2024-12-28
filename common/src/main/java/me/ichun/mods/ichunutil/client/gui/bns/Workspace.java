@@ -3,7 +3,6 @@ package me.ichun.mods.ichunutil.client.gui.bns;
 import com.google.common.base.Splitter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.Window;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowDock;
@@ -16,12 +15,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -191,7 +188,7 @@ public abstract class Workspace extends Screen
         else
         {
             RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
-            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         }
     }
 
@@ -365,7 +362,6 @@ public abstract class Workspace extends Screen
             RenderHelper.drawColour(graphics, getTheme().windowBorderActive, 255, tooltipX - 3, tooltipY - 3, tooltipTextWidth + 6, tooltipHeight + 6, zLevel);
             RenderHelper.drawColour(graphics, getTheme().windowBackground, 255, tooltipX - 2, tooltipY - 2, tooltipTextWidth + 4, tooltipHeight + 4, zLevel);
 
-            MultiBufferSource.BufferSource renderType = graphics.bufferSource();
             stack.translate(0.0D, 0.0D, zLevel);
 
             int tooltipTop = tooltipY;
@@ -375,7 +371,7 @@ public abstract class Workspace extends Screen
                 FormattedText line = textLines.get(lineNumber);
                 if(line != null)
                 {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, renderType, Font.DisplayMode.NORMAL, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(line), (float)tooltipX, (float)tooltipY, -1, true, mat, RenderHelper.getBufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
                 }
 
                 if (lineNumber + 1 == titleLinesCount)
@@ -743,11 +739,5 @@ public abstract class Workspace extends Screen
             bringToFront((Window<?,?>)gui);
         }
         super.setFocused(gui);
-    }
-
-    //Convenience methods
-    public static void bindTexture(ResourceLocation rl)
-    {
-        RenderSystem.setShaderTexture(0, rl);
     }
 }

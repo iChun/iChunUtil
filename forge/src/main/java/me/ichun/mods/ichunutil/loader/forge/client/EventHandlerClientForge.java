@@ -2,13 +2,17 @@ package me.ichun.mods.ichunutil.loader.forge.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
-import me.ichun.mods.ichunutil.loader.event.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListenerBi;
 import me.ichun.mods.ichunutil.loader.forge.event.client.ClientSystemChatEvent;
 import me.ichun.mods.ichunutil.loader.forge.event.client.OverlayChangeEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -17,6 +21,8 @@ import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +84,22 @@ public class EventHandlerClientForge extends EventHandlerClient
     protected void registerAsOnClientDisconnectListener(EventListener<Minecraft> eventListener)
     {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, ClientPlayerNetworkEvent.LoggingOut.class, event -> eventListener.trigger(Minecraft.getInstance()));
+    }
+
+    @Override
+    protected void registerClientLevelLoadListener(EventListener<LevelAccessor> eventListener)
+    {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, LevelEvent.Load.class, event -> {
+            if(event.getLevel().isClientSide()) eventListener.trigger(event.getLevel());
+        });
+    }
+
+    @Override
+    protected void registerClientEntityJoinLevelListener(EventListenerBi<Level, Entity> eventListener)
+    {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, false, EntityJoinLevelEvent.class, event -> {
+            if(event.getLevel().isClientSide()) eventListener.trigger(event.getLevel(), event.getEntity());
+        });
     }
 
     @Override

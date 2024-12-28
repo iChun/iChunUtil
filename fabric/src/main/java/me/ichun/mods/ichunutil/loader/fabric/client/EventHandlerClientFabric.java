@@ -1,10 +1,12 @@
 package me.ichun.mods.ichunutil.loader.fabric.client;
 
 import me.ichun.mods.ichunutil.client.core.EventHandlerClient;
-import me.ichun.mods.ichunutil.loader.event.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListenerBi;
 import me.ichun.mods.ichunutil.loader.fabric.event.client.FabricClientEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -13,8 +15,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
@@ -51,9 +54,15 @@ public class EventHandlerClientFabric extends EventHandlerClient
     }
 
     @Override
-    public void fireLivingRenderPreEvent(LivingEntity living, LivingEntityRenderer renderer, float partialTick)
+    protected void registerClientLevelLoadListener(EventListener<LevelAccessor> eventListener)
     {
-        FabricClientEvents.LIVING_RENDER_PRE.invoker().onLivingRenderPre(living, renderer, partialTick);
+        FabricClientEvents.CLIENT_LEVEL_LOAD.register(eventListener::trigger); //TODO make sure no other mods are using this still
+    }
+
+    @Override
+    protected void registerClientEntityJoinLevelListener(EventListenerBi<Level, Entity> eventListener)
+    {
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> eventListener.trigger(world, entity)); //TODO make sure no other mods are using this still
     }
 
     @Override

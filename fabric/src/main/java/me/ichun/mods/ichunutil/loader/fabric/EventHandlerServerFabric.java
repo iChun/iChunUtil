@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.ichun.mods.ichunutil.common.core.EventHandlerServer;
 import me.ichun.mods.ichunutil.common.entity.EntityPersistentDataHandler;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import me.ichun.mods.ichunutil.loader.event.EventListener;
+import me.ichun.mods.ichunutil.loader.event.listener.EventListener;
 import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.FakePlayer;

@@ -1,61 +1,72 @@
 package me.ichun.mods.ichunutil.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.Random;
+import java.util.function.Function;
 
 public class RenderHelper
 {
-    public static void drawTexture(PoseStack stack, ResourceLocation resource, double posX, double posY, double width, double height, double zLevel)
+    public static MultiBufferSource.BufferSource getBufferSource()
     {
-        RenderSystem.setShaderTexture(0, resource);
-        draw(stack, posX, posY, width, height, zLevel);
+        return Minecraft.getInstance().renderBuffers().bufferSource(); //Minecraft.getInstance().renderBuffers().bufferSource() should be the same as GuiGraphics's bufferSource field
     }
 
-    public static void draw(PoseStack stack, double posX, double posY, double width, double height, double zLevel)
+    public static void draw(ResourceLocation resourceLocation, PoseStack stack, double posX, double posY, double width, double height, double zLevel)
     {
-        draw(stack, posX, posY, width, height, zLevel, 0D, 1D, 0D, 1D);
+        draw(RenderType::guiTextured, resourceLocation, stack, posX, posY, width, height, zLevel);
     }
 
-    public static void draw(PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    public static void draw(Function<ResourceLocation, RenderType> renderTypeGetter, ResourceLocation resourceLocation, PoseStack stack, double posX, double posY, double width, double height, double zLevel)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        draw(renderTypeGetter, resourceLocation, stack, posX, posY, width, height, zLevel, 0D, 1D, 0D, 1D);
+    }
+
+    public static void draw(ResourceLocation resourceLocation, PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    {
+        draw(RenderType::guiTextured, resourceLocation, stack, posX, posY, width, height, zLevel, u1, u2, v1, v2);
+    }
+
+    public static void draw(Function<ResourceLocation, RenderType> renderTypeGetter, ResourceLocation resourceLocation, PoseStack stack, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    {
+        VertexConsumer vertexConsumer = startDrawBatch(renderTypeGetter, resourceLocation);
+        drawBatch(stack, vertexConsumer, posX, posY, width, height, zLevel, u1, u2, v1, v2);
+        getBufferSource().endLastBatch();
+    }
+
+    public static VertexConsumer startDrawBatch(ResourceLocation resourceLocation)
+    {
+        return startDrawBatch(RenderType::guiTextured, resourceLocation);
+    }
+
+    public static VertexConsumer startDrawBatch(Function<ResourceLocation, RenderType> renderTypeGetter, ResourceLocation resourceLocation)
+    {
+        //Grossly adapted from GuiGraphics' innerBlit method
+        RenderType renderType = renderTypeGetter.apply(resourceLocation);
+        return getBufferSource().getBuffer(renderType);
+    }
+
+    public static void drawBatch(PoseStack stack, VertexConsumer vertexConsumer, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
+    {
         Matrix4f matrix = stack.last().pose();
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setUv((float)u1, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setUv((float)u2, (float)v1);
-        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setUv((float)u1, (float)v1);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        vertexConsumer.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel)          .setUv((float)u1, (float)v2).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel)           .setUv((float)u2, (float)v1).setColor(1F, 1F, 1F, 1F);
+        vertexConsumer.addVertex(matrix, (float)posX, (float)posY, (float)zLevel)                     .setUv((float)u1, (float)v1).setColor(1F, 1F, 1F, 1F);
     }
 
-    public static BufferBuilder startDrawBatch()
+    public static void endDrawBatch()
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        Tesselator tessellator = Tesselator.getInstance();
-        return tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-    }
-
-    public static void drawBatch(PoseStack stack, BufferBuilder bufferbuilder, double posX, double posY, double width, double height, double zLevel, double u1, double u2, double v1, double v2)
-    {
-        Matrix4f matrix = stack.last().pose();
-        bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setUv((float)u1, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setUv((float)u2, (float)v2);
-        bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setUv((float)u2, (float)v1);
-        bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setUv((float)u1, (float)v1);
-    }
-
-    public static void endDrawBatch(BufferBuilder bufferbuilder)
-    {
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        getBufferSource().endLastBatch();
     }
 
     public static void drawColour(GuiGraphics graphics, int colour, int alpha, double posX, double posY, double width, double height, double zLevel)
@@ -78,15 +89,13 @@ public class RenderHelper
             return;
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Matrix4f matrix = graphics.pose().last().pose();
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        VertexConsumer bufferbuilder = getBufferSource().getBuffer(RenderType.gui());
         bufferbuilder.addVertex(matrix, (float)posX, (float)(posY + height), (float)zLevel).setColor(r, g, b, alpha);
         bufferbuilder.addVertex(matrix, (float)(posX + width), (float)(posY + height), (float)zLevel).setColor(r, g, b, alpha);
         bufferbuilder.addVertex(matrix, (float)(posX + width), (float)posY, (float)zLevel).setColor(r, g, b, alpha);
         bufferbuilder.addVertex(matrix, (float)posX, (float)posY, (float)zLevel).setColor(r, g, b, alpha);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        getBufferSource().endLastBatch();
     }
 
     public static void colour(int color)

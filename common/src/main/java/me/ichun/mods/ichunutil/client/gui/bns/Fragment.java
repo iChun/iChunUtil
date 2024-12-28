@@ -219,16 +219,29 @@ public abstract class Fragment<P extends Rectangle>
                 fragment.setScissor();
             }
         }
+        else
+        {
+            endScissor();
+        }
     }
 
     public void setScissor()
     {
+        drawBatch();
         RenderHelper.startGlScissor(getLeft(), getTop(), width, height);
     }
 
     public void endScissor()
     {
+        drawBatch();
         RenderHelper.endGlScissor();
+    }
+
+    protected void drawBatch()
+    {
+        //because we set/change scissor viewports, some stuff may not get rendered. End the batch rendering before we do something else.
+        //it's inefficient, but necessary.
+        RenderHelper.getBufferSource().endBatch();
     }
 
     public void fill(GuiGraphics graphics, int[] colours, int border)
@@ -542,10 +555,5 @@ public abstract class Fragment<P extends Rectangle>
     public int getMaxHeight()
     {
         return 1000000;
-    }
-
-    public static void bindTexture(ResourceLocation rl)
-    {
-        Workspace.bindTexture(rl);
     }
 }

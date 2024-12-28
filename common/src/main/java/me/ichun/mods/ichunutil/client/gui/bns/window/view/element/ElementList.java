@@ -179,8 +179,7 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
         {
             if(renderMinecraftStyle() > 0)
             {
-                bindTexture(resourceHorse());
-                cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+                cropAndStitch(resourceHorse(), stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
             }
             else
             {
@@ -439,6 +438,7 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
     @Override
     public void setScissor()
     {
+        super.drawBatch();
         RenderHelper.startGlScissor(getLeft() + 1, getTop() + 1, width - 2, height - 2);
     }
 
@@ -609,7 +609,6 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
 
                 if(renderMinecraftStyle() > 0)
                 {
-                    bindTexture(resourceHorse());
                     boolean canRearrange = false;
 
                     if(draggingUs && list.rearrangeHandler != null)
@@ -640,11 +639,11 @@ public class ElementList<P extends Fragment<?>> extends ElementFertile<P>
 
                     if(canRearrange)
                     {
-                        cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
+                        cropAndStitch(resourceHorse(), stack, getLeft(), getTop(), width, height, 2, 79, 17, 90, 54, 256, 256);
                     }
                     else
                     {
-                        cropAndStitch(stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256);
+                        cropAndStitch(resourceHorse(), stack, getLeft(), getTop(), width, height, 2, 43, 141, 18, 18, 256, 256);
                     }
                 }
                 else
