@@ -56,13 +56,13 @@ public class EventHandlerClientFabric extends EventHandlerClient
     @Override
     protected void registerClientLevelLoadListener(EventListener<LevelAccessor> eventListener)
     {
-        FabricClientEvents.CLIENT_LEVEL_LOAD.register(eventListener::trigger); //TODO make sure no other mods are using this still
+        FabricClientEvents.CLIENT_LEVEL_LOAD.register(eventListener::trigger);
     }
 
     @Override
     protected void registerClientEntityJoinLevelListener(EventListenerBi<Level, Entity> eventListener)
     {
-        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> eventListener.trigger(world, entity)); //TODO make sure no other mods are using this still
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> eventListener.trigger(world, entity));
     }
 
     @Override

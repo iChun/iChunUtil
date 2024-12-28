@@ -59,7 +59,5 @@ public abstract class iChunUtil
         return eventHandlerServer;
     }
 
-    public iChunUtil() //TODO hook into set overlay to null for Ding and CCI
-    {
-    }
+    public iChunUtil(){}
 }

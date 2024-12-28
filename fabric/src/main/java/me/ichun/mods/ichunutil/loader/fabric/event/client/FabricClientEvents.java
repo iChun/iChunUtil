@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public final class FabricClientEvents
 {
     private FabricClientEvents(){}//no init!
-    public static final Event<ClientLevelLoad> CLIENT_LEVEL_LOAD = EventFactory.createArrayBacked(ClientLevelLoad.class, callbacks -> level -> { //TODO check any more uses of this event
+    public static final Event<ClientLevelLoad> CLIENT_LEVEL_LOAD = EventFactory.createArrayBacked(ClientLevelLoad.class, callbacks -> level -> {
         for(ClientLevelLoad callback : callbacks)
         {
             callback.onClientLevelLoad(level);

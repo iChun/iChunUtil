@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -49,29 +50,33 @@ public final class IOUtil
         return true;
     }
 
-    public static void renameFilesToLowerCaseInDir(File dir)
+    public static void renameFilesToLowerCaseInDir(Path dir)
     {
-        //TODO convert this to use NIO
-        File[] files = dir.listFiles();
-        for(File file : files)
+        try(Stream<Path> files = Files.list(dir))
         {
-            if(file.isDirectory())
-            {
-                renameFilesToLowerCaseInDir(file);
-            }
-            else if(!file.getName().equals(file.getName().toLowerCase(Locale.ROOT)))
-            {
-                String name = file.getName().toLowerCase();
-                File newFile = new File(dir, name);
-                if(file.renameTo(newFile))
+            files.forEach(path -> {
+                if(Files.isDirectory(path))
                 {
-                    iChunUtil.LOGGER.info("Renaming {} to {}", file.getAbsolutePath(), newFile.getAbsolutePath());
+                    renameFilesToLowerCaseInDir(path);
                 }
-                else
+                else if(!path.getFileName().toString().equals(path.getFileName().toString().toLowerCase(Locale.ROOT)))
                 {
-                    iChunUtil.LOGGER.error("Failed to rename {} to {}", file.getAbsolutePath(), newFile.getAbsolutePath());
+                    Path newPath = dir.resolve(path.getFileName().toString().toLowerCase(Locale.ROOT));
+                    try
+                    {
+                        Files.move(path, newPath);
+                        iChunUtil.LOGGER.info("Renaming {} to {}", path, newPath);
+                    }
+                    catch(IOException e)
+                    {
+                        iChunUtil.LOGGER.error("Failed to rename {} to {}", path, newPath, e);
+                    }
                 }
-            }
+            });
+        }
+        catch(IOException e)
+        {
+            iChunUtil.LOGGER.error("Error accessing dir {}!", dir, e);
         }
     }
 
