@@ -47,7 +47,17 @@ if (!"${mod_id}".toString().equals("ichunutil")) { // We're either a mod that de
 	if ("${mod_id}".toString().equals("all")) {
 		def excludedMods = [
 //				"BetterThanBunnies",
-//		        "Ding"
+//				"BetterThanLlamas",
+//				"CCI1.x",
+//				"ContentCreatorIntegration",
+//				"DeathCounter",
+//		        "Ding",
+//				"HotbarSwapper",
+//				"LetSleepingDogsLie",
+//				"LimitedLives",
+//				"PartyParrots",
+//				"ServerPause",
+				"ZeePlaceholder"
 		]
 
 		gradle.ext.projectSubMods = []
