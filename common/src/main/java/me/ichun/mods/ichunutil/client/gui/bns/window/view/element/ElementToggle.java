@@ -6,9 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElementToggle extends ElementToggleAbstract<ElementToggle>
 {
-    public String text;
-    public boolean toggleState;
-
     public ElementToggle(@NotNull Fragment<?> parent, @NotNull String s, TriConsumer<ElementToggle, Double, Double> callback, TriConsumer<ElementToggle, Double, Double> rightMouseCallback)
     {
         super(parent, s, callback, rightMouseCallback);

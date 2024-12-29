@@ -207,7 +207,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     }
                     else if(clz == boolean.class && e instanceof ElementToggleTextable)
                     {
-                        field.set(config, ((ElementToggle)e).toggleState);
+                        field.set(config, ((ElementToggleTextable)e).toggleState);
                     }
                     else if(clz == String.class && e instanceof ElementTextField)
                     {
