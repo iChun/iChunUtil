@@ -21,7 +21,7 @@ public class WindowGeneric<W extends Workspace, V extends View<?>> extends Windo
     public <T extends Window<W, V>> T setCurrentView(V v)
     {
         super.setCurrentView(v);
-        ((View)getCurrentView()).setWindowGenericProperties(this);
+        getCurrentView().setWindowGenericProperties(this);
         return (T)this;
     }
 

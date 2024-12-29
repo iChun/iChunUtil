@@ -849,16 +849,13 @@ public class ElementList<P extends Fragment<?>, I> extends ElementFertile<P>
         }
     }
 
-    public static class MousePosItem<I>
+    public static class MousePosItem<I> extends MousePos
     {
-        int x;
-        int y;
         Item<I> item;
 
         public MousePosItem(int x, int y, Item<I> item)
         {
-            this.x = x;
-            this.y = y;
+            super(x, y);
             this.item = item;
         }
     }
