@@ -55,7 +55,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
             .right(sv, Constraint.Property.Type.LEFT, 0)
         );
 
-        ElementButton<?> btn = new ElementButton<>(this, "gui.cancel", button -> {
+        ElementButton btn = new ElementButton(this, "gui.cancel", (button, mouseX, mouseY) -> {
             parent.parent.setFocused(null);
             parent.parent.removeWindow(parent);
         });
@@ -65,7 +65,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
         );
         elements.add(btn);
 
-        ElementButton<?> btn1 = new ElementButton<>(this, "gui.done", button -> {
+        ElementButton btn1 = new ElementButton(this, "gui.done", (button, mouseX, mouseY) -> {
             responder.accept(list);
             parent.parent.setFocused(null);
             parent.parent.removeWindow(parent);

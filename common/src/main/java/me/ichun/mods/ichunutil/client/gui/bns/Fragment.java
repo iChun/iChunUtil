@@ -85,14 +85,14 @@ public abstract class Fragment<P extends Rectangle>
         this.parent = parent;
     }
 
-    public <T extends Fragment<P>> T setPos(int x, int y)
+    public <T extends Fragment<?>> T setPos(int x, int y)
     {
         this.posX = x;
         this.posY = y;
         return (T)this;
     }
 
-    public <T extends Fragment<P>> T setSize(int width, int height)
+    public <T extends Fragment<?>> T setSize(int width, int height)
     {
         this.width = width;
         this.height = height;

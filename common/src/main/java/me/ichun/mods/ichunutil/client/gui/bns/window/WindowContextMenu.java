@@ -2,10 +2,10 @@ package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
+import me.ichun.mods.ichunutil.client.gui.bns.contextmenu.IContextMenu;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementScrollBar;
-import me.ichun.mods.ichunutil.common.util.StringUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import org.jetbrains.annotations.NotNull;
@@ -131,13 +131,6 @@ public class WindowContextMenu<M extends Workspace, I> extends Window<M, View<?>
         }
     }
 
-    public interface IContextMenu<M, I>
-    {
-        @NotNull List<I> getObjects();
-        @NotNull BiConsumer<M, ElementList.Item<I>> getReceiver();
-        default @NotNull Function<I, List<String>> getNameProvider() { return StringUtil::getInterpretedInfo; }
-    }
-
     public static <W extends Workspace, I, M extends IContextMenu<M, I>> WindowContextMenu<W, I> create(W parent, M context, double posX, double posY, int minWidth, int yFlipHeight)
     {
         WindowContextMenu<W, I> windowContextMenu = new WindowContextMenu<>(parent);
@@ -147,7 +140,7 @@ public class WindowContextMenu<M extends Workspace, I> extends Window<M, View<?>
         BiConsumer<M, ElementList.Item<I>> contextMenuContext = context.getReceiver();
 
         contextMenuObjects.forEach(o -> {
-            list.addItem(o).addTextWrapper(nameProvider.apply(o).getFirst()).setSelectionHandler(item -> {
+            list.addItem(o).addTextWrapper(nameProvider.apply(o).getFirst()).setSelectionHandler(item -> { //TODO see how show file list handles this
                 item.getWorkspace().setFocused(null);
                 contextMenuContext.accept(context, item);
             });

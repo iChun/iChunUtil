@@ -79,7 +79,7 @@ public class WorkspaceConfigs extends Workspace
 
     public static boolean createButtonToKeyBinds(ConfigBase.Category.Entry entry, ElementList.Item<?> item)
     {
-        ElementButton<?> button = new ElementButton<>(item, "controls.title", btn -> {
+        ElementButton button = new ElementButton(item, "controls.title", (btn, mouseX, mouseY) -> {
             item.getMinecraft().setScreen(new KeyBindsScreen(item.getWorkspace(), item.getMinecraft().options));
         });
         button.setTooltip(I18n.get("options.controls"));

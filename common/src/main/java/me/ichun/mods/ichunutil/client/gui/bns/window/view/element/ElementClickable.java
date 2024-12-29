@@ -6,28 +6,27 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.function.Consumer;
-
 @SuppressWarnings("unchecked")
 public abstract class ElementClickable<T extends ElementClickable<T>> extends Element<Fragment<?>> //we reset our focus when we're clicked.
 {
-    public @NotNull Consumer<T> callback;
-    public @Nullable Consumer<T> rightClickCallback;
+    public @NotNull TriConsumer<T, Double, Double> callback;
+    public @Nullable TriConsumer<T, Double, Double> rightClickCallback;
     public boolean hover; //for rendering
     public boolean disabled;
 
-    public ElementClickable(@NotNull Fragment<?> parent, @NotNull Consumer<T> callback, @Nullable Consumer<T> rightClickCallback)
+    public ElementClickable(@NotNull Fragment<?> parent, @NotNull TriConsumer<T, Double, Double> callback, @Nullable TriConsumer<T, Double, Double> rightClickCallback)
     {
         super(parent);
         this.callback = callback;
         this.rightClickCallback = rightClickCallback;
     }
 
-    public ElementClickable(@NotNull Fragment<?> parent, @NotNull Consumer<T> callback)
+    public ElementClickable(@NotNull Fragment<?> parent, @NotNull TriConsumer<T, Double, Double> callback)
     {
         this(parent, callback, null);
     }
@@ -35,6 +34,12 @@ public abstract class ElementClickable<T extends ElementClickable<T>> extends El
     public T setDisabled(boolean flag)
     {
         disabled = flag;
+        return (T)this;
+    }
+
+    public T setRightClickCallback(TriConsumer<T, Double, Double> rightClickCallback)
+    {
+        this.rightClickCallback = rightClickCallback;
         return (T)this;
     }
 
@@ -57,34 +62,34 @@ public abstract class ElementClickable<T extends ElementClickable<T>> extends El
         {
             if(button == 0) // lmb
             {
-                trigger();
+                trigger(mouseX, mouseY);
             }
             else if(rightClickCallback != null && button == 1)
             {
-                triggerRMB();
+                triggerRMB(mouseX, mouseY);
             }
         }
         return flag;
     }
 
-    public void trigger()
+    public void trigger(double mouseX, double mouseY)
     {
         if(renderMinecraftStyle() > 0)
         {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         onClickRelease();
-        callback.accept((T)this);
+        callback.accept((T)this, mouseX, mouseY);
     }
 
-    public void triggerRMB()
+    public void triggerRMB(double mouseX, double mouseY)
     {
         if(renderMinecraftStyle() > 0)
         {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
         onRightClickRelease();
-        rightClickCallback.accept((T)this);
+        rightClickCallback.accept((T)this, mouseX, mouseY);
     }
 
     public abstract void onClickRelease();
@@ -98,11 +103,11 @@ public abstract class ElementClickable<T extends ElementClickable<T>> extends El
         {
             if(Screen.hasControlDown())
             {
-                triggerRMB();
+                triggerRMB(getCenterX(), getCenterY());
             }
             else
             {
-                trigger();
+                trigger(getCenterX(), getCenterY());
             }
             return true;
         }

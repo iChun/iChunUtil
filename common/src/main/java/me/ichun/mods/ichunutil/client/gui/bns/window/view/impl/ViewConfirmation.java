@@ -24,7 +24,7 @@ public class ViewConfirmation extends View<Window<?,?>>
         text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
         elements.add(text);
 
-        ElementButton<?> button = new ElementButton<>(this, I18n.get(isYesNo ? "gui.no" : "gui.cancel"), btn ->
+        ElementButton button = new ElementButton(this, I18n.get(isYesNo ? "gui.no" : "gui.cancel"), (btn, mouseX, mouseY) ->
         {
             parent.parent.removeWindow(parent);
 
@@ -37,7 +37,7 @@ public class ViewConfirmation extends View<Window<?,?>>
         button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 10).right(this, Constraint.Property.Type.RIGHT, 10));
         elements.add(button);
 
-        ElementButton<?> button1 = new ElementButton<>(this, I18n.get(isYesNo ? "gui.yes" : "gui.ok"), btn ->
+        ElementButton button1 = new ElementButton(this, I18n.get(isYesNo ? "gui.yes" : "gui.ok"), (btn, mouseX, mouseY) ->
         {
             parent.parent.removeWindow(parent);
 

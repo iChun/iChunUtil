@@ -5,16 +5,15 @@ import com.mojang.math.Axis;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.Theme;
 import net.minecraft.client.gui.GuiGraphics;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
-public class ElementToggleRotatable extends ElementToggle<ElementToggleRotatable>
+public class ElementToggleRotatable extends ElementToggleAbstract<ElementToggleRotatable>
 {
     public int rotationCount;
 
-    public ElementToggleRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, Consumer<ElementToggleRotatable> callback)
+    public ElementToggleRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, TriConsumer<ElementToggleRotatable, Double, Double> callback)
     {
         super(parent, s, callback);
         this.rotationCount = rotCount;

@@ -33,14 +33,14 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
 
         this.configs = configs;
 
-        ElementToggle<?> lastRotatable = null;
+        ElementToggle lastRotatable = null;
         int i = 0;
         for(ConfigBase config : configs)
         {
-            ElementToggle<?> rotatable = new ElementToggle<>(this, config.getConfigType().toString(), b -> {
+            ElementToggle rotatable = new ElementToggle(this, config.getConfigType().toString(), (b, mouseX, mouseY) -> {
                 if(b.toggleState)
                 {
-                    elements.stream().filter(element -> "configType".equals(element.id)).forEach(e -> ((ElementToggle<?>)e).toggleState = false);
+                    elements.stream().filter(element -> "configType".equals(element.id)).forEach(e -> ((ElementToggle)e).toggleState = false);
                     b.toggleState = true;
 
                     populateList();
@@ -125,8 +125,8 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                                 }
                                 else
                                 {
-                                    e.mouseClicked(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
-                                    e.mouseReleased(e.getLeft() + e.getWidth() / 2D, e.getTop() + e.getHeight() / 2D, 0);
+                                    e.mouseClicked(e.getCenterX(), e.getCenterY(), 0);
+                                    e.mouseReleased(e.getCenterX(), e.getCenterY(), 0);
                                 }
                             }
 
@@ -155,7 +155,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
     {
         for(ConfigBase config : configs)
         {
-            Optional<Element<?>> any = elements.stream().filter(element -> "configType".equals(element.id) && element instanceof ElementToggle<?> toggle && toggle.toggleState && toggle.text.equals(config.getConfigType().toString())).findAny();
+            Optional<Element<?>> any = elements.stream().filter(element -> "configType".equals(element.id) && element instanceof ElementToggle toggle && toggle.toggleState && toggle.text.equals(config.getConfigType().toString())).findAny();
             if(any.isPresent())
             {
                 return config;
@@ -207,7 +207,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     }
                     else if(clz == boolean.class && e instanceof ElementToggleTextable)
                     {
-                        field.set(config, ((ElementToggle<?>)e).toggleState);
+                        field.set(config, ((ElementToggle)e).toggleState);
                     }
                     else if(clz == String.class && e instanceof ElementTextField)
                     {
@@ -304,7 +304,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             }
             else if(clz == boolean.class)
             {
-                ElementToggleTextable toggle = new ElementToggleTextable(item, entryName, elementClickable -> {
+                ElementToggleTextable toggle = new ElementToggleTextable(item, entryName, (e, mouseX, mouseY) -> {
                 }).setToggled((boolean)o);
                 toggle.setSize(80, 14);
                 toggle.setConstraint(new Constraint(toggle).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
@@ -344,7 +344,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                         sb.append("\n");
                     }
                 }
-                ElementButton<?> button = new ElementButton<>(item, "selectWorld.edit", btn -> {
+                ElementButton button = new ElementButton(item, "selectWorld.edit", (btn, mouseX, mouseY) -> {
                     entry.field.setAccessible(true);
                     Type typefield = entry.field.getGenericType();
                     if(typefield instanceof ParameterizedType)

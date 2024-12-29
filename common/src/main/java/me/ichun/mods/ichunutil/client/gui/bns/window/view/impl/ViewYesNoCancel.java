@@ -23,7 +23,7 @@ public class ViewYesNoCancel extends View<Window<?, ?>>
         text.setConstraint(new Constraint(text).top(this, Constraint.Property.Type.TOP, 20).bottom(this, Constraint.Property.Type.BOTTOM, 40));
         elements.add(text);
 
-        ElementButton<?> button = new ElementButton<>(this, I18n.get("gui.cancel"), button3 -> {
+        ElementButton button = new ElementButton(this, I18n.get("gui.cancel"), (btn, mouseX, mouseY) -> {
             parent.parent.removeWindow(parent);
 
             if(callbackCancel != null)
@@ -35,7 +35,7 @@ public class ViewYesNoCancel extends View<Window<?, ?>>
         button.setConstraint(new Constraint(button).bottom(this, Constraint.Property.Type.BOTTOM, 10).right(this, Constraint.Property.Type.RIGHT, 10));
         elements.add(button);
 
-        ElementButton<?> button1 = new ElementButton<>(this, I18n.get("gui.no"), button3 -> {
+        ElementButton button1 = new ElementButton(this, I18n.get("gui.no"), (btn, mouseX, mouseY) -> {
             parent.parent.removeWindow(parent);
 
             if(callbackNo != null)
@@ -47,7 +47,7 @@ public class ViewYesNoCancel extends View<Window<?, ?>>
         button1.setConstraint(new Constraint(button1).right(button, Constraint.Property.Type.LEFT, 10));
         elements.add(button1);
 
-        ElementButton<?> button2 = new ElementButton<>(this, I18n.get("gui.yes"), button3 -> {
+        ElementButton button2 = new ElementButton(this, I18n.get("gui.yes"), (btn, mouseX, mouseY) -> {
             parent.parent.removeWindow(parent);
 
             if(callbackYes != null)

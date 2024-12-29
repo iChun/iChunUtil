@@ -4,19 +4,23 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.gui.GuiGraphics;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
-public class ElementButtonRotatable extends ElementButton<ElementButtonRotatable>
+public class ElementButtonRotatable extends ElementButtonAbstract<ElementButtonRotatable>
 {
     public int rotationCount;
 
-    public ElementButtonRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, Consumer<ElementButtonRotatable> callback)
+    public ElementButtonRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, TriConsumer<ElementButtonRotatable, Double, Double> callback, @Nullable TriConsumer<ElementButtonRotatable, Double, Double> rightMouseCallback)
     {
-        super(parent, s, callback);
+        super(parent, s, callback, rightMouseCallback);
         this.rotationCount = rotCount;
+    }
+
+    public ElementButtonRotatable(@NotNull Fragment<?> parent, @NotNull String s, int rotCount, TriConsumer<ElementButtonRotatable, Double, Double> callback)
+    {
+        this(parent, s, rotCount, callback, null);
     }
 
     @SuppressWarnings({"SuspiciousNameCombination", "unchecked"})

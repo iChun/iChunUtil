@@ -3,15 +3,14 @@ package me.ichun.mods.ichunutil.client.gui.bns.window.view.element;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import net.minecraft.client.gui.GuiGraphics;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public class ElementCheckbox extends ElementClickable<ElementCheckbox>
 {
     public boolean toggleState;
 
-    public ElementCheckbox(@NotNull Fragment<?> parent, String tooltip, Consumer<ElementCheckbox> callback)
+    public ElementCheckbox(@NotNull Fragment<?> parent, String tooltip, TriConsumer<ElementCheckbox, Double, Double> callback)
     {
         super(parent, callback);
         this.tooltip = tooltip;

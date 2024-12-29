@@ -12,6 +12,12 @@ public interface Rectangle extends Renderable //Yes, ironic that "Boxes & Stuff"
     int getBottom();
     int getWidth();
     int getHeight();
+    default double getCenterX() {
+        return getLeft() + getWidth() / 2D;
+    }
+    default double getCenterY() {
+        return getTop() + getHeight() / 2D;
+    }
 
     //These methods are for recursiveness to include workspace who has these values
     <W extends Workspace> W getWorkspace();

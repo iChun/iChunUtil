@@ -24,7 +24,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
     {
         super(parent, s);
 
-        ElementButton<?> btn = new ElementButton<>(this, "gui.done", button -> {
+        ElementButton btn = new ElementButton(this, "gui.done", (button, mouseX, mouseY) -> {
             parent.parent.onClose();
         });
         btn.setWidth(60);
@@ -85,7 +85,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
         {
             createdRestartAlert = true;
 
-            ElementButton<?> btn = new ElementButton<>(this, "!", button -> {
+            ElementButton btn = new ElementButton(this, "!", (button, mouseX, mouseY) -> {
             });
             btn.setWidth(20);
             btn.setHeight(20);

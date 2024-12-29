@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
 import me.ichun.mods.ichunutil.client.gui.bns.TextureDefinition;
+import me.ichun.mods.ichunutil.client.gui.bns.contextmenu.IContextMenu;
 import me.ichun.mods.ichunutil.client.gui.bns.window.WindowContextMenu;
 import me.ichun.mods.ichunutil.client.render.RenderHelper;
 import me.ichun.mods.ichunutil.common.util.StringUtil;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ElementDropdownContextMenu<I> extends ElementClickable<ElementDropdownContextMenu<I>>
-        implements WindowContextMenu.IContextMenu<ElementDropdownContextMenu<I>, I>
+        implements IContextMenu<ElementDropdownContextMenu<I>, I>
 {
     public @NotNull String text;
     public final @NotNull List<I> contextMenuObjects;
@@ -24,7 +25,7 @@ public class ElementDropdownContextMenu<I> extends ElementClickable<ElementDropd
 
     public ElementDropdownContextMenu(@NotNull Fragment<?> parent, @NotNull String text, @NotNull List<I> contextMenuObjects, @NotNull BiConsumer<ElementDropdownContextMenu<I>, ElementList.Item<I>> contextMenuReceiver)
     {
-        super(parent, e -> {});
+        super(parent, (e, mouseX, mouseY) -> {});
         this.text = text;
         this.contextMenuObjects = contextMenuObjects;
         this.contextMenuReceiver = contextMenuReceiver;
