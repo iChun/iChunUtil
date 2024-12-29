@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import me.ichun.mods.ichunutil.common.iChunUtil;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -14,6 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * See Forge/NeoForge LootModifierManager for JSON use from a folder
+ * @param <T> Type of object to return
+ */
 public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener<JsonElement>
 {
     private static final Gson DEFAULT_GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
@@ -31,7 +36,7 @@ public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener<
 
     public ResourceReloadListener(Gson gsonParser, String resourceFolder, Class<T> classType)
     {
-        super(ExtraCodecs.JSON, resourceFolder);
+        super(ExtraCodecs.JSON, FileToIdConverter.json(resourceFolder));
 
         this.classType = classType;
         this.parser = gsonParser;
