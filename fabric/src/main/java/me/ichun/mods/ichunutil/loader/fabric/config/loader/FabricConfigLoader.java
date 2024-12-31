@@ -127,15 +127,12 @@ public final class FabricConfigLoader
 
     private static void onFileChanged(String fileName)
     {
-        synchronized(REGISTERED_CONFIGS)
-        {
-            REGISTERED_CONFIGS.forEach((k, v) -> v.forEach(c -> {
-                if(c.getFileName().equals(fileName))
-                {
-                    loadOrCreateConfig(c, true);
-                }
-            }));
-        }
+        REGISTERED_CONFIGS.forEach((k, v) -> v.forEach(c -> {
+            if(c.getFileName().equals(fileName))
+            {
+                loadOrCreateConfig(c, true);
+            }
+        }));
     }
 
     private static void serverStatus(MinecraftServer server)

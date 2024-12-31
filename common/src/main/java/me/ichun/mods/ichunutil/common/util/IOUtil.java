@@ -11,7 +11,6 @@ import java.security.MessageDigest;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -130,17 +129,20 @@ public final class IOUtil
         }
 
         int count = 0;
-        List<Path> files = Files.list(path).collect(Collectors.toList());
-
-        for(Path p : files)
+        try(Stream<Path> filesStream = Files.list(path))
         {
-            if(Files.isDirectory(p))
+            List<Path> files = filesStream.toList();
+
+            for(Path p : files)
             {
-                count += scourDirectoryForFiles(p, fileFunction);
-            }
-            else if(fileFunction.apply(p))
-            {
-                count++;
+                if(Files.isDirectory(p))
+                {
+                    count += scourDirectoryForFiles(p, fileFunction);
+                }
+                else if(fileFunction.apply(p))
+                {
+                    count++;
+                }
             }
         }
         return count;

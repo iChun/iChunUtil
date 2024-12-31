@@ -46,25 +46,16 @@ public class WatchServiceThread extends Thread
 
     public void addFileToWatch(String s, Consumer<String> onChange)
     {
-        synchronized(toWatch)
-        {
-            toWatch.put(s, onChange);
-        }
+        toWatch.put(s, onChange);
     }
 
     public void removeFileToWatch(String s)
     {
-        synchronized(toWatch)
+        toWatch.remove(s);
+        if(toWatch.isEmpty())
         {
-            toWatch.remove(s);
-            if(toWatch.isEmpty())
-            {
-                stopThread();
-                synchronized(WATCH_SERVICES)
-                {
-                    WATCH_SERVICES.remove(watchDir);
-                }
-            }
+            stopThread();
+            WATCH_SERVICES.remove(watchDir);
         }
     }
 
@@ -91,7 +82,7 @@ public class WatchServiceThread extends Thread
                         Thread.yield();
                         continue;
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY
-                            && toWatch.containsKey(filename.toString())) {
+                        && toWatch.containsKey(filename.toString())) {
                         toWatch.get(filename.toString()).accept(filename.toString());
                     }
                     boolean valid = key.reset();
@@ -106,50 +97,37 @@ public class WatchServiceThread extends Thread
 
     public static WatchServiceThread watchFile(Path file, Consumer<String> onChanged)
     {
-        WatchServiceThread watchServiceThread;
-        synchronized(WATCH_SERVICES)
-        {
-            watchServiceThread = WATCH_SERVICES.computeIfAbsent(file.getParent(), k -> {
-                WatchServiceThread thread = new WatchServiceThread(file.getParent());
-                thread.start();
-                return thread;
-            });
-            watchServiceThread.addFileToWatch(file.getFileName().toString(), onChanged);
-        }
+        WatchServiceThread watchServiceThread = WATCH_SERVICES.computeIfAbsent(file.getParent(), k -> {
+            WatchServiceThread thread = new WatchServiceThread(file.getParent());
+            thread.start();
+            return thread;
+        });
+        watchServiceThread.addFileToWatch(file.getFileName().toString(), onChanged);
         return watchServiceThread;
     }
 
     public static void stopWatchFile(Path file)
     {
-        synchronized(WATCH_SERVICES)
+        if(WATCH_SERVICES.containsKey(file.getParent()))
         {
-            if(WATCH_SERVICES.containsKey(file.getParent()))
-            {
-                WatchServiceThread thread = WATCH_SERVICES.get(file.getParent());
-                thread.removeFileToWatch(file.getFileName().toString());
-            }
+            WatchServiceThread thread = WATCH_SERVICES.get(file.getParent());
+            thread.removeFileToWatch(file.getFileName().toString());
         }
     }
 
     public static void stopWatchFolder(Path folder)
     {
-        synchronized(WATCH_SERVICES)
+        WatchServiceThread watchServiceThread = WATCH_SERVICES.get(folder);
+        if(watchServiceThread != null)
         {
-            WatchServiceThread watchServiceThread = WATCH_SERVICES.get(folder);
-            if(watchServiceThread != null)
-            {
-                watchServiceThread.stopThread();
-                WATCH_SERVICES.remove(folder);
-            }
+            watchServiceThread.stopThread();
+            WATCH_SERVICES.remove(folder);
         }
     }
 
     private static void terminateWatchServices()
     {
-        synchronized(WATCH_SERVICES)
-        {
-            WATCH_SERVICES.forEach((k, v) -> v.stopThread());
-            WATCH_SERVICES.clear();
-        }
+        WATCH_SERVICES.forEach((k, v) -> v.stopThread());
+        WATCH_SERVICES.clear();
     }
 }
