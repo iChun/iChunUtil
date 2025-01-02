@@ -272,7 +272,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     {
                         //List should have already been set by the editor.
                     }
-                    if(o != field.get(config))
+                    if(o != null && !o.equals(field.get(config)))
                     {
                         if(entry.prop.needsRestart())
                         {

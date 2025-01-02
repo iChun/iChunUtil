@@ -435,15 +435,11 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     {
         if(this.getConfigName().equals(o.getConfigName()))
         {
-            if(this.getConfigType().ordinal() == o.getConfigType().ordinal())
+            if(this.getConfigTypeName().equals(o.getConfigTypeName()))
             {
-                if(this.getConfigTypeName().equals(o.getConfigTypeName()))
-                {
-                    return this.getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
-                }
-                return this.getConfigTypeName().toLowerCase(Locale.ROOT).compareTo(o.getConfigTypeName().toLowerCase(Locale.ROOT));
+                return this.getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
             }
-            return Integer.compare(this.getConfigType().ordinal(), o.getConfigType().ordinal());
+            return this.getConfigTypeName().toLowerCase(Locale.ROOT).compareTo(o.getConfigTypeName().toLowerCase(Locale.ROOT));
         }
         return this.getConfigName().toLowerCase(Locale.ROOT).compareTo(o.getConfigName().toLowerCase(Locale.ROOT));
     }
