@@ -49,13 +49,26 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
     private transient String fieldCache = null; //a toml minified version of the file, to reset to when players disconnect from servers for server configs.
 
-    public ConfigBase(String...name)
+    public ConfigBase(String...name) //This arg is in this way to allow for super();
     {
         CONFIGS.add(this);
 
-        if(name.length > 0 && !name[0].isEmpty())
+        if(name.length > 0)
         {
-            fileName = name[0];
+            StringBuilder fileNameBuilder = new StringBuilder();
+            for(int i = 0; i < name.length; i++)
+            {
+                if(!name[i].isEmpty())
+                {
+                    fileNameBuilder.append(name[i]);
+
+                    if(i != name.length - 1) //not the last entry, add a slash
+                    {
+                        fileNameBuilder.append("/");
+                    }
+                }
+            }
+            fileName = fileNameBuilder.toString();
         }
         else
         {
