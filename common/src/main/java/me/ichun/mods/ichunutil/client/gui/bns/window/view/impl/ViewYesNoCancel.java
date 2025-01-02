@@ -9,12 +9,13 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ViewYesNoCancel extends View<Window<?, ?>>
+public class ViewYesNoCancel extends View<Window<? extends Workspace,? extends View<?>>>
 {
-    public ViewYesNoCancel(@NotNull Window<?, ?> parent, String title, String text1, Consumer<Workspace> callbackYes, Consumer<Workspace> callbackNo, Consumer<Workspace> callbackCancel)
+    public ViewYesNoCancel(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, String text1, @Nullable Consumer<Workspace> callbackYes, @Nullable Consumer<Workspace> callbackNo, @Nullable Consumer<Workspace> callbackCancel)
     {
         super(parent, title);
 
@@ -68,12 +69,13 @@ public class ViewYesNoCancel extends View<Window<?, ?>>
         window.isNotUnique();
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, Consumer<W> callbackYes, Consumer<W> callbackNo, Consumer<W> callbackCancel)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackYes, callbackNo, callbackCancel);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackYes, Consumer<W> callbackNo, Consumer<W> callbackCancel)
+    @SuppressWarnings("unchecked")
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
     {
         parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewYesNoCancel(windowGeneric, title, text, (Consumer<Workspace>)callbackYes, (Consumer<Workspace>)callbackNo, (Consumer<Workspace>)callbackCancel)), widthRatio, heightRatio, true);
     }

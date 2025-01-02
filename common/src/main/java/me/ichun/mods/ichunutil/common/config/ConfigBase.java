@@ -117,6 +117,11 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         return Type.COMMON;
     }
 
+    public String getConfigTypeName()
+    {
+        return getConfigType().toString();
+    }
+
     public enum Type //Required as usually we use Forge's
     {
         CLIENT,
@@ -211,14 +216,14 @@ public abstract class ConfigBase //Configs should be created in the constructor 
                             }
                         }
 
-                        Category newCat = new Category(divider.name(), comment, commentKey, divider.showInGui());
+                        Category newCat = new Category(divider.name(), comment, commentKey, divider.showInGui(), divider.notifyIfHidden());
                         categories.add(newCat);
                         return newCat;
                     });
                 }
                 else if(lastCat == null)
                 {
-                    lastCat = new Category("general", DEFAULT_CATEGORY_COMMENTS.get("general"), "config.ichunutil.cat.general.desc", true);
+                    lastCat = new Category("general", DEFAULT_CATEGORY_COMMENTS.get("general"), "config.ichunutil.cat.general.desc", true, true);
 
                     categories.add(lastCat);
                 }
@@ -314,6 +319,34 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         saveMethod.run();
     }
 
+    public boolean isStringValid(Category.Entry entry, String s)
+    {
+        boolean invalid = true;
+        if(!(entry.prop.values().length == 1 && entry.prop.values()[0].isEmpty())) //has set values
+        {
+            for(String validValues : entry.prop.values())
+            {
+                if(s.equals(validValues))
+                {
+                    invalid = false;
+                    break;
+                }
+            }
+        }
+        else if(entry.prop.validator().equals("undefined") || entry.prop.validator().isEmpty()) //has no validator
+        {
+            invalid = false;
+        }
+        else
+        {
+            if(this.validate(this.getValidatorMethod(entry.prop.validator()), s))
+            {
+                invalid = false;
+            }
+        }
+        return invalid;
+    }
+
     public Method getValidatorMethod(String s)
     {
         try
@@ -400,11 +433,19 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     @Override
     public int compareTo(ConfigBase o)
     {
-        if(getConfigName().equals(o.getConfigName()))
+        if(this.getConfigName().equals(o.getConfigName()))
         {
-            return Integer.compare(getConfigType().ordinal(), o.getConfigType().ordinal());
+            if(this.getConfigType().ordinal() == o.getConfigType().ordinal())
+            {
+                if(this.getConfigTypeName().equals(o.getConfigTypeName()))
+                {
+                    return this.getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
+                }
+                return this.getConfigTypeName().toLowerCase(Locale.ROOT).compareTo(o.getConfigTypeName().toLowerCase(Locale.ROOT));
+            }
+            return Integer.compare(this.getConfigType().ordinal(), o.getConfigType().ordinal());
         }
-        return getConfigName().toLowerCase(Locale.ROOT).compareTo(o.getConfigName().toLowerCase(Locale.ROOT));
+        return this.getConfigName().toLowerCase(Locale.ROOT).compareTo(o.getConfigName().toLowerCase(Locale.ROOT));
     }
 
     private static boolean isValidField(Field field)
@@ -424,14 +465,17 @@ public abstract class ConfigBase //Configs should be created in the constructor 
 
         public final boolean showInGui;
 
+        public final boolean notifyIfHidden;
+
         private final LinkedHashSet<Entry> entries = new LinkedHashSet<>();
 
-        public Category(@NotNull String name, @Nullable String comment, @NotNull String commentKey, boolean showInGui)
+        public Category(@NotNull String name, @Nullable String comment, @NotNull String commentKey, boolean showInGui, boolean notifyIfHidden)
         {
             this.name = name;
             this.comment = comment;
             this.commentKey = commentKey;
             this.showInGui = showInGui;
+            this.notifyIfHidden = notifyIfHidden;
         }
 
         public void addField(Field f, Prop props, String comment, String commentKey, Object defaultValue)

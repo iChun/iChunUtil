@@ -11,7 +11,6 @@ import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         int i = 0;
         for(ConfigBase config : configs)
         {
-            ElementToggle rotatable = new ElementToggle(this, config.getConfigType().toString(), (b, mouseX, mouseY) -> {
+            ElementToggle rotatable = new ElementToggle(this, config.getConfigTypeName(), (b, mouseX, mouseY) -> {
                 if(b.toggleState)
                 {
                     elements.stream().filter(element -> "configType".equals(element.id)).forEach(e -> ((ElementToggle)e).toggleState = false);
@@ -88,6 +87,21 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                 return;
             }
 
+            ConfigBase.Category hasHiddenCategoryToNotify = null;
+            for(ConfigBase.Category category : config.categories)
+            {
+                if(!category.showInGui && category.notifyIfHidden)
+                {
+                    hasHiddenCategoryToNotify = category;
+                    break;
+                }
+            }
+
+            if(hasHiddenCategoryToNotify != null)
+            {
+                addCategoryHeader(config, hasHiddenCategoryToNotify);
+            }
+
             for(ConfigBase.Category category : config.categories)
             {
                 if(!category.showInGui)
@@ -95,21 +109,11 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     continue;
                 }
 
-                ElementList.Item<?> item = list.addItem(category).setBorderSize(0);
-                ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(ChatFormatting.YELLOW + config.getLocalisedName(category, false));
-                wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 90));
-                String desc = config.getLocalisedName(category, true);
-                wrapper.setTooltip(desc);
-                item.setTooltip(desc);
-                item.addElement(wrapper);
-                //Padding gives height to the list
-                ElementPadding padding = new ElementPadding(item, 0, 20);
-                padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
-                item.addElement(padding);
+                addCategoryHeader(config, category);
 
                 for(ConfigBase.Category.Entry entry : category.getEntries())
                 {
-                    item = list.addItem(entry).setBorderSize(0);
+                    ElementList.Item<?> item = list.addItem(entry).setBorderSize(0);
                     item.setSelectionHandler(itemObj -> {
                         if(itemObj.selected)
                         {
@@ -133,16 +137,15 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                             save(); // prompts a restart button and also lets us save every time a config is changed.
                         }
                     });
-                    wrapper = new ElementTextWrapper(item).setText(config.getLocalisedName(entry, false));
+                    ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(config.getLocalisedName(entry, false));
                     wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 8).right(item, Constraint.Property.Type.RIGHT, 90));
-                    desc = config.getLocalisedName(entry, true);
+                    String desc = config.getLocalisedName(entry, true);
                     wrapper.setTooltip(desc);
                     item.setTooltip(desc);
                     item.addElement(wrapper);
-                    //Padding gives height to the list
-                    padding = new ElementPadding(item, 0, 20);
-                    padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
-                    item.addElement(padding);
+
+                    addItemPadding(item);
+
                     addControlFor(config, entry, item);
                 }
             }
@@ -151,11 +154,40 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         }
     }
 
+    public void addCategoryHeader(ConfigBase config, ConfigBase.Category category)
+    {
+        ElementList.Item<?> item = list.addItem(category).setBorderSize(0);
+        String categoryText = config.getLocalisedName(category, false);
+        String desc = config.getLocalisedName(category, true);
+        int colour = 0xffff55;
+        if(!category.showInGui && category.notifyIfHidden)
+        {
+            categoryText = iChunUtil.eC().getLocalisedString("config.ichunutil.cat.hiddenNotify");
+            desc = iChunUtil.eC().getLocalisedString("config.ichunutil.cat.hiddenNotify.tooltip");
+            colour = 0x55ff55;
+        }
+        ElementTextWrapper wrapper = new ElementTextWrapper(item).setText(categoryText).setColor(colour);
+        wrapper.setConstraint(new Constraint(wrapper).left(item, Constraint.Property.Type.LEFT, 3).right(item, Constraint.Property.Type.RIGHT, 3));
+        wrapper.setTooltip(desc);
+        item.setTooltip(desc);
+        item.addElement(wrapper);
+
+        addItemPadding(item);
+    }
+
+    private void addItemPadding(ElementList.Item<?> item)
+    {
+        //Padding gives height to the list
+        ElementPadding padding = new ElementPadding(item, 0, 20);
+        padding.setConstraint(new Constraint(padding).right(item, Constraint.Property.Type.RIGHT, 0));
+        item.addElement(padding);
+    }
+
     public ConfigBase getCurrentConfig()
     {
         for(ConfigBase config : configs)
         {
-            Optional<Element<?>> any = elements.stream().filter(element -> "configType".equals(element.id) && element instanceof ElementToggle toggle && toggle.toggleState && toggle.text.equals(config.getConfigType().toString())).findAny();
+            Optional<Element<?>> any = elements.stream().filter(element -> "configType".equals(element.id) && element instanceof ElementToggle toggle && toggle.toggleState && toggle.text.equals(config.getConfigTypeName())).findAny();
             if(any.isPresent())
             {
                 return config;
@@ -187,9 +219,9 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             Element<?> e = getControlElement(item);
             if(e != null) // we have the control element
             {
-                ConfigBase.Category.Entry e1 = (ConfigBase.Category.Entry)item.getObject();
+                ConfigBase.Category.Entry entry = (ConfigBase.Category.Entry)item.getObject();
 
-                Field field = e1.field;
+                Field field = entry.field;
                 field.setAccessible(true);
                 Class clz = field.getType();
                 Object o;
@@ -211,7 +243,18 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     }
                     else if(clz == String.class && e instanceof ElementTextField)
                     {
-                        field.set(config, ((ElementTextField)e).getText());
+                        String newValue = ((ElementTextField)e).getText();
+                        boolean invalid = config.isStringValid(entry, newValue);
+
+                        if(!invalid)
+                        {
+                            field.set(config, newValue);
+                        }
+                        else
+                        {
+                            ((ElementTextField)e).setText(field.get(config).toString());
+                            ViewPopup.popup(parent.parent, 300, 140, null, iChunUtil.eC().getLocalisedString("gui.ichunutil.configs.invalidValue", newValue));
+                        }
                     }
                     else if(clz.isEnum() && e instanceof ElementDropdownContextMenu) //enum!
                     {
@@ -231,7 +274,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                     }
                     if(o != field.get(config))
                     {
-                        if(e1.prop.needsRestart())
+                        if(entry.prop.needsRestart())
                         {
                             parent.parent.viewConfigs.createRestartAlertButton();
                         }
@@ -414,12 +457,29 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                                                 }
                                             }
                                         }
-                                        entry.field.set(config, listToUse);
+
+                                        if(!(entry.prop.validator().equals("undefined") || entry.prop.validator().isEmpty()))
+                                        {
+                                            listToUse.removeIf(listObj -> {
+                                                boolean invalid = !config.validate(config.getValidatorMethod(entry.prop.validator()), listObj);
+
+                                                if(invalid)
+                                                {
+                                                    ViewPopup.popup(parent.parent, 300, 140, null, iChunUtil.eC().getLocalisedString("gui.ichunutil.configs.invalidValue", listObj));
+                                                }
+
+                                                return invalid;
+                                            });
+                                        }
+
+                                        entry.field.set(config, listToUse); //We need to use a new list because sometimes it's an immutable list
                                         if(entry.prop.needsRestart())
                                         {
                                             parent.parent.viewConfigs.createRestartAlertButton();
                                         }
                                         config.save();
+
+                                        populateList(); // repopulates the config list so the new list object can be captured.
                                     }
                                     catch(IllegalAccessException ignored)
                                     {

@@ -11,6 +11,8 @@
   "config.ichunutil.cat.clientOnly.desc": "These configs affect only the client that loads the mod.",
   "config.ichunutil.cat.block.name": "Blocks",
   "config.ichunutil.cat.block.desc": "These configs affect the blocks in the mod.",
+  "config.ichunutil.cat.hiddenNotify": "Check config file for additional configs hidden from this GUI",
+  "config.ichunutil.cat.hiddenNotify.tooltip": "Some configs intentionally hidden from this GUI\n\nOpen the config file with your favourite text editor!",
 
   "config.ichunutil.cat.bns.name": "Boxes & Stuff (B&S)",
   "config.ichunutil.cat.bns.desc": "These configs affect GUIs using B&S.",
@@ -30,6 +32,7 @@
   "gui.ichunutil.configs.title": "Config Editor",
   "gui.ichunutil.configs.configs": "Configs",
   "gui.ichunutil.configs.needsRestart": "Some configs changed require a restart to take effect!",
+  "gui.ichunutil.configs.invalidValue": "Invalid value set: %s",
 
   "gui.ichunutil.configs.noEditingServerConfig": "You can only edit a SERVER config in a single player world environment!",
 

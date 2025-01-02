@@ -15,9 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class ViewPopup extends View<Window<?,?>>
+public class ViewPopup extends View<Window<? extends Workspace,? extends View<?>>>
 {
-    public ViewPopup(@NotNull Window<?,?> parent, String title, @Nullable Consumer<Workspace> callback, String... text)
+    public ViewPopup(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, @Nullable Consumer<Workspace> callback, String... text)
     {
         super(parent, title);
 
@@ -77,12 +77,13 @@ public class ViewPopup extends View<Window<?,?>>
     }
 
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, Consumer<W> callback, String...text)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, @Nullable Consumer<W> callback, String...text)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", callback, text);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, Consumer<W> callback, String...text)
+    @SuppressWarnings("unchecked")
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, @Nullable Consumer<W> callback, String...text)
     {
         parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewPopup(windowGeneric, title, (Consumer<Workspace>)callback, text)), widthRatio, heightRatio, true);
     }

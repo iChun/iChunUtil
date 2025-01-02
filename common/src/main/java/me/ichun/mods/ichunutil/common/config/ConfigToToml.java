@@ -245,30 +245,8 @@ public final class ConfigToToml
                     }
                     else if(entry.field.getType() == String.class)
                     {
-                        boolean invalid = true;
-                        Object newValue = tomlValue.toString();
-                        if(!(entry.prop.values().length == 1 && entry.prop.values()[0].isEmpty())) //has set values
-                        {
-                            for(String validValues : entry.prop.values())
-                            {
-                                if(newValue.equals(validValues))
-                                {
-                                    invalid = false;
-                                    break;
-                                }
-                            }
-                        }
-                        else if(entry.prop.validator().equals("undefined") || entry.prop.validator().isEmpty()) //has no validator
-                        {
-                            invalid = false;
-                        }
-                        else
-                        {
-                            if(config.validate(config.getValidatorMethod(entry.prop.validator()), newValue))
-                            {
-                                invalid = false;
-                            }
-                        }
+                        String newValue = tomlValue.toString();
+                        boolean invalid = config.isStringValid(entry, newValue);
 
                         if(!invalid)
                         {

@@ -49,6 +49,33 @@ public final class IOUtil
         return true;
     }
 
+    //in part from https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
+    public static boolean isStringFileSafe(String s)
+    {
+        String[] invalidChars = new String[] { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" };
+        for(String c : invalidChars)
+        {
+            if(s.contains(c))
+            {
+                return false;
+            }
+        }
+        String[] invalidNames = new String[] {
+            "CON", "PRN", "AUX", "NUL",
+            "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+        };
+        for(String invalidName : invalidNames)
+        {
+            String sUpperCase = s.toUpperCase(Locale.ROOT);
+            if(sUpperCase.contains(".") && sUpperCase.substring(0, sUpperCase.indexOf(".")).equals(invalidName) || sUpperCase.equals(invalidName))
+            {
+                return false;
+            }
+        }
+        return !(s.endsWith(".") || s.endsWith(" "));
+    }
+
     public static void renameFilesToLowerCaseInDir(Path dir)
     {
         try(Stream<Path> files = Files.list(dir))

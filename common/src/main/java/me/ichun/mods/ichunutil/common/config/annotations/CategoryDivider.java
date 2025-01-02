@@ -12,4 +12,6 @@ public @interface CategoryDivider
     String comment() default "undefined"; //Unlocalized comment
 
     boolean showInGui() default true; //if false then the category is hidden. Used for eg CCI credentials
+
+    boolean notifyIfHidden() default true;
 }

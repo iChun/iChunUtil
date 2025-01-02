@@ -9,13 +9,14 @@ import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementButton;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementTextWrapper;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ViewConfirmation extends View<Window<?,?>>
+public class ViewConfirmation extends View<Window<? extends Workspace,? extends View<?>>>
 {
     //title will be localised, text won't.
-    public ViewConfirmation(@NotNull Window<?,?> parent, String title, String text1, Consumer<Workspace> callbackOk, Consumer<Workspace> callbackCancel, boolean isYesNo)
+    public ViewConfirmation(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, String text1, @Nullable Consumer<Workspace> callbackOk, @Nullable Consumer<Workspace> callbackCancel, boolean isYesNo)
     {
         super(parent, title);
 
@@ -59,17 +60,18 @@ public class ViewConfirmation extends View<Window<?,?>>
         window.isNotUnique();
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackOk, callbackCancel);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel)
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, title, text, callbackOk, callbackCancel, true);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, Consumer<W> callbackOk, Consumer<W> callbackCancel, boolean isYesNo)
+    @SuppressWarnings("unchecked")
+    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel, boolean isYesNo)
     {
         parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewConfirmation(windowGeneric, title, text, (Consumer<Workspace>)callbackOk, (Consumer<Workspace>)callbackCancel, isYesNo)), widthRatio, heightRatio, true);
     }

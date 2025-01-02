@@ -65,6 +65,8 @@ public class ElementTextField extends Element<Fragment<?>>
             return false;
         }
     };
+
+    //The final name still needs to be checked with IOUtil.isStringFileSafe
     public static final Predicate<String> FILE_SAFE = (s) ->
     {
         if(s.isEmpty())
