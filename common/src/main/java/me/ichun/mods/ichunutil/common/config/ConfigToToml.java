@@ -152,6 +152,13 @@ public final class ConfigToToml
         }
     }
 
+    public static boolean readTomlFromString(ConfigBase config, String s, boolean isReload) throws IllegalStateException, IllegalAccessException
+    {
+        Toml toml = new Toml().read(s);
+
+        return ConfigToToml.assignValuesFromToml(config, toml, isReload);
+    }
+
     public static boolean assignValuesFromToml(ConfigBase config, Toml toml, boolean isReload) throws IllegalAccessException, IllegalStateException
     {
         HashMap<ConfigBase.Category.Entry, Object> entryToValue = new HashMap<>();

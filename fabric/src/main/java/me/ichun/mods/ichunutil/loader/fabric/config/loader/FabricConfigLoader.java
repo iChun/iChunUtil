@@ -1,7 +1,5 @@
 package me.ichun.mods.ichunutil.loader.fabric.config.loader;
 
-import com.google.common.base.Charsets;
-import com.moandjiezana.toml.Toml;
 import me.ichun.mods.ichunutil.common.config.ConfigBase;
 import me.ichun.mods.ichunutil.common.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.config.ConfigToToml;
@@ -81,9 +79,7 @@ public final class FabricConfigLoader
                 //File exists, load up the config and set the values up our config object
                 try
                 {
-                    Toml toml = new Toml().read(FileUtils.readFileToString(configPath.toFile(), Charsets.UTF_8));
-
-                    loadSuccessful = ConfigToToml.assignValuesFromToml(config, toml, isReload);
+                    loadSuccessful = ConfigToToml.readTomlFromString(config, FileUtils.readFileToString(configPath.toFile(), StandardCharsets.UTF_8), isReload);
                 }
                 catch(IllegalStateException | IllegalAccessException e)
                 {
@@ -209,9 +205,7 @@ public final class FabricConfigLoader
                     {
                         configBase.cache();
 
-                        Toml toml = new Toml().read(tomlString);
-
-                        ConfigToToml.assignValuesFromToml(configBase, toml, true);
+                        ConfigToToml.readTomlFromString(configBase, tomlString, true);
                     }
                     catch(IllegalAccessException | IllegalStateException e)
                     {

@@ -2,7 +2,6 @@ package me.ichun.mods.ichunutil.common.config;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.moandjiezana.toml.Toml;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.element.ElementList;
 import me.ichun.mods.ichunutil.client.key.KeyBind;
 import me.ichun.mods.ichunutil.common.config.annotations.CategoryDivider;
@@ -264,7 +263,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         {
             try
             {
-                ConfigToToml.assignValuesFromToml(this, new Toml().read(fieldCache), true);
+                ConfigToToml.readTomlFromString(this, fieldCache, true);
             }
             catch(IllegalAccessException | IllegalStateException e)
             {
