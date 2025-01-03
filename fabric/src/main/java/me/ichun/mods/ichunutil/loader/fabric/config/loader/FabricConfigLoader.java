@@ -16,13 +16,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.storage.LevelResource;
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -79,7 +79,7 @@ public final class FabricConfigLoader
                 //File exists, load up the config and set the values up our config object
                 try
                 {
-                    loadSuccessful = ConfigToToml.readTomlFromString(config, FileUtils.readFileToString(configPath.toFile(), StandardCharsets.UTF_8), isReload);
+                    loadSuccessful = ConfigToToml.readTomlFromString(config, Files.readString(configPath, StandardCharsets.UTF_8), isReload);
                 }
                 catch(IllegalStateException | IllegalAccessException e)
                 {
@@ -165,7 +165,7 @@ public final class FabricConfigLoader
                         {
                             try
                             {
-                                FileUtils.copyFile(defaultConfigPath.toFile(), configPath.toFile());
+                                Files.copy(defaultConfigPath, configPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
                             }
                             catch(IOException e)
                             {
