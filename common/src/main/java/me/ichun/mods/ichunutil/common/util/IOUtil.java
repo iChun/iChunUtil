@@ -73,7 +73,7 @@ public final class IOUtil
                 return false;
             }
         }
-        return !(s.endsWith(".") || s.endsWith(" "));
+        return !(s.isEmpty() || s.endsWith(".") || s.endsWith(" "));
     }
 
     public static void renameFilesToLowerCaseInDir(Path dir)
