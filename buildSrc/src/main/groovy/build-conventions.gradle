@@ -148,7 +148,7 @@ dependencies {
 
                         if ("${mod}".toString().equals("iChunUtil")) {
                             implementation 'com.moandjiezana.toml:toml4j:0.7.2' // MIT
-                        } else if ("${mod}".toString().equals("CCI1.x")) {
+                        } else if ("${mod}".toString().equals("CCI1.x") || "${mod}".toString().equals("ContentCreatorIntegration")) {
                             implementation "io.socket:socket.io-client:1.0.1" // MIT
                             implementation "org.java-websocket:Java-WebSocket:1.5.3" // MIT
                         }
