@@ -55,7 +55,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
         super(parent);
         this.parent = parent;
 
-        borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() > 0 ? 4 : 3);
+        borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() > 0 ? 4 : 3); //TODO consider using border size of 3 for MC? maybe look at MC windows and compare their padding
     }
 
     //TODO get rid of this when working with more advanced UI eg Tabula/CCI

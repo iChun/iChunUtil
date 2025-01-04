@@ -19,6 +19,7 @@ import java.util.List;
 public abstract class Fragment<P extends Rectangle>
     implements Rectangle, Constrainable, ContainerEventHandler
 {
+    //TODO convert these two to use TexDef - test with different resource packs
     private static final ResourceLocation VANILLA_HORSE = ResourceLocation.withDefaultNamespace("textures/gui/container/horse.png"); //
     private static final ResourceLocation HORSE = ResourceLocation.fromNamespaceAndPath("ichunutil", "textures/gui/bns/vanilla/horse.png");
     public ResourceLocation resourceHorse() { return renderMinecraftStyle() == 2 ? VANILLA_HORSE : HORSE; }
