@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>>
 {
     public final TreeSet<ConfigBase> configs;
-    public final ElementList<ViewValues, Object> list;
+    public final ElementList<ViewValues, ConfigBase.ConfigItem> list;
 
     public ViewValues(@NotNull WindowGeneric<WorkspaceConfigs, ViewValues> parent, @NotNull String s, TreeSet<ConfigBase> configs)
     {
@@ -113,7 +113,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
 
                 for(ConfigBase.Category.Entry entry : category.getEntries())
                 {
-                    ElementList.Item<?> item = list.addItem(entry).setBorderSize(0);
+                    ElementList.Item<ConfigBase.ConfigItem> item = list.addItem(entry).setBorderSize(0);
                     item.setSelectionHandler(itemObj -> {
                         if(itemObj.selected)
                         {
@@ -156,7 +156,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
 
     public void addCategoryHeader(ConfigBase config, ConfigBase.Category category)
     {
-        ElementList.Item<?> item = list.addItem(category).setBorderSize(0);
+        ElementList.Item<ConfigBase.ConfigItem> item = list.addItem(category).setBorderSize(0);
         String categoryText = config.getLocalisedName(category, false);
         String desc = config.getLocalisedName(category, true);
         int colour = 0xffff55;
@@ -175,7 +175,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         addItemPadding(item);
     }
 
-    private void addItemPadding(ElementList.Item<?> item)
+    private void addItemPadding(ElementList.Item<ConfigBase.ConfigItem> item)
     {
         //Padding gives height to the list
         ElementPadding padding = new ElementPadding(item, 0, 20);
@@ -196,7 +196,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         return null;
     }
 
-    public Element<?> getControlElement(ElementList.Item<?> item)
+    public Element<?> getControlElement(ElementList.Item<ConfigBase.ConfigItem> item)
     {
         for(Element<?> element : item.elements)
         {
@@ -214,7 +214,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         ConfigBase config = getCurrentConfig();
 
         boolean isDirty = false;
-        for(ElementList.Item<?> item : list.items)
+        for(ElementList.Item<ConfigBase.ConfigItem> item : list.items)
         {
             Element<?> e = getControlElement(item);
             if(e != null) // we have the control element
@@ -296,7 +296,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
     }
 
     @SuppressWarnings("all")
-    public void addControlFor(ConfigBase config, final ConfigBase.Category.Entry entry, ElementList.Item<?> item)
+    public void addControlFor(ConfigBase config, final ConfigBase.Category.Entry entry, ElementList.Item<ConfigBase.ConfigItem> item)
     {
         Field field = entry.field;
         Class clz = field.getType();
@@ -315,7 +315,7 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
         boolean handled = false;
         if(!props.guiElementOverride().isEmpty())
         {
-            BiFunction<ConfigBase.Category.Entry, ElementList.Item<?>, Boolean> entryGuiOverride = config.guiElementOverrides.get(props.guiElementOverride());
+            BiFunction<ConfigBase.Category.Entry, ElementList.Item<ConfigBase.ConfigItem>, Boolean> entryGuiOverride = config.guiElementOverrides.get(props.guiElementOverride());
             if(entryGuiOverride != null && entryGuiOverride.apply(entry, item))
             {
                 handled = true;

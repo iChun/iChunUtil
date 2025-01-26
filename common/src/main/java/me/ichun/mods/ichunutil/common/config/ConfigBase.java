@@ -40,7 +40,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
     public transient final TreeSet<Category> categories = new TreeSet<>(Comparator.naturalOrder());
 
     @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
-    public transient HashMap<String, BiFunction<Category.Entry, ElementList.Item<?>, Boolean>> guiElementOverrides;
+    public transient HashMap<String, BiFunction<Category.Entry, ElementList.Item<ConfigItem>, Boolean>> guiElementOverrides;
 
     @NotNull
     private transient String fileName;
@@ -449,8 +449,10 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         return !Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()) && (field.getType() == int.class || field.getType() == double.class || field.getType() == boolean.class || field.getType() == String.class || field.getType().isEnum() || List.class.isAssignableFrom(field.getType()) || field.getType() == KeyBind.class);
     }
 
+    public interface ConfigItem {} //This is to stop generics from complaining
+
     public static class Category
-        implements Comparable<Category>
+        implements Comparable<Category>, ConfigItem
     {
         @NotNull
         public final String name;
@@ -491,7 +493,7 @@ public abstract class ConfigBase //Configs should be created in the constructor 
         }
 
         public static class Entry
-            implements Comparable<Entry>
+            implements Comparable<Entry>, ConfigItem
         {
             @NotNull
             public final Field field;
