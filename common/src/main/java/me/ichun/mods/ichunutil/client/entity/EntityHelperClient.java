@@ -4,6 +4,9 @@ import com.google.common.collect.Lists;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import me.ichun.mods.ichunutil.mixin.EntitySelectorAccessorMixin;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
@@ -19,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class EntityHelperClient
 {
     public static List<? extends Entity> clientGetTarget(@NotNull String input)
@@ -41,19 +44,19 @@ public final class EntityHelperClient
                 }
 
                 //taken from EntitySelector.findEntities
-                Vec3 vec3d = selector.position.apply(new Vec3(player.getX(), player.getY(), player.getZ()));
-                AABB aABB = selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256);
+                Vec3 vec3d = ((EntitySelectorAccessorMixin)selector).getPosition().apply(new Vec3(player.getX(), player.getY(), player.getZ()));
+                AABB aABB = ((EntitySelectorAccessorMixin)selector).getAabb() != null ? ((EntitySelectorAccessorMixin)selector).getAabb().move(vec3d) : player.getBoundingBox().inflate(256, 256, 256);
                 Predicate<Entity> predicate;
-                if (selector.currentEntity) {
-                    predicate = selector.getPredicate(vec3d, aABB, (FeatureFlagSet)null);
+                if (((EntitySelectorAccessorMixin)selector).getCurrentEntity()) {
+                    predicate = ((EntitySelectorAccessorMixin)selector).invokeGetPredicate(vec3d, aABB, (FeatureFlagSet)null);
                     return predicate.test(player) ? List.of(player) : List.of();
                 } else {
-                    predicate = selector.getPredicate(vec3d, aABB, (FeatureFlagSet)player.level().enabledFeatures());
+                    predicate = ((EntitySelectorAccessorMixin)selector).invokeGetPredicate(vec3d, aABB, (FeatureFlagSet)player.level().enabledFeatures());
 
                     List<Entity> list = new ObjectArrayList();
-                    list.addAll(player.level().getEntities(selector.type, selector.aabb != null ? selector.aabb.move(vec3d) : player.getBoundingBox().inflate(256, 256, 256), predicate));
+                    list.addAll(player.level().getEntities(((EntitySelectorAccessorMixin)selector).getType(), ((EntitySelectorAccessorMixin)selector).getAabb() != null ? ((EntitySelectorAccessorMixin)selector).getAabb().move(vec3d) : player.getBoundingBox().inflate(256, 256, 256), predicate));
 
-                    return selector.sortAndLimit(vec3d, list);
+                    return ((EntitySelectorAccessorMixin)selector).invokeSortAndLimit(vec3d, list);
                 }
             }
             else //getting by username or uuid

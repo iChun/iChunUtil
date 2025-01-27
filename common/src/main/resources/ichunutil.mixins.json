@@ -6,6 +6,7 @@
   "refmap": "ichunutil.refmap.json",
   "mixins": [
     "EntityMixin",
+    "EntitySelectorAccessorMixin",
     "LevelStorageAccessAccessorMixin",
     "MinecraftServerAccessorMixin",
     "PlayerMixin"
