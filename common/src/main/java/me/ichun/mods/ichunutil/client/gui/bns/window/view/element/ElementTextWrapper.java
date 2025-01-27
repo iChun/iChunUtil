@@ -21,6 +21,7 @@ public class ElementTextWrapper extends Element<Fragment<?>>
     private List<String> text = new ArrayList<>();
     private List<String> textWrapped = new ArrayList<>();
     private boolean doNotWrap;
+    private boolean centeredText;
     public int longestLine;
     public @Nullable Integer color;
 
@@ -40,6 +41,12 @@ public class ElementTextWrapper extends Element<Fragment<?>>
     {
         this.text.clear();
         this.text.add(text);
+        return (T)this;
+    }
+
+    public <T extends ElementTextWrapper> T setCenteredText()
+    {
+        this.centeredText = true;
         return (T)this;
     }
 
@@ -140,7 +147,15 @@ public class ElementTextWrapper extends Element<Fragment<?>>
         for (int lineNumber = 0; lineNumber < textWrapped.size(); ++lineNumber)
         {
             String line = textWrapped.get(lineNumber);
-            drawString(graphics, line, (float)textX, (float)textY);
+            if(centeredText)
+            {
+                int lineWidth = getFontRenderer().width(line);
+                drawString(graphics, line, getLeft() + (getWidth() / 2F) - (lineWidth / 2F), (float)textY);
+            }
+            else
+            {
+                drawString(graphics, line, (float)textX, (float)textY);
+            }
             textY += 12;
         }
     }
