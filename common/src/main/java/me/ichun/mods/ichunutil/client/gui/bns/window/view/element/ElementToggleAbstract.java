@@ -84,7 +84,7 @@ public class ElementToggleAbstract<T extends ElementToggleAbstract<T>> extends E
             String s = reString(text, width - 4);
 
             //draw the text
-            graphics.drawString(getFontRenderer(), s, (int)(getLeft() + (this.width - getFontRenderer().width(s)) / 2F), (int)(getTop() + (height - getFontRenderer().lineHeight) / 2F + 1), (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(getTheme().font)), renderMinecraftStyle() > 0);
+            graphics.drawString(getFontRenderer(), s, (int)(getLeft() + (this.width - getFontRenderer().width(s)) / 2F), (int)(getTop() + (height - getFontRenderer().lineHeight) / 2F + 1), (renderMinecraftStyle() > 0 ? getMinecraftFontColour() : Theme.getAsHex(toggleState ? getTheme().font : getTheme().fontDim)), renderMinecraftStyle() > 0);
         }
     }
 
