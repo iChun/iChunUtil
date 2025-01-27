@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ViewYesNoCancel extends View<Window<? extends Workspace,? extends View<?>>>
+public class ViewYesNoCancel extends View<Window<?,?>>
 {
-    public ViewYesNoCancel(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, String text1, @Nullable Consumer<Workspace> callbackYes, @Nullable Consumer<Workspace> callbackNo, @Nullable Consumer<Workspace> callbackCancel)
+    public <W extends Workspace<W>> ViewYesNoCancel(@NotNull Window<W,?> parent, String title, String text1, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
     {
         super(parent, title);
 
@@ -69,14 +69,13 @@ public class ViewYesNoCancel extends View<Window<? extends Workspace,? extends V
         window.isNotUnique();
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackYes, callbackNo, callbackCancel);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackYes, @Nullable Consumer<W> callbackNo, @Nullable Consumer<W> callbackCancel)
     {
-        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewYesNoCancel(windowGeneric, title, text, (Consumer<Workspace>)callbackYes, (Consumer<Workspace>)callbackNo, (Consumer<Workspace>)callbackCancel)), widthRatio, heightRatio, true);
+        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewYesNoCancel(windowGeneric, title, text, callbackYes, callbackNo, callbackCancel)), widthRatio, heightRatio, true);
     }
 }

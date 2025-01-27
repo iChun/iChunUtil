@@ -15,9 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class ViewPopup extends View<Window<? extends Workspace,? extends View<?>>>
+public class ViewPopup extends View<Window<?,?>>
 {
-    public ViewPopup(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, @Nullable Consumer<Workspace> callback, String... text)
+    public <W extends Workspace<W>> ViewPopup(@NotNull Window<W,?> parent, String title, @Nullable Consumer<W> callback, String... text)
     {
         super(parent, title);
 
@@ -51,7 +51,7 @@ public class ViewPopup extends View<Window<? extends Workspace,? extends View<?>
     {
         super.init();
 
-        ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
+        ElementTextWrapper text = ((ElementTextWrapper)elements.getFirst());
         text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
         text.init();
     }
@@ -61,7 +61,7 @@ public class ViewPopup extends View<Window<? extends Workspace,? extends View<?>
     {
         super.resize(mc, width, height);
 
-        ElementTextWrapper text = ((ElementTextWrapper)elements.get(0));
+        ElementTextWrapper text = ((ElementTextWrapper)elements.getFirst());
         text.setWidth(Math.min(text.longestLine + 5, (int)(this.width * 0.9D)));
         text.init();
     }
@@ -77,14 +77,13 @@ public class ViewPopup extends View<Window<? extends Workspace,? extends View<?>
     }
 
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, @Nullable Consumer<W> callback, String...text)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, @Nullable Consumer<W> callback, String...text)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", callback, text);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, @Nullable Consumer<W> callback, String...text)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String title, @Nullable Consumer<W> callback, String...text)
     {
-        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewPopup(windowGeneric, title, (Consumer<Workspace>)callback, text)), widthRatio, heightRatio, true);
+        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewPopup(windowGeneric, title, callback, text)), widthRatio, heightRatio, true);
     }
 }

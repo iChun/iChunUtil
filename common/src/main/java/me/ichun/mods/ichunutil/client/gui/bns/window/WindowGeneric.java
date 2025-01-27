@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class WindowGeneric<W extends Workspace, V extends View<?>> extends Window<W, V>
+public class WindowGeneric<W extends Workspace<W>, V extends View<?>> extends Window<W, V>
 {
     //Variable generic typing reference
     //WindowGeneric<WorkspaceConfigs, ViewEditList<WindowGeneric<?,?>>> window = WindowGeneric.create(parent.parent, windowGeneric -> new ViewEditList<>(windowGeneric, entryName, list, finalValidator, list1 -> {}));
@@ -17,7 +17,7 @@ public class WindowGeneric<W extends Workspace, V extends View<?>> extends Windo
         isNotUnique();
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public <T extends Window<W, V>> T setCurrentView(V v)
     {
         super.setCurrentView(v);
@@ -26,7 +26,7 @@ public class WindowGeneric<W extends Workspace, V extends View<?>> extends Windo
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WindowGeneric<W, V>, W extends Workspace, V extends View<?>> T create(W w, Function<WindowGeneric<W, V>, V> viewCreator)
+    public static <T extends WindowGeneric<W, V>, W extends Workspace<W>, V extends View<?>> T create(W w, Function<WindowGeneric<W, V>, V> viewCreator)
     {
         WindowGeneric<W, V> window = new WindowGeneric<>(w);
         window.setView(viewCreator.apply(window));

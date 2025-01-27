@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("unchecked")
-public abstract class Workspace extends Screen
+public abstract class Workspace<W extends Workspace<W>> extends Screen
     implements Rectangle
 {
     public static final long CURSOR_ARROW = GLFW.glfwCreateStandardCursor(GLFW.GLFW_ARROW_CURSOR);
@@ -55,7 +55,7 @@ public abstract class Workspace extends Screen
 
     public long cursorState;
 
-    public ArrayList<Window<?,?>> windows = new ArrayList<>(); //0 = newest
+    public ArrayList<Window<W,?>> windows = new ArrayList<>(); //0 = newest
 
     protected Workspace(Screen lastScreen, Component title)
     {
@@ -66,17 +66,17 @@ public abstract class Workspace extends Screen
 
         if(canDockWindows())
         {
-            windows.add(new WindowDock<>(this));
+            windows.add(new WindowDock<>((W)this));
         }
     }
 
-    public <W extends Workspace> W setTheme(Theme theme)
+    public W setTheme(Theme theme)
     {
         this.theme = theme;
         return (W)this;
     }
 
-    public <W extends Workspace> W setMinecraftStyle(int i)
+    public W setMinecraftStyle(int i)
     {
         this.renderMinecraftStyle = i;
         return (W)this;
@@ -128,17 +128,17 @@ public abstract class Workspace extends Screen
     }
 
     @Override
-    public List<Window<?,?>> children()
+    public List<Window<W,?>> children()
     {
         if(canDockWindows())
         {
-            ArrayList<Window<?,?>> winds = new ArrayList<>();
+            ArrayList<Window<W,?>> winds = new ArrayList<>();
             for(int i = 0; i < windows.size(); i++)
             {
-                Window<?,?> window = windows.get(i);
+                Window<W,?> window = windows.get(i);
                 if(window instanceof WindowDock)
                 {
-                    ((WindowDock<?>)window).docked.keySet().forEach(h -> winds.addAll(h.windows()));
+                    ((WindowDock<W>)window).docked.keySet().forEach(h -> winds.addAll(h.windows()));
                 }
                 else
                 {
@@ -200,7 +200,7 @@ public abstract class Workspace extends Screen
     {
         for(int i = windows.size() - 1; i >= 0; i--)
         {
-            Window<?,?> window = windows.get(i);
+            Window<W,?> window = windows.get(i);
             graphics.pose().translate(0D, 0D, 10D);
             window.render(graphics, mouseX, mouseY, partialTick);
         }
@@ -407,8 +407,8 @@ public abstract class Workspace extends Screen
     @Nullable
     public <T extends View<?>> T getByViewType(Class<T> clz)
     {
-        List<Window<?,?>> windows = children();
-        for(Window<?,?> window : windows)
+        List<Window<W,?>> windows = children();
+        for(Window<W,?> window : windows)
         {
             if(clz.isAssignableFrom(window.getCurrentView().getClass()))
             {
@@ -419,10 +419,10 @@ public abstract class Workspace extends Screen
     }
 
     @Nullable
-    public <T extends Window<?,?>> T getByWindowType(Class<T> clz)
+    public <T extends Window<W,?>> T getByWindowType(Class<T> clz)
     {
-        List<Window<?,?>> windows = children();
-        for(Window<?,?> window : windows)
+        List<Window<W,?>> windows = children();
+        for(Window<W,?> window : windows)
         {
             if(clz.isAssignableFrom(window.getClass()))
             {
@@ -435,8 +435,8 @@ public abstract class Workspace extends Screen
     @Nullable
     public Fragment<?> getTopMostFragment(double mouseX, double mouseY)
     {
-        List<Window<?,?>> children = children();
-        for(Window<?,?> child : children)
+        List<Window<W,?>> children = children();
+        for(Window<W,?> child : children)
         {
             Fragment<?> frag = child.getTopMostFragment(mouseX, mouseY);
             if(frag != null)
@@ -460,9 +460,9 @@ public abstract class Workspace extends Screen
         return getFocused() != null && getFocused().mouseReleased(mouseX, mouseY, button);
     }
 
-    public boolean isObstructed(Window<?,?> window, double mouseX, double mouseY)
+    public boolean isObstructed(Window<W,?> window, double mouseX, double mouseY)
     {
-        for(Window<?,?> window1 : children())
+        for(Window<W,?> window1 : children())
         {
             if(Fragment.isMouseBetween(mouseX, window1.getLeft(), window1.getLeft() + window1.width) && Fragment.isMouseBetween(mouseY, window1.getTop(), window1.getTop() + window1.height))
             {
@@ -473,14 +473,14 @@ public abstract class Workspace extends Screen
     }
 
     //Window management
-    public Window<?,?> addWindow(Window<?,?> window)
+    public Window<W,?> addWindow(Window<W,?> window)
     {
         if(window.isUnique()) // aw how cute
         {
-            List<Window<?,?>> allWindows = children();
+            List<Window<W,?>> allWindows = children();
             for(int i = allWindows.size() - 1; i >= 0; i--)
             {
-                Window<?,?> window1 = allWindows.get(i);
+                Window<W,?> window1 = allWindows.get(i);
                 if(window1.getClass() == window.getClass()) //we're unique. Kill the old one
                 {
                     if(isDocked(window1))
@@ -495,11 +495,11 @@ public abstract class Workspace extends Screen
                 }
             }
         }
-        windows.add(0, window); //MC's iterator starts from first element of list
+        windows.addFirst(window); //MC's iterator starts from first element of list
         return window;
     }
 
-    public void removeWindow(Window<?,?> window)
+    public void removeWindow(Window<W,?> window)
     {
         if(getFocused() == window)
         {
@@ -509,7 +509,7 @@ public abstract class Workspace extends Screen
         windows.remove(window);
     }
 
-    public void bringToFront(Window<?,?> window)
+    public void bringToFront(Window<W,?> window)
     {
         if(window.canBringToFront() && windows.remove(window))
         {
@@ -517,7 +517,7 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void putInCenter(Window<?,?> window)
+    public void putInCenter(Window<W,?> window)
     {
         if(!isDocked(window))
         {
@@ -525,7 +525,7 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void openWindowInCenter(Window<?,?> window, double widthRatio, double heightRatio, boolean greyout)
+    public void openWindowInCenter(Window<W,?> window, double widthRatio, double heightRatio, boolean greyout)
     {
         if(widthRatio <= 1D)
         {
@@ -555,24 +555,24 @@ public abstract class Workspace extends Screen
         window.init();
     }
 
-    public void openWindowInCenter(Window<?,?> window, double widthRatio, double heightRatio)
+    public void openWindowInCenter(Window<W,?> window, double widthRatio, double heightRatio)
     {
         openWindowInCenter(window, widthRatio, heightRatio, false);
     }
 
-    public void openWindowInCenter(Window<?,?> window, boolean greyout)
+    public void openWindowInCenter(Window<W,?> window, boolean greyout)
     {
         openWindowInCenter(window, 0.5D, 0.5D, greyout);
     }
 
-    public void openWindowInCenter(Window<?,?> window)
+    public void openWindowInCenter(Window<W,?> window)
     {
         openWindowInCenter(window, false);
     }
 
-    public WindowGreyout<?> addGreyout(Window<?, ?> window)
+    public WindowGreyout<?> addGreyout(Window<W, ?> window)
     {
-        WindowGreyout<?> greyout = new WindowGreyout<>(this, window);
+        WindowGreyout<W> greyout = new WindowGreyout<>((W)this, window);
         addWindow(greyout);
         greyout.init();
 
@@ -585,12 +585,12 @@ public abstract class Workspace extends Screen
         return true;
     }
 
-    public WindowDock<? extends Workspace> getDock()
+    public WindowDock<W> getDock()
     {
-        return (WindowDock<? extends Workspace>)windows.get(windows.size() - 1);
+        return (WindowDock<W>)windows.getLast();
     }
 
-    public WindowDock.DockInfo getDockInfo(double mouseX, double mouseY, boolean dockStack)
+    public WindowDock.DockInfo<W> getDockInfo(double mouseX, double mouseY, boolean dockStack)
     {
         if(canDockWindows())
         {
@@ -599,7 +599,7 @@ public abstract class Workspace extends Screen
         return null;
     }
 
-    public void addToDocked(Window<?,?> docked, Window<?,?> window)
+    public void addToDocked(Window<W,?> docked, Window<W,?> window)
     {
         if(canDockWindows() && getDock().addToDocked(docked, window))
         {
@@ -607,7 +607,7 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void addToDock(Window<?,?> window, Constraint.Property.Type type)
+    public void addToDock(Window<W,?> window, Constraint.Property.Type type)
     {
         if(canDockWindows())
         {
@@ -616,7 +616,7 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void removeFromDock(Window<?,?> window, boolean addWindow)
+    public void removeFromDock(Window<W,?> window, boolean addWindow)
     {
         if(canDockWindows())
         {
@@ -632,12 +632,12 @@ public abstract class Workspace extends Screen
         }
     }
 
-    public void removeFromDock(Window<?,?> window)
+    public void removeFromDock(Window<W,?> window)
     {
         removeFromDock(window, true);
     }
 
-    public boolean isDocked(Window<?,?> window)
+    public boolean isDocked(Window<W,?> window)
     {
         if(canDockWindows())
         {
@@ -693,7 +693,7 @@ public abstract class Workspace extends Screen
     }
 
     @Override
-    public <W extends Workspace> W getWorkspace()
+    public W getWorkspace()
     {
         return (W)this;
     }
@@ -733,7 +733,7 @@ public abstract class Workspace extends Screen
         }
         if(gui instanceof Window)
         {
-            bringToFront((Window<?,?>)gui);
+            bringToFront((Window<W,?>)gui);
         }
         super.setFocused(gui);
     }

@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
-public class WindowContextMenu<M extends Workspace, I> extends Window<M, View<?>>
+public class WindowContextMenu<M extends Workspace<M>, I> extends Window<M, View<?>>
 {
     private final ElementList<ViewContextMenu, I> list;
     private int minWidth = 1;
@@ -131,7 +131,7 @@ public class WindowContextMenu<M extends Workspace, I> extends Window<M, View<?>
         }
     }
 
-    public static <W extends Workspace, I, M extends IContextMenu<M, I>> WindowContextMenu<W, I> create(W parent, M context, double posX, double posY, int minWidth, int yFlipHeight)
+    public static <W extends Workspace<W>, I, M extends IContextMenu<M, I>> WindowContextMenu<W, I> create(W parent, M context, double posX, double posY, int minWidth, int yFlipHeight)
     {
         WindowContextMenu<W, I> windowContextMenu = new WindowContextMenu<>(parent);
         ElementList<?, I> list = windowContextMenu.getList();

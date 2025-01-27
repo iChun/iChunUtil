@@ -30,6 +30,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
         this(parent, s, objectList, validator, responder, null);
     }
 
+    @SuppressWarnings("unchecked")
     public ViewEditList(@NotNull W parent, @NotNull String s, @NotNull List<I> objectList, @NotNull Predicate<String> validator, @NotNull Consumer<ElementList<ViewEditList<W, I>, I>> responder, @Nullable BiFunction<String, Integer, FormattedCharSequence> textFormatter)
     {
         super(parent, s);
@@ -48,7 +49,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
         list.setScrollVertical(sv)
             .setDragHandler((i, j) -> {})
             .setRearrangeHandler((i, j) -> {})
-            ;
+        ;
         list.setConstraint(new Constraint(list).left(this, Constraint.Property.Type.LEFT, 0)
             .bottom(this, Constraint.Property.Type.BOTTOM, 30)
             .top(this, Constraint.Property.Type.TOP, 0)
@@ -57,7 +58,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
 
         ElementButton btn = new ElementButton(this, "gui.cancel", (button, mouseX, mouseY) -> {
             parent.parent.setFocused(null);
-            parent.parent.removeWindow(parent);
+            parent.parent.removeWindow((Window)parent);
         });
         btn.setSize(60, 20);
         btn.setConstraint(new Constraint(btn).right(this, Constraint.Property.Type.RIGHT, 10)
@@ -68,7 +69,7 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
         ElementButton btn1 = new ElementButton(this, "gui.done", (button, mouseX, mouseY) -> {
             responder.accept(list);
             parent.parent.setFocused(null);
-            parent.parent.removeWindow(parent);
+            parent.parent.removeWindow((Window)parent);
         });
         btn1.setSize(60, 20);
         btn1.setConstraint(new Constraint(btn1).right(btn, Constraint.Property.Type.LEFT, 10)
@@ -158,7 +159,6 @@ public class ViewEditList<W extends Window<?,?>, I> extends View<W>
         item.addElement(textField);
         return textField;
     }
-
 
     @Override
     public void setWindowGenericProperties(WindowGeneric<?, ?> window)

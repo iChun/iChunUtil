@@ -10,13 +10,13 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.function.Consumer;
 
-public class WindowGreyout<M extends Workspace> extends Window<M, View<?>>
+public class WindowGreyout<M extends Workspace<M>> extends Window<M, View<?>>
 {
-    public Window<?,?> attachedWindow;
+    public Window<M,?> attachedWindow;
     public Consumer<WindowGreyout<M>> closeConsumer; //only triggered when clicked on rather than the parent closing
     public boolean disableClickOut;
 
-    public WindowGreyout(M parent, Window<?,?> attached)
+    public WindowGreyout(M parent, Window<M,?> attached)
     {
         super(parent);
         this.attachedWindow = attached;

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class Window<W extends Workspace, V extends View<?>> extends Fragment<W>
+public abstract class Window<W extends Workspace<W>, V extends View<?>> extends Fragment<W>
 {
     //TODO get rid of this when working with more advanced UI eg Tabula/CCI
     public Supplier<Integer> borderSize;
@@ -58,7 +58,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
         borderSize = () -> (parent.isDocked(this) ? 1 : 0) + (renderMinecraftStyle() > 0 ? 4 : 3); //TODO consider using border size of 3 for MC? maybe look at MC windows and compare their padding
     }
 
-    //TODO get rid of this when working with more advanced UI eg Tabula/CCI
+    //TODO consider getting rid of this when working with more advanced UI eg Tabula/CCI
     public <T extends Window<W, V>> T setBorderSize(Supplier<Integer> borderSize)
     {
         this.borderSize = borderSize;
@@ -444,16 +444,16 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
     {
         if(getWorkspace().canDockWindows() && getWorkspace().getFocused() == this  && getWorkspace().isDragging() && (canBeDocked() || canDockStack()) && edgeGrab != null && edgeGrab.titleGrab)
         {
-            WindowDock<?> dock = getWorkspace().getDock();
+            WindowDock<W> dock = getWorkspace().getDock();
 
             //Render BORDER HIGHLIGHT
             double left = 0;
             double top = 0;
             double right = getWorkspace().getWidth();
             double bottom = getWorkspace().getHeight();
-            for(Map.Entry<WindowDock.ArrayListHolder, Constraint.Property.Type> e : dock.docked.entrySet())
+            for(Map.Entry<WindowDock.ArrayListHolder<W>, Constraint.Property.Type> e : dock.docked.entrySet())
             {
-                for(Window<?,?> key : e.getKey().windows())
+                for(Window<W,?> key : e.getKey().windows())
                 {
                     Constraint.Property.Type value = e.getValue();
                     switch(value)
@@ -498,7 +498,7 @@ public abstract class Window<W extends Workspace, V extends View<?>> extends Fra
             int oriX = window.posX;
             int oriY = window.posY;
             window.pos(-10000, -10000);
-            WindowDock.DockInfo info = dock.getDockInfo(mouseX, mouseY, window.canDockStack());
+            WindowDock.DockInfo<W> info = dock.getDockInfo(mouseX, mouseY, window.canDockStack());
             window.pos(oriX, oriY);
 
             boolean draw = info != null && info.window() != null;

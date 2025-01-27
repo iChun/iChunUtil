@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;
 
-public class WorkspaceConfigs extends Workspace
+public class WorkspaceConfigs extends Workspace<WorkspaceConfigs>
 {
     public final LinkedHashMap<String, TreeSet<ConfigBase>> modToConfig = new LinkedHashMap<>();
 

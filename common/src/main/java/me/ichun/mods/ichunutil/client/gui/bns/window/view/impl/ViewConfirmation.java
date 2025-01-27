@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class ViewConfirmation extends View<Window<? extends Workspace,? extends View<?>>>
+public class ViewConfirmation extends View<Window<?,?>>
 {
     //title will be localised, text won't.
-    public ViewConfirmation(@NotNull Window<? extends Workspace,? extends View<?>> parent, String title, String text1, @Nullable Consumer<Workspace> callbackOk, @Nullable Consumer<Workspace> callbackCancel, boolean isYesNo)
+    public <W extends Workspace<W>> ViewConfirmation(@NotNull Window<W,?> parent, String title, String text1, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel, boolean isYesNo)
     {
         super(parent, title);
 
@@ -60,19 +60,18 @@ public class ViewConfirmation extends View<Window<? extends Workspace,? extends 
         window.isNotUnique();
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, "window.popup.title", text, callbackOk, callbackCancel);
     }
 
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel)
     {
         popup(parent, widthRatio, heightRatio, title, text, callbackOk, callbackCancel, true);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <W extends Workspace> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel, boolean isYesNo)
+    public static <W extends Workspace<W>> void popup(W parent, double widthRatio, double heightRatio, String title, String text, @Nullable Consumer<W> callbackOk, @Nullable Consumer<W> callbackCancel, boolean isYesNo)
     {
-        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewConfirmation(windowGeneric, title, text, (Consumer<Workspace>)callbackOk, (Consumer<Workspace>)callbackCancel, isYesNo)), widthRatio, heightRatio, true);
+        parent.openWindowInCenter(WindowGeneric.create(parent, windowGeneric -> new ViewConfirmation(windowGeneric, title, text, callbackOk, callbackCancel, isYesNo)), widthRatio, heightRatio, true);
     }
 }
