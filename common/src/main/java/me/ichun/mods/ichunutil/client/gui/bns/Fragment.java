@@ -400,6 +400,7 @@ public abstract class Fragment<P extends Rectangle>
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public <W extends Workspace> W getWorkspace()
     {
         return parent.getWorkspace();

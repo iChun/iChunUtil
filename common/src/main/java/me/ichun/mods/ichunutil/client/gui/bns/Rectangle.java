@@ -20,6 +20,7 @@ public interface Rectangle extends Renderable //Yes, ironic that "Boxes & Stuff"
     }
 
     //These methods are for recursiveness to include workspace who has these values
+    @SuppressWarnings("rawtypes")
     <W extends Workspace> W getWorkspace();
     Minecraft getMinecraft();
     Theme getTheme();
