@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.common.iChunUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -228,7 +229,7 @@ public final class IOUtil
             hex[index++] = HEX_CHAR_TABLE[v >>> 4];
             hex[index++] = HEX_CHAR_TABLE[v & 0xF];
         }
-        return new String(hex, "ASCII");
+        return new String(hex, StandardCharsets.US_ASCII);
     }
 
     //compresses a string using gzip

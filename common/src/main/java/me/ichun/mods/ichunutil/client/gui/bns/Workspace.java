@@ -92,6 +92,8 @@ public abstract class Workspace<W extends Workspace<W>> extends Screen
 
             windows.forEach(Fragment::init);
         }
+
+        this.resize(this.minecraft, this.width, this.height); //This will resize the window in the event another screen returns to ours
     }
 
     public boolean hasInit()
