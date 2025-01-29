@@ -284,6 +284,12 @@ public abstract class Fragment<P extends Rectangle>
         return s;
     }
 
+    /**
+     * Called when the workspace is resized
+     * @param mc Minecraft instance
+     * @param width Workspace width
+     * @param height Workspace height
+     */
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();

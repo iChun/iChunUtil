@@ -29,7 +29,7 @@ public abstract class ElementFertile<P extends Fragment<?>> extends Element<P>
     public void resize(Minecraft mc, int width, int height)
     {
         super.resize(mc, width, height);
-        children().forEach(child -> child.resize(mc, this.width, this.height));
+        children().forEach(child -> child.resize(mc, width, height));
     }
 
     @Override

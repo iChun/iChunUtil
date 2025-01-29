@@ -71,7 +71,7 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
     public void resize(Minecraft mc, int width, int height)
     {
         constraint.apply();
-        elements.forEach(element -> element.resize(mc, this.width, this.height));
+        elements.forEach(element -> element.resize(mc, width, height));
     }
 
     @Override
