@@ -171,15 +171,12 @@ public abstract class Fragment<P extends Rectangle>
         if(isMouseOver(mouseX, mouseY))
         {
             Fragment<?> frag = this;
-            for(GuiEventListener child : this.children())
+            for(Fragment<?> fragment : this.children())
             {
-                if(child instanceof Fragment<?> fragment)
+                Fragment<?> fragment1 = fragment.getTopMostFragment(mouseX, mouseY);
+                if(fragment1 != null)
                 {
-                    Fragment<?> fragment1 = fragment.getTopMostFragment(mouseX, mouseY);
-                    if(fragment1 != null)
-                    {
-                        frag = fragment1;
-                    }
+                    frag = fragment1;
                 }
             }
             return frag;
