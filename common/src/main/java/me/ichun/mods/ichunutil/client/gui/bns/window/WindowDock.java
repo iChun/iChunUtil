@@ -666,7 +666,7 @@ public class WindowDock<W extends Workspace<W>> extends Window<W, View<?>>
             }
         }
 
-        getWorkspace().getDock().init();
+        getWorkspace().getDock().resize(getMinecraft(), getWorkspace().width, getWorkspace().height);
     }
 
     public record WindowSize(Constraint constraint, int x, int y, int width, int height){}
