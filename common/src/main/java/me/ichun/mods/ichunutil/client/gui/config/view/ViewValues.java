@@ -39,8 +39,11 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
             ElementToggle rotatable = new ElementToggle(this, config.getConfigTypeName(), (b, mouseX, mouseY) -> {
                 if(b.toggleState)
                 {
+                    b.toggleState = false; //disable it temporarily
+                    save(); //Save our old config if any values have been changed
+
                     elements.stream().filter(element -> "configType".equals(element.id)).forEach(e -> ((ElementToggle)e).toggleState = false);
-                    b.toggleState = true;
+                    b.toggleState = true; //set it back to marked
 
                     populateList();
                 }
