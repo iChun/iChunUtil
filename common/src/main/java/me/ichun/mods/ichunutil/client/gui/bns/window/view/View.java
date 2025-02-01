@@ -25,7 +25,7 @@ public abstract class View<P extends Window<?,?>> extends Fragment<P>
     public View(@NotNull P parent, @NotNull String s)
     {
         super(parent);
-        title = I18n.get(s);
+        title = s.isEmpty() ? "" : I18n.get(s);
 
         //TODO This Constraint needs to be adjusted
         constraint = Constraint.matchParent(this, parent, parent.borderSize.get());
