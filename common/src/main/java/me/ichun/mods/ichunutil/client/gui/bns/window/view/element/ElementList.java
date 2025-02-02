@@ -370,21 +370,15 @@ public class ElementList<P extends Fragment<?>, I> extends ElementFertile<P>
             item.posX = currentWidth - offsetX;
             item.posY = currentHeight - offsetY;
 
-            boolean flag = false;
             if(item.width != (width - 2))
             {
                 item.width = Math.max(itemWidth, (width - 2));
-                flag = true;
             }
             if(item.height != item.getMinHeight())
             {
                 item.height = item.getMinHeight();
-                flag = true;
             }
-            if(flag)
-            {
-                item.constraint.apply(); // make sure we're not too big or small
-            }
+            item.resize(getMinecraft(), item.parent.width, item.parent.height); // make sure we're not too big or small
 
             currentHeight += item.getHeight();
         }

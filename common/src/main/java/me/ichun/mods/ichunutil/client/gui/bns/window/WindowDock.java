@@ -94,7 +94,7 @@ public class WindowDock<W extends Workspace<W>> extends Window<W, View<?>>
         constraint.apply();
         docked.keySet().forEach(h -> h.windows.forEach(window -> {
             window.constraint.apply();
-            window.resize(Minecraft.getInstance(), width, height);
+            window.resize(Minecraft.getInstance(), this.width, this.height);
         }));
     }
 
@@ -666,7 +666,7 @@ public class WindowDock<W extends Workspace<W>> extends Window<W, View<?>>
             }
         }
 
-        getWorkspace().getDock().resize(getMinecraft(), getWorkspace().width, getWorkspace().height);
+        getWorkspace().getDock().resize(getMinecraft(), this.width, this.height);
     }
 
     public record WindowSize(Constraint constraint, int x, int y, int width, int height){}

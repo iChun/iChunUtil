@@ -61,7 +61,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
                     if(parent.parent.hasInit())
                     {
                         window.init();
-                        window.resize(getMinecraft(), this.width, this.height);
+                        window.resize(getMinecraft(), window.getParentWidth(), window.getParentHeight());
                     }
                 }
             });
@@ -93,7 +93,7 @@ public class ViewConfigs extends View<WindowGeneric<WorkspaceConfigs,ViewConfigs
             btn.setTooltip(I18n.get("gui.ichunutil.configs.needsRestart"));
             elements.add(btn);
 
-            this.resize(getMinecraft(), this.width, this.height);
+            this.resize(getMinecraft(), getParentWidth(), getParentHeight());
         }
     }
 }

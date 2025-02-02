@@ -76,7 +76,7 @@ public class ElementTextWrapper extends Element<Fragment<?>>
         {
             constraint.apply();
 
-            parent.resize(getWorkspace().getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
+            parent.resize(getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
         }
     }
 
@@ -88,7 +88,7 @@ public class ElementTextWrapper extends Element<Fragment<?>>
         {
             constraint.apply();
 
-            parent.resize(getWorkspace().getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
+            parent.resize(getMinecraft(), parent.getParentWidth(), parent.getParentHeight());
         }
     }
 
