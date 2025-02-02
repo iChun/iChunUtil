@@ -272,7 +272,7 @@ public abstract class Fragment<P extends Rectangle>
         if(getFontRenderer().width(s) > length)
         {
             String s1 = s;
-            while(getFontRenderer().width(s1 + getWorkspace().ellipsisLength) > length)
+            while(!s1.isEmpty() && getFontRenderer().width(s1 + getWorkspace().ellipsisLength) > length)
             {
                 s1 = s1.substring(0, s1.length() - 1);
             }
