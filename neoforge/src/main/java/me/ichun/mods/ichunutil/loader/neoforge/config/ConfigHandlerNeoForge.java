@@ -5,6 +5,7 @@ import me.ichun.mods.ichunutil.common.config.ConfigHandler;
 import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -44,12 +45,18 @@ public class ConfigHandlerNeoForge extends ConfigHandler
     private ModConfig modConfig; //our mod config
 
     private final IEventBus eventBus;
+    private final ModContainer modContainer;
 
-    public ConfigHandlerNeoForge(ConfigBase config, IEventBus bus)
+    private ModConfigSpec builtConfig; //temp var
+
+    public ConfigHandlerNeoForge(ConfigBase config, IEventBus bus, ModContainer modContainer)
     {
         super(config);
 
         this.eventBus = bus;
+        this.modContainer = modContainer;
+
+        registerConfig();
 
         registerKeybinds();
 
@@ -173,13 +180,12 @@ public class ConfigHandlerNeoForge extends ConfigHandler
             builder.pop();
         }
 
-        ModConfigSpec spec = builder.build();
-        ModLoadingContext.get().getActiveContainer().registerConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, spec, config.getFileName());
+        builtConfig = builder.build();
 
         config.setSaveMethod(() -> {
-            if(spec.isLoaded() && updateConfigValuesFromFields())
+            if(builtConfig.isLoaded() && updateConfigValuesFromFields())
             {
-                spec.save();
+                builtConfig.save();
             }
         });
     }
@@ -188,6 +194,12 @@ public class ConfigHandlerNeoForge extends ConfigHandler
     public Object getEventBus()
     {
         return eventBus;
+    }
+
+    private void registerConfig() //This needs to be after init as modContainer is still null when init is fired.
+    {
+        modContainer.registerConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builtConfig, config.getFileName());
+        builtConfig = null;
     }
 
     private void registerListeners(IEventBus bus)

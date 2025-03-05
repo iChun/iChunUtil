@@ -13,7 +13,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.util.thread.EffectiveSide;
@@ -62,13 +64,22 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     }
 
     @Override
-    public <T extends ConfigBase> T registerConfig(T config, Object... params)
+    public <T extends ConfigBase> T registerConfig(T config, Object... params) //TODO on next major update make sure all other mods pass mod container for config.
     {
         if(params.length < 1 || !(params[0] instanceof IEventBus))
         {
             throw new IllegalArgumentException("First argument needs to be FML IEventBus!");
         }
-        new ConfigHandlerNeoForge(config, (IEventBus)params[0]);
+        ModContainer container;
+        if(params.length < 2 || !(params[1] instanceof ModContainer)) //Not updated to not have ModContainer
+        {
+            container = ModLoadingContext.get().getActiveContainer();
+        }
+        else
+        {
+            container = (ModContainer)params[1];
+        }
+        new ConfigHandlerNeoForge(config, (IEventBus)params[0], container);
         return config;
     }
 

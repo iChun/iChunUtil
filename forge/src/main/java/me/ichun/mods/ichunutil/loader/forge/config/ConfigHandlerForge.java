@@ -50,12 +50,16 @@ public class ConfigHandlerForge extends ConfigHandler
     private final IEventBus eventBus;
     private final FMLModContainer modContainer;
 
+    private ForgeConfigSpec builtConfig; //temp var
+
     public ConfigHandlerForge(ConfigBase config, FMLJavaModLoadingContext context)
     {
         super(config);
 
         this.eventBus = context.getModEventBus();
         this.modContainer = context.getContainer();
+
+        registerConfig();
 
         registerKeybinds();
 
@@ -179,7 +183,7 @@ public class ConfigHandlerForge extends ConfigHandler
             builder.pop();
         }
 
-        modContainer.addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builder.build(), modContainer, config.getFileName()));
+        builtConfig = builder.build();
 
         config.setSaveMethod(() -> {
             IConfigSpec modSpec = modConfig.getSpec();
@@ -219,6 +223,12 @@ public class ConfigHandlerForge extends ConfigHandler
     public Object getEventBus()
     {
         return eventBus;
+    }
+
+    private void registerConfig() //This needs to be after init as modContainer is still null when init is fired.
+    {
+        modContainer.addConfig(modConfig = new ModConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builtConfig, modContainer, config.getFileName()));
+        builtConfig = null; //we don't have a reason to keep this in memory
     }
 
     private void registerListeners(IEventBus bus)

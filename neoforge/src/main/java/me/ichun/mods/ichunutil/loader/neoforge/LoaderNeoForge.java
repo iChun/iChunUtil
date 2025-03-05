@@ -32,7 +32,7 @@ public class LoaderNeoForge extends iChunUtil
     {
         ResourceHelper.init();
 
-        configClient = d().registerConfig(new ConfigClient(), modEventBus); // configs cannot be initialised in setup stage.
+        configClient = d().registerConfig(new ConfigClient(), modEventBus, container); // configs cannot be initialised in setup stage.
 
         container.registerExtensionPoint(IConfigScreenFactory.class, (Supplier<IConfigScreenFactory>)() -> (modContainer, screen) -> new WorkspaceConfigs(screen, MOD_ID));
     }
