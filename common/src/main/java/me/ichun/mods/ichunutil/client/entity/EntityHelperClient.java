@@ -5,8 +5,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.ichun.mods.ichunutil.mixin.EntitySelectorAccessorMixin;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@Environment(EnvType.CLIENT)
+@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public final class EntityHelperClient
 {
     public static List<? extends Entity> clientGetTarget(@NotNull String input)
