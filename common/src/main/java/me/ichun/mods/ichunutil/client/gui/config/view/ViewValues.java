@@ -494,7 +494,14 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                         }
                     }
                 });
-                button.setTooltip(sb.toString());
+                if(sb.toString().isEmpty())
+                {
+                    button.setTooltip(I18n.get("gui.ichunutil.element.empty"));
+                }
+                else
+                {
+                    button.setTooltip(sb.toString());
+                }
                 button.setSize(80, 14);
                 button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
                 item.addElement(button);
