@@ -34,6 +34,7 @@
   "gui.ichunutil.configs.noEditingServerConfig": "You can only edit a SERVER config in a single player world environment!",
 
   "gui.ichunutil.element.textField": "Text Field",
+  "gui.ichunutil.element.empty": "Empty",
 
   "window.popup.title": "Alert!",
 

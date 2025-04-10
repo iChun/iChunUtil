@@ -424,13 +424,20 @@ public class ViewValues extends View<WindowGeneric<WorkspaceConfigs, ViewValues>
                                     {
                                     }
                                 }));
-                                getWorkspace().openWindowInCenter(window, 0.6D, 0.8D);
+                                getWorkspace().openWindowInCenter(window, 0.6D, 0.8D, true);
                                 window.init();//reinit cause we're using lists and they're weird
                             }
                         }
                     }
                 });
-                button.setTooltip(sb.toString());
+                if(sb.toString().isEmpty())
+                {
+                    button.setTooltip(I18n.get("gui.ichunutil.element.empty"));
+                }
+                else
+                {
+                    button.setTooltip(sb.toString());
+                }
                 button.setSize(80, 14);
                 button.setConstraint(new Constraint(button).top(item, Constraint.Property.Type.TOP, 3).bottom(item, Constraint.Property.Type.BOTTOM, 3).right(item, Constraint.Property.Type.RIGHT, 8));
                 item.addElement(button);
