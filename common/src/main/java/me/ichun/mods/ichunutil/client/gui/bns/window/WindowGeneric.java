@@ -13,6 +13,8 @@ public class WindowGeneric<W extends Workspace, V extends View<?>> extends Windo
     public WindowGeneric(@NotNull W parent)
     {
         super(parent);
+
+        isNotUnique();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
