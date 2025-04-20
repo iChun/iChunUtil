@@ -71,6 +71,6 @@ public class EventHandlerServerNeoForge extends EventHandlerServer
     @Override
     public boolean isFakePlayer(ServerPlayer player)
     {
-        return player instanceof FakePlayer || super.isFakePlayer(player);
+        return player.isFakePlayer() || player instanceof FakePlayer || super.isFakePlayer(player);
     }
 }

@@ -1,6 +1,5 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.ichun.mods.ichunutil.client.gui.bns.Workspace;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
 import me.ichun.mods.ichunutil.client.gui.bns.window.view.View;
@@ -63,10 +62,7 @@ public class WindowGreyout<M extends Workspace<M>> extends Window<M, View<?>>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderHelper.drawColour(graphics, 0, 0, 0, 150, getLeft(), getTop(), width, height, 0);
-        RenderSystem.disableBlend();
         if(!parent.children().contains(attachedWindow))
         {
             parent.removeWindow(this);

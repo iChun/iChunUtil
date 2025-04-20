@@ -11,9 +11,9 @@ public final class EntityHelper
 
     public static CompoundTag getPlayerPersistentData(Player player, String key)
     {
-        CompoundTag playerPersisted = iChunUtil.eS().getEntityPersistedDataHandler().getPersistentData(player).getCompound(PLAYER_PERSISTED_NBT_TAG);
+        CompoundTag playerPersisted = iChunUtil.eS().getEntityPersistedDataHandler().getPersistentData(player).getCompoundOrEmpty(PLAYER_PERSISTED_NBT_TAG);
         iChunUtil.eS().getEntityPersistedDataHandler().getPersistentData(player).put(PLAYER_PERSISTED_NBT_TAG, playerPersisted);
-        CompoundTag persistentTag = playerPersisted.getCompound(key);
+        CompoundTag persistentTag = playerPersisted.getCompoundOrEmpty(key);
         playerPersisted.put(key, persistentTag);
         return persistentTag;
     }

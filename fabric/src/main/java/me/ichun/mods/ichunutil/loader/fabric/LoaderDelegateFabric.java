@@ -11,6 +11,7 @@ import me.ichun.mods.ichunutil.loader.fabric.event.FabricEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
@@ -105,7 +106,7 @@ public class LoaderDelegateFabric implements LoaderDelegate
     }
 
     @Override
-    public void registerAddReloadListener(PreparableReloadListener reloadListener)
+    public void registerAddReloadListener(ResourceLocation id, PreparableReloadListener reloadListener)
     {
         FabricEvents.ADD_RELOAD_LISTENER.register(list -> list.add(reloadListener));
     }

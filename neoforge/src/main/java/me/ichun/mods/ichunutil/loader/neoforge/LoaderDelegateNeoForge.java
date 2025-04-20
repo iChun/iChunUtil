@@ -7,6 +7,7 @@ import me.ichun.mods.ichunutil.loader.LoaderDelegate;
 import me.ichun.mods.ichunutil.loader.Side;
 import me.ichun.mods.ichunutil.loader.neoforge.client.EventHandlerClientNeoForge;
 import me.ichun.mods.ichunutil.loader.neoforge.config.ConfigHandlerNeoForge;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.neoforged.api.distmarker.Dist;
@@ -20,12 +21,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class LoaderDelegateNeoForge implements LoaderDelegate
@@ -114,21 +114,18 @@ public class LoaderDelegateNeoForge implements LoaderDelegate
     }
 
     @Override
-    public void registerAddReloadListener(PreparableReloadListener reloadListener)
+    public void registerAddReloadListener(ResourceLocation id, PreparableReloadListener reloadListener)
     {
         if(preparableReloadListeners.isEmpty())
         {
             NeoForge.EVENT_BUS.addListener(this::addReloadListenerEvent);
         }
-        preparableReloadListeners.add(reloadListener);
+        preparableReloadListeners.put(id, reloadListener);
     }
 
-    private final Set<PreparableReloadListener> preparableReloadListeners = new HashSet<>();
-    private void addReloadListenerEvent(AddReloadListenerEvent event)
+    private final HashMap<ResourceLocation, PreparableReloadListener> preparableReloadListeners = new HashMap<>();
+    private void addReloadListenerEvent(AddServerReloadListenersEvent event)
     {
-        for(PreparableReloadListener listener : preparableReloadListeners)
-        {
-            event.addListener(listener);
-        }
+        preparableReloadListeners.forEach(event::addListener);
     }
 }

@@ -1,8 +1,6 @@
 package me.ichun.mods.ichunutil.client.gui.bns.window;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.ichun.mods.ichunutil.client.gui.bns.Fragment;
@@ -543,8 +541,6 @@ public abstract class Window<W extends Workspace<W>, V extends View<?>> extends 
             }
             if(draw)
             {
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 if(renderMinecraftStyle() > 0) //glint render taken from 1.12.2 RenderItem.renderEffect
                 {
                     //CCI windows can never be docked, figure out how to port this in iChunUtil.
@@ -578,7 +574,6 @@ public abstract class Window<W extends Workspace<W>, V extends View<?>> extends 
                 {
                     RenderHelper.drawColour(graphics, getTheme().elementTabBorderActive, 150, left, top, right - left, bottom - top, 0);
                 }
-                RenderSystem.disableBlend();
             }
             //END RENDER BORDER HIGHLIGHT
         }

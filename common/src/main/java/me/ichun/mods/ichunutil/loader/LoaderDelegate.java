@@ -105,5 +105,5 @@ public interface LoaderDelegate
 
     //END registry block
 
-    void registerAddReloadListener(PreparableReloadListener reloadListener);
+    void registerAddReloadListener(ResourceLocation id, PreparableReloadListener reloadListener);
 }

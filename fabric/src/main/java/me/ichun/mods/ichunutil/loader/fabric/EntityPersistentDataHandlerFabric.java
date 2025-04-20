@@ -68,9 +68,9 @@ public class EntityPersistentDataHandlerFabric
     @Override
     public void loadPersistentData(@NotNull Entity ent, @NotNull CompoundTag tag)
     {
-        if(tag.contains(DATA_KEY, 10))
+        if(tag.contains(DATA_KEY))
         {
-            entToTagMap.put(ent, tag.getCompound(DATA_KEY));
+            entToTagMap.put(ent, tag.getCompoundOrEmpty(DATA_KEY));
         }
     }
 

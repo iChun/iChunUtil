@@ -1,6 +1,7 @@
 package me.ichun.mods.ichunutil.client.gui.bns;
 
 import com.google.common.base.Splitter;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import me.ichun.mods.ichunutil.client.gui.bns.constraint.Constraint;
@@ -19,11 +20,11 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,8 +190,8 @@ public abstract class Workspace<W extends Workspace<W>> extends Screen
         }
         else
         {
-            RenderSystem.clearColor((float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F, 255F);
-            RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            RenderTarget renderTarget = this.minecraft.getMainRenderTarget();
+            RenderSystem.getDevice().createCommandEncoder().clearColorAndDepthTextures(renderTarget.getColorTexture(), ARGB.colorFromFloat(255F, (float)getTheme().workspaceBackground[0] / 255F, (float)getTheme().workspaceBackground[1] / 255F, (float)getTheme().workspaceBackground[2] / 255F), renderTarget.getDepthTexture(), (double)1.0F);
         }
     }
 
@@ -260,7 +261,6 @@ public abstract class Workspace<W extends Workspace<W>> extends Screen
             int maxTextWidth = -1;
             Font font = getFontRenderer();
 
-            RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
             for (FormattedText textLine : textLines)
@@ -387,8 +387,6 @@ public abstract class Workspace<W extends Workspace<W>> extends Screen
             stack.popPose();
 
             graphics.flush();
-
-            RenderSystem.enableDepthTest();
         }
     }
 

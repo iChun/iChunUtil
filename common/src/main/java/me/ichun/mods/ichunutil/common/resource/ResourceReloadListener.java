@@ -24,24 +24,25 @@ public class ResourceReloadListener<T> extends SimpleJsonResourceReloadListener<
     private static final Gson DEFAULT_GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
     private final Class<T> classType;
-
     private final Gson parser;
+    public final ResourceLocation id;
     private T defaultObj = null;
     public HashMap<ResourceLocation, T> objects = new HashMap<>();
 
-    public ResourceReloadListener(String resourceFolder, Class<T> classType)
+    public ResourceReloadListener(String resourceFolder, ResourceLocation id, Class<T> classType)
     {
-        this(DEFAULT_GSON, resourceFolder, classType);
+        this(DEFAULT_GSON, resourceFolder, id, classType);
     }
 
-    public ResourceReloadListener(Gson gsonParser, String resourceFolder, Class<T> classType)
+    public ResourceReloadListener(Gson gsonParser, String resourceFolder, ResourceLocation id, Class<T> classType)
     {
         super(ExtraCodecs.JSON, FileToIdConverter.json(resourceFolder));
 
         this.classType = classType;
         this.parser = gsonParser;
+        this.id = id;
 
-        iChunUtil.d().registerAddReloadListener(this);
+        iChunUtil.d().registerAddReloadListener(id, this);
     }
 
     public <K extends ResourceReloadListener<T>> K setDefault(T defaultObj)

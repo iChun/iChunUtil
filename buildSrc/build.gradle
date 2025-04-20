@@ -27,5 +27,5 @@ repositories {
 
 dependencies {
     implementation "com.hypherionmc.modutils:modpublisher:${modpublisher_version}"
-    implementation "com.github.johnrengelman:shadow:${shadowjar_version}"
+    implementation "com.gradleup.shadow:shadow-gradle-plugin:${shadowjar_version}"
 }

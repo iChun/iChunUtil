@@ -119,7 +119,7 @@ public class LoaderDelegateForge implements LoaderDelegate
     }
 
     @Override
-    public void registerAddReloadListener(PreparableReloadListener reloadListener)
+    public void registerAddReloadListener(ResourceLocation id, PreparableReloadListener reloadListener)
     {
         if(preparableReloadListeners.isEmpty())
         {

@@ -23,6 +23,7 @@ repo
 
 # other
 run
+runs
 
 # java
 *.class

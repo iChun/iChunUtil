@@ -165,7 +165,7 @@ dependencies {
     if (isIDE && !isAnAllCompositeBuild) {
         if (isNeoForge) {
             //New NeoForge's ModDevGradle doesn't generate our NeoForge assets in subprojects, we rely on the parent's project for this now.
-            compileOnly files("${actualRootDir}/neoforge/build/moddev/artifacts/neoforge-${project.neoforge_version}-minecraft-merged.jar", "${actualRootDir}/neoforge/build/moddev/artifacts/neoforge-${project.neoforge_version}-minecraft-resources-aka-client-extra.jar")
+            compileOnly files("${actualRootDir}/neoforge/.gradle/repositories/ng_dummy_ng/net/neoforged/neoforge/${project.neoforge_version}/neoforge-${project.neoforge_version}.jar")
         }
 
         //This will allow the IDE to make the dependency associations. When building we just copy the srcDirs.
@@ -249,7 +249,7 @@ if (!isBuildingiChunUtil) {
     else if (isNeoForge) {
         def accessTransformerFile = file("${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg")
         if (accessTransformerFile.exists()) {
-            neoForge.accessTransformers = ["${project.rootDir}/../iChunUtil/neoforge/src/main/resources/META-INF/accesstransformer.cfg"]
+            minecraft.accessTransformers.file(accessTransformerFile)
         }
     }
 }

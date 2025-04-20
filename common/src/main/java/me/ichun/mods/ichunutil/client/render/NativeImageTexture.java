@@ -12,14 +12,20 @@ public class NativeImageTexture extends DynamicTexture
 {
     private final ResourceLocation resourceLocation;
 
-    public NativeImageTexture(@NotNull NativeImage image)
+    private NativeImageTexture(@NotNull ResourceLocation resourceLocation, @NotNull NativeImage image)
     {
-        super(image);
-        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("ichunutil", "native_image_" + Math.abs(image.hashCode()));
+        super(resourceLocation::toString, image);
+        this.resourceLocation = resourceLocation;
     }
 
     public ResourceLocation getResourceLocation()
     {
         return resourceLocation;
+    }
+
+    public static NativeImageTexture create(@NotNull NativeImage image)
+    {
+        //consider taking a "label" param for the Dynamic Texture
+        return new NativeImageTexture(ResourceLocation.fromNamespaceAndPath("ichunutil", "native_image_" + Math.abs(image.hashCode())), image);
     }
 }
