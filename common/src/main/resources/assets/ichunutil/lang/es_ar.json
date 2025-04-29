@@ -1,0 +1,51 @@
+{
+  "config.ichunutil.cat.general.name": "General",
+  "config.ichunutil.cat.general.desc": "Estas configuraciones son generales y no encajan en otra categoría.",
+  "config.ichunutil.cat.gameplay.name": "Jugabilidad",
+  "config.ichunutil.cat.gameplay.desc": "Estas configuraciones afectan la jugabilidad al usar el mod.",
+  "config.ichunutil.cat.global.name": "Global",
+  "config.ichunutil.cat.global.desc": "Estas configuraciones afectan tanto a servidores como a clientes que cargan el mod.",
+  "config.ichunutil.cat.serverOnly.name": "Solo servidor",
+  "config.ichunutil.cat.serverOnly.desc": "Estas configuraciones solo afectan al servidor que carga el mod.",
+  "config.ichunutil.cat.clientOnly.name": "Solo cliente",
+  "config.ichunutil.cat.clientOnly.desc": "Estas configuraciones solo afectan al cliente que carga el mod.",
+  "config.ichunutil.cat.block.name": "Bloques",
+  "config.ichunutil.cat.block.desc": "Estas configuraciones afectan a los bloques del mod.",
+  "config.ichunutil.cat.hiddenNotify": "Revisá el archivo de configuración para ver más opciones ocultas de esta interfaz",
+  "config.ichunutil.cat.hiddenNotify.tooltip": "Algunas configuraciones están ocultas intencionalmente de esta interfaz\n\n¡Abrí el archivo de configuración con tu editor de texto favorito!",
+
+  "config.ichunutil.cat.bns.name": "Boxes & Stuff (B&S)",
+  "config.ichunutil.cat.bns.desc": "Estas configuraciones afectan las interfaces que usan B&S.",
+  "config.ichunutil.prop.bnsMinecraftStyle.name": "B&S con estilo Minecraft",
+  "config.ichunutil.prop.bnsMinecraftStyle.desc": "Renderiza las interfaces de B&S con estilo Minecraft.\n0 = Estilo por defecto\n1 = Estilo Vanilla\n2 = Estilo de paquete de texturas.",
+  "config.ichunutil.prop.bnsDockPadding.name": "Espaciado de acoplamiento",
+  "config.ichunutil.prop.bnsDockPadding.desc": "Cuánto espaciado agregar a las ventanas acopladas.",
+  "config.ichunutil.prop.bnsDockBorder.name": "Tamaño del borde de acoplamiento",
+  "config.ichunutil.prop.bnsDockBorder.desc": "Cantidad de píxeles antes de que iChunUtil piense que estás intentando acoplar una ventana.",
+  "config.ichunutil.prop.bnsDoubleClickSpeed.name": "Velocidad del doble clic",
+  "config.ichunutil.prop.bnsDoubleClickSpeed.desc": "Velocidad (en ticks) para registrar un doble clic.",
+  "config.ichunutil.prop.bnsTooltipCooldown.name": "Espera para tooltip",
+  "config.ichunutil.prop.bnsTooltipCooldown.desc": "Cuánto tiempo pasar el mouse sobre un elemento (en ticks) antes de mostrar un tooltip.",
+  "config.ichunutil.prop.bnsTheme.name": "Tema",
+  "config.ichunutil.prop.bnsTheme.desc": "Tema a usar para Boxes & Stuff",
+
+  "gui.ichunutil.configs.title": "Editor de configuración",
+  "gui.ichunutil.configs.configs": "Configuraciones",
+  "gui.ichunutil.configs.needsRestart": "¡Algunos cambios requieren reiniciar para aplicar!",
+  "gui.ichunutil.configs.invalidValue": "Valor inválido ingresado: %s",
+
+  "gui.ichunutil.configs.noEditingServerConfig": "¡Solo podés editar una configuración de SERVIDOR en un mundo para un solo jugador!",
+
+  "gui.ichunutil.element.textField": "Campo de texto",
+  "gui.ichunutil.element.empty": "Vacío",
+
+  "window.popup.title": "¡Alerta!",
+
+  "window.saveAs.title": "Guardar como",
+  "window.saveAs.fileName": "Nombre del archivo",
+  "window.saveAs.overwrite": "¿Sobrescribir?",
+  "window.saveAs.confirmOverwrite": "¡El archivo ya existe! ¿Confirmar sobrescritura?",
+  "window.saveAs.failed": "No se pudo guardar el archivo.",
+
+  "element.button.clear": "Limpiar"
+}
