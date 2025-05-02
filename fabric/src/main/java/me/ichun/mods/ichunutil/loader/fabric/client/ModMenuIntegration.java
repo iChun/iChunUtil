@@ -11,12 +11,6 @@ import java.util.Map;
 public class ModMenuIntegration implements ModMenuApi
 {
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory()
-    {
-        return null; //set null as we set it below
-    }
-
-    @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories()
     {
         HashMap<String, ConfigScreenFactory<?>> mods = new HashMap<>();

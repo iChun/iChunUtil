@@ -89,6 +89,36 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
+subsystems {
+  parchment {
+    // The Minecraft version for which the Parchment mappings were created.
+    // This does not necessarily need to match the Minecraft version your mod targets
+    // Defaults to the value of Gradle property neogradle.subsystems.parchment.minecraftVersion
+    minecraftVersion = "${project.parchment_mc_version}"
+    
+    // The version of Parchment mappings to apply.
+    // See https://parchmentmc.org/docs/getting-started for a list.
+    // Defaults to the value of Gradle property neogradle.subsystems.parchment.mappingsVersion
+    mappingsVersion = "${project.parchment_version}"
+    
+    // Overrides the full Maven coordinate of the Parchment artifact to use
+    // This is computed from the minecraftVersion and mappingsVersion properties by default.
+    // If you set this property explicitly, minecraftVersion and mappingsVersion will be ignored.
+    // The built-in default value can also be overriden using the Gradle property neogradle.subsystems.parchment.parchmentArtifact
+    // parchmentArtifact = "org.parchmentmc.data:parchment-$minecraftVersion:$mappingsVersion:checked@zip"
+    
+    // Set this to false if you don't want the https://maven.parchmentmc.org/ repository to be added automatically when
+    // applying Parchment mappings is enabled
+    // The built-in default value can also be overriden using the Gradle property neogradle.subsystems.parchment.addRepository
+    // addRepository = true
+    
+    // Can be used to explicitly disable this subsystem. By default, it will be enabled automatically as soon
+    // as parchmentArtifact or minecraftVersion and mappingsVersion are set.
+    // The built-in default value can also be overriden using the Gradle property neogradle.subsystems.parchment.enabled
+    // enabled = true
+  }
+}
+
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 // When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
