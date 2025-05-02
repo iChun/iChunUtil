@@ -6,7 +6,6 @@ import me.ichun.mods.ichunutil.common.config.annotations.Prop;
 import me.ichun.mods.ichunutil.common.iChunUtil;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -42,12 +41,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler
 
     private IdentityHashMap<ConfigBase.Category.Entry, ModConfigSpec.ConfigValue> entryToValues;
 
-    private ModConfig modConfig; //our mod config
-
     private final IEventBus eventBus;
     private final ModContainer modContainer;
 
-    private ModConfigSpec builtConfig; //temp var
+    private ModConfigSpec builtConfig;
 
     public ConfigHandlerNeoForge(ConfigBase config, IEventBus bus, ModContainer modContainer)
     {
@@ -199,7 +196,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler
     private void registerConfig() //This needs to be after init as modContainer is still null when init is fired.
     {
         modContainer.registerConfig(config.getConfigType() == ConfigBase.Type.COMMON ? ModConfig.Type.COMMON : config.getConfigType() == ConfigBase.Type.CLIENT ? ModConfig.Type.CLIENT : ModConfig.Type.SERVER, builtConfig, config.getFileName());
-        builtConfig = null;
+        //Do not set builtConfig as null like the Forge counterpart - this is our mod config spec.
     }
 
     private void registerListeners(IEventBus bus)
